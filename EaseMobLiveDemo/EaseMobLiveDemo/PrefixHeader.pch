@@ -1,0 +1,27 @@
+//
+//  PrefixHeader.pch
+//  UCloudMediaRecorderDemo
+//
+//  Created by EaseMob on 16/6/2.
+//  Copyright © 2016年 zmw. All rights reserved.
+//
+#define RGBACOLOR(r,g,b,a) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:(a)]
+
+#define SysVersion [[[UIDevice currentDevice] systemVersion] floatValue]
+
+#define KScreenHeight [[UIScreen mainScreen] bounds].size.height
+#define KScreenWidth  [[UIScreen mainScreen] bounds].size.width
+
+#define kEaseDefaultIconFont @"iconfont"
+#define kEaseShareButton @"\U0000e64a"
+#define kEaseGiftButton @"\U0000e659"
+#define kEaseMsgButton @"\U0000e62e"
+#define kEaseSendMsgButton @"\U0000e631"
+#define kEasePrintScreenButton @"\U0000e666"
+#define kEaseCloseButton @"\U0000e647"
+#define kEaseCameraButton @"\U0000e608"
+#define kEaseLiveLabel @"\U0000e622"
+
+#import <HyphenateSDK/EMSDK.h>
+#import <EaseUI/EaseUI.h>
+#import "MBProgressHUD+Add.h"
