@@ -12,7 +12,7 @@
 
 
 ### 发起直播
-**具体代码见StartLiveActivity类**
+**具体代码见EasePublishViewController类**
 
 1、指定直播流id，开启预览
 	
@@ -100,7 +100,7 @@
 
 
 ### 观看直播
-**具体代码参考demo LiveDetailsActivity**
+**具体代码参考demo EaseLiveViewController**
 
 通过指定流id观看直播
 	
