@@ -1,0 +1,91 @@
+/* 
+  Localizable.strings
+  EaseMobLiveDemo
+
+  Created by EaseMob on 16/7/18.
+  Copyright © 2016年 zmw. All rights reserved.
+*/
+
+//home
+"home.tabbar.finder" = "广场";
+"home.tabbar.live" = "直播";
+"home.tabbar.message" = "私信";
+"home.tabbar.profile" = "个人";
+
+//live
+"live.header.hot" = "热门";
+"live.header.beauty" = "美女";
+"live.header.handsome" = "帅哥";
+
+//Publish
+"publish.button.live" = "开始直播";
+
+//title
+"title.login" = "登录";
+"title.signup" = "注册";
+"title.update" = "版本信息";
+"title.message" = "私信";
+
+//login
+"login.button.login" = "登录";
+"login.item.signup" = "注册";
+"login.button.signup" = "注册";
+"login.textfield.username" = "用户名";
+"login.textfield.password" = "密码";
+"login.textfield.confirm.password" = "密码确认";
+"login.alert.username.empty" = "用户名为空";
+"login.alert.password.empty" = "密码为空";
+"login.alert.password.error" = "您的确认密码和密码不一致";
+"login.signuping" = "注册中...";
+"login.signup.failed" = "注册失败";
+"login.signup.succeed" = "注册成功";
+"login.signup.register.repeat" = "您注册的用户已存在";
+"login.failed" = "登录失败";
+"login.ing" = "登录中...";
+
+
+//alert
+"alert.title.tips" = "提示";
+"alert.cancelButton.title" = "确认";
+
+//error
+"error.connectNetworkFail" = "网络未连接";
+"error.connectServerTimeout" = "连接服务器超时";
+"error.connectServerFail" = "连接服务器失败";
+"error.user.notfound" = "用户不存在";
+"error.invalid.username.password" = "用户名密码错误";
+
+//button
+"button.share" = "分享";
+"button.cancel" = "取消";
+"button.recharge" = "充值";
+
+//endView
+"endview.like" = "喜欢数";
+"endview.time" = "时间";
+"endview.name" = "用户名";
+"endview.comment" = "评论数";
+"endview.audience" = "观众数";
+"endview.button.ok" = "关闭";
+
+//setting
+"setting.logout.text" = "退出登陆";
+"setting.update.button.update" = "检测更新";
+"setting.update.button.refresh" = "刷新";
+"setting.update.label.version" = "版本";
+"setting.profile.followers" = "关注";
+"setting.profile.following" = "粉丝";
+"setting.profile.like" = "喜欢";
+"profile.kick" = "踢人";
+"profile.mute" = "禁言";
+"profile.follow" = "关注";
+"profile.following" = "粉丝";
+"profile.message" = "私信";
+"profile.reply" = "回复";
+
+//message
+"message.image" = "[图片]";
+"message.voice" = "[语音]";
+"message.video" = "[视频]";
+"message.file" = "[文件]";
+"message.location" = "[位置]";

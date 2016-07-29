@@ -14,6 +14,7 @@
                       number:(NSString*)number
                headImageName:(NSString*)headImageName
                     streamId:(NSString*)streamId
+                  chatroomId:(NSString*)chatroomId
 {
     self = [super init];
     if (self) {
@@ -21,6 +22,7 @@
         self.number = number;
         self.headImageName = headImageName;
         self.streamId = streamId;
+        self.chatroomId = chatroomId;
     }
     return self;
 }

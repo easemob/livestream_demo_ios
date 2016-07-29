@@ -10,4 +10,6 @@
 
 @interface EaseChatViewController : EaseMessageViewController
 
+@property (nonatomic, assign) BOOL isHideLeftBarItem;
+
 @end

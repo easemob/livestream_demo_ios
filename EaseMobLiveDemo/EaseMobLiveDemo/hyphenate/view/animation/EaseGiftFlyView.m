@@ -59,10 +59,6 @@
         _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.headImageView.frame) + 5, 0, kLabelDefaultWidth, kLabelDefaultHeight)];
         if (_message) {
             NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:_message.from attributes:nil];
-            EaseTextAttachment *textAttachment = [[EaseTextAttachment alloc] initWithData:nil ofType:nil];
-            textAttachment.image = [UIImage imageNamed:@"level_1"];
-            NSAttributedString *textAttachmentString = [NSAttributedString attributedStringWithAttachment:textAttachment];
-            [string insertAttributedString:textAttachmentString atIndex:0];
             NSDictionary *attributes = @{NSFontAttributeName :[UIFont systemFontOfSize:12.0f]};
             [string addAttributes:attributes range:NSMakeRange(0, string.length)];
             _nameLabel.attributedText = string;

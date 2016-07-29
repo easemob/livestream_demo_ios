@@ -1,0 +1,90 @@
+/* 
+  Localizable.strings
+  EaseMobLiveDemo
+
+  Created by EaseMob on 16/7/18.
+  Copyright © 2016年 zmw. All rights reserved.
+*/
+
+//home
+"home.tabbar.finder" = "Finder";
+"home.tabbar.live" = "Live";
+"home.tabbar.message" = "Message";
+"home.tabbar.profile" = "Profile";
+
+//live
+"live.header.hot" = "Hot";
+"live.header.beauty" = "Beauty";
+"live.header.handsome" = "Handsome";
+
+//Publish
+"publish.button.live" = "Publish Live";
+
+//title
+"title.login" = "Log in";
+"title.signup" = "Sign up";
+"title.update" = "Version Info";
+"title.message" = "Message";
+
+//login
+"login.button.login" = "Log in";
+"login.item.signup" = "Sign up";
+"login.button.signup" = "ok";
+"login.textfield.username" = "Username";
+"login.textfield.password" = "Password";
+"login.textfield.confirm.password" = "Confirm password";
+"login.alert.username.empty" = "Username is empty";
+"login.alert.password.empty" = "Password is empty";
+"login.alert.password.error" = "Your confirmed password and new password do not match";
+"login.signuping" = "Sign up...";
+"login.signup.failed" = "Sign up failed";
+"login.signup.succeed" = "Sign up succeed";
+"login.signup.register.repeat" = "You registered user already exists";
+"login.failed" = "Login failed";
+"login.ing" = "Login...";
+
+//alert
+"alert.title.tips" = "Tips";
+"alert.cancelButton.title" = "Ok";
+
+//error
+"error.connectNetworkFail" = "No network connection";
+"error.connectServerTimeout" = "Connect to the server timed out";
+"error.connectServerFail" = "Connect to the server failed";
+"error.user.notfound" = "User not exist";
+"error.invalid.username.password" = "Invalid username or password";
+
+//button
+"button.share" = "Share";
+"button.cancel" = "Cancel";
+"button.recharge" = "Recharge";
+
+//endView
+"endview.like" = "Like";
+"endview.time" = "Time";
+"endview.name" = "UserName";
+"endview.comment" = "Comments";
+"endview.audience" = "Audience";
+"endview.button.ok" = "Ok";
+
+//setting
+"setting.logout.text" = "Exit";
+"setting.update.button.update" = "Update";
+"setting.update.button.refresh" = "Refresh";
+"setting.update.label.version" = "Version";
+"setting.profile.followers" = "Followers";
+"setting.profile.following" = "Following";
+"setting.profile.like" = "Like";
+"profile.kick" = "Kick";
+"profile.mute" = "Mute";
+"profile.follow" = "Follow";
+"profile.following" = "Following";
+"profile.message" = "Message";
+"profile.reply" = "Reply";
+
+//message
+"message.image" = "[Image]";
+"message.voice" = "[Voice]";
+"message.video" = "[Video]";
+"message.file" = "[File]";
+"message.location" = "[Location]";

@@ -14,8 +14,8 @@
 
 #define kBarrageAction @"is_barrage_msg"
 
-#define kButtonWitdh 60
-#define kButtonHeight 60
+#define kButtonWitdh 40
+#define kButtonHeight 40
 
 #define kDefaultSpace 5
 
@@ -35,9 +35,9 @@
 @property (strong, nonatomic) UIView *bottomView;
 @property (strong, nonatomic) UIButton *msgButton;
 @property (strong, nonatomic) UIButton *giftButton;
-@property (strong, nonatomic) UIButton *shareButton;
 @property (strong, nonatomic) UIButton *printScreenButton;
 @property (strong, nonatomic) UIButton *sendTextButton;
+@property (strong, nonatomic) UIButton *redPacketButton;
 
 @property (strong, nonatomic) UIView *bottomSendMsgView;
 @property (strong, nonatomic) UIButton *sendButton;
@@ -55,10 +55,10 @@
     self = [super initWithFrame:frame];
     if (self) {
         _chatroomId = chatroomId;
-        [[EMClient sharedClient].chatManager addDelegate:self delegateQueue:nil];
+        [[EMClient sharedClient].chatManager addDelegate:self delegateQueue:dispatch_get_main_queue()];
         [[EMClient sharedClient].roomManager addDelegate:self delegateQueue:nil];
         self.datasource = [NSMutableArray array];
-        self.conversation = [[EMClient sharedClient].chatManager getConversation:_chatroomId type:EMConversationTypeChatRoom createIfNotExist:YES];
+        self.conversation = [[EMClient sharedClient].chatManager getConversation:_chatroomId type:EMConversationTypeChatRoom createIfNotExist:NO];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chatKeyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
         
         [self addSubview:self.tableView];
@@ -73,9 +73,13 @@
         [self.bottomView addSubview:self.sendTextButton];
         if (!isPublish) {
             [self.bottomView addSubview:self.giftButton];
-            //[self.bottomView addSubview:self.msgButton];
-            //[self.bottomView addSubview:self.printScreenButton];
-            //[self.bottomView addSubview:self.shareButton];
+            [self.bottomView addSubview:self.msgButton];
+            [self addSubview:self.printScreenButton];
+            [self addSubview:self.redPacketButton];
+        } else {
+            [self.bottomView addSubview:self.msgButton];
+            [self addSubview:self.printScreenButton];
+            [self addSubview:self.redPacketButton];
         }
         
         self.bottomSendMsgView.hidden = YES;
@@ -111,7 +115,7 @@
 - (UITableView*)tableView
 {
     if (_tableView == nil) {
-        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.bounds) - 75, 200) style:UITableViewStylePlain];
+        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.bounds) - 75, CGRectGetHeight(self.bounds) - 48.f) style:UITableViewStylePlain];
         _tableView.dataSource = self;
         _tableView.delegate = self;
         _tableView.backgroundColor = [UIColor clearColor];
@@ -134,25 +138,45 @@
 {
     if (_sendTextButton == nil) {
         _sendTextButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _sendTextButton.frame = CGRectMake(10, 0, kButtonWitdh, kButtonHeight);
-        _sendTextButton.titleLabel.font = [UIFont fontWithName:kEaseDefaultIconFont size:40];
-        [_sendTextButton setTitle:kEaseSendMsgButton forState:UIControlStateNormal];
-//        [_sendTextButton setImage:[UIImage imageNamed:@"live_button_comment_new"] forState:UIControlStateNormal];
-//        [_sendTextButton setImage:[UIImage imageNamed:@"live_button_comment_new_pressed"] forState:UIControlStateHighlighted];
+        _sendTextButton.frame = CGRectMake(kDefaultSpace*2, 6.f, kButtonWitdh, kButtonHeight);
+        [_sendTextButton setImage:[UIImage imageNamed:@"live_comments"] forState:UIControlStateNormal];
+         [_sendTextButton setImage:[UIImage imageNamed:@"live_comments_click"] forState:UIControlStateHighlighted];
         [_sendTextButton addTarget:self action:@selector(sendTextAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _sendTextButton;
+}
+
+- (UIButton*)redPacketButton
+{
+    if(_redPacketButton == nil) {
+        _redPacketButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _redPacketButton.frame = CGRectMake(CGRectGetWidth(self.bounds) - kButtonWitdh - kDefaultSpace * 2, self.bottomView.top - kButtonHeight * 2 - kDefaultSpace * 8, kButtonWitdh, kButtonHeight);
+        [_redPacketButton setImage:[UIImage imageNamed:@"live_redbag"] forState:UIControlStateNormal];
+        [_redPacketButton setImage:[UIImage imageNamed:@"live_redbag_click"] forState:UIControlStateHighlighted];
+        [_redPacketButton addTarget:self action:@selector(redPacketAction) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _redPacketButton;
+}
+
+- (UIButton*)printScreenButton
+{
+    if (_printScreenButton == nil) {
+        _printScreenButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _printScreenButton.frame = CGRectMake(CGRectGetWidth(self.bounds) - kButtonWitdh - kDefaultSpace * 2, self.bottomView.top - kButtonHeight - kDefaultSpace * 4, kButtonWitdh, kButtonHeight);
+        [_printScreenButton setImage:[UIImage imageNamed:@"live_share"] forState:UIControlStateNormal];
+        [_printScreenButton setImage:[UIImage imageNamed:@"live_share_click"] forState:UIControlStateHighlighted];
+        [_printScreenButton addTarget:self action:@selector(printScreenAction) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _printScreenButton;
 }
 
 - (UIButton*)msgButton
 {
     if (_msgButton == nil) {
         _msgButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _msgButton.frame = CGRectMake(CGRectGetMaxX(self.sendTextButton.frame), 0, kButtonWitdh, kButtonHeight);
-        _msgButton.titleLabel.font = [UIFont fontWithName:kEaseDefaultIconFont size:40];
-        [_msgButton setTitle:kEaseMsgButton forState:UIControlStateNormal];
-//        [_msgButton setImage:[UIImage imageNamed:@"live_button_chat"] forState:UIControlStateNormal];
-//        [_msgButton setImage:[UIImage imageNamed:@"live_button_chat_pressed"] forState:UIControlStateHighlighted];
+        _msgButton.frame = CGRectMake(CGRectGetWidth(self.bounds) - kButtonWitdh - kDefaultSpace * 2, 6.f, kButtonWitdh, kButtonHeight);
+        [_msgButton setImage:[UIImage imageNamed:@"live_message"] forState:UIControlStateNormal];
+        [_msgButton setImage:[UIImage imageNamed:@"live_message_click"] forState:UIControlStateHighlighted];
         [_msgButton addTarget:self action:@selector(msgButtonAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _msgButton;
@@ -162,49 +186,19 @@
 {
     if (_giftButton == nil) {
         _giftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _giftButton.frame = CGRectMake(CGRectGetWidth(self.bounds)/2 - kButtonWitdh/2, 0, kButtonWitdh, kButtonHeight);
-        _giftButton.titleLabel.font = [UIFont fontWithName:kEaseDefaultIconFont size:40];
-        [_giftButton setTitle:kEaseGiftButton forState:UIControlStateNormal];
-//        [_giftButton setImage:[UIImage imageNamed:@"live_button_present"] forState:UIControlStateNormal];
-//        [_giftButton setImage:[UIImage imageNamed:@"live_button_present_pressed"] forState:UIControlStateHighlighted];
+        _giftButton.frame = CGRectMake(CGRectGetWidth(self.bounds)/2 - kButtonWitdh/2, 6.f, kButtonWitdh, kButtonHeight);
+        [_giftButton setImage:[UIImage imageNamed:@"live_gift"] forState:UIControlStateNormal];
+        [_giftButton setImage:[UIImage imageNamed:@"live_gift_click"] forState:UIControlStateHighlighted];
         [_giftButton addTarget:self action:@selector(sendGiftAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _giftButton;
 }
 
-- (UIButton*)printScreenButton
-{
-    if (_printScreenButton == nil) {
-        _printScreenButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _printScreenButton.frame = CGRectMake(CGRectGetMinX(self.shareButton.frame) - kButtonWitdh, 0, kButtonWitdh, kButtonHeight);
-        _printScreenButton.titleLabel.font = [UIFont fontWithName:kEaseDefaultIconFont size:40];
-        [_printScreenButton setTitle:kEasePrintScreenButton forState:UIControlStateNormal];
-//        [_printScreenButton setImage:[UIImage imageNamed:@"live_button_tailor"] forState:UIControlStateNormal];
-//        [_printScreenButton setImage:[UIImage imageNamed:@"live_button_tailor_pressed"] forState:UIControlStateHighlighted];
-        [_printScreenButton addTarget:self action:@selector(printScreenAction) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _printScreenButton;
-}
-
-- (UIButton*)shareButton
-{
-    if (_shareButton == nil) {
-        _shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _shareButton.frame = CGRectMake(CGRectGetMaxX(self.bounds) - kButtonWitdh -10, 0, kButtonWitdh, kButtonHeight);
-        _shareButton.titleLabel.font = [UIFont fontWithName:kEaseDefaultIconFont size:40];
-        [_shareButton setTitle:kEaseShareButton forState:UIControlStateNormal];
-//        [_shareButton setImage:[UIImage imageNamed:@"live_button_share_new"] forState:UIControlStateNormal];
-//        [_shareButton setImage:[UIImage imageNamed:@"live_button_sharenew_pressed"] forState:UIControlStateHighlighted];
-        [_shareButton addTarget:self action:@selector(shareAction) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _shareButton;
-}
-
 - (UIView*)bottomSendMsgView
 {
     if (_bottomSendMsgView == nil) {
-        _bottomSendMsgView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.tableView.frame), CGRectGetWidth(self.bounds), kButtonHeight)];
-        _bottomSendMsgView.backgroundColor = [UIColor clearColor];
+        _bottomSendMsgView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.tableView.frame), CGRectGetWidth(self.bounds), 48.f)];
+        _bottomSendMsgView.backgroundColor = RGBACOLOR(234, 234, 234, 1);
     }
     return _bottomSendMsgView;
 }
@@ -213,7 +207,7 @@
 {
     if (_textView == nil) {
         //输入框
-        _textView = [[EaseInputTextView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.barrageButton.frame) + kDefaultSpace, 0, CGRectGetWidth(self.bounds) - CGRectGetWidth(self.barrageButton.frame) - CGRectGetWidth(self.sendButton.frame) - kDefaultSpace*4, CGRectGetHeight(self.bounds) - CGRectGetHeight(self.tableView.frame) - kDefaultSpace*5)];
+        _textView = [[EaseInputTextView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.barrageButton.frame) + kDefaultSpace, 6.f, CGRectGetWidth(self.bounds) - CGRectGetWidth(self.barrageButton.frame) - CGRectGetWidth(self.sendButton.frame) - kDefaultSpace*4, 36.f)];
         _textView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         _textView.scrollEnabled = YES;
         _textView.returnKeyType = UIReturnKeyDone;
@@ -232,7 +226,7 @@
 {
     if (_sendButton == nil) {
         _sendButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _sendButton.frame = CGRectMake(CGRectGetWidth(self.bounds) - 65, 0, 60, CGRectGetHeight(self.bounds) - CGRectGetHeight(self.tableView.frame) - kDefaultSpace*5);
+        _sendButton.frame = CGRectMake(CGRectGetWidth(self.bounds) - 60.f - kDefaultSpace, 6.f, 60, 36.f);
         [_sendButton setTitle:@"发送" forState:UIControlStateNormal];
         [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_sendButton setBackgroundColor:RGBACOLOR(45, 188, 251, 1)];
@@ -246,9 +240,9 @@
 {
     if (_barrageButton == nil) {
         _barrageButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _barrageButton.frame = CGRectMake(kDefaultSpace, 0, 57.3f, CGRectGetHeight(self.bounds) - CGRectGetHeight(self.tableView.frame) - kDefaultSpace*5);
-        [_barrageButton setImage:[UIImage imageNamed:@"live_danmuctrl_normal"] forState:UIControlStateNormal];
-        [_barrageButton setImage:[UIImage imageNamed:@"live_danmuctrl_selected"] forState:UIControlStateSelected];
+        _barrageButton.frame = CGRectMake(kDefaultSpace, 6.f, 60.f, 36.f);
+        [_barrageButton setImage:[UIImage imageNamed:@"swich_close"] forState:UIControlStateNormal];
+        [_barrageButton setImage:[UIImage imageNamed:@"swich"] forState:UIControlStateSelected];
         [_barrageButton addTarget:self action:@selector(barrageAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _barrageButton;
@@ -259,23 +253,20 @@
 - (void)didReceiveMessages:(NSArray *)aMessages
 {
     for (EMMessage *message in aMessages) {
-        __weak EaseChatView *weakSelf = self;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if ([message.conversationId isEqualToString:_chatroomId]) {
-                if ([message.ext objectForKey:kBarrageAction]) {
-                    if (message.timestamp < _curtime) {
-                        return;
-                    }
-                    if (_delegate && [_delegate respondsToSelector:@selector(didReceiveBarrageWithCMDMessage:)]) {
-                        [_delegate didReceiveBarrageWithCMDMessage:message];
-                    }
-                } else {
-                    [weakSelf.datasource addObject:message];
-                    [weakSelf.tableView reloadData];
-                    [weakSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[weakSelf.datasource count] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        if ([message.conversationId isEqualToString:_chatroomId]) {
+            if ([message.ext objectForKey:kBarrageAction]) {
+                if (message.timestamp < _curtime) {
+                    continue;
                 }
+                if (_delegate && [_delegate respondsToSelector:@selector(didReceiveBarrageWithCMDMessage:)]) {
+                    [_delegate didReceiveBarrageWithCMDMessage:message];
+                }
+            } else {
+                [self.datasource addObject:message];
+                [self.tableView reloadData];
+                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.datasource count] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
             }
-        });
+        }
     }
 }
 
@@ -283,7 +274,7 @@
 {
     for (EMMessage *message in aCmdMessages) {
         if (message.timestamp < _curtime) {
-            return;
+            continue;
         }
         EMCmdMessageBody *body = (EMCmdMessageBody*)message.body;
         if (body) {
@@ -355,6 +346,15 @@
 
 #pragma mark - UITextViewDelegate
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    EMMessage *message = [self.datasource objectAtIndex:indexPath.row];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectUserWithMessage:)]) {
+        [self.delegate didSelectUserWithMessage:message];
+    }
+}
+
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
     return YES;
@@ -382,7 +382,7 @@
     [self setSendState:NO];
 }
 
-- (NSString *)_latestMessageTitleForConversationModel:(EMMessage*)lastMessage;
++ (NSString *)latestMessageTitleForConversationModel:(EMMessage*)lastMessage;
 {
     NSString *latestMessageTitle = @"";
     if (lastMessage) {
@@ -460,42 +460,30 @@
 
 - (void)msgButtonAction
 {
-    //TODO 私信
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectMessageButton)]) {
+        [self.delegate didSelectMessageButton];
+    }
 }
 
 - (void)printScreenAction
 {
     //截屏    
     UIGraphicsEndImageContext();
-    if (self.delegate && [self.delegate respondsToSelector:@selector(didPressPrintScreenButton)]) {
-        [self.delegate didPressPrintScreenButton];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectPrintScreenButton)]) {
+        [self.delegate didSelectPrintScreenButton];
     }
-    
-//    UIImageWriteToSavedPhotosAlbum(image, self, nil, nil);
 }
 
-- (void)shareAction
+- (void)redPacketAction
 {
-    //分享
+
 }
 
 - (void)sendGiftAction
 {
-    EMMessage *message = [self _sendCMDMessageTo:_chatroomId messageType:EMChatTypeChatRoom messageExt:nil action:kGiftAction];
-    [[EMClient sharedClient].chatManager asyncSendMessage:message progress:nil completion:^(EMMessage *message, EMError *error) {
-        if (!error) {
-            EMCmdMessageBody *body = (EMCmdMessageBody*)message.body;
-            if (body) {
-                if ([body.action isEqualToString:kGiftAction]) {
-                    if (_delegate && [_delegate respondsToSelector:@selector(didReceiveGiftWithCMDMessage:)]) {
-                        [_delegate didReceiveGiftWithCMDMessage:message];
-                    }
-                }
-            }
-        } else {
-            //发送失败
-        }
-    }];
+    if (_delegate && [_delegate respondsToSelector:@selector(didSelectGiftButton)]) {
+        [_delegate didSelectGiftButton];
+    }
 }
 
 - (void)sendTextAction
@@ -555,9 +543,36 @@
     [[EMClient sharedClient].roomManager leaveChatroom:_chatroomId error:&error];
     if (!error) {
         [self.datasource removeAllObjects];
+        [[EMClient sharedClient].chatManager deleteConversation:_chatroomId deleteMessages:YES];
         return YES;
     }
     return NO;
 }
+
+- (void)sendGiftWithId:(NSString*)giftId
+{
+    EMMessage *message = [self _sendCMDMessageTo:_chatroomId messageType:EMChatTypeChatRoom messageExt:nil action:kGiftAction];
+    [[EMClient sharedClient].chatManager asyncSendMessage:message progress:nil completion:^(EMMessage *message, EMError *error) {
+        if (!error) {
+            EMCmdMessageBody *body = (EMCmdMessageBody*)message.body;
+            if (body) {
+                if ([body.action isEqualToString:kGiftAction]) {
+                    if (_delegate && [_delegate respondsToSelector:@selector(didReceiveGiftWithCMDMessage:)]) {
+                        [_delegate didReceiveGiftWithCMDMessage:message];
+                    }
+                }
+            }
+        } else {
+            //发送失败
+        }
+    }];
+}
+
+- (void)sendMessageAtWithUsername:(NSString *)username
+{
+    self.textView.text = [self.textView.text stringByAppendingString:[NSString stringWithFormat:@"@%@ ",username]];
+    [self setSendState:YES];
+}
+
 
 @end
