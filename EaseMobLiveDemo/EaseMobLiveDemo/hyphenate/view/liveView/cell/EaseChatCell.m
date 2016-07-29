@@ -44,11 +44,7 @@
 
 + (NSMutableAttributedString*)_attributedStringWithMessage:(EMMessage*)message
 {
-    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:[EaseChatCell _latestMessageTitleForConversationModel:message] attributes:nil];
-    EaseTextAttachment *textAttachment = [[EaseTextAttachment alloc] initWithData:nil ofType:nil];
-    textAttachment.image = [UIImage imageNamed:@"level_1"];
-    NSAttributedString *textAttachmentString = [NSAttributedString attributedStringWithAttachment:textAttachment];
-    [string insertAttributedString:textAttachmentString atIndex:0];
+    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:[EaseChatCell latestMessageTitleForConversationModel:message] attributes:nil];
     NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
     paraStyle.lineBreakMode = NSLineBreakByWordWrapping;
     NSDictionary *attributes = @{NSParagraphStyleAttributeName: paraStyle,NSFontAttributeName :[UIFont systemFontOfSize:15.0f]};
@@ -56,7 +52,7 @@
     return string;
 }
 
-+ (NSString *)_latestMessageTitleForConversationModel:(EMMessage*)lastMessage;
++ (NSString *)latestMessageTitleForConversationModel:(EMMessage*)lastMessage;
 {
     NSString *latestMessageTitle = @"";
     if (lastMessage) {

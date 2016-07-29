@@ -78,7 +78,7 @@ static EaseParseManager *sharedInstance = nil;
                     pfuser[kPARSE_HXMODEL_IMAGE] = @"1";
                     pfuser[kPARSE_HXMODEL_NUMBER] = @"1人";
                     pfuser[kPARSE_HXMODEL_STREAMID] = streamId;
-                    pfuser[kPARSE_HXMODEL_CHATROOMID] = @"203138578711052716";
+                    pfuser[kPARSE_HXMODEL_CHATROOMID] = kDefaultChatroomId;
                     [pfuser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
                         if (completion) {
                             dispatch_async(dispatch_get_main_queue(), ^{
@@ -95,7 +95,7 @@ static EaseParseManager *sharedInstance = nil;
                 pfuser[kPARSE_HXMODEL_IMAGE] = @"1";
                 pfuser[kPARSE_HXMODEL_NUMBER] = @"1人";
                 pfuser[kPARSE_HXMODEL_STREAMID] = streamId;
-                pfuser[kPARSE_HXMODEL_CHATROOMID] = @"203138578711052716";
+                pfuser[kPARSE_HXMODEL_CHATROOMID] = kDefaultChatroomId;
                 [pfuser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
                     if (completion) {
                         dispatch_async(dispatch_get_main_queue(), ^{

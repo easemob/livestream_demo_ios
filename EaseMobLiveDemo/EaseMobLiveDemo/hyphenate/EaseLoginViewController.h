@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface EaseLoginViewController : UIViewController
+#import "EaseBaseViewController.h"
+
+@interface EaseLoginViewController : EaseBaseViewController
 
 @end

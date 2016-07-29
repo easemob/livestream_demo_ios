@@ -19,4 +19,6 @@
 
 @property (nonatomic, weak) id<EaseSelectHeaderViewDelegate> delegate;
 
+- (void)setSelectWithIndex:(NSInteger)index;
+
 @end

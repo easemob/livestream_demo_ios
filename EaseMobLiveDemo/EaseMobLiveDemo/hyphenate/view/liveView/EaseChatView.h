@@ -17,7 +17,13 @@
 
 - (void)didReceiveBarrageWithCMDMessage:(EMMessage*)message;
 
-- (void)didPressPrintScreenButton;
+- (void)didSelectGiftButton;
+
+- (void)didSelectPrintScreenButton;
+
+- (void)didSelectMessageButton;
+
+- (void)didSelectUserWithMessage:(EMMessage*)message;
 
 @end
 
@@ -35,5 +41,9 @@
 - (BOOL)joinChatroom;
 
 - (BOOL)leaveChatroom;
+
+- (void)sendGiftWithId:(NSString*)giftId;
+
+- (void)sendMessageAtWithUsername:(NSString*)username;
 
 @end

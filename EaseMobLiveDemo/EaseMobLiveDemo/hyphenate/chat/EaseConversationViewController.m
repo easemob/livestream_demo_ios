@@ -18,7 +18,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"私聊";
+    self.title = NSLocalizedString(@"home.tabbar.message", @"Message");
     self.delegate = self;
     self.dataSource = self;
     

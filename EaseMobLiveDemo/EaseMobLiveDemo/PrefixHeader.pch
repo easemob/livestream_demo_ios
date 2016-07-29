@@ -13,15 +13,23 @@
 #define KScreenWidth  [[UIScreen mainScreen] bounds].size.width
 
 #define kEaseDefaultIconFont @"iconfont"
-#define kEaseShareButton @"\U0000e64a"
-#define kEaseGiftButton @"\U0000e659"
-#define kEaseMsgButton @"\U0000e62e"
-#define kEaseSendMsgButton @"\U0000e631"
-#define kEasePrintScreenButton @"\U0000e666"
-#define kEaseCloseButton @"\U0000e647"
-#define kEaseCameraButton @"\U0000e608"
-#define kEaseLiveLabel @"\U0000e622"
 
-#import <HyphenateSDK/EMSDK.h>
-#import <EaseUI/EaseUI.h>
-#import "MBProgressHUD+Add.h"
+#define kDefaultChatroomId @"203138578711052716"
+
+#define kDefaultSystemTextGrayColor RGBACOLOR(197, 197, 197, 1)
+#define kDefaultSystemTextColor RGBACOLOR(38, 38, 38, 1)
+#define kDefaultSystemBgColor RGBACOLOR(50, 50, 50, 1)
+#define kDefaultSystemLightGrayColor RGBACOLOR(197, 197, 197, 1)
+
+#define kLiveDemoVersion @"1.0.0"
+
+#define kLiveLastLoginUsername @"em_last_username"
+
+#ifdef __OBJC__
+
+    #import <HyphenateSDK/EMSDK.h>
+    #import <EaseUI/EaseUI.h>
+    #import "MBProgressHUD+Add.h"
+    #import "UIView+Position.h"
+
+#endif

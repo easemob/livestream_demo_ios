@@ -28,7 +28,7 @@
                                                object:nil];
     
     if ([UIDevice currentDevice].systemVersion.floatValue >= 7.0) {
-        [[UINavigationBar appearance] setBarTintColor:RGBACOLOR(0, 0, 0, 1)];
+        [[UINavigationBar appearance] setBarTintColor:kDefaultSystemBgColor];
         [[UINavigationBar appearance] setTitleTextAttributes:
          [NSDictionary dictionaryWithObjectsAndKeys:RGBACOLOR(245, 245, 245, 1), NSForegroundColorAttributeName, [UIFont fontWithName:@ "HelveticaNeue-CondensedBlack" size:21.0], NSFontAttributeName, nil]];
     }
@@ -44,14 +44,14 @@
 - (void)loginStateChange:(NSNotification *)notification
 {
     BOOL loginSuccess = [notification.object boolValue];
-    if (loginSuccess) {//登陆成功加载主窗口控制器
+    if (loginSuccess) {//登录成功加载主窗口控制器
         EaseMainViewController *main = [[EaseMainViewController alloc] init];
         UINavigationController *navigationController = nil;
         navigationController = [[UINavigationController alloc] initWithRootViewController:main];
         _mainVC = main;
         self.window.rootViewController = navigationController;
     }
-    else{//登陆失败加载登陆页面控制器
+    else{//登录失败加载登录页面控制器
         _mainVC = nil;
         UINavigationController *navigationController = nil;
         EaseLoginViewController *login = [[EaseLoginViewController alloc] init];

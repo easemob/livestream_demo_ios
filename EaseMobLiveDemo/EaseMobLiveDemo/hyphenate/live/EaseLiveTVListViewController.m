@@ -18,13 +18,17 @@
 #import "EaseSelectHeaderView.h"
 #import "EaseParseManager.h"
 
-@interface EaseLiveTVListViewController () <UICollectionViewDelegate,UICollectionViewDataSource,SRRefreshDelegate,EaseSelectHeaderViewDelegate>
+@interface EaseLiveTVListViewController () <UIScrollViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource,SRRefreshDelegate,EaseSelectHeaderViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray *dataArray;
 @property (nonatomic, strong) SRRefreshView *slimeView;
 
 @property (nonatomic, strong) EaseSelectHeaderView *headerView;
 @property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, strong) UICollectionView *collectionHotView;
+@property (nonatomic, strong) UICollectionView *collectionStarView;
+
+@property (nonatomic, strong) UIScrollView *mainScrollView;
 
 @end
 
@@ -34,24 +38,22 @@
 {
     [super viewDidLoad];
     
-    self.title = @"广场";
+    self.title = NSLocalizedString(@"home.tabbar.finder", @"Finder");
     [self setAutomaticallyAdjustsScrollViewInsets:YES];
     [self setExtendedLayoutIncludesOpaqueBars:YES];
     
     [self setupCollectionView];
     [self loadData];
-    [self.collectionView addSubview:self.slimeView];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-//    [self.collectionView setContentOffset:CGPointMake(0, -64) animated:YES];
 }
 
 - (void)loadData
 {
-    __weak EaseLiveTVListViewController *weakSelf = self;
+    __weak EaseLiveTVListViewController *weakSelf = self;/*
     [self showHudInView:self.view hint:@"加载播放列表"];
     [[EaseParseManager sharedInstance] fetchLiveListInBackgroundWithCompletion:^(NSArray *liveList, NSError *error) {
         [weakSelf hideHud];
@@ -63,37 +65,127 @@
             weakSelf.dataArray = [NSMutableArray arrayWithArray:@[[[EasePublishModel alloc] initWithName:@"Test1" number:@"100人" headImageName:@"1" streamId:@"em_10001"],[[EasePublishModel alloc] initWithName:@"Test2" number:@"100人" headImageName:@"2" streamId:@"em_10001"],[[EasePublishModel alloc] initWithName:@"Test3" number:@"100人" headImageName:@"3" streamId:@"em_10001"],[[EasePublishModel alloc] initWithName:@"Test4" number:@"100人" headImageName:@"4" streamId:@"em_10001"],[[EasePublishModel alloc] initWithName:@"Test5" number:@"100人" headImageName:@"5" streamId:@"em_10001"],[[EasePublishModel alloc] initWithName:@"Test6" number:@"100人" headImageName:@"6" streamId:@"em_10001"]]];
         }
         [weakSelf.collectionView reloadData];
-    }];
+        [weakSelf.collectionHotView reloadData];
+        [weakSelf.collectionStarView reloadData];
+    }];*/
+    
+    //为了演示
+    weakSelf.dataArray = [NSMutableArray arrayWithArray:@[
+                                                          [[EasePublishModel alloc] initWithName:@"Test1" number:@"100人" headImageName:@"1" streamId:@"em_10001" chatroomId:@"203138578711052716"],
+                                                          [[EasePublishModel alloc] initWithName:@"Test2" number:@"100人" headImageName:@"2" streamId:@"em_10002" chatroomId:@"203138620012364216"],
+                                                          [[EasePublishModel alloc] initWithName:@"Test3" number:@"100人" headImageName:@"3" streamId:@"em_10003" chatroomId:@"203138637011878328"],
+                                                          [[EasePublishModel alloc] initWithName:@"Test4" number:@"100人" headImageName:@"4" streamId:@"em_10004" chatroomId:@"203138652547580344"],
+                                                          [[EasePublishModel alloc] initWithName:@"Test5" number:@"100人" headImageName:@"5" streamId:@"em_10005" chatroomId:@"203138578711052716"],
+                                                          [[EasePublishModel alloc] initWithName:@"Test6" number:@"100人" headImageName:@"6" streamId:@"em_10006" chatroomId:@"203138578711052716"]]];
+    [weakSelf.collectionView reloadData];
+    [weakSelf.collectionHotView reloadData];
+    [weakSelf.collectionStarView reloadData];
 }
 
 - (void)setupCollectionView
 {
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    
-    UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
-    [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
-    self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.headerView.frame), self.view.bounds.size.width, self.view.bounds.size.height - CGRectGetMaxY(self.headerView.frame) - 49.f) collectionViewLayout:flowLayout];
-    self.collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    
-    [self.collectionView registerClass:[EaseLiveCollectionViewCell class] forCellWithReuseIdentifier:kCollectionIdentifier];
-    [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView"];
-    
-    self.collectionView.backgroundColor = [UIColor clearColor];
-    self.collectionView.delegate = self;
-    self.collectionView.dataSource = self;
-    self.collectionView.showsVerticalScrollIndicator = NO;
-    self.collectionView.showsHorizontalScrollIndicator = NO;
-    self.collectionView.alwaysBounceVertical = YES;
-    self.collectionView.pagingEnabled = NO;
-    self.collectionView.userInteractionEnabled = YES;
     [self.view addSubview:self.headerView];
-    [self.view addSubview:self.collectionView];
+    [self.view addSubview:self.mainScrollView];
+    [self.mainScrollView addSubview:self.collectionView];
+    [self.mainScrollView addSubview:self.collectionHotView];
+    [self.mainScrollView addSubview:self.collectionStarView];
+}
+
+#pragma mark - getter
+
+- (UIScrollView*)mainScrollView
+{
+    if (_mainScrollView == nil) {
+        _mainScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.headerView.frame), self.view.bounds.size.width, self.view.bounds.size.height - CGRectGetHeight(self.headerView.frame) - 49.f)];
+        [_mainScrollView setContentSize:CGSizeMake(self.view.bounds.size.width*3, 0)];
+        _mainScrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+        _mainScrollView.pagingEnabled = YES;
+        _mainScrollView.delegate = self;
+        _mainScrollView.tag = 1000;
+        
+        _mainScrollView.showsVerticalScrollIndicator = NO;
+        _mainScrollView.showsHorizontalScrollIndicator = NO;
+    }
+    
+    return _mainScrollView;
+}
+
+- (UICollectionView*)collectionView
+{
+    if (_collectionView == nil) {
+        UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+        [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, CGRectGetHeight(self.mainScrollView.frame)) collectionViewLayout:flowLayout];
+        _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        
+        [_collectionView registerClass:[EaseLiveCollectionViewCell class] forCellWithReuseIdentifier:kCollectionIdentifier];
+        [_collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView"];
+        
+        _collectionView.backgroundColor = [UIColor clearColor];
+        _collectionView.delegate = self;
+        _collectionView.dataSource = self;
+        _collectionView.showsVerticalScrollIndicator = NO;
+        _collectionView.showsHorizontalScrollIndicator = NO;
+        _collectionView.alwaysBounceVertical = YES;
+        _collectionView.pagingEnabled = NO;
+        _collectionView.userInteractionEnabled = YES;
+        
+        [_collectionView addSubview:self.slimeView];
+    }
+    return _collectionView;
+}
+
+- (UICollectionView*)collectionHotView
+{
+    if (_collectionHotView == nil) {
+        UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+        [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
+        _collectionHotView = [[UICollectionView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width, 0, self.view.bounds.size.width, CGRectGetHeight(self.mainScrollView.frame)) collectionViewLayout:flowLayout];
+        _collectionHotView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        
+        [_collectionHotView registerClass:[EaseLiveCollectionViewCell class] forCellWithReuseIdentifier:kCollectionIdentifier];
+        [_collectionHotView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView"];
+        
+        _collectionHotView.backgroundColor = [UIColor clearColor];
+        _collectionHotView.delegate = self;
+        _collectionHotView.dataSource = self;
+        _collectionHotView.showsVerticalScrollIndicator = NO;
+        _collectionHotView.showsHorizontalScrollIndicator = NO;
+        _collectionHotView.alwaysBounceVertical = YES;
+        _collectionHotView.pagingEnabled = NO;
+        _collectionHotView.userInteractionEnabled = YES;
+    }
+    return _collectionHotView;
+}
+
+- (UICollectionView*)collectionStarView
+{
+    if (_collectionStarView == nil) {
+        UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+        [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
+        _collectionStarView = [[UICollectionView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width * 2, 0, self.view.bounds.size.width, CGRectGetHeight(self.mainScrollView.frame)) collectionViewLayout:flowLayout];
+        _collectionStarView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        
+        [_collectionStarView registerClass:[EaseLiveCollectionViewCell class] forCellWithReuseIdentifier:kCollectionIdentifier];
+        [_collectionStarView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView"];
+        
+        _collectionStarView.backgroundColor = [UIColor clearColor];
+        _collectionStarView.delegate = self;
+        _collectionStarView.dataSource = self;
+        _collectionStarView.showsVerticalScrollIndicator = NO;
+        _collectionStarView.showsHorizontalScrollIndicator = NO;
+        _collectionStarView.alwaysBounceVertical = YES;
+        _collectionStarView.pagingEnabled = NO;
+        _collectionStarView.userInteractionEnabled = YES;
+    }
+    return _collectionStarView;
 }
 
 - (EaseSelectHeaderView*)headerView
 {
     if (_headerView == nil) {
-        _headerView = [[EaseSelectHeaderView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 35)];
+        _headerView = [[EaseSelectHeaderView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 48.f)];
         _headerView.delegate = self;
     }
     return _headerView;
@@ -164,7 +256,7 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(CGRectGetWidth(self.view.frame)/2, CGRectGetWidth(self.view.frame)/2);
+    return CGSizeMake(CGRectGetWidth(self.view.frame)/2, 300.f);
 }
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
@@ -212,6 +304,17 @@
     }
 }
 
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    if (scrollView.tag == 1000)
+    {
+        NSInteger index = fabs(scrollView.contentOffset.x) / scrollView.frame.size.width;
+        index = index > 0 ? index : 0;
+        NSLog(@"%f-----%@",scrollView.contentOffset.x,@(index));
+        [_headerView setSelectWithIndex:index];
+    }
+}
+
 #pragma mark - slimeRefresh delegate
 //加载更多
 - (void)slimeRefreshStartRefresh:(SRRefreshView *)refreshView
@@ -224,7 +327,7 @@
 
 - (void)didSelectButtonWithIndex:(NSInteger)index
 {
-    
+    [self.mainScrollView setContentOffset:CGPointMake(index * CGRectGetWidth(self.view.frame), 0) animated:YES];
 }
 
 @end

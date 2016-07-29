@@ -13,7 +13,8 @@
 - (instancetype)initWithName:(NSString*)name
                       number:(NSString*)number
                headImageName:(NSString*)headImageName
-                    streamId:(NSString*)streamId;
+                    streamId:(NSString*)streamId
+                  chatroomId:(NSString*)chatroomId;
 
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *streamId;
