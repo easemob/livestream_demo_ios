@@ -27,7 +27,7 @@
 
 #ifdef __OBJC__
 
-    #import <HyphenateSDK/EMSDK.h>
+    #import <HyphenateLite_CN/EMSDK.h>
     #import <EaseUI/EaseUI.h>
     #import "MBProgressHUD+Add.h"
     #import "UIView+Position.h"
