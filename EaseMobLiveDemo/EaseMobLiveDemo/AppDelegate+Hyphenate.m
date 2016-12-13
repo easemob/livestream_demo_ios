@@ -14,7 +14,7 @@
 {
     [[EMClient sharedClient] addDelegate:self delegateQueue:nil];
     
-    EMOptions *options = [EMOptions optionsWithAppkey:@"easemob-demo#chatdemo"];
+    EMOptions *options = [EMOptions optionsWithAppkey:@"easemob-demo#livedemo"];
     
     NSString *apnsCertName = nil;
 #if DEBUG

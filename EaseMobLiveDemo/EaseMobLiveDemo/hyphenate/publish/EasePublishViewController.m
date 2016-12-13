@@ -33,7 +33,7 @@
 #define kDefaultTop 31.f
 #define kDefaultLeft 18.f
 
-@interface EasePublishViewController () <EaseChatViewDelegate,UITextViewDelegate,EMChatroomManagerDelegate,EaseEndLiveViewDelegate,TapBackgroundViewDelegate,EaseLiveHeaderListViewDelegate,EaseProfileLiveViewDelegate>
+@interface EasePublishViewController () <EaseChatViewDelegate,UITextViewDelegate,EMChatroomManagerDelegate,EaseEndLiveViewDelegate,TapBackgroundViewDelegate,EaseLiveHeaderListViewDelegate,EaseProfileLiveViewDelegate,UIAlertViewDelegate>
 {
     BOOL _isload;
     BOOL _isShutDown;
@@ -44,6 +44,8 @@
     BOOL _isPublish;
     
     EasePublishModel *_model;
+    
+    NSString *_chatroomID;
 }
 
 @property (nonatomic, strong) UIButton *closeBtn;
@@ -82,6 +84,25 @@
     self.title = @"发布直播";
     self.view.backgroundColor = [UIColor colorWithRed:0.88 green:0.88 blue:0.88 alpha:1.0];
     
+    self.streamId = @"em_100001";
+    _chatroomID = @"218746635482562996";
+    if ([[EMClient sharedClient].currentUsername isEqualToString:@"test2"]) {
+        self.streamId = @"em_100002";
+        _chatroomID = @"218747106892972464";
+    } else if ([[EMClient sharedClient].currentUsername isEqualToString:@"test3"]) {
+        self.streamId = @"em_100003";
+        _chatroomID = @"218747152489251244";
+    } else if ([[EMClient sharedClient].currentUsername isEqualToString:@"test4"]) {
+        self.streamId = @"em_100004";
+        _chatroomID = @"218747179836113332";
+    } else if ([[EMClient sharedClient].currentUsername isEqualToString:@"test5"]) {
+        self.streamId = @"em_100005";
+        _chatroomID = @"218747226120257964";
+    } else if ([[EMClient sharedClient].currentUsername isEqualToString:@"test6"]) {
+        self.streamId = @"em_100006";
+        _chatroomID = @"218747262707171768";
+    }
+    
     [self setupForDismissKeyboard];
     
     [self.view addSubview:self.castView];
@@ -98,21 +119,19 @@
     
     [[EMClient sharedClient].roomManager addDelegate:self delegateQueue:nil];
     
-    self.streamId = @"em_10001";
-    if ([[EMClient sharedClient].currentUsername isEqualToString:@"test2"]) {
-        self.streamId = @"em_10002";
-    } else if ([[EMClient sharedClient].currentUsername isEqualToString:@"test3"]) {
-        self.streamId = @"em_10003";
-    } else if ([[EMClient sharedClient].currentUsername isEqualToString:@"test4"]) {
-        self.streamId = @"em_10004";
-    } else if ([[EMClient sharedClient].currentUsername isEqualToString:@"test5"]) {
-        self.streamId = @"em_10005";
-    } else if ([[EMClient sharedClient].currentUsername isEqualToString:@"test6"]) {
-        self.streamId = @"em_10006";
+    if ([[EMClient sharedClient].currentUsername isEqualToString:@"test1"] ||
+        [[EMClient sharedClient].currentUsername isEqualToString:@"test2"] ||
+        [[EMClient sharedClient].currentUsername isEqualToString:@"test3"] ||
+        [[EMClient sharedClient].currentUsername isEqualToString:@"test4"] ||
+        [[EMClient sharedClient].currentUsername isEqualToString:@"test5"] ||
+        [[EMClient sharedClient].currentUsername isEqualToString:@"test6"]) {
+        [self startAction];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
+    } else {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"Demo必须使用test1,test2,test3,test4,test5,test6账号发起直播" delegate:self cancelButtonTitle:@"确认" otherButtonTitles:nil, nil];
+        alert.tag = 1000;
+        [alert show];
     }
-    
-    [self startAction];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
 }
 
 - (void)dealloc
@@ -168,7 +187,7 @@
 - (EaseChatView*)chatview
 {
     if (_chatview == nil) {
-        _chatview = [[EaseChatView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds) - 200, CGRectGetWidth(self.view.bounds), 200) chatroomId:kDefaultChatroomId isPublish:YES];
+        _chatview = [[EaseChatView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds) - 200, CGRectGetWidth(self.view.bounds), 200) chatroomId:_chatroomID isPublish:YES];
         _chatview.delegate = self;
     }
     return _chatview;
@@ -486,6 +505,15 @@
     
     if (_burstTimer == nil) {
         _burstTimer = [NSTimer scheduledTimerWithTimeInterval:0.5f target:self selector:@selector(showTheLoveAction) userInfo:nil repeats:YES];
+    }
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag == 1000) {
+        [self closeAction];
     }
 }
 

@@ -36,12 +36,12 @@
     
     //测试数据
     self.dataSource = [NSMutableArray arrayWithArray:@[
-                                                       [[EasePublishModel alloc] initWithName:@"Test1" number:@"100人" headImageName:@"1" streamId:@"em_10001" chatroomId:@"203138578711052716"],
-                                                       [[EasePublishModel alloc] initWithName:@"Test2" number:@"100人" headImageName:@"2" streamId:@"em_10002" chatroomId:@"203138620012364216"],
-                                                       [[EasePublishModel alloc] initWithName:@"Test3" number:@"100人" headImageName:@"3" streamId:@"em_10003" chatroomId:@"203138637011878328"],
-                                                       [[EasePublishModel alloc] initWithName:@"Test4" number:@"100人" headImageName:@"4" streamId:@"em_10004" chatroomId:@"203138652547580344"],
-                                                       [[EasePublishModel alloc] initWithName:@"Test5" number:@"100人" headImageName:@"5" streamId:@"em_10005" chatroomId:@"203138578711052716"],
-                                                       [[EasePublishModel alloc] initWithName:@"Test6" number:@"100人" headImageName:@"6" streamId:@"em_10006" chatroomId:@"203138578711052716"]]];
+                                                       [[EasePublishModel alloc] initWithName:@"Test1" number:@"100人" headImageName:@"1" streamId:@"em_100001" chatroomId:@"218746635482562996"],
+                                                       [[EasePublishModel alloc] initWithName:@"Test2" number:@"100人" headImageName:@"2" streamId:@"em_100002" chatroomId:@"218747106892972464"],
+                                                       [[EasePublishModel alloc] initWithName:@"Test3" number:@"100人" headImageName:@"3" streamId:@"em_100003" chatroomId:@"218747152489251244"],
+                                                       [[EasePublishModel alloc] initWithName:@"Test4" number:@"100人" headImageName:@"4" streamId:@"em_100004" chatroomId:@"218747179836113332"],
+                                                       [[EasePublishModel alloc] initWithName:@"Test5" number:@"100人" headImageName:@"5" streamId:@"em_100005" chatroomId:@"218747226120257964"],
+                                                       [[EasePublishModel alloc] initWithName:@"Test6" number:@"100人" headImageName:@"6" streamId:@"em_100006" chatroomId:@"218747262707171768"]]];
     
     [self setupSearchBar];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.backButton];
