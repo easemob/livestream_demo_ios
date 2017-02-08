@@ -4,8 +4,8 @@ platform :ios, '7.0'
 source 'https://github.com/CocoaPods/Specs.git'
 
 target 'EaseMobLiveDemo' do
-pod 'HyphenateLite_CN', :git => 'https://github.com/easemob/hyphenate-cocoapods.git'
-pod 'EaseUI', :git => 'https://github.com/easemob/easeui-ios-hyphenate-cocoapods.git'
+pod 'HyphenateLite_CN', :git => 'https://github.com/easemob/hyphenate-cocoapods.git', :tag => '3.2.2.2'
+pod 'EaseUI', :git => 'https://github.com/easemob/easeui-ios-hyphenate-cocoapods.git', :tag => '3.2.2'
 pod 'Parse'
 
 end
