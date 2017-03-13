@@ -17,6 +17,7 @@ typedef NS_ENUM(NSInteger, UIImageOrientation) {
 };
 #endif
 
+dispatch_queue_attr_t UCloudGPUImageDefaultQueueAttribute(void);
 void UCloudrunOnMainQueueWithoutDeadlocking(void (^block)(void));
 void UCloudrunSynchronouslyOnVideoProcessingQueue(void (^block)(void));
 void UCloudrunAsynchronouslyOnVideoProcessingQueue(void (^block)(void));

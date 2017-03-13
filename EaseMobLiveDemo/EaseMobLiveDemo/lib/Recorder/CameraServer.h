@@ -1,195 +1,293 @@
 //
 //  CameraServer.h
-//  Encoder Demo
 //
-//  Created by Geraint Davies on 19/02/2013.
-//  Copyright (c) 2013 GDCL http://www.gdcl.co.uk/license.htm
+//  Created by sidney on 19/10/2015.
+//  Copyright © 2015年 https://ucloud.cn/. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 #import "UCloudGPUImage.h"
+#import "UCloudRecorderTypeDef.h"
 
-typedef NS_ENUM(NSInteger, UCloudCameraCode)
-{
-    UCloudCamera_COMPLETED =0,
-    UCloudCamera_FILE_SIZE = 1,
-    UCloudCamera_FILE_DURATION = 2,
-    UCloudCamera_CUR_POS = 3,
-    UCloudCamera_CUR_TIME = 4,
-    UCloudCamera_URL_ERROR = 5,
-    UCloudCamera_OUT_FAIL = 6,
-    
-    UCloudCamera_STARTED = 7,//推流开始
-    UCloudCamera_READ_AUD_ERROR = 8,
-    UCloudCamera_READ_VID_ERROR = 9,
-    UCloudCamera_OUTPUT_ERROR = 10,//推流错误
-    UCloudCamera_STOPPED = 11,//推流停止
-    UCloudCamera_READ_AUD_EOS = 12,
-    UCloudCamera_READ_VID_EOS = 13,
-    UCloudCamera_BUFFER_OVERFLOW = 14,//推流带宽
-    
-    UCloudCamera_SecretkeyNil = 15,//密钥为空
-    UCloudCamera_DomainNil = 16,//推流路径不正确
-    UCloudCamera_AuthFail = 17,//鉴权失败
-    UCloudCamera_ServerIpError = 18,//鉴权返回IP列表为空
-    
-    UCloudCamera_PreviewOK = 19,//预览视图准备好
-    UCloudCamera_PublishOk = 20,//底层推流配置完毕
-    UCloudCamera_StartPublish = 21,//
-    UCloudCamera_DigError = 22,//dig失败
-    UCloudCamera_Permission = 998,  //摄像头权限
-    UCloudCamera_Micphone = 999,    //麦克风权限
-};
 
-typedef NS_ENUM(NSInteger, UCloudCameraState)
-{
-    UCloudCameraCode_Off,//关闭
-    UCloudCameraCode_On,//打开
-    UCloudCameraCode_Auto,//自动
-};
-
-#pragma mark Notifications
-
-#ifdef __cplusplus
-#define UCLOUD_EXTERN extern "C" __attribute__((visibility ("default")))
-#else
-#define UCLOUD_EXTERN extern __attribute__((visibility ("default")))
-#endif
-
-/**
- *  推流出错，重新推流
+/*!
+ @abstract 推流状态回调
+ * NSInteger arg1, 预留未定义
+ * NSInteger arg2, 预留未定义
  */
-UCLOUD_EXTERN NSString *const UCloudNeedRestart;
-
-#pragma mark - block
-//推流状态回掉闭包
 typedef void(^CameraMessage)(UCloudCameraCode code, NSInteger arg1, NSInteger arg2, id data);
-//相机回调
+/// 相机回调
 typedef void(^CameraDevice)(AVCaptureDevice *dev);
-//
 
 typedef CMSampleBufferRef (^CameraData)(CMSampleBufferRef buffer);
 
-#pragma mark -
+typedef void(^WatermarkBlock)();
+
+/*!
+ CameraServer
+ 
+ UCloud直播推流SDK iOS版提供了iOS移动设备上的实时采集推流功能。
+ */
 @interface CameraServer : NSObject
-/**
- *  视屏宽
+
+/*!
+ @property width
+ @abstract 视频宽，默认360
  */
 @property (assign, nonatomic) int width;
-/**
- *  视屏高
+
+/*!
+ @property height
+ @abstract 视频高，默认640
  */
 @property (assign, nonatomic) int height;
-/**
- *  帧率(15\25\30)
+
+/*!
+ @property fps
+ @abstract 帧率(15\20\25\30)，默认15
+ 
+ @discussion video frame per seconds 有效范围[1~30], 超出会提示参数错误
  */
 @property (assign, nonatomic) int fps;
-/**
- *  比特率(4.04 11.4)
+
+/*!
+ @property bitrate
+ @abstract 音频和视频总比特率UCloudVideoBitrate
+ 
+ @discussion 默认UCloudVideoBitrateMedium，可自行设置，该属性的单位为kbps(kilo bits per seccond)
+ @discussion 视频码率高则画面较清晰，低则画面较模糊，同时数据亦是如此，码率高数据大，码率低数据小
  */
-@property (assign, nonatomic) float bitrate;
-/**
- *  鉴权密钥
+@property (assign, nonatomic) int bitrate;
+ 
+/*!
+ @property secretKey
+ @abstract SDK 鉴权密钥
+ 
+ @discussion Ulive鉴权，如果填写错误会返回错误码UCloudCamera_AuthFail
  */
-@property (strong, nonatomic) NSString *secretkey;
-/**
- *  是否支持滤镜(iphpne5以上才能支持)
+@property (strong, nonatomic) NSString *secretKey;
+
+/*!
+ *property audioPlayStr
+ @abstract 背景音乐路径
+ */
+
+@property (nonatomic,   copy) NSString *audioPlayStr;
+
+/*!
+ @property supportFilter
+ @abstract 是否支持滤镜
+ 
+ @discussion iphpne5以上才能支持使用滤镜，5以下此值为NO
  */
 @property (assign, nonatomic) BOOL supportFilter;
-/**
- *  默认打开的摄像头
- */
-@property (assign, nonatomic) AVCaptureDevicePosition capteureDevicePos;
 
-/**
- *  切换屏是否模糊
+/*!
+ @property captureDevicePos
+ @abstract 摄像头位置，默认打开前置摄像头
  */
-@property (nonatomic, assign) BOOL isBlur;
+@property (assign, nonatomic) AVCaptureDevicePosition captureDevicePos;
 
-/**
- *  单例
+/*!
+ @property muted
+ @abstract 是否静音，默认NO
+ */
+@property (nonatomic, assign) BOOL muted;
+
+/*!
+ @property backgroudMusicOn
+ @abstract 是否开启背景音乐，默认NO
+ */
+@property (nonatomic, assign) BOOL backgroudMusicOn;
+
+/*!
+ @property videoOrientation
+ @abstract 视频推流方向
+ 
+ @discussion 只在采集初始化时设置有效，默认UIDeviceOrientationPortrait
+ */
+@property (nonatomic, assign) UCloudVideoOrientation videoOrientation;
+
+/*!
+ @property reconnectInterval
+ @abstract 重推流间隔,默认3秒
+ */
+@property (nonatomic, assign) NSTimeInterval reconnectInterval;
+
+/*!
+ @property reconnectCount
+ @abstract 重推流次数，默认5次
+ 
+ @discussion 如果需要不做重推操作，可将此参数设置为0
+ */
+@property (nonatomic, assign) NSInteger reconnectCount;
+
+/*!
+ @property isCaptureYUV
+ @abstract 摄像头采集数据为YUV还是RGB
+ 
+ @discussion 默认为YES，即采集数据为YUV，NO为采集数据为RGB
+ */
+@property (assign, nonatomic) BOOL isCaptureYUV;
+
+
+/*!
+ @method server
+ @abstract CameraServer单例模式
+ 
+ @discussion CameraServer只支持单例推流，若构造多个实例会造成不同估量的异常
+ 
+ * width             = 360;
+ * height            = 640;
+ * fps               = 15;
+ * muted             = NO;
+ * reconnectCount    = 5;
+ * reconnectInterval = 3;
+ * bitrate           = UCloudVideoBitrateMedium;
+ * videoOrientation  = UCloudVideoOrientationPortrait
+ * captureDevicePos  = AVCaptureDevicePositionFront;
  */
 + (CameraServer*) server;
 
-/**
- *  配置参数(不会自动开始要在底层配置完成之后调用cameraStart)
- *
- *  @param outPutUrl   推流地址
- *  @param filters     滤镜
- *  @param block       推流状态回调
- *  @param deviceBlock 相机回掉(定制相机参数)
- *  @param cameraData  视频数据
+
+
+- (void)setWatermarkView:(UIView *)watermarkView Block:(WatermarkBlock)block;
+/*!
+ @method configureCameraWithOutputUrl:filter:messageCallBack:deviceBlock:cameraData:
+ @abstract server初始化(不会自动开始要在底层配置完成之后调用cameraStart)
+ 
+ @param outPutUrl   推流地址
+ @param filters     滤镜组
+ @param block       推流状态回调
+ @param deviceBlock 相机回调(定制相机参数)
+ @param cameraData  视频数据
+ 
+ @discussion 推流从此进入
  */
 - (void)configureCameraWithOutputUrl:(NSString *)outPutUrl filter:(NSArray *)filters messageCallBack:(CameraMessage)block deviceBlock:(CameraDevice)deviceBlock cameraData:(CameraData)cameraData;
-/**
- *  开始录像上传
- *
- *  @return 操作结果
+
+/*!
+ @method cameraPrepare
+ @abstract 打开摄像头预览，不进行推流上传
+ */
+- (void)cameraPrepare;
+
+/*!
+ @method cameraStart
+ @abstract 开始录像采集推流上传
+ 
+ @return 返回操作结果
  */
 - (BOOL)cameraStart;
 
-/**
- *  关闭录像停止推流
+/*!
+ @method cameraRestart
+ @abstract 推流失败之后重新推流
+ */
+- (void)cameraRestart;
+
+/*!
+ @method shutdown
+ @abstract 关闭录像停止推流
+ 
+ @param completion 关闭成功回调函数
  */
 - (void)shutdown:(void(^)(void))completion;
 
+- (void)pushPixelBuffer:(CVPixelBufferRef)pixelBuffer completion:(void(^)(void))completion;
+
 - (UCloudGPUImageView *)createBlurringScreenshot;
 
-/**
- *  获取采集图像
- *
- *  @return 采集图像
+/*!
+ @method getCameraView
+ @abstract 获取采集图像
+ 
+ @return 采集图像视图
  */
 - (UIView*)getCameraView;
 
-/**
- *  切换摄像头
+/*!
+ @method initializeCameraViewFrame:
+ @abstract 设置采集图像显示的frame
+ 
+ @param frame 显示图像的大小
+ @discussion 如果需要设置显示图像的frame，iOS8以下请在此先设置，直接使用getCameraView方法获取view进行设置是无作用的，iOS8以上两者都可设置frame
+ */
+- (void)initializeCameraViewFrame:(CGRect)frame;
+
+/*!
+ @method changeCamera
+ @abstract 切换摄像头
  */
 - (void)changeCamera;
 
-/**
- *  码率
- *
- *  @return 码率
+/*!
+ @method outBitrate
+ @abstract 编码后的实际码率
+ 
+ @return 码率值，包括视频码率和音频码率
  */
-- (NSString *)biteRate;
+- (NSString *)outBitrate;
 
-/**
- *  设置闪光灯状态
- *
- *  @param state 状态
- *
- *  @return 设置是否成功
- */
-- (BOOL)setFlashState:(UCloudCameraState)state;
+/*!
+ @method setTorchState:
+ @abstract 设置手电筒状态
 
-/**
- *  设置手电筒状态
- *
- *  @param state 状态
- *
- *  @return 设置是否成功
+ @param state 状态
+ @return 设置是否成功
  */
 - (BOOL)setTorchState:(UCloudCameraState)state;
-/**
- *  获取当前摄像头的位置
- *
- *  @return 摄像头位置
+
+
+/*!
+ @method getStreamShot
+ @abstract 对当前视频流数据截图，不同于手机截屏
+ @return 截帧图像
+ */
+-(UIImage *)getStreamShot;
+
+/*!
+ @method currentCapturePosition
+ @abstract 获取当前摄像头的位置
+ 
+ @return 摄像头位置
  */
 - (AVCaptureDevicePosition)currentCapturePosition;
-/**
- *  iPhone5以下的机型
- *
- *  @return 是否是iPhone5以下的机型
+
+/*!
+ @method lowThan5
+ @abstract 是否是iPhone5以下的机型
+ 
+ @return 返回值
  */
 - (BOOL)lowThan5;
-/**
- *  调整摄像头ISO
- *
- *  @param value value
- *
- *  @return 操作结果(value越界和8一下系统返回no)
+
+/*!
+ @method addFilters:
+ @abstract 添加滤镜组
+ 
+ @param filters 滤镜数组
  */
-- (BOOL)changeISO:(float)value;
+- (void)addFilters:(NSArray *)filters;
+
+/*!
+ @method openFilter
+ @abstract 打开美颜功能
+ */
+- (void)openFilter;
+
+/*!
+ @method closeFilter
+ @abstract 关闭美颜功能
+ */
+- (void)closeFilter;
+
+
+/**
+ * 获取SDK version
+ */
+
+-(NSString*)getSDKVersion;
+
 @end

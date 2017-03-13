@@ -44,6 +44,9 @@ void setUCloudColorConversion709( GLfloat conversionMatrix[9] );
     __unsafe_unretained id<UCloudGPUImageVideoCameraDelegate> _delegate;
 }
 
+/// use YUV data or RGBA data,default YES
+@property (assign, nonatomic) BOOL captureAsYUV;
+
 /// Whether or not the underlying AVCaptureSession is running
 @property(readonly, nonatomic) BOOL isRunning;
 
@@ -86,7 +89,7 @@ void setUCloudColorConversion709( GLfloat conversionMatrix[9] );
  @param sessionPreset Session preset to use
  @param cameraPosition Camera to capture from
  */
-- (id)initWithSessionPreset:(NSString *)sessionPreset cameraPosition:(AVCaptureDevicePosition)cameraPosition;
+- (id)initWithSessionPreset:(NSString *)sessionPreset cameraPosition:(AVCaptureDevicePosition)cameraPosition captureAsYUV:(BOOL)isCaptureAsYUV;
 
 /** Add audio capture to the session. Adding inputs and outputs freezes the capture session momentarily, so you
     can use this method to add the audio inputs and outputs early, if you're going to set the audioEncodingTarget 

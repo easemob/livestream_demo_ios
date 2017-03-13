@@ -29,6 +29,7 @@ typedef struct UCloudGPUTextureOptions {
 @property(readonly) UCloudGPUTextureOptions textureOptions;
 @property(readonly) GLuint texture;
 @property(readonly) BOOL missingFramebuffer;
+@property (nonatomic, assign) BOOL preventReleaseTexture;
 
 // Initialization and teardown
 - (id)initWithSize:(CGSize)framebufferSize;
@@ -54,5 +55,8 @@ typedef struct UCloudGPUTextureOptions {
 - (void)unlockAfterReading;
 - (NSUInteger)bytesPerRow;
 - (GLubyte *)byteBuffer;
+- (CVPixelBufferRef)pixelBuffer;
+
+- (void)overrideTexture:(GLuint)texture;
 
 @end

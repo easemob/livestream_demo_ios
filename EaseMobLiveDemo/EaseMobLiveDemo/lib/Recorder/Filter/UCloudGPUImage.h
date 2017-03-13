@@ -168,4 +168,5 @@
 #import "UCloudGPUImageColourFASTSamplingOperation.h"
 
 #import "UCloudGPUImageBeautyFilter.h"
+#import "UCloudGPUImageBeautyFilter2.h"
 
