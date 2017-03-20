@@ -7,28 +7,33 @@
 //
 
 #define kCollectionCellDefaultHeight 150
-
+#define kDefaultPageSize 10
 #define kCollectionIdentifier @"collectionCell"
 
 #import "EaseLiveTVListViewController.h"
 #import "EaseLiveCollectionViewCell.h"
-#import "EasePublishModel.h"
 #import "EaseLiveViewController.h"
 #import "SRRefreshView.h"
-#import "EaseSelectHeaderView.h"
-#import "EaseParseManager.h"
+#import "EaseCreateLiveViewController.h"
+#import "MJRefresh.h"
+#import "EaseHttpManager.h"
+#import "EaseLiveRoom.h"
+#import "EaseSearchDisplayController.h"
 
-@interface EaseLiveTVListViewController () <UIScrollViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource,SRRefreshDelegate,EaseSelectHeaderViewDelegate>
+@interface EaseLiveTVListViewController () <UIScrollViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource,SRRefreshDelegate,EMClientDelegate>
+{
+    NSString *_cursor;
+    BOOL _noMore;
+    
+    MJRefreshHeader *_refreshHeader;
+    MJRefreshFooter *_refreshFooter;
+}
 
 @property (nonatomic, strong) NSMutableArray *dataArray;
 @property (nonatomic, strong) SRRefreshView *slimeView;
 
-@property (nonatomic, strong) EaseSelectHeaderView *headerView;
 @property (nonatomic, strong) UICollectionView *collectionView;
-@property (nonatomic, strong) UICollectionView *collectionHotView;
-@property (nonatomic, strong) UICollectionView *collectionStarView;
-
-@property (nonatomic, strong) UIScrollView *mainScrollView;
+@property (nonatomic, strong) UIButton *liveButton;
 
 @end
 
@@ -37,78 +42,128 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    self.title = NSLocalizedString(@"home.tabbar.finder", @"Finder");
+    self.title = NSLocalizedString(@"title.live", @"Easemob Live");
+    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
+        [self setEdgesForExtendedLayout:UIRectEdgeNone];
+    }
     [self setAutomaticallyAdjustsScrollViewInsets:YES];
     [self setExtendedLayoutIncludesOpaqueBars:YES];
     
     [self setupCollectionView];
-    [self loadData];
+    
+    [[EMClient sharedClient] removeDelegate:self];
+    [[EMClient sharedClient] addDelegate:self delegateQueue:nil];
+    
+    [self setup];
+    
+    if ([[EMClient sharedClient] isConnected]) {
+        [self loadData:YES];
+    }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshList:) name:kNotificationRefreshList object:nil];
+}
+
+- (void)dealloc
+{
+    [[EMClient sharedClient] removeDelegate:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    
 }
 
-- (void)loadData
+- (void)setup
 {
-    __weak EaseLiveTVListViewController *weakSelf = self;/*
-    [self showHudInView:self.view hint:@"加载播放列表"];
-    [[EaseParseManager sharedInstance] fetchLiveListInBackgroundWithCompletion:^(NSArray *liveList, NSError *error) {
-        [weakSelf hideHud];
-        if (!error) {
-            weakSelf.dataArray = [NSMutableArray arrayWithArray:liveList];
-        } else {
-            [weakSelf showHint:@"列表加载失败"];
-            //为了演示
-            weakSelf.dataArray = [NSMutableArray arrayWithArray:@[[[EasePublishModel alloc] initWithName:@"Test1" number:@"100人" headImageName:@"1" streamId:@"em_10001"],[[EasePublishModel alloc] initWithName:@"Test2" number:@"100人" headImageName:@"2" streamId:@"em_10001"],[[EasePublishModel alloc] initWithName:@"Test3" number:@"100人" headImageName:@"3" streamId:@"em_10001"],[[EasePublishModel alloc] initWithName:@"Test4" number:@"100人" headImageName:@"4" streamId:@"em_10001"],[[EasePublishModel alloc] initWithName:@"Test5" number:@"100人" headImageName:@"5" streamId:@"em_10001"],[[EasePublishModel alloc] initWithName:@"Test6" number:@"100人" headImageName:@"6" streamId:@"em_10001"]]];
-        }
-        [weakSelf.collectionView reloadData];
-        [weakSelf.collectionHotView reloadData];
-        [weakSelf.collectionStarView reloadData];
-    }];*/
-    
-    //为了演示
-    weakSelf.dataArray = [NSMutableArray arrayWithArray:@[
-                                                          [[EasePublishModel alloc] initWithName:@"Test1" number:@"100人" headImageName:@"1" streamId:@"em_100001" chatroomId:@"218746635482562996"],
-                                                          [[EasePublishModel alloc] initWithName:@"Test2" number:@"100人" headImageName:@"2" streamId:@"em_100002" chatroomId:@"218747106892972464"],
-                                                          [[EasePublishModel alloc] initWithName:@"Test3" number:@"100人" headImageName:@"3" streamId:@"em_100003" chatroomId:@"218747152489251244"],
-                                                          [[EasePublishModel alloc] initWithName:@"Test4" number:@"100人" headImageName:@"4" streamId:@"em_100004" chatroomId:@"218747179836113332"],
-                                                          [[EasePublishModel alloc] initWithName:@"Test5" number:@"100人" headImageName:@"5" streamId:@"em_100005" chatroomId:@"218747226120257964"],
-                                                          [[EasePublishModel alloc] initWithName:@"Test6" number:@"100人" headImageName:@"6" streamId:@"em_100006" chatroomId:@"218747262707171768"]]];
-    [weakSelf.collectionView reloadData];
-    [weakSelf.collectionHotView reloadData];
-    [weakSelf.collectionStarView reloadData];
+    _cursor = @"";
+}
+
+- (void)loadData:(BOOL)isHeader
+{
+    __weak EaseLiveTVListViewController *weakSelf = self;
+    [[EaseHttpManager sharedInstance] fetchLiveRoomsOngoingWithCursor:_cursor
+                                                                limit:kDefaultPageSize
+                                                           completion:^(EMCursorResult *result, BOOL success) {
+                                                               if (success) {
+                                                                   if (isHeader) {
+                                                                       [weakSelf.dataArray removeAllObjects];
+                                                                       [weakSelf.dataArray addObjectsFromArray:result.list];
+                                                                       [weakSelf.collectionView reloadData];
+                                                                   } else {
+                                                                       [weakSelf.dataArray addObjectsFromArray:result.list];
+                                                                       [weakSelf.collectionView reloadData];
+                                                                   }
+                                                                   _cursor = result.cursor;
+                                                                   
+                                                                   if ([result.list count] < kDefaultPageSize) {
+                                                                       _noMore = YES;
+                                                                   }
+                                                                   if (_noMore) {
+                                                                       weakSelf.collectionView.mj_footer = nil;
+                                                                   } else {
+                                                                       weakSelf.collectionView.mj_footer = _refreshFooter;
+                                                                   }
+                                                               }
+                                                               
+                                                               [weakSelf _collectionViewDidFinishTriggerHeader:isHeader reload:YES];
+                                                           }];
 }
 
 - (void)setupCollectionView
 {
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    [self.view addSubview:self.headerView];
-    [self.view addSubview:self.mainScrollView];
-    [self.mainScrollView addSubview:self.collectionView];
-    [self.mainScrollView addSubview:self.collectionHotView];
-    [self.mainScrollView addSubview:self.collectionStarView];
+    [self.view addSubview:self.collectionView];
+    [self.view addSubview:self.liveButton];
+    
+    __weak EaseLiveTVListViewController *weakSelf = self;
+    _refreshHeader =  [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        _noMore = NO;
+        _cursor = @"";
+        [weakSelf loadData:YES];
+    }];
+    self.collectionView.mj_header = _refreshHeader;
+    self.collectionView.mj_header.accessibilityIdentifier = @"refresh_header";
+    
+    _refreshFooter = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
+        if (!_noMore) {
+            [weakSelf loadData:NO];
+        } else {
+            [weakSelf _collectionViewDidFinishTriggerHeader:NO reload:YES];
+        }
+    }];
+    self.collectionView.mj_footer = nil;
+    self.collectionView.mj_footer.accessibilityIdentifier = @"refresh_footer";
 }
 
 #pragma mark - getter
 
-- (UIScrollView*)mainScrollView
+- (UIBarButtonItem*)searchBarItem
 {
-    if (_mainScrollView == nil) {
-        _mainScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.headerView.frame), self.view.bounds.size.width, self.view.bounds.size.height - CGRectGetHeight(self.headerView.frame) - 49.f)];
-        [_mainScrollView setContentSize:CGSizeMake(self.view.bounds.size.width*3, 0)];
-        _mainScrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-        _mainScrollView.pagingEnabled = YES;
-        _mainScrollView.delegate = self;
-        _mainScrollView.tag = 1000;
-        
-        _mainScrollView.showsVerticalScrollIndicator = NO;
-        _mainScrollView.showsHorizontalScrollIndicator = NO;
+    if (_searchBarItem == nil) {
+        UIButton *searchButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        searchButton.frame = CGRectMake(0, 0, 30.f, 30.f);
+        [searchButton setImage:[UIImage imageNamed:@"search"] forState:UIControlStateNormal];
+        [searchButton addTarget:self action:@selector(searchAction) forControlEvents:UIControlEventTouchUpInside];
+        [searchButton setImageEdgeInsets:UIEdgeInsetsMake(0, -25, 0, 0)];
+        _searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:searchButton];
     }
-    
-    return _mainScrollView;
+    return _searchBarItem;
+}
+
+- (UIBarButtonItem*)logoutItem
+{
+    if (_logoutItem == nil) {
+        UIButton *liveButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        liveButton.frame = CGRectMake(0, 0, 80.f, 44.f);
+        [liveButton addTarget:self action:@selector(logoutAction) forControlEvents:UIControlEventTouchUpInside];
+        [liveButton setTitle:NSLocalizedString(@"button.logout", @"Log out") forState:UIControlStateNormal];
+        [liveButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, -5, -55)];
+        [liveButton.titleLabel setFont:[UIFont systemFontOfSize:17.f]];
+        _logoutItem = [[UIBarButtonItem alloc] initWithCustomView:liveButton];
+    }
+    return _logoutItem;
 }
 
 - (UICollectionView*)collectionView
@@ -116,7 +171,7 @@
     if (_collectionView == nil) {
         UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
         [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, CGRectGetHeight(self.mainScrollView.frame)) collectionViewLayout:flowLayout];
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight) collectionViewLayout:flowLayout];
         _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         
         [_collectionView registerClass:[EaseLiveCollectionViewCell class] forCellWithReuseIdentifier:kCollectionIdentifier];
@@ -130,65 +185,16 @@
         _collectionView.alwaysBounceVertical = YES;
         _collectionView.pagingEnabled = NO;
         _collectionView.userInteractionEnabled = YES;
-        
-        [_collectionView addSubview:self.slimeView];
     }
     return _collectionView;
 }
 
-- (UICollectionView*)collectionHotView
+- (NSMutableArray*)dataArray
 {
-    if (_collectionHotView == nil) {
-        UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
-        [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
-        _collectionHotView = [[UICollectionView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width, 0, self.view.bounds.size.width, CGRectGetHeight(self.mainScrollView.frame)) collectionViewLayout:flowLayout];
-        _collectionHotView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        
-        [_collectionHotView registerClass:[EaseLiveCollectionViewCell class] forCellWithReuseIdentifier:kCollectionIdentifier];
-        [_collectionHotView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView"];
-        
-        _collectionHotView.backgroundColor = [UIColor clearColor];
-        _collectionHotView.delegate = self;
-        _collectionHotView.dataSource = self;
-        _collectionHotView.showsVerticalScrollIndicator = NO;
-        _collectionHotView.showsHorizontalScrollIndicator = NO;
-        _collectionHotView.alwaysBounceVertical = YES;
-        _collectionHotView.pagingEnabled = NO;
-        _collectionHotView.userInteractionEnabled = YES;
+    if (_dataArray == nil) {
+        _dataArray = [[NSMutableArray alloc] init];
     }
-    return _collectionHotView;
-}
-
-- (UICollectionView*)collectionStarView
-{
-    if (_collectionStarView == nil) {
-        UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
-        [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
-        _collectionStarView = [[UICollectionView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width * 2, 0, self.view.bounds.size.width, CGRectGetHeight(self.mainScrollView.frame)) collectionViewLayout:flowLayout];
-        _collectionStarView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        
-        [_collectionStarView registerClass:[EaseLiveCollectionViewCell class] forCellWithReuseIdentifier:kCollectionIdentifier];
-        [_collectionStarView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView"];
-        
-        _collectionStarView.backgroundColor = [UIColor clearColor];
-        _collectionStarView.delegate = self;
-        _collectionStarView.dataSource = self;
-        _collectionStarView.showsVerticalScrollIndicator = NO;
-        _collectionStarView.showsHorizontalScrollIndicator = NO;
-        _collectionStarView.alwaysBounceVertical = YES;
-        _collectionStarView.pagingEnabled = NO;
-        _collectionStarView.userInteractionEnabled = YES;
-    }
-    return _collectionStarView;
-}
-
-- (EaseSelectHeaderView*)headerView
-{
-    if (_headerView == nil) {
-        _headerView = [[EaseSelectHeaderView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 48.f)];
-        _headerView.delegate = self;
-    }
-    return _headerView;
+    return _dataArray;
 }
 
 - (SRRefreshView *)slimeView
@@ -208,6 +214,20 @@
     return _slimeView;
 }
 
+- (UIButton*)liveButton
+{
+    if (_liveButton == nil) {
+        _liveButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _liveButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+        _liveButton.frame = CGRectMake(KScreenWidth - 75, KScreenHeight - 130, 60, 60);
+        _liveButton.layer.cornerRadius = _liveButton.width/2;
+        _liveButton.backgroundColor = kDefaultLoginButtonColor;
+        [_liveButton setImage:[UIImage imageNamed:@"live"] forState:UIControlStateNormal];
+        [_liveButton addTarget:self action:@selector(liveAction) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _liveButton;
+}
+
 #pragma mark - UICollectionViewDataSource
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
@@ -222,7 +242,8 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     EaseLiveCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCollectionIdentifier forIndexPath:indexPath];
-    [cell setModel:[self.dataArray objectAtIndex:indexPath.row]];
+    EaseLiveRoom *room = [self.dataArray objectAtIndex:indexPath.row];
+    [cell setLiveRoom:room];
     return cell;
 }
 
@@ -256,7 +277,7 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(CGRectGetWidth(self.view.frame)/2, 300.f);
+    return CGSizeMake(CGRectGetWidth(self.view.frame)/2 - 0.5f, CGRectGetWidth(self.view.frame)/2 - 0.5f);
 }
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
@@ -266,7 +287,7 @@
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
 {
-    return 0.0f;
+    return 1.0f;
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
@@ -278,8 +299,8 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    EasePublishModel *model = [self.dataArray objectAtIndex:indexPath.row];
-    EaseLiveViewController *view = [[EaseLiveViewController alloc] initWithStreamModel:model];
+    EaseLiveRoom *room = [self.dataArray objectAtIndex:indexPath.row];
+    EaseLiveViewController *view = [[EaseLiveViewController alloc] initWithLiveRoom:room];
     [self.navigationController presentViewController:view animated:YES completion:NULL];
 }
 
@@ -288,46 +309,81 @@
     return YES;
 }
 
-#pragma mark - scrollView delegate
+#pragma mark - EMClientDelegate
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+- (void)autoLoginDidCompleteWithError:(EMError *)aError
 {
-    if (_slimeView) {
-        [_slimeView scrollViewDidScroll];
+    if (!aError) {
+        [self loadData:YES];
     }
 }
 
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+#pragma mark - action
+
+- (void)liveAction
 {
-    if (_slimeView) {
-        [_slimeView scrollViewDidEndDraging];
+    CATransition *transition = [CATransition animation];
+    transition.duration = 0.3f;
+    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+    transition.type = kCATransitionPush;
+    transition.subtype = kCATransitionFromTop;
+    [self.navigationController.view.layer addAnimation:transition forKey:nil];
+    
+    EaseCreateLiveViewController *createLiveView = [[EaseCreateLiveViewController alloc] init];
+    [self.navigationController pushViewController:createLiveView animated:NO];
+}
+
+#pragma mark - action
+
+- (void)searchAction
+{
+    UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
+    EaseSearchDisplayController *searchDisplay = [[EaseSearchDisplayController alloc] initWithCollectionViewLayout:flowLayout];
+    searchDisplay.searchSource = [NSMutableArray arrayWithArray:self.dataArray];
+    [self.navigationController pushViewController:searchDisplay animated:YES];
+}
+
+- (void)logoutAction
+{
+    MBProgressHUD *hud = [MBProgressHUD showMessag:@"退出中..." toView:nil];
+    [[EMClient sharedClient] logout:NO];
+    [hud hide:YES];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"loginStateChange" object:@NO];
+}
+
+#pragma mark - notification
+
+- (void)refreshList:(NSNotification*)notify
+{
+    BOOL ret = YES;
+    if (notify) {
+        ret = [notify.object boolValue];
     }
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-    if (scrollView.tag == 1000)
-    {
-        NSInteger index = fabs(scrollView.contentOffset.x) / scrollView.frame.size.width;
-        index = index > 0 ? index : 0;
-        NSLog(@"%f-----%@",scrollView.contentOffset.x,@(index));
-        [_headerView setSelectWithIndex:index];
+    if (ret) {
+        _cursor = @"";
     }
+    [self loadData:ret];
 }
 
-#pragma mark - slimeRefresh delegate
-//加载更多
-- (void)slimeRefreshStartRefresh:(SRRefreshView *)refreshView
-{
-    [_slimeView endRefresh];
-    [self loadData];
-}
 
-#pragma mark - EaseSelectHeaderViewDelegate
+#pragma mark - private
 
-- (void)didSelectButtonWithIndex:(NSInteger)index
+- (void)_collectionViewDidFinishTriggerHeader:(BOOL)isHeader reload:(BOOL)reload
 {
-    [self.mainScrollView setContentOffset:CGPointMake(index * CGRectGetWidth(self.view.frame), 0) animated:YES];
+    __weak EaseLiveTVListViewController *weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (reload) {
+            [weakSelf.collectionView reloadData];
+        }
+        
+        if (isHeader) {
+            [_refreshHeader endRefreshing];
+        }
+        else{
+            [_refreshFooter endRefreshing];
+        }
+    });
 }
 
 @end

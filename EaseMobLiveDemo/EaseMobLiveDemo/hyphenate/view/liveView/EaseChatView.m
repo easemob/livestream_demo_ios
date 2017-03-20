@@ -9,6 +9,7 @@
 #import "EaseChatView.h"
 #import "EaseInputTextView.h"
 #import "EaseChatCell.h"
+#import "EaseLiveRoom.h"
 
 #define kGiftAction @"cmd_gift"
 
@@ -17,11 +18,15 @@
 #define kButtonWitdh 40
 #define kButtonHeight 40
 
-#define kDefaultSpace 5
+#define kDefaultSpace 5.f
+#define kDefaulfLeftSpace 10.f
 
-@interface EaseChatView () <EMChatManagerDelegate,EMChatroomManagerDelegate,UITableViewDelegate,UITableViewDataSource,UITextViewDelegate>
+@interface EaseChatView () <EMChatManagerDelegate,EMChatroomManagerDelegate,UITableViewDelegate,UITableViewDataSource,UITextViewDelegate,EMFaceDelegate>
 {
     NSString *_chatroomId;
+    EaseLiveRoom *_room;
+    EMChatroom *_chatroom;
+    NSInteger _praiseCount;
     
     long long _curtime;
 }
@@ -33,16 +38,17 @@
 
 //底部功能按钮
 @property (strong, nonatomic) UIView *bottomView;
-@property (strong, nonatomic) UIButton *msgButton;
-@property (strong, nonatomic) UIButton *giftButton;
-@property (strong, nonatomic) UIButton *printScreenButton;
 @property (strong, nonatomic) UIButton *sendTextButton;
-@property (strong, nonatomic) UIButton *redPacketButton;
+@property (strong, nonatomic) UIButton *changeCameraButton;
+@property (strong, nonatomic) UIButton *adminButton;
+@property (strong, nonatomic) UIButton *likeButton;
 
 @property (strong, nonatomic) UIView *bottomSendMsgView;
-@property (strong, nonatomic) UIButton *sendButton;
+@property (strong, nonatomic) UIButton *faceButton;
 @property (strong, nonatomic) EMConversation *conversation;
-@property (strong, nonatomic) UIButton *barrageButton;
+
+@property (strong, nonatomic) UIView *faceView;
+@property (strong, nonatomic) UIView *activityView;
 
 @end
 
@@ -66,20 +72,15 @@
         //底部消息发送按钮
         [self addSubview:self.bottomSendMsgView];
         [self.bottomSendMsgView addSubview:self.textView];
-        [self.bottomSendMsgView addSubview:self.sendButton];
-        [self.bottomSendMsgView addSubview:self.barrageButton];
+        [self.bottomSendMsgView addSubview:self.faceButton];
         //底部功能按钮
         [self addSubview:self.bottomView];
         [self.bottomView addSubview:self.sendTextButton];
-        if (!isPublish) {
-            [self.bottomView addSubview:self.giftButton];
-            [self.bottomView addSubview:self.msgButton];
-            [self addSubview:self.printScreenButton];
-            [self addSubview:self.redPacketButton];
+        if (isPublish) {
+            [self.bottomView addSubview:self.adminButton];
+            [self.bottomView addSubview:self.changeCameraButton];
         } else {
-            [self.bottomView addSubview:self.msgButton];
-            [self addSubview:self.printScreenButton];
-            [self addSubview:self.redPacketButton];
+            [self.bottomView addSubview:self.likeButton];
         }
         
         self.bottomSendMsgView.hidden = YES;
@@ -92,6 +93,17 @@
                    chatroomId:(NSString*)chatroomId
 {
     return [self initWithFrame:frame chatroomId:chatroomId isPublish:NO];
+}
+
+- (instancetype)initWithFrame:(CGRect)frame
+                         room:(EaseLiveRoom*)room
+                    isPublish:(BOOL)isPublish
+{
+    self = [self initWithFrame:frame chatroomId:room.chatroomId isPublish:isPublish];
+    if (self) {
+        _room = room;
+    }
+    return self;
 }
 
 - (void)setHidden:(BOOL)hidden
@@ -115,7 +127,7 @@
 - (UITableView*)tableView
 {
     if (_tableView == nil) {
-        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.bounds) - 75, CGRectGetHeight(self.bounds) - 48.f) style:UITableViewStylePlain];
+        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.width, CGRectGetHeight(self.bounds) - 48.f) style:UITableViewStylePlain];
         _tableView.dataSource = self;
         _tableView.delegate = self;
         _tableView.backgroundColor = [UIColor clearColor];
@@ -139,66 +151,50 @@
     if (_sendTextButton == nil) {
         _sendTextButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _sendTextButton.frame = CGRectMake(kDefaultSpace*2, 6.f, kButtonWitdh, kButtonHeight);
-        [_sendTextButton setImage:[UIImage imageNamed:@"live_comments"] forState:UIControlStateNormal];
-         [_sendTextButton setImage:[UIImage imageNamed:@"live_comments_click"] forState:UIControlStateHighlighted];
+        [_sendTextButton setImage:[UIImage imageNamed:@"chat"] forState:UIControlStateNormal];
         [_sendTextButton addTarget:self action:@selector(sendTextAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _sendTextButton;
 }
 
-- (UIButton*)redPacketButton
+- (UIButton*)changeCameraButton
 {
-    if(_redPacketButton == nil) {
-        _redPacketButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _redPacketButton.frame = CGRectMake(CGRectGetWidth(self.bounds) - kButtonWitdh - kDefaultSpace * 2, self.bottomView.top - kButtonHeight * 2 - kDefaultSpace * 8, kButtonWitdh, kButtonHeight);
-        [_redPacketButton setImage:[UIImage imageNamed:@"live_redbag"] forState:UIControlStateNormal];
-        [_redPacketButton setImage:[UIImage imageNamed:@"live_redbag_click"] forState:UIControlStateHighlighted];
-        [_redPacketButton addTarget:self action:@selector(redPacketAction) forControlEvents:UIControlEventTouchUpInside];
+    if (_changeCameraButton == nil) {
+        _changeCameraButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _changeCameraButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*2 - kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
+        [_changeCameraButton setImage:[UIImage imageNamed:@"reversal_camera"] forState:UIControlStateNormal];
+        [_changeCameraButton addTarget:self action:@selector(changeCameraAction) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _redPacketButton;
+    return _changeCameraButton;
 }
 
-- (UIButton*)printScreenButton
+- (UIButton*)likeButton
 {
-    if (_printScreenButton == nil) {
-        _printScreenButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _printScreenButton.frame = CGRectMake(CGRectGetWidth(self.bounds) - kButtonWitdh - kDefaultSpace * 2, self.bottomView.top - kButtonHeight - kDefaultSpace * 4, kButtonWitdh, kButtonHeight);
-        [_printScreenButton setImage:[UIImage imageNamed:@"live_share"] forState:UIControlStateNormal];
-        [_printScreenButton setImage:[UIImage imageNamed:@"live_share_click"] forState:UIControlStateHighlighted];
-        [_printScreenButton addTarget:self action:@selector(printScreenAction) forControlEvents:UIControlEventTouchUpInside];
+    if (_likeButton == nil) {
+        _likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _likeButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*2 - kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
+        [_likeButton setImage:[UIImage imageNamed:@"like"] forState:UIControlStateNormal];
+        [_likeButton addTarget:self action:@selector(praiseAction) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _printScreenButton;
+    return _likeButton;
 }
 
-- (UIButton*)msgButton
+- (UIButton*)adminButton
 {
-    if (_msgButton == nil) {
-        _msgButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _msgButton.frame = CGRectMake(CGRectGetWidth(self.bounds) - kButtonWitdh - kDefaultSpace * 2, 6.f, kButtonWitdh, kButtonHeight);
-        [_msgButton setImage:[UIImage imageNamed:@"live_message"] forState:UIControlStateNormal];
-        [_msgButton setImage:[UIImage imageNamed:@"live_message_click"] forState:UIControlStateHighlighted];
-        [_msgButton addTarget:self action:@selector(msgButtonAction) forControlEvents:UIControlEventTouchUpInside];
+    if (_adminButton == nil) {
+        _adminButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _adminButton.frame = CGRectMake(CGRectGetMaxX(_sendTextButton.frame) + kDefaultSpace*2, 6.f, kButtonWitdh, kButtonHeight);
+        [_adminButton setImage:[UIImage imageNamed:@"list"] forState:UIControlStateNormal];
+        [_adminButton addTarget:self action:@selector(adminAction) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _msgButton;
-}
-
-- (UIButton*)giftButton
-{
-    if (_giftButton == nil) {
-        _giftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _giftButton.frame = CGRectMake(CGRectGetWidth(self.bounds)/2 - kButtonWitdh/2, 6.f, kButtonWitdh, kButtonHeight);
-        [_giftButton setImage:[UIImage imageNamed:@"live_gift"] forState:UIControlStateNormal];
-        [_giftButton setImage:[UIImage imageNamed:@"live_gift_click"] forState:UIControlStateHighlighted];
-        [_giftButton addTarget:self action:@selector(sendGiftAction) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _giftButton;
+    return _adminButton;
 }
 
 - (UIView*)bottomSendMsgView
 {
     if (_bottomSendMsgView == nil) {
-        _bottomSendMsgView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.tableView.frame), CGRectGetWidth(self.bounds), 48.f)];
-        _bottomSendMsgView.backgroundColor = RGBACOLOR(234, 234, 234, 1);
+        _bottomSendMsgView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.tableView.frame), CGRectGetWidth(self.bounds), 50.f)];
+        _bottomSendMsgView.backgroundColor = RGBACOLOR(255, 255, 255, 1);
     }
     return _bottomSendMsgView;
 }
@@ -207,45 +203,41 @@
 {
     if (_textView == nil) {
         //输入框
-        _textView = [[EaseInputTextView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.barrageButton.frame) + kDefaultSpace, 6.f, CGRectGetWidth(self.bounds) - CGRectGetWidth(self.barrageButton.frame) - CGRectGetWidth(self.sendButton.frame) - kDefaultSpace*4, 36.f)];
+        _textView = [[EaseInputTextView alloc] initWithFrame:CGRectMake(kDefaulfLeftSpace, 10.f, CGRectGetWidth(self.bounds) - CGRectGetWidth(self.faceButton.frame) - kDefaulfLeftSpace*3, 30.f)];
         _textView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         _textView.scrollEnabled = YES;
-        _textView.returnKeyType = UIReturnKeyDone;
+        _textView.returnKeyType = UIReturnKeySend;
         _textView.enablesReturnKeyAutomatically = YES; // UITextView内部判断send按钮是否可以用
         _textView.placeHolder = @"输入新消息";
         _textView.delegate = self;
-        _textView.backgroundColor = [UIColor whiteColor];
-        _textView.layer.borderColor = [UIColor colorWithWhite:0.8f alpha:1.0f].CGColor;
-        _textView.layer.borderWidth = 0.65f;
-        _textView.layer.cornerRadius = 6.0f;
+        _textView.backgroundColor = RGBACOLOR(236, 236, 236, 1);
+        _textView.layer.cornerRadius = 4.0f;
     }
     return _textView;
 }
 
-- (UIButton*)sendButton
+- (UIButton*)faceButton
 {
-    if (_sendButton == nil) {
-        _sendButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _sendButton.frame = CGRectMake(CGRectGetWidth(self.bounds) - 60.f - kDefaultSpace, 6.f, 60, 36.f);
-        [_sendButton setTitle:@"发送" forState:UIControlStateNormal];
-        [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [_sendButton setBackgroundColor:RGBACOLOR(45, 188, 251, 1)];
-        _sendButton.layer.cornerRadius = 6.f;
-        [_sendButton addTarget:self action:@selector(sendText) forControlEvents:UIControlEventTouchUpInside];
+    if (_faceButton == nil) {
+        _faceButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _faceButton.frame = CGRectMake(CGRectGetWidth(self.bounds) - 30 - kDefaulfLeftSpace, 10.f, 30, 30);
+        [_faceButton setImage:[UIImage imageNamed:@"input_bar_1_icon_face"] forState:UIControlStateNormal];
+        [_faceButton setImage:[UIImage imageNamed:@"input_bar_1_icon_keyboard"] forState:UIControlStateSelected];
+        [_faceButton addTarget:self action:@selector(faceAction) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _sendButton;
+    return _faceButton;
 }
 
-- (UIButton*)barrageButton
+- (UIView*)faceView
 {
-    if (_barrageButton == nil) {
-        _barrageButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _barrageButton.frame = CGRectMake(kDefaultSpace, 6.f, 60.f, 36.f);
-        [_barrageButton setImage:[UIImage imageNamed:@"swich_close"] forState:UIControlStateNormal];
-        [_barrageButton setImage:[UIImage imageNamed:@"swich"] forState:UIControlStateSelected];
-        [_barrageButton addTarget:self action:@selector(barrageAction) forControlEvents:UIControlEventTouchUpInside];
+    if (_faceView == nil) {
+        _faceView = [[EaseFaceView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_bottomSendMsgView.frame), self.frame.size.width, 180)];
+        [(EaseFaceView *)_faceView setDelegate:self];
+        _faceView.backgroundColor = [UIColor colorWithRed:240 / 255.0 green:242 / 255.0 blue:247 / 255.0 alpha:1.0];
+        _faceView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+        [self _setupEmotion];
     }
-    return _barrageButton;
+    return _faceView;
 }
 
 #pragma mark - EMChatManagerDelegate
@@ -262,6 +254,9 @@
                     [_delegate didReceiveBarrageWithCMDMessage:message];
                 }
             } else {
+                if ([self.datasource count] >= 200) {
+                    [self.datasource removeObjectsInRange:NSMakeRange(0, 190)];
+                }
                 [self.datasource addObject:message];
                 [self.tableView reloadData];
                 [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.datasource count] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
@@ -289,30 +284,31 @@
 
 #pragma mark - EMChatroomManagerDelegate
 
-- (void)didReceiveUserJoinedChatroom:(EMChatroom *)aChatroom
-                            username:(NSString *)aUsername
+- (void)chatroomAdminListDidUpdate:(EMChatroom *)aChatroom
+                        addedAdmin:(NSString *)aAdmin;
 {
-    EMTextMessageBody *body = [[EMTextMessageBody alloc] initWithText:@"来了"];
-    EMMessage *message = [[EMMessage alloc] initWithConversationID:aChatroom.chatroomId from:aUsername to:aChatroom.chatroomId body:body ext:@{@"em_join":aUsername}];
-    message.chatType = EMChatTypeChatRoom;
-    [self.datasource addObject:message];
-    [self.tableView reloadData];
-    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.datasource count] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    if ([aChatroom.chatroomId isEqualToString:_chatroomId]) {
+        if ([aAdmin isEqualToString:[EMClient sharedClient].currentUsername]) {
+            [self.bottomView addSubview:self.adminButton];
+            [self layoutSubviews];
+        }
+    }
 }
 
-- (void)didReceiveUserLeavedChatroom:(EMChatroom *)aChatroom
-                            username:(NSString *)aUsername
+- (void)chatroomAdminListDidUpdate:(EMChatroom *)aChatroom
+                      removedAdmin:(NSString *)aAdmin
 {
-    EMTextMessageBody *body = [[EMTextMessageBody alloc] initWithText:@"离开了"];
-    EMMessage *message = [[EMMessage alloc] initWithConversationID:aChatroom.chatroomId from:aUsername to:aChatroom.chatroomId body:body ext:@{@"em_leave":aUsername}];
-    message.chatType = EMChatTypeChatRoom;
-    [self.datasource addObject:message];
-    [self.tableView reloadData];
-    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.datasource count] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    if ([aChatroom.chatroomId isEqualToString:_chatroomId]) {
+        if ([aAdmin isEqualToString:[EMClient sharedClient].currentUsername]) {
+            [self.adminButton removeFromSuperview];
+            [self layoutSubviews];
+        }
+    }
 }
 
-- (void)didReceiveKickedFromChatroom:(EMChatroom *)aChatroom
-                              reason:(EMChatroomBeKickedReason)aReason
+- (void)chatroomOwnerDidUpdate:(EMChatroom *)aChatroom
+                      newOwner:(NSString *)aNewOwner
+                      oldOwner:(NSString *)aOldOwner
 {
     
 }
@@ -346,6 +342,18 @@
 
 #pragma mark - UITextViewDelegate
 
+- (void)textViewDidBeginEditing:(UITextView *)textView
+{
+    
+}
+
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView
+{
+    self.faceButton.selected = NO;
+    
+    return YES;
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -357,7 +365,47 @@
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
+    if (text.length > 0 && [text isEqualToString:@"\n"]) {
+        [self sendText];
+        return NO;
+    }
     return YES;
+}
+
+#pragma mark - EMFaceDelegate
+
+- (void)selectedFacialView:(NSString *)str isDelete:(BOOL)isDelete
+{
+    NSString *chatText = self.textView.text;
+    
+    if (!isDelete && str.length > 0) {
+        self.textView.text = [NSString stringWithFormat:@"%@%@",chatText,str];
+    } else {
+        if (chatText.length > 0) {
+            NSInteger length = 1;
+            if (chatText.length >= 2) {
+                NSString *subStr = [chatText substringFromIndex:chatText.length-2];
+                if ([EaseEmoji stringContainsEmoji:subStr]) {
+                    length = 2;
+                }
+            }
+            self.textView.text = [chatText substringToIndex:chatText.length-length];
+        }
+    }
+}
+
+- (void)sendFace
+{
+    NSString *chatText = self.textView.text;
+    if (chatText.length > 0) {
+        [self sendText];
+        self.textView.text = @"";
+    }
+}
+
+- (void)sendFaceWithEmotion:(EaseEmotion *)emotion
+{
+
 }
 
 #pragma mark - UIKeyboardNotification
@@ -367,6 +415,11 @@
     NSDictionary *userInfo = notification.userInfo;
     CGRect endFrame = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     
+    
+    if (self.activityView) {
+        [self _willShowBottomView:nil];
+    }
+    
     if (self.delegate && [self.delegate respondsToSelector:@selector(easeChatViewDidChangeFrameToHeight:)]) {
         CGFloat toHeight = endFrame.size.height + self.frame.size.height;
         [self.delegate easeChatViewDidChangeFrameToHeight:toHeight];
@@ -375,11 +428,7 @@
 
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(easeChatViewDidChangeFrameToHeight:)]) {
-        CGFloat toHeight = self.frame.size.height;
-        [self.delegate easeChatViewDidChangeFrameToHeight:toHeight];
-    }
-    [self setSendState:NO];
+    [self _willShowBottomView:nil];
 }
 
 + (NSString *)latestMessageTitleForConversationModel:(EMMessage*)lastMessage;
@@ -414,6 +463,8 @@
     latestMessageTitle = [NSString stringWithFormat:@"%@: %@",lastMessage.from,latestMessageTitle];
     return latestMessageTitle;
 }
+
+#pragma mark - private
 
 - (EMMessage *)_sendTextMessage:(NSString *)text
                              to:(NSString *)toUser
@@ -456,35 +507,42 @@
     }
 }
 
+- (void)_willShowBottomView:(UIView *)bottomView
+{
+    if (![self.activityView isEqual:bottomView]) {
+        CGFloat bottomHeight = bottomView ? bottomView.frame.size.height : 0;
+        self.height = bottomHeight + 200.f;
+        if (self.delegate && [self.delegate respondsToSelector:@selector(easeChatViewDidChangeFrameToHeight:)]) {
+            [self.delegate easeChatViewDidChangeFrameToHeight:self.height];
+        }
+        
+        if (bottomView) {
+            CGRect rect = bottomView.frame;
+            rect.origin.y = CGRectGetMaxY(self.bottomSendMsgView.frame);
+            bottomView.frame = rect;
+            [self addSubview:bottomView];
+        }
+        
+        if (self.activityView) {
+            [self.activityView removeFromSuperview];
+        }
+        self.activityView = bottomView;
+    }
+}
+
+- (void)_setupEmotion
+{
+    NSMutableArray *emotions = [NSMutableArray array];
+    for (NSString *name in [EaseEmoji allEmoji]) {
+        EaseEmotion *emotion = [[EaseEmotion alloc] initWithName:@"" emotionId:name emotionThumbnail:name emotionOriginal:name emotionOriginalURL:@"" emotionType:EMEmotionDefault];
+        [emotions addObject:emotion];
+    }
+    EaseEmotion *emotion = [emotions objectAtIndex:0];
+    EaseEmotionManager *manager= [[EaseEmotionManager alloc] initWithType:EMEmotionDefault emotionRow:3 emotionCol:7 emotions:emotions tagImage:[UIImage imageNamed:emotion.emotionId]];
+    [(EaseFaceView *)self.faceView setEmotionManagers:@[manager]];
+}
+
 #pragma mark - action
-
-- (void)msgButtonAction
-{
-    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectMessageButton)]) {
-        [self.delegate didSelectMessageButton];
-    }
-}
-
-- (void)printScreenAction
-{
-    //截屏    
-    UIGraphicsEndImageContext();
-    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectPrintScreenButton)]) {
-        [self.delegate didSelectPrintScreenButton];
-    }
-}
-
-- (void)redPacketAction
-{
-
-}
-
-- (void)sendGiftAction
-{
-    if (_delegate && [_delegate respondsToSelector:@selector(didSelectGiftButton)]) {
-        [_delegate didSelectGiftButton];
-    }
-}
 
 - (void)sendTextAction
 {
@@ -494,65 +552,132 @@
 - (void)sendText
 {
     if (self.textView.text.length > 0) {
-        if (_barrageButton.selected) {
-            EMMessage *message = [self _sendTextMessage:self.textView.text to:_chatroomId messageType:EMChatTypeChatRoom messageExt:@{kBarrageAction:@(1)}];
-            __weak EaseChatView *weakSelf = self;
-            [[EMClient sharedClient].chatManager asyncSendMessage:message progress:nil completion:^(EMMessage *message, EMError *error) {
-                if (!error) {
-                    if (weakSelf.delegate && [weakSelf.delegate respondsToSelector:@selector(didReceiveBarrageWithCMDMessage:)]) {
-                        [weakSelf.delegate didReceiveBarrageWithCMDMessage:message];
-                    }
+        EMMessage *message = [self _sendTextMessage:self.textView.text to:_chatroomId messageType:EMChatTypeChatRoom messageExt:nil];
+        __weak EaseChatView *weakSelf = self;
+        [[EMClient sharedClient].chatManager sendMessage:message progress:NULL completion:^(EMMessage *message, EMError *error) {
+            if (!error) {
+                if ([weakSelf.datasource count] >= 200) {
+                    [weakSelf.datasource removeObjectsInRange:NSMakeRange(0, 190)];
                 }
-            }];
-            
-        } else {
-            EMMessage *message = [self _sendTextMessage:self.textView.text to:_chatroomId messageType:EMChatTypeChatRoom messageExt:nil];
-            __weak EaseChatView *weakSelf = self;
-            [[EMClient sharedClient].chatManager asyncSendMessage:message progress:nil completion:^(EMMessage *message, EMError *error) {
-                if (!error) {
-                    [weakSelf.datasource addObject:message];
-                    [weakSelf.tableView reloadData];
-                    [weakSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[weakSelf.datasource count] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-                }
-            }];
-        }
+                [weakSelf.datasource addObject:message];
+                [weakSelf.tableView reloadData];
+                [weakSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[weakSelf.datasource count] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+            }
+        }];
         self.textView.text = @"";
     }
 }
 
-- (void)barrageAction
+- (void)faceAction
 {
-    _barrageButton.selected = !_barrageButton.selected;
+    _faceButton.selected = !_faceButton.selected;
+    
+    if (_faceButton.selected) {
+        [self.textView resignFirstResponder];
+        [self _willShowBottomView:self.faceView];
+    } else {
+        [self.textView becomeFirstResponder];
+    }
+}
+
+- (void)changeCameraAction
+{
+    if (_delegate && [_delegate respondsToSelector:@selector(didSelectChangeCameraButton)]) {
+        [_delegate didSelectChangeCameraButton];
+        _changeCameraButton.selected = !_changeCameraButton.selected;
+    }
+}
+
+- (void)adminAction
+{
+    if (_delegate && [_delegate respondsToSelector:@selector(didSelectAdminButton:)]) {
+        BOOL isOwner = NO;
+        if (_chatroom && [_chatroom.owner isEqualToString:[EMClient sharedClient].currentUsername]) {
+            isOwner = YES;
+        }
+        [_delegate didSelectAdminButton:isOwner];
+        _adminButton.selected = !_adminButton.selected;
+    }
+}
+
+- (void)praiseAction
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_uploadPraiseCountToServer) object:nil];
+    EMMessage *message = [self _sendCMDMessageTo:_chatroomId messageType:EMChatTypeChatRoom messageExt:nil action:@"em_praise"];
+    __weak EaseChatView *weakSelf = self;
+    [[EMClient sharedClient].chatManager sendMessage:message progress:NULL completion:^(EMMessage *message, EMError *error) {
+        if (!error) {
+            _praiseCount++;
+            [weakSelf performSelector:@selector(_uploadPraiseCountToServer) withObject:nil afterDelay:30.f];
+        }
+    }];
+}
+
+- (void)_uploadPraiseCountToServer
+{
+    [[EaseHttpManager sharedInstance] savePraiseCountToServerWithRoomId:_room.roomId
+                                                                  count:_praiseCount
+                                                             completion:^(NSInteger count, BOOL success) {
+                                                                 if (success) {
+                                                                     _praiseCount = 0;
+                                                                 }
+                                                             }];
 }
 
 #pragma mark - public
 
-- (BOOL)joinChatroom
+- (BOOL)endEditing:(BOOL)force
 {
-    EMError *error = nil;
-    [[EMClient sharedClient].roomManager joinChatroom:_chatroomId error:&error];
-    if (!error) {
-        return YES;
-    }
-    return NO;
+    BOOL result = [super endEditing:force];
+    [self _willShowBottomView:nil];
+    [self setSendState:NO];
+    self.faceButton.selected = NO;
+    return result;
 }
 
-- (BOOL)leaveChatroom
+- (void)joinChatroomWithCompletion:(void (^)(BOOL success))aCompletion
 {
-    EMError *error = nil;
-    [[EMClient sharedClient].roomManager leaveChatroom:_chatroomId error:&error];
-    if (!error) {
-        [self.datasource removeAllObjects];
-        [[EMClient sharedClient].chatManager deleteConversation:_chatroomId deleteMessages:YES];
-        return YES;
-    }
-    return NO;
+    __weak typeof(self) weakSelf = self;
+    [[EaseHttpManager sharedInstance] joinLiveRoomWithRoomId:_room.roomId
+                                                  chatroomId:_room.chatroomId
+                                                  completion:^(BOOL success) {
+                                                      BOOL ret = NO;
+                                                      if (success) {
+                                                          EMError *error = nil;
+                                                          _chatroom = [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:_chatroomId error:&error];
+                                                          ret = YES;
+                                                          if (!error) {
+                                                              BOOL ret = [_chatroom.adminList containsObject:[EMClient sharedClient].currentUsername] || [_chatroom.owner isEqualToString:[EMClient sharedClient].currentUsername];
+                                                              if (ret) {
+                                                                  [weakSelf.bottomView addSubview:weakSelf.adminButton];
+                                                                  [weakSelf layoutSubviews];
+                                                              }
+                                                          }
+                                                      }
+                                                      aCompletion(ret);
+                                                  }];
+}
+
+- (void)leaveChatroomWithCompletion:(void (^)(BOOL success))aCompletion
+{
+    __weak typeof(self) weakSelf = self;
+    [[EaseHttpManager sharedInstance] leaveLiveRoomWithRoomId:_room.roomId
+                                                   chatroomId:_room.chatroomId
+                                                   completion:^(BOOL success) {
+                                                       BOOL ret = NO;
+                                                       if (success) {
+                                                           [weakSelf.datasource removeAllObjects];
+                                                           [[EMClient sharedClient].chatManager deleteConversation:_chatroomId isDeleteMessages:YES completion:NULL];
+                                                           ret = YES;
+                                                       }
+                                                       aCompletion(ret);
+                                                   }];
 }
 
 - (void)sendGiftWithId:(NSString*)giftId
 {
     EMMessage *message = [self _sendCMDMessageTo:_chatroomId messageType:EMChatTypeChatRoom messageExt:nil action:kGiftAction];
-    [[EMClient sharedClient].chatManager asyncSendMessage:message progress:nil completion:^(EMMessage *message, EMError *error) {
+    [[EMClient sharedClient].chatManager sendMessage:message progress:nil completion:^(EMMessage *message, EMError *error) {
         if (!error) {
             EMCmdMessageBody *body = (EMCmdMessageBody*)message.body;
             if (body) {

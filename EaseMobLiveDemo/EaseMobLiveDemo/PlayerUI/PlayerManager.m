@@ -8,7 +8,6 @@
 
 #import "PlayerManager.h"
 #import "UIWindow+YzdHUD.h"
-#import "ViewController.h"
 
 #define UISCREEN_WIDTH      MIN([UIApplication sharedApplication].keyWindow.bounds.size.width, [UIApplication sharedApplication].keyWindow.bounds.size.height)
 #define UISCREEN_HEIGHT     MAX([UIApplication sharedApplication].keyWindow.bounds.size.width, [UIApplication sharedApplication].keyWindow.bounds.size.height)

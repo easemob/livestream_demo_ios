@@ -8,23 +8,37 @@
 
 //home
 "home.tabbar.finder" = "Finder";
-"home.tabbar.live" = "Live";
-"home.tabbar.message" = "Message";
-"home.tabbar.profile" = "Profile";
 
 //live
 "live.header.hot" = "Hot";
 "live.header.beauty" = "Beauty";
 "live.header.handsome" = "Handsome";
+"live.room.name" = "Room ID";
 
 //Publish
 "publish.button.live" = "Publish Live";
+"publish.title" = "Create Live";
+"publish.home" = "Home";
+"publish.relevance" = "Relevance";
+"publish.liveName" = "Live Name";
+"publish.liveDesc" = "Live Description";
+"publish.introduceSelf" = "Self-introduction";
+"publish.photo" = "Take photo";
+"publish.albums" = "Albums";
+"publish.cancel" = "Cancel";
+"publish.save" = "Save";
+"publish.ok" = "Ok";
+"publish.back" = "Back";
+"publish.relevance.title" = "Relevance Room";
+"publish.addcoverimage" = "Add a Cover Image";
+"publish.liveroomid" = "Live Room ID";
 
 //title
 "title.login" = "Log in";
 "title.signup" = "Sign up";
 "title.update" = "Version Info";
 "title.message" = "Message";
+"title.live" = "Easemob Live";
 
 //login
 "login.button.login" = "Log in";
@@ -58,6 +72,8 @@
 "button.share" = "Share";
 "button.cancel" = "Cancel";
 "button.recharge" = "Recharge";
+"button.live" = "Live";
+"button.logout" = "Log out";
 
 //endView
 "endview.like" = "Like";
@@ -68,19 +84,20 @@
 "endview.button.ok" = "Ok";
 
 //setting
-"setting.logout.text" = "Exit";
-"setting.update.button.update" = "Update";
-"setting.update.button.refresh" = "Refresh";
-"setting.update.label.version" = "Version";
-"setting.profile.followers" = "Followers";
-"setting.profile.following" = "Following";
-"setting.profile.like" = "Like";
 "profile.kick" = "Kick";
 "profile.mute" = "Mute";
 "profile.follow" = "Follow";
 "profile.following" = "Following";
 "profile.message" = "Message";
 "profile.reply" = "Reply";
+"profile.block" = "Block";
+"profile.setAdmin" = "Set Admin";
+"profile.admin" = "Admin";
+"profile.mute" = "Mute";
+"profile.block" = "Block";
+"profile.admin.remove" = "Remove";
+"profile.mute.cancel" = "Cancel";
+"profile.block.remove" = "Remove";
 
 //message
 "message.image" = "[Image]";
@@ -88,3 +105,6 @@
 "message.video" = "[Video]";
 "message.file" = "[File]";
 "message.location" = "[Location]";
+
+//search
+"search.placeholder" = "Input Room ID";

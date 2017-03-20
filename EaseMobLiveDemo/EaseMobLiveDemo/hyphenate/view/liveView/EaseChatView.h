@@ -9,7 +9,10 @@
 #import <UIKit/UIKit.h>
 
 @class EMMessage;
+@class EaseLiveRoom;
 @protocol EaseChatViewDelegate <NSObject>
+
+@optional
 
 - (void)easeChatViewDidChangeFrameToHeight:(CGFloat)toHeight;
 
@@ -17,13 +20,11 @@
 
 - (void)didReceiveBarrageWithCMDMessage:(EMMessage*)message;
 
-- (void)didSelectGiftButton;
-
-- (void)didSelectPrintScreenButton;
-
-- (void)didSelectMessageButton;
-
 - (void)didSelectUserWithMessage:(EMMessage*)message;
+
+- (void)didSelectChangeCameraButton;
+
+- (void)didSelectAdminButton:(BOOL)isOwner;
 
 @end
 
@@ -36,11 +37,15 @@
                    chatroomId:(NSString*)chatroomId
                     isPublish:(BOOL)isPublish;
 
+- (instancetype)initWithFrame:(CGRect)frame
+                         room:(EaseLiveRoom*)room
+                    isPublish:(BOOL)isPublish;
+
 @property (nonatomic, weak) id<EaseChatViewDelegate> delegate;
 
-- (BOOL)joinChatroom;
+- (void)joinChatroomWithCompletion:(void (^)(BOOL success))aCompletion;
 
-- (BOOL)leaveChatroom;
+- (void)leaveChatroomWithCompletion:(void (^)(BOOL success))aCompletion;
 
 - (void)sendGiftWithId:(NSString*)giftId;
 

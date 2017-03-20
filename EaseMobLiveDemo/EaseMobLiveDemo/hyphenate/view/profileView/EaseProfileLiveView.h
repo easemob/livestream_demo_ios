@@ -12,16 +12,15 @@
 
 @protocol EaseProfileLiveViewDelegate <NSObject>
 
-- (void)didSelectReplyWithUsername:(NSString*)username;
-
-- (void)didSelectMessageWithUsername:(NSString*)username;
 
 @end
 
 @interface EaseProfileLiveView : EaseBaseSubView
 
-@property (nonatomic, weak) id<EaseProfileLiveViewDelegate> delegate;
+@property (nonatomic, weak) id<EaseProfileLiveViewDelegate> profileDelegate;
 
-- (instancetype)initWithUsername:(NSString*)username;
+- (instancetype)initWithUsername:(NSString*)username
+                      chatroomId:(NSString*)chatroomId
+                         isOwner:(BOOL)isOwner;
 
 @end

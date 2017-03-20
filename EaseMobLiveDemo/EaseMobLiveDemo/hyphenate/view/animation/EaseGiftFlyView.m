@@ -7,7 +7,6 @@
 //
 
 #import "EaseGiftFlyView.h"
-#import "EaseTextAttachment.h"
 
 #define kLabelDefaultWidth 100.f
 #define kLabelDefaultHeight 25.f
