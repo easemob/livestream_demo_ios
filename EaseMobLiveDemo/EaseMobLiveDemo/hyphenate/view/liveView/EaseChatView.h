@@ -20,6 +20,8 @@
 
 - (void)didReceiveBarrageWithCMDMessage:(EMMessage*)message;
 
+- (void)didReceivePraiseWithCMDMessage:(EMMessage *)message;
+
 - (void)didSelectUserWithMessage:(EMMessage*)message;
 
 - (void)didSelectChangeCameraButton;

@@ -27,7 +27,7 @@
 #define kDefaultTop 30.f
 #define kDefaultLeft 10.f
 
-@interface EaseLiveViewController () <EaseChatViewDelegate,EaseLiveHeaderListViewDelegate,TapBackgroundViewDelegate,EaseLiveGiftViewDelegate,EMChatroomManagerDelegate,EaseProfileLiveViewDelegate>
+@interface EaseLiveViewController () <EaseChatViewDelegate,EaseLiveHeaderListViewDelegate,TapBackgroundViewDelegate,EaseLiveGiftViewDelegate,EMChatroomManagerDelegate,EaseProfileLiveViewDelegate,EMClientDelegate>
 {
     NSTimer *_burstTimer;
     EaseLiveRoom *_room;
@@ -76,6 +76,7 @@
     
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
     self.playerManager = [[PlayerManager alloc] init];
+    self.playerManager.retryConnectNumber = 0;
     self.playerManager.view = self.view;
     self.playerManager.viewContorller = self;
     float height = self.view.frame.size.height;
@@ -100,6 +101,7 @@
     });
     
     [[EMClient sharedClient].roomManager addDelegate:self delegateQueue:nil];
+    [[EMClient sharedClient] addDelegate:self delegateQueue:nil];
     
     [self setupForDismissKeyboard];
 
@@ -114,6 +116,7 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[EMClient sharedClient].roomManager removeDelegate:self];
+    [[EMClient sharedClient] removeDelegate:self];
     _chatview.delegate = nil;
     _chatview = nil;
 }
@@ -186,8 +189,8 @@
         [self closeAction];
         return;
     }
-    BOOL isOwner = [_chatroom.owner isEqualToString:[EMClient sharedClient].currentUsername];
-    BOOL ret = [_chatroom.adminList containsObject:[EMClient sharedClient].currentUsername] || isOwner;
+    BOOL isOwner = _chatroom.permissionType == EMChatroomPermissionTypeOwner;
+    BOOL ret = _chatroom.permissionType == EMChatroomPermissionTypeAdmin || isOwner;
     if (ret || _enableAdmin) {
         EaseProfileLiveView *profileLiveView = [[EaseProfileLiveView alloc] initWithUsername:username
                                                                                   chatroomId:_room.chatroomId
@@ -227,25 +230,16 @@
     }
 }
 
-- (void)didReceiveGiftWithCMDMessage:(EMMessage *)message
+- (void)didReceivePraiseWithCMDMessage:(EMMessage *)message
 {
-    EaseGiftFlyView *flyView = [[EaseGiftFlyView alloc] initWithMessage:message];
-    [self.view addSubview:flyView];
-    [flyView animateInView:self.view];
-}
-
-- (void)didReceiveBarrageWithCMDMessage:(EMMessage *)message
-{
-    EaseBarrageFlyView *barrageFlyView = [[EaseBarrageFlyView alloc] initWithMessage:message];
-    [self.view addSubview:barrageFlyView];
-    [barrageFlyView animateInView:self.view];
+    [self showTheLoveAction];
 }
 
 - (void)didSelectUserWithMessage:(EMMessage *)message
 {
     [self.view endEditing:YES];
-    BOOL isOwner = [_chatroom.owner isEqualToString:[EMClient sharedClient].currentUsername];
-    BOOL ret = [_chatroom.adminList containsObject:[EMClient sharedClient].currentUsername] || isOwner;
+    BOOL isOwner = _chatroom.permissionType == EMChatroomPermissionTypeOwner;
+    BOOL ret = _chatroom.permissionType == EMChatroomPermissionTypeAdmin || isOwner;
     if (ret || _enableAdmin) {
         EaseProfileLiveView *profileLiveView = [[EaseProfileLiveView alloc] initWithUsername:message.from
                                                                                   chatroomId:_room.chatroomId
@@ -303,7 +297,7 @@
 - (void)didDismissFromChatroom:(EMChatroom *)aChatroom
                         reason:(EMChatroomBeKickedReason)aReason
 {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"被提出直播聊天室" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"被踢出直播聊天室" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
     [alert show];
     [self closeButtonAction];
 }
@@ -370,6 +364,13 @@
     }
 }
 
+#pragma mark - EMClientDelegate
+
+- (void)userAccountDidLoginFromOtherDevice
+{
+    [self closeButtonAction];
+}
+
 #pragma mark - Action
 
 - (void)closeAction
@@ -387,7 +388,7 @@
 {
     EaseHeartFlyView* heart = [[EaseHeartFlyView alloc]initWithFrame:CGRectMake(0, 0, 55, 50)];
     [_chatview addSubview:heart];
-    CGPoint fountainSource = CGPointMake(KScreenWidth - (20 + 50/2.0), _chatview.height - 100);
+    CGPoint fountainSource = CGPointMake(KScreenWidth - (20 + 50/2.0), _chatview.height);
     heart.center = fountainSource;
     [heart animateInView:_chatview];
 }
@@ -408,9 +409,7 @@
         if (success) {
             [[EMClient sharedClient].chatManager deleteConversation:chatroomId isDeleteMessages:YES completion:NULL];
         }
-        [weakSelf dismissViewControllerAnimated:YES completion:^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationRefreshList object:@(YES)];
-        }];
+        [weakSelf dismissViewControllerAnimated:YES completion:NULL];
     }];
     
     [_burstTimer invalidate];
@@ -424,10 +423,11 @@
         if (reson == MPMovieFinishReasonPlaybackEnded) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"直播中断" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
             [alert show];
-//            [self closeButtonAction];
         }
         else if (reson == MPMovieFinishReasonPlaybackError) {
-//            [self closeButtonAction];
+            if ([self.playerManager respondsToSelector:@selector(restartPlayer)]) {
+                [self.playerManager performSelector:@selector(restartPlayer) withObject:nil afterDelay:15.f];
+            }
         }
     }
 }

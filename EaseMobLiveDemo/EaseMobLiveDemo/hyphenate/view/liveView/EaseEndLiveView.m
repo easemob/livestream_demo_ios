@@ -131,6 +131,9 @@
 
 - (void)continueAction
 {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didClickContinueButton)]) {
+        [self.delegate didClickContinueButton];
+    }
     [self removeFromSuperview];
 }
 

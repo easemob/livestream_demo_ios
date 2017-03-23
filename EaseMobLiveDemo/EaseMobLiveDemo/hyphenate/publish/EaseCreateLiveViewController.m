@@ -544,7 +544,7 @@
     };
 
     [[EaseHttpManager sharedInstance] modifyLiveRoomStatusWithRoomId:_liveRoom.roomId
-                                                              status:EaseLiveSessionClosed
+                                                              status:EaseLiveSessionCompleted
                                                           completion:^(BOOL success) {
                                                               if (success) {
                                                                   block();

@@ -26,13 +26,12 @@
 #define kDefaultTop 30.f
 #define kDefaultLeft 10.f
 
-@interface EasePublishViewController () <EaseChatViewDelegate,UITextViewDelegate,EMChatroomManagerDelegate,EaseEndLiveViewDelegate,TapBackgroundViewDelegate,EaseLiveHeaderListViewDelegate,EaseProfileLiveViewDelegate,UIAlertViewDelegate>
+@interface EasePublishViewController () <EaseChatViewDelegate,UITextViewDelegate,EMChatroomManagerDelegate,EaseEndLiveViewDelegate,TapBackgroundViewDelegate,EaseLiveHeaderListViewDelegate,EaseProfileLiveViewDelegate,UIAlertViewDelegate,EMClientDelegate>
 {
     BOOL _isload;
     BOOL _isShutDown;
     
     UIView *_blackView;
-    NSTimer *_burstTimer;
     
     BOOL _isPublish;
     
@@ -52,8 +51,6 @@
 @property (strong, nonatomic) UIView *videoView;
 @property (strong, nonatomic) AVCaptureDevice *currentDev;
 @property (nonatomic, assign) BOOL shouldAutoStarted;
-
-@property (strong, nonatomic) NSTimer *timer;
 
 @property (strong, nonatomic) UITapGestureRecognizer *singleTapGR;
 
@@ -79,6 +76,7 @@
     self.view.backgroundColor = [UIColor colorWithRed:0.88 green:0.88 blue:0.88 alpha:1.0];
     
     [[EMClient sharedClient].roomManager addDelegate:self delegateQueue:nil];
+    [[EMClient sharedClient] addDelegate:self delegateQueue:nil];
     
     [self.view addSubview:self.closeBtn];
     
@@ -86,39 +84,35 @@
     
     [self setupForDismissKeyboard];
     
-    __weak typeof(self) weakSelf = self;
-    [[EaseHttpManager sharedInstance] modifyLiveRoomStatusWithRoomId:_room.roomId
-                                                              status:EaseLiveSessionOngoing
-                                                          completion:^(BOOL success) {
-                                                              if (success) {
-                                                                  [weakSelf.view addSubview:self.chatview];
-                                                                  [weakSelf.view addSubview:self.headerListView];
-                                                                  [weakSelf.chatview joinChatroomWithCompletion:^(BOOL success) {
-                                                                      if (success) {
-                                                                          [weakSelf.headerListView loadHeaderListWithChatroomId:_room.chatroomId];
-                                                                      }
-                                                                  }];
-                                                                  [weakSelf.view addSubview:self.roomNameLabel];
-                                                                  [weakSelf.view layoutSubviews];
-                                                                  [self setBtnStateInSel:1];
-                                                                  [self startAction];
-                                                                  [weakSelf showHint:@"更新成功"];
-                                                              } else {
-                                                                  [weakSelf showHint:@"更新失败"];
-                                                              }
-                                                          }];
+    [self.view addSubview:self.chatview];
+    [self.view addSubview:self.headerListView];
+    [self.chatview joinChatroomWithCompletion:^(BOOL success) {
+        if (success) {
+            [self.headerListView loadHeaderListWithChatroomId:_room.chatroomId];
+        }
+    }];
+    [self.view addSubview:self.roomNameLabel];
+    [self.view layoutSubviews];
+    [self setBtnStateInSel:1];
+    [self startAction];
+    
+//    [[EaseHttpManager sharedInstance] modifyLiveRoomStatusWithRoomId:_room.roomId
+//                                                              status:EaseLiveSessionOngoing
+//                                                          completion:^(BOOL success) {
+//                                                              if (success) {
+//                                                                  [weakSelf showHint:@"更新成功"];
+//                                                              } else {
+//                                                                  [weakSelf showHint:@"更新失败"];
+//                                                              }
+//                                                          }];
 }
 
 - (void)dealloc
 {
     [[EMClient sharedClient].roomManager removeDelegate:self];
+    [[EMClient sharedClient] removeDelegate:self];
     
     _chatview.delegate = nil;
-    
-    if (_burstTimer) {
-        [_burstTimer invalidate];
-        _burstTimer = nil;
-    }
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -205,7 +199,7 @@
 {
     EaseHeartFlyView* heart = [[EaseHeartFlyView alloc]initWithFrame:CGRectMake(0, 0, 55, 50)];
     [_chatview addSubview:heart];
-    CGPoint fountainSource = CGPointMake(KScreenWidth - (20 + 50/2.0), _chatview.height - 100);
+    CGPoint fountainSource = CGPointMake(KScreenWidth - (20 + 50/2.0), _chatview.height);
     heart.center = fountainSource;
     [heart animateInView:_chatview];
 }
@@ -240,6 +234,7 @@
     [[EaseHttpManager sharedInstance] getLiveRoomCurrentWithRoomId:_room.roomId
                                                         completion:^(EaseLiveSession *session, BOOL success) {
                                                             if (success) {
+                                                                [weakSelf _shutDownLive];
                                                                 [weakSelf.endLiveView setAudience:[NSString stringWithFormat:@"%ld人",(long)session.totalWatchCount]];
                                                                 [self.view addSubview:self.endLiveView];
                                                                 [self.view bringSubviewToFront:self.endLiveView];
@@ -409,41 +404,45 @@
 - (void)didClickEndButton
 {
     __weak EasePublishViewController *weakSelf = self;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
+    dispatch_block_t block = ^{
         [weakSelf.chatview leaveChatroomWithCompletion:^(BOOL success) {
             if (success) {
-            
+                [[EMClient sharedClient].chatManager deleteConversation:_room.chatroomId isDeleteMessages:YES completion:NULL];
+            } else {
+                [weakSelf showHint:@"退出聊天室失败"];
             }
+            if (weakSelf.videoView)
+            {
+                [weakSelf.videoView removeFromSuperview];
+            }
+            weakSelf.videoView = nil;
+            weakSelf.closeBtn.enabled = YES;
+            
+            [UIApplication sharedApplication].idleTimerDisabled = NO;
+            [weakSelf removeNoti];
+            [weakSelf dismissViewControllerAnimated:YES completion:^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationRefreshList object:@(YES)];
+            }];
         }];
-        
-        [[EaseHttpManager sharedInstance] modifyLiveRoomStatusWithRoomId:_room.roomId
-                                                                  status:EaseLiveSessionClosed
-                                                              completion:^(BOOL success) {
-                                                              }];
-    });
+    };
     
-    [_burstTimer invalidate];
-    _burstTimer = nil;
+    [[EaseHttpManager sharedInstance] modifyLiveRoomStatusWithRoomId:_room.roomId
+                                                              status:EaseLiveSessionCompleted
+                                                          completion:^(BOOL success) {
+                                                              if (!success) {
+                                                                  [weakSelf showHint:@"更新失败"];
+                                                              }
+                                                              block();
+                                                          }];
     
     self.shouldAutoStarted = NO;
     self.closeBtn.enabled = NO;
-    [self.timer invalidate];
-    self.timer = nil;
-    [[CameraServer server] shutdown:^{
-        if (weakSelf.videoView)
-        {
-            [weakSelf.videoView removeFromSuperview];
-        }
-        weakSelf.videoView = nil;
-        
-        weakSelf.closeBtn.enabled = YES;
-        
-        [UIApplication sharedApplication].idleTimerDisabled = NO;
-        [weakSelf removeNoti];
-        [weakSelf dismissViewControllerAnimated:YES completion:^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationRefreshList object:@(YES)];
-        }];
-    }];
+}
+
+- (void)didClickContinueButton
+{
+    [self _recoverLive];
 }
 
 #pragma mark - EaseChatViewDelegate
@@ -467,6 +466,11 @@
             self.chatview.frame = rect;
         }];
     }
+}
+
+- (void)didReceivePraiseWithCMDMessage:(EMMessage *)message
+{
+    [self showTheLoveAction];
 }
 
 - (void)didSelectUserWithMessage:(EMMessage *)message
@@ -508,14 +512,16 @@
 
 #pragma mark - EMChatroomManagerDelegate
 
-- (void)didReceiveUserJoinedChatroom:(EMChatroom *)aChatroom username:(NSString *)aUsername
+- (void)userDidJoinChatroom:(EMChatroom *)aChatroom
+                       user:(NSString *)aUsername
 {
     if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
         [_headerListView joinChatroomWithUsername:aUsername];
     }
 }
 
-- (void)didReceiveUserLeavedChatroom:(EMChatroom *)aChatroom username:(NSString *)aUsername
+- (void)userDidLeaveChatroom:(EMChatroom *)aChatroom
+                        user:(NSString *)aUsername
 {
     if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
         [_headerListView leaveChatroomWithUsername:aUsername];
@@ -560,6 +566,21 @@
         
         [alert addAction:ok];
     }
+}
+
+- (void)didDismissFromChatroom:(EMChatroom *)aChatroom
+                        reason:(EMChatroomBeKickedReason)aReason
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"被踢出直播聊天室" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+    [alert show];
+    [self didClickEndButton];
+}
+
+#pragma mark - EMClientDelegate
+
+- (void)userAccountDidLoginFromOtherDevice
+{
+    [self _shutDownLive];
 }
 
 #pragma mark - private
@@ -621,32 +642,40 @@
     }
     else if ([noti.name isEqualToString:UIApplicationDidEnterBackgroundNotification] || [noti.name isEqualToString:UIApplicationWillResignActiveNotification])
     {
-        [_burstTimer invalidate];
-        _burstTimer = nil;
-        while (!_isShutDown) {
-            [[CameraServer server] shutdown:^{
-                _blackView = [[CameraServer server] createBlurringScreenshot];
-                _blackView.backgroundColor = [UIColor blackColor];
-                [self.videoView addSubview:_blackView];
-                
-                UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc]init];
-                activity.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
-                activity.center = _blackView.center;
-                [activity startAnimating];
-                [_blackView addSubview:activity];
-                
-            }];
-            _isShutDown = YES;
-        }
-        _isload = NO;
+        [self _shutDownLive];
     }
     else if ([noti.name isEqualToString:UIApplicationDidBecomeActiveNotification])
     {
-        while (!_isload) {
-            [self startAction];
-            _isShutDown = NO;
-            _isload = YES;
-        }
+        [self _recoverLive];
+    }
+}
+
+- (void)_shutDownLive;
+{
+    while (!_isShutDown) {
+        [[CameraServer server] shutdown:^{
+            _blackView = [[CameraServer server] createBlurringScreenshot];
+            _blackView.backgroundColor = [UIColor blackColor];
+            [self.videoView addSubview:_blackView];
+            
+            UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc]init];
+            activity.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+            activity.center = _blackView.center;
+            [activity startAnimating];
+            [_blackView addSubview:activity];
+            
+        }];
+        _isShutDown = YES;
+    }
+    _isload = NO;
+}
+
+- (void)_recoverLive
+{
+    while (!_isload) {
+        [self startAction];
+        _isShutDown = NO;
+        _isload = YES;
     }
 }
 

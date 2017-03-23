@@ -82,7 +82,23 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     EaseLiveCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"collectionCell" forIndexPath:indexPath];
-    [cell setLiveRoom:[self.resultsSource objectAtIndex:indexPath.row]];
+    EaseLiveRoom *room = [self.resultsSource objectAtIndex:indexPath.row];
+    [cell setLiveRoom:room];
+    UIImage *image = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:room.coverPictureUrl];
+    if (!image) {
+        __weak typeof(self) weakSelf = self;
+        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:room.coverPictureUrl]
+                                                              options:SDWebImageDownloaderUseNSURLCache
+                                                             progress:NULL
+                                                            completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+                                                                if (image) {
+                                                                    [[SDImageCache sharedImageCache] storeImage:image forKey:room.coverPictureUrl toDisk:NO];
+                                                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                                                        [weakSelf.collectionView reloadData];
+                                                                    });
+                                                                }
+                                                            }];
+    }
     return cell;
 }
 

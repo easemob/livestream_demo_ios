@@ -7,7 +7,7 @@
 //
 
 #define kCollectionCellDefaultHeight 150
-#define kDefaultPageSize 10
+#define kDefaultPageSize 20
 #define kCollectionIdentifier @"collectionCell"
 
 #import "EaseLiveTVListViewController.h"
@@ -24,6 +24,7 @@
 {
     NSString *_cursor;
     BOOL _noMore;
+    BOOL _isLoading;
     
     MJRefreshHeader *_refreshHeader;
     MJRefreshFooter *_refreshFooter;
@@ -82,6 +83,10 @@
 
 - (void)loadData:(BOOL)isHeader
 {
+    if (_isLoading) {
+        return;
+    }
+    _isLoading = YES;
     __weak EaseLiveTVListViewController *weakSelf = self;
     [[EaseHttpManager sharedInstance] fetchLiveRoomsOngoingWithCursor:_cursor
                                                                 limit:kDefaultPageSize
@@ -108,6 +113,7 @@
                                                                }
                                                                
                                                                [weakSelf _collectionViewDidFinishTriggerHeader:isHeader reload:YES];
+                                                               _isLoading = NO;
                                                            }];
 }
 
@@ -244,6 +250,21 @@
     EaseLiveCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCollectionIdentifier forIndexPath:indexPath];
     EaseLiveRoom *room = [self.dataArray objectAtIndex:indexPath.row];
     [cell setLiveRoom:room];
+    UIImage *image = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:room.coverPictureUrl];
+    if (!image) {
+        __weak typeof(self) weakSelf = self;
+        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:room.coverPictureUrl]
+                                                              options:SDWebImageDownloaderUseNSURLCache
+                                                             progress:NULL
+                                                            completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+                                                                if (image) {
+                                                                    [[SDImageCache sharedImageCache] storeImage:image forKey:room.coverPictureUrl toDisk:NO];
+                                                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                                                        [weakSelf.collectionView reloadData];
+                                                                    });
+                                                                }
+                                                            }];
+    }
     return cell;
 }
 
@@ -309,6 +330,13 @@
     return YES;
 }
 
+- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (!_noMore && [self.dataArray count] - 1 == indexPath.row && !_isLoading) {
+//        [self loadData:NO];
+    }
+}
+
 #pragma mark - EMClientDelegate
 
 - (void)autoLoginDidCompleteWithError:(EMError *)aError
@@ -361,6 +389,7 @@
         ret = [notify.object boolValue];
     }
     if (ret) {
+        _noMore = NO;
         _cursor = @"";
     }
     [self loadData:ret];

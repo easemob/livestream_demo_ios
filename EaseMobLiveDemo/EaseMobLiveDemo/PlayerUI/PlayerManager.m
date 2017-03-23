@@ -606,7 +606,7 @@ static bool showing = NO;
             
             _retryAlert.message = @"视频播放错误，请稍候再试";
             _retryAlert.tag = AlertViewPlayerError;
-            [_retryAlert show];
+            [MBProgressHUD showError:_retryAlert.message toView:nil];
         }
     }
     else if ([noti.name isEqualToString:UCloudPlayerVideoChangeRotationNotification]&& self.supportAngleChange) {

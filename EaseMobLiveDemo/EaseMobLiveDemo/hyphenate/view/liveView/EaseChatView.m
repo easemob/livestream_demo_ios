@@ -12,6 +12,8 @@
 #import "EaseLiveRoom.h"
 
 #define kGiftAction @"cmd_gift"
+#define kPraiseAction @"cmd_live_praise"
+#define kPraiseCount @"live_praise_count"
 
 #define kBarrageAction @"is_barrage_msg"
 
@@ -29,6 +31,8 @@
     NSInteger _praiseCount;
     
     long long _curtime;
+    CGFloat _previousTextViewContentHeight;
+    CGFloat _defaultHeight;
 }
 
 @property (strong, nonatomic) NSMutableArray *datasource;
@@ -85,6 +89,7 @@
         
         self.bottomSendMsgView.hidden = YES;
         _curtime = (long long)([[NSDate date] timeIntervalSince1970]*1000);
+        _defaultHeight = self.height;
     }
     return self;
 }
@@ -212,6 +217,7 @@
         _textView.delegate = self;
         _textView.backgroundColor = RGBACOLOR(236, 236, 236, 1);
         _textView.layer.cornerRadius = 4.0f;
+        _previousTextViewContentHeight = [self _getTextViewContentH:_textView];
     }
     return _textView;
 }
@@ -242,7 +248,7 @@
 
 #pragma mark - EMChatManagerDelegate
 
-- (void)didReceiveMessages:(NSArray *)aMessages
+- (void)messagesDidReceive:(NSArray *)aMessages
 {
     for (EMMessage *message in aMessages) {
         if ([message.conversationId isEqualToString:_chatroomId]) {
@@ -265,17 +271,25 @@
     }
 }
 
-- (void)didReceiveCmdMessages:(NSArray *)aCmdMessages
+- (void)cmdMessagesDidReceive:(NSArray *)aCmdMessages
 {
     for (EMMessage *message in aCmdMessages) {
-        if (message.timestamp < _curtime) {
-            continue;
-        }
-        EMCmdMessageBody *body = (EMCmdMessageBody*)message.body;
-        if (body) {
-            if ([body.action isEqualToString:kGiftAction]) {
-                if (_delegate && [_delegate respondsToSelector:@selector(didReceiveGiftWithCMDMessage:)]) {
-                    [_delegate didReceiveGiftWithCMDMessage:message];
+        if ([message.conversationId isEqualToString:_chatroomId]) {
+            if (message.timestamp < _curtime) {
+                continue;
+            }
+            EMCmdMessageBody *body = (EMCmdMessageBody*)message.body;
+            if (body) {
+                if ([body.action isEqualToString:kGiftAction]) {
+                    if (_delegate && [_delegate respondsToSelector:@selector(didReceiveGiftWithCMDMessage:)]) {
+                        [_delegate didReceiveGiftWithCMDMessage:message];
+                    }
+                }
+                
+                if ([body.action isEqualToString:kPraiseAction]) {
+                    if (_delegate && [_delegate respondsToSelector:@selector(didReceivePraiseWithCMDMessage:)]) {
+                        [_delegate didReceivePraiseWithCMDMessage:message];
+                    }
                 }
             }
         }
@@ -367,8 +381,10 @@
 {
     if (text.length > 0 && [text isEqualToString:@"\n"]) {
         [self sendText];
+        [self textViewDidChange:self.textView];
         return NO;
     }
+    [self textViewDidChange:self.textView];
     return YES;
 }
 
@@ -392,6 +408,7 @@
             self.textView.text = [chatText substringToIndex:chatText.length-length];
         }
     }
+    [self textViewDidChange:self.textView];
 }
 
 - (void)sendFace
@@ -401,6 +418,7 @@
         [self sendText];
         self.textView.text = @"";
     }
+    [self textViewDidChange:self.textView];
 }
 
 - (void)sendFaceWithEmotion:(EaseEmotion *)emotion
@@ -421,7 +439,7 @@
     }
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(easeChatViewDidChangeFrameToHeight:)]) {
-        CGFloat toHeight = endFrame.size.height + self.frame.size.height;
+        CGFloat toHeight = endFrame.size.height + self.frame.size.height + (self.textView.height - 30);
         [self.delegate easeChatViewDidChangeFrameToHeight:toHeight];
     }
 }
@@ -429,6 +447,11 @@
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
     [self _willShowBottomView:nil];
+}
+
+- (void)textViewDidChange:(UITextView *)textView
+{
+    [self _willShowInputTextViewToHeight:[self _getTextViewContentH:textView] refresh:NO];
 }
 
 + (NSString *)latestMessageTitleForConversationModel:(EMMessage*)lastMessage;
@@ -494,7 +517,7 @@
     return message;
 }
 
-- (void)setSendState:(BOOL)state
+- (void)_setSendState:(BOOL)state
 {
     if (state) {
         self.bottomSendMsgView.hidden = NO;
@@ -511,7 +534,11 @@
 {
     if (![self.activityView isEqual:bottomView]) {
         CGFloat bottomHeight = bottomView ? bottomView.frame.size.height : 0;
-        self.height = bottomHeight + 200.f;
+        if (bottomView != nil) {
+            self.height = bottomHeight + _defaultHeight + (self.textView.height - 30);
+        } else {
+            self.height = bottomHeight + _defaultHeight;
+        }
         if (self.delegate && [self.delegate respondsToSelector:@selector(easeChatViewDidChangeFrameToHeight:)]) {
             [self.delegate easeChatViewDidChangeFrameToHeight:self.height];
         }
@@ -542,11 +569,47 @@
     [(EaseFaceView *)self.faceView setEmotionManagers:@[manager]];
 }
 
+- (CGFloat)_getTextViewContentH:(UITextView *)textView
+{
+    return ceilf([textView sizeThatFits:textView.frame.size].height);
+}
+
+- (void)_willShowInputTextViewToHeight:(CGFloat)toHeight refresh:(BOOL)refresh
+{
+    if (toHeight < 30.f) {
+        toHeight = 30.f;
+    }
+    if (toHeight > 90.f) {
+        toHeight = 90.f;
+    }
+    
+    if (toHeight == _previousTextViewContentHeight && !refresh) {
+        return;
+    } else{
+        CGFloat changeHeight = toHeight - _previousTextViewContentHeight;
+        
+        CGRect rect = self.frame;
+        rect.size.height += changeHeight;
+        rect.origin.y -= changeHeight;
+        self.frame = rect;
+        
+        rect = self.bottomSendMsgView.frame;
+        rect.size.height += changeHeight;
+        self.bottomSendMsgView.frame = rect;
+        
+        [self.textView setContentOffset:CGPointMake(0.0f, (self.textView.contentSize.height - self.textView.frame.size.height) / 2) animated:YES];
+
+        _previousTextViewContentHeight = toHeight;
+    }
+}
+
+
 #pragma mark - action
 
 - (void)sendTextAction
 {
-    [self setSendState:YES];
+    [self _setSendState:YES];
+    [self _willShowInputTextViewToHeight:[self _getTextViewContentH:self.textView] refresh:YES];
 }
 
 - (void)sendText
@@ -562,6 +625,8 @@
                 [weakSelf.datasource addObject:message];
                 [weakSelf.tableView reloadData];
                 [weakSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[weakSelf.datasource count] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+            } else {
+                [MBProgressHUD showError:@"消息发送失败" toView:weakSelf];
             }
         }];
         self.textView.text = @"";
@@ -592,7 +657,7 @@
 {
     if (_delegate && [_delegate respondsToSelector:@selector(didSelectAdminButton:)]) {
         BOOL isOwner = NO;
-        if (_chatroom && [_chatroom.owner isEqualToString:[EMClient sharedClient].currentUsername]) {
+        if (_chatroom && _chatroom.permissionType == EMChatroomPermissionTypeOwner) {
             isOwner = YES;
         }
         [_delegate didSelectAdminButton:isOwner];
@@ -603,12 +668,15 @@
 - (void)praiseAction
 {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_uploadPraiseCountToServer) object:nil];
-    EMMessage *message = [self _sendCMDMessageTo:_chatroomId messageType:EMChatTypeChatRoom messageExt:nil action:@"em_praise"];
+    EMMessage *message = [self _sendCMDMessageTo:_chatroomId messageType:EMChatTypeChatRoom messageExt:@{kPraiseCount:@(1)} action:kPraiseAction];
     __weak EaseChatView *weakSelf = self;
     [[EMClient sharedClient].chatManager sendMessage:message progress:NULL completion:^(EMMessage *message, EMError *error) {
         if (!error) {
+            if (weakSelf.delegate && [weakSelf.delegate respondsToSelector:@selector(didReceivePraiseWithCMDMessage:)]) {
+                [weakSelf.delegate didReceivePraiseWithCMDMessage:message];
+            }
             _praiseCount++;
-            [weakSelf performSelector:@selector(_uploadPraiseCountToServer) withObject:nil afterDelay:30.f];
+            [weakSelf performSelector:@selector(_uploadPraiseCountToServer) withObject:nil afterDelay:10.f];
         }
     }];
 }
@@ -630,7 +698,7 @@
 {
     BOOL result = [super endEditing:force];
     [self _willShowBottomView:nil];
-    [self setSendState:NO];
+    [self _setSendState:NO];
     self.faceButton.selected = NO;
     return result;
 }
@@ -647,7 +715,7 @@
                                                           _chatroom = [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:_chatroomId error:&error];
                                                           ret = YES;
                                                           if (!error) {
-                                                              BOOL ret = [_chatroom.adminList containsObject:[EMClient sharedClient].currentUsername] || [_chatroom.owner isEqualToString:[EMClient sharedClient].currentUsername];
+                                                              BOOL ret = _chatroom.permissionType == EMGroupPermissionTypeAdmin || _chatroom.permissionType == EMGroupPermissionTypeAdmin;
                                                               if (ret) {
                                                                   [weakSelf.bottomView addSubview:weakSelf.adminButton];
                                                                   [weakSelf layoutSubviews];
@@ -696,7 +764,7 @@
 - (void)sendMessageAtWithUsername:(NSString *)username
 {
     self.textView.text = [self.textView.text stringByAppendingString:[NSString stringWithFormat:@"@%@ ",username]];
-    [self setSendState:YES];
+    [self _setSendState:YES];
 }
 
 

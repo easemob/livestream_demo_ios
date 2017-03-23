@@ -12,6 +12,8 @@
 
 - (void)didClickEndButton;
 
+- (void)didClickContinueButton;
+
 @end
 
 @interface EaseEndLiveView : UIView

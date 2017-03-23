@@ -64,7 +64,9 @@
         _headImageView.frame = CGRectMake((KScreenWidth - 60)/2, self.profileCardView.top + 41.f, 60.f, 60.f);
         _headImageView.layer.cornerRadius = _headImageView.width/2;
         _headImageView.backgroundColor = RGBACOLOR(222, 222, 222, 1);
-        _headImageView.image = [UIImage imageNamed:@"live_default_user@"];
+        _headImageView.layer.masksToBounds = YES;
+        _headImageView.contentMode = UIViewContentModeScaleAspectFill;
+        _headImageView.image = [UIImage imageNamed:@"live_default_user"];
     }
     return _headImageView;
 }
@@ -167,7 +169,7 @@
     MBProgressHUD *hud = [MBProgressHUD showMessag:@"禁言中..." toView:self];
     __weak MBProgressHUD *weakHud = hud;
     [[EMClient sharedClient].roomManager muteMembers:@[_username]
-                                    muteMilliseconds:600
+                                    muteMilliseconds:-1
                                         fromChatroom:_chatroomId
                                           completion:^(EMChatroom *aChatroom, EMError *aError) {
                                               if (!aError) {

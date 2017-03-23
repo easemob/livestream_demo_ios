@@ -30,10 +30,8 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self addSubview:self.liveImageView];
+        [self.contentView addSubview:self.liveImageView];
         [self.liveImageView addSubview:self.liveFooter];
-        
-        //[self.liveFooter addSubview:self.headImageView];
         [self.liveFooter addSubview:self.textLable];
         [self.liveFooter addSubview:self.numLabel];
     }
@@ -107,11 +105,17 @@
 {
     _textLable.text = room.title;
     if (room.coverPictureUrl.length > 0) {
-        [_liveImageView sd_setImageWithURL:[NSURL URLWithString:room.coverPictureUrl] placeholderImage:nil];
+        UIImage *image = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:room.coverPictureUrl];
+        if (image) {
+            _liveImageView.image = image;
+        } else {
+            _liveImageView.image = [UIImage imageNamed:@"default_image"];
+        }
     } else {
-        _liveImageView.image = nil;
+        _liveImageView.image = [UIImage imageNamed:@"default_image"];
     }
     _numLabel.text = [NSString stringWithFormat:@"%ld",(long)room.session.currentUserCount];
 }
+
 
 @end

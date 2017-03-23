@@ -56,12 +56,8 @@
 }
 
 #pragma makr - EMClientDelegate
-- (void)didConnectionStateChanged:(EMConnectionState)aConnectionState
-{
 
-}
-
-- (void)didAutoLoginWithError:(EMError *)aError
+- (void)autoLoginDidCompleteWithError:(EMError *)aError
 {
     if (aError) {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"自动登录失败，请重新登录" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
@@ -69,14 +65,14 @@
     }
 }
 
-- (void)didLoginFromOtherDevice
+- (void)userAccountDidLoginFromOtherDevice
 {
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"你的账号已在其他地方登录" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
     [alertView show];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"loginStateChange" object:@NO];
 }
 
-- (void)didRemovedFromServer
+- (void)userAccountDidRemoveFromServer
 {
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"你的账号已被从服务器端移除" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
     [alertView show];
