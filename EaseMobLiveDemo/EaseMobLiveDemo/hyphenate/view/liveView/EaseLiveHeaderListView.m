@@ -7,7 +7,9 @@
 //
 
 #import "EaseLiveHeaderListView.h"
-#import "EMClient.h"
+
+#import "EaseLiveCastView.h"
+#import "EaseLiveRoom.h"
 
 #define kCollectionIdentifier @"collectionCell"
 
@@ -44,10 +46,14 @@
 @end
 
 @interface EaseLiveHeaderListView () <UICollectionViewDelegate,UICollectionViewDataSource>
+{
+    EasePublishModel *_model;
+    EaseLiveRoom *_room;
+}
 
 @property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, strong) EaseLiveCastView *liveCastView;
 @property (nonatomic, strong) NSMutableArray *dataArray;
-@property (nonatomic, strong) UILabel *numberLabel;
 
 @property (nonatomic, assign) NSInteger occupantsCount;
 
@@ -55,31 +61,29 @@
 
 @implementation EaseLiveHeaderListView
 
-- (instancetype)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame model:(EasePublishModel*)model
 {
     self = [super initWithFrame:frame];
     if (self) {
+        _model = model;
         [self addSubview:self.collectionView];
-        [self addSubview:self.numberLabel];
+        [self addSubview:self.liveCastView];
+    }
+    return self;
+}
+
+- (instancetype)initWithFrame:(CGRect)frame room:(EaseLiveRoom*)room
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        _room = room;
+        [self addSubview:self.collectionView];
+        [self addSubview:self.liveCastView];
     }
     return self;
 }
 
 #pragma mark - getter
-
-- (UILabel*)numberLabel
-{
-    if (_numberLabel == nil) {
-        _numberLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetWidth(self.frame) - 50.f, 0, 40.f, CGRectGetHeight(self.frame))];
-        _numberLabel.font = [UIFont systemFontOfSize:15.f];
-        _numberLabel.shadowColor = RGBACOLOR(0xb8, 0xb8, 0xb8, 1);
-        _numberLabel.shadowOffset = CGSizeMake(0, 1);
-        _numberLabel.layer.shadowRadius = 1.f;
-        _numberLabel.textColor = [UIColor whiteColor];
-        _numberLabel.textAlignment = NSTextAlignmentRight;
-    }
-    return _numberLabel;
-}
 
 - (NSMutableArray*)dataArray
 {
@@ -94,7 +98,11 @@
     if (_collectionView == nil) {
         UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
         [flowLayout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, 270.f, CGRectGetHeight(self.frame)) collectionViewLayout:flowLayout];
+        CGFloat width = 135;
+        if (KScreenWidth > 320) {
+            width = 170;
+        }
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(self.width - width - 10.f, 0, width, CGRectGetHeight(self.frame)) collectionViewLayout:flowLayout];
         _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         
         [_collectionView registerClass:[EaseLiveHeaderCell class] forCellWithReuseIdentifier:kCollectionIdentifier];
@@ -113,18 +121,35 @@
     return _collectionView;
 }
 
+- (EaseLiveCastView*)liveCastView
+{
+    if (_liveCastView == nil) {
+        _liveCastView = [[EaseLiveCastView alloc] initWithFrame:CGRectMake(10, 0, 120.f, 30.f) room:_room];
+    }
+    return _liveCastView;
+}
+
 #pragma mark - public
 - (void)loadHeaderListWithChatroomId:(NSString*)chatroomId
 {
     __weak typeof(self) weakself = self;
-    [[EMClient sharedClient].roomManager asyncFetchChatroomInfo:chatroomId includeMembersList:YES success:^(EMChatroom *aChatroom) {
-        [weakself.dataArray addObjectsFromArray:aChatroom.occupants];
-        weakself.occupantsCount = aChatroom.occupantsCount;
-        weakself.numberLabel.text = [NSString stringWithFormat:@"%@",@(weakself.occupantsCount)];
-        [weakself.collectionView reloadData];
-    } failure:^(EMError *aError) {
-        //加载失败
-    }];
+    [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:chatroomId
+                                                                       completion:^(EMChatroom *aChatroom, EMError *aError) {
+                                                                           if (!aError) {
+                                                                               weakself.occupantsCount = aChatroom.occupantsCount;
+                                                                               [weakself.liveCastView setNumberOfChatroom:weakself.occupantsCount];
+                                                                           }
+                                                                       }];
+    
+    [[EMClient sharedClient].roomManager getChatroomMemberListFromServerWithId:chatroomId
+                                                                        cursor:nil
+                                                                      pageSize:10
+                                                                    completion:^(EMCursorResult *aResult, EMError *aError) {
+                                                                        if (!aError) {
+                                                                            [weakself.dataArray addObjectsFromArray:aResult.list];
+                                                                            [weakself.collectionView reloadData];
+                                                                        }
+                                                                    }];
 }
 
 - (void)joinChatroomWithUsername:(NSString *)username
@@ -132,9 +157,12 @@
     if ([self.dataArray count] > 10) {
         [self.dataArray removeObjectAtIndex:0];
     }
+    if ([self.dataArray containsObject:username]) {
+        return;
+    }
     [self.dataArray insertObject:[username copy] atIndex:0];
     self.occupantsCount++;
-    self.numberLabel.text = [NSString stringWithFormat:@"%@",@(self.occupantsCount)];
+    [self.liveCastView setNumberOfChatroom:self.occupantsCount];
     [self.collectionView reloadData];
 }
 
@@ -147,7 +175,7 @@
         }
     }
     self.occupantsCount--;
-    self.numberLabel.text = [NSString stringWithFormat:@"%@",@(self.occupantsCount)];
+    [self.liveCastView setNumberOfChatroom:self.occupantsCount];
     [self.collectionView reloadData];
 }
 
@@ -166,7 +194,7 @@
 {
     EaseLiveHeaderCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCollectionIdentifier forIndexPath:indexPath];
     
-    [cell setHeadImage:[UIImage imageNamed:[NSString stringWithFormat:@"%d",arc4random()%6 + 1]]];
+    [cell setHeadImage:[UIImage imageNamed:@"live_default_user"]];
     return cell;
 }
 
@@ -210,7 +238,7 @@
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
 {
-    return 10.0f;
+    return 5.0f;
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section

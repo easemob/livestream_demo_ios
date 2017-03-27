@@ -14,7 +14,13 @@
 
 @end
 
+@class EasePublishModel;
+@class EaseLiveRoom;
 @interface EaseLiveHeaderListView : UIView
+
+- (instancetype)initWithFrame:(CGRect)frame model:(EasePublishModel*)model;
+
+- (instancetype)initWithFrame:(CGRect)frame room:(EaseLiveRoom*)room;
 
 @property (nonatomic, weak) id<EaseLiveHeaderListViewDelegate> delegate;
 

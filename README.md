@@ -65,22 +65,28 @@
 
 3、加入聊天室
 
-    EMError *error = nil;
-    [[EMClient sharedClient].roomManager joinChatroom:_chatroomId error:&error];
-    if (!error) {
-        加入聊天室成功
-    }
+	
+    /*
+ 	*  用户加入直播聊天室
+ 	*
+ 	*  @param aRoomId          直播聊天室ID
+ 	*  @param aChatroomId      聊天室ID
+ 	*  @param aCompletion      完成的回调block
+ 	*/
+	- (void)joinLiveRoomWithRoomId:(NSString*)aRoomId
+                    	chatroomId:(NSString*)aChatroomId
+                    	completion:(void (^)(BOOL success))aCompletion;
 4、设置消息监听
 
 	 [[EMClient sharedClient].chatManager addDelegate:self delegateQueue:nil];
 	 
 	 
-	- (void)didReceiveMessages:(NSArray *)aMessages
+	- (void)messagesDidReceive:(NSArray *)aMessages
 	{
 	//收到普通消息
 	}
 
-	- (void)didReceiveCmdMessages:(NSArray *)aCmdMessages
+	- (void)cmdMessagesDidReceive:(NSArray *)aCmdMessages
 	{
 	//收到cmd消息
 	}
@@ -96,7 +102,19 @@
     	if (!error) {
 		//消息发送成功
         }
-    }];
+    }];    
+5、离开聊天室
+
+	/*
+ 	*  用户离开直播聊天室
+ 	*
+ 	*  @param aRoomId          直播聊天室ID
+ 	*  @param aChatroomId      聊天室ID
+ 	*  @param aCompletion      完成的回调block
+ 	*/
+	- (void)leaveLiveRoomWithRoomId:(NSString*)aRoomId
+                     	chatroomId:(NSString*)aChatroomId
+                     	completion:(void (^)(BOOL success))aCompletion;
 
 
 ### 观看直播
@@ -121,37 +139,6 @@
     }];
 
 加入聊天室及接发消息通发起直播
-
-
-
-###发送弹幕
-设置扩展字段实现，UI上根据相应字段做弹幕的显示
-
-    EMTextMessageBody *body = [[EMTextMessageBody alloc] initWithText:"弹幕"];
-    NSString *from = [[EMClient sharedClient] currentUsername];
-    EMMessage *message = [[EMMessage alloc] initWithConversationID:aChatroomId from:from to:aChatroomId body:body ext:@{@"is_barrage_msg":@(1)}];
-    message.chatType = EMChatTypeChatRoom;
-    [[EMClient sharedClient].chatManager asyncSendMessage:message progress:nil completion:^(EMMessage *message, EMError *error) {
-    	if (!error) {
-    	//发送成功
-        }
-    }];
-    
-
-
-###发送礼物
-
-通过发送透传消息实现礼物的发送，UI上根据礼物类型做相应的显示
-
-    EMCmdMessageBody *body = [[EMCmdMessageBody alloc] initWithAction:@"cmd_gift"];
-    NSString *from = [[EMClient sharedClient] currentUsername];
-    EMMessage *message = [[EMMessage alloc] initWithConversationID:aChatroomId  from:from to:toUser body:aChatroomId  ext:nil];
-    message.chatType = EMChatTypeChatRoom;
-    [[EMClient sharedClient].chatManager asyncSendMessage:message progress:nil completion:^(EMMessage *message, EMError *error) {
-    	if (!error) {
-    	//发送成功
-        }
-    }];
 
 这里只是做一个简单演示，可通过设置扩展消息设置礼物的具体类型及数量等
 

@@ -53,5 +53,6 @@
 - (void)rotateBegain:(UIInterfaceOrientation)noti;
 - (void)rotateEnd;
 - (void)awakeSupportInterOrtation:(UIViewController *)showVC completion:(void(^)(void))block;
+- (void)restartPlayer;
 
 @end

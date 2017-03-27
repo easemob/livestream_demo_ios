@@ -8,8 +8,6 @@
 
 #import "EaseBarrageFlyView.h"
 
-#import "EaseTextAttachment.h"
-
 #define kLabelDefaultWidth 125.f
 #define kLabelDefaultHeight 25.f
 

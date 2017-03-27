@@ -9,11 +9,8 @@
 #import "AppDelegate.h"
 
 #import "AppDelegate+Hyphenate.h"
-#import "AppDelegate+Parse.h"
-#import "ViewController.h"
 #import "EaseLoginViewController.h"
 #import "EaseMainViewController.h"
-#import "EaseParseManager.h"
 
 @interface AppDelegate ()
 
@@ -30,11 +27,8 @@
     if ([UIDevice currentDevice].systemVersion.floatValue >= 7.0) {
         [[UINavigationBar appearance] setBarTintColor:kDefaultSystemBgColor];
         [[UINavigationBar appearance] setTitleTextAttributes:
-         [NSDictionary dictionaryWithObjectsAndKeys:RGBACOLOR(245, 245, 245, 1), NSForegroundColorAttributeName, [UIFont fontWithName:@ "HelveticaNeue-CondensedBlack" size:21.0], NSFontAttributeName, nil]];
+         [NSDictionary dictionaryWithObjectsAndKeys:RGBACOLOR(255, 255, 255, 1), NSForegroundColorAttributeName, [UIFont systemFontOfSize:20.f weight:0], NSFontAttributeName, nil]];
     }
-    
-    //初始化Parse
-    [self parseApplication:application didFinishLaunchingWithOptions:launchOptions];
     
     //初始化环信sdk
     [self initHyphenateSDK];
@@ -62,29 +56,23 @@
 }
 
 #pragma makr - EMClientDelegate
-- (void)didConnectionStateChanged:(EMConnectionState)aConnectionState
-{
 
-}
-
-- (void)didAutoLoginWithError:(EMError *)aError
+- (void)autoLoginDidCompleteWithError:(EMError *)aError
 {
     if (aError) {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"自动登录失败，请重新登录" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alertView show];
-    } else {
-        [[EaseParseManager sharedInstance] closePublishLiveInBackgroundWithCompletion:NULL];
     }
 }
 
-- (void)didLoginFromOtherDevice
+- (void)userAccountDidLoginFromOtherDevice
 {
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"你的账号已在其他地方登录" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
     [alertView show];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"loginStateChange" object:@NO];
 }
 
-- (void)didRemovedFromServer
+- (void)userAccountDidRemoveFromServer
 {
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"你的账号已被从服务器端移除" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
     [alertView show];

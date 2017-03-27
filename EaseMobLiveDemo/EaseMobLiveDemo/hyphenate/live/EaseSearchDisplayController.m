@@ -8,95 +8,208 @@
 
 #import "EaseSearchDisplayController.h"
 
+#import "EaseLiveCollectionViewCell.h"
+#import "EaseLiveViewController.h"
+#import "RealtimeSearchUtil.h"
+
+@interface EaseSearchDisplayController () <UICollectionViewDelegate,UICollectionViewDataSource,UISearchBarDelegate>
+
+@property (nonatomic, strong) UISearchBar *searchBar;
+
+@end
+
 @implementation EaseSearchDisplayController
 
-- (id)initWithSearchBar:(UISearchBar *)searchBar contentsController:(UIViewController *)viewController
+- (instancetype)initWithCollectionViewLayout:(UICollectionViewLayout *)layout
 {
-    self = [super initWithSearchBar:searchBar contentsController:viewController];
+    self = [super initWithCollectionViewLayout:layout];
     if (self) {
-        // Custom initialization
-        _resultsSource = [NSMutableArray array];
-        _editingStyle = UITableViewCellEditingStyleDelete;
+        _resultsSource = [[NSMutableArray alloc] init];
+        _searchSource = [[NSMutableArray alloc] init];
+        self.collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         
-        self.searchResultsDataSource = self;
-        self.searchResultsDelegate = self;
-        self.searchResultsTitle = NSLocalizedString(@"searchResults", @"The search results");
+        [self.collectionView registerClass:[EaseLiveCollectionViewCell class] forCellWithReuseIdentifier:@"collectionCell"];
+        [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView"];
+        
+        self.collectionView.backgroundColor = [UIColor clearColor];
+        self.collectionView.delegate = self;
+        self.collectionView.dataSource = self;
+        self.collectionView.showsVerticalScrollIndicator = NO;
+        self.collectionView.showsHorizontalScrollIndicator = NO;
+        self.collectionView.alwaysBounceVertical = YES;
+        self.collectionView.pagingEnabled = NO;
+        self.collectionView.userInteractionEnabled = YES;
     }
     return self;
 }
 
-#pragma mark - Table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (void)viewDidLoad
 {
-    // Return the number of sections.
-    return 1;
+    [super viewDidLoad];
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.navigationItem.hidesBackButton = YES;
+    [self.navigationItem setTitleView:self.searchBar];
+    
+    [self.searchBar becomeFirstResponder];
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (UISearchBar*)searchBar
 {
-    // Return the number of rows in the section.
+    if (_searchBar == nil) {
+        _searchBar = [[UISearchBar alloc] init];
+        _searchBar.showsCancelButton = YES;
+        _searchBar.placeholder = NSLocalizedString(@"search.placeholder", @"Input Room ID");
+        _searchBar.delegate = self;
+        _searchBar.searchBarStyle = UISearchBarStyleDefault;
+        _searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        _searchBar.translucent = YES;
+        _searchBar.tintColor = [UIColor whiteColor];
+    }
+    return _searchBar;
+}
+
+#pragma mark - UICollectionViewDataSource
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
     return [self.resultsSource count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    if (_cellForRowAtIndexPathCompletion) {
-        return _cellForRowAtIndexPathCompletion(tableView, indexPath);
-    }
-    else{
-        static NSString *CellIdentifier = @"UITableViewCell";
-        UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        
-        // Configure the cell...
-        if (cell == nil) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        }
-        
-        return cell;
-    }
+    return 1;
 }
 
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Return NO if you do not want the specified item to be editable.
-    if (_canEditRowAtIndexPath) {
-        return _canEditRowAtIndexPath(tableView, indexPath);
+    EaseLiveCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"collectionCell" forIndexPath:indexPath];
+    EaseLiveRoom *room = [self.resultsSource objectAtIndex:indexPath.row];
+    [cell setLiveRoom:room];
+    UIImage *image = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:room.coverPictureUrl];
+    if (!image) {
+        __weak typeof(self) weakSelf = self;
+        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:room.coverPictureUrl]
+                                                              options:SDWebImageDownloaderUseNSURLCache
+                                                             progress:NULL
+                                                            completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+                                                                if (image) {
+                                                                    [[SDImageCache sharedImageCache] storeImage:image forKey:room.coverPictureUrl toDisk:NO];
+                                                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                                                        [weakSelf.collectionView reloadData];
+                                                                    });
+                                                                }
+                                                            }];
     }
-    else{
-        return NO;
-    }
+    return cell;
 }
 
-#pragma mark - Table view delegate
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section
 {
-    if (_heightForRowAtIndexPathCompletion) {
-        return _heightForRowAtIndexPathCompletion(tableView, indexPath);
-    }
+    return CGSizeMake(0, 0);
+}
+
+-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section{
+    return CGSizeMake(0, 0);
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionReusableView *reusableview = nil;
     
-    return 50;
+    if (kind == UICollectionElementKindSectionHeader){
+        
+        UICollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView" forIndexPath:indexPath];
+        reusableview = headerView;
+        
+    }
+    if (kind == UICollectionElementKindSectionFooter){
+        UICollectionReusableView *footerview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView" forIndexPath:indexPath];
+        reusableview = footerview;
+    }
+    return reusableview;
 }
 
-- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+#pragma mark --UICollectionViewDelegateFlowLayout
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return self.editingStyle;
+    return CGSizeMake(CGRectGetWidth(self.view.frame)/2 - 0.5f, CGRectGetWidth(self.view.frame)/2 - 0.5f);
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+-(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
-    if (_didSelectRowAtIndexPathCompletion) {
-        return _didSelectRowAtIndexPathCompletion(tableView, indexPath);
+    return UIEdgeInsetsMake(0, 0, 0, 0);
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
+{
+    return 1.0f;
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
+{
+    return 0.0f;
+}
+
+#pragma mark - UICollectionViewDelegate
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self.searchBar resignFirstResponder];
+    EaseLiveRoom *room = [self.resultsSource objectAtIndex:indexPath.row];
+    EaseLiveViewController *view = [[EaseLiveViewController alloc] initWithLiveRoom:room];
+    [self.navigationController presentViewController:view animated:YES completion:NULL];
+}
+
+-(BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+#pragma mark - UISearchBarDelegate
+
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar
+{
+    //    [searchBar setShowsCancelButton:YES animated:YES];
+    
+    return YES;
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+{
+    if (searchText.length == 0) {
+        [self.resultsSource removeAllObjects];
+        [self.collectionView reloadData];
+    } else {
+        __weak typeof(self) weakSelf = self;
+        [[RealtimeSearchUtil currentUtil] realtimeSearchWithSource:self.searchSource searchText:searchText collationStringSelector:@selector(title) resultBlock:^(NSArray *results) {
+            if (results) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf.resultsSource removeAllObjects];
+                    [weakSelf.resultsSource addObjectsFromArray:results];
+                    [weakSelf.collectionView reloadData];
+                });
+            }
+        }];
     }
 }
 
-- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+- (BOOL)searchBarShouldEndEditing:(UISearchBar *)searchBar
 {
-    if (_didDeselectRowAtIndexPathCompletion) {
-        _didDeselectRowAtIndexPathCompletion(tableView, indexPath);
-    }
+    return YES;
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    [searchBar resignFirstResponder];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    searchBar.text = @"";
+    [[RealtimeSearchUtil currentUtil] realtimeSearchStop];
+    [searchBar resignFirstResponder];
+    [self.navigationController popViewControllerAnimated:YES];
+    //    [searchBar setShowsCancelButton:NO animated:YES];
 }
 
 @end

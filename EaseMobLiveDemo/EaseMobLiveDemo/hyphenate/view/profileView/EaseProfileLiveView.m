@@ -7,167 +7,106 @@
 //
 
 #import "EaseProfileLiveView.h"
-
-#import "EaseTagView.h"
-#import "EaseProfileTextView.h"
+#import "MBProgressHUD+Add.h"
 
 @interface EaseProfileLiveView ()
 {
     NSString *_username;
+    NSString *_chatroomId;
+    BOOL _isOwner;
 }
 
 @property (nonatomic, strong) UIView *profileCardView;
-@property (nonatomic, strong) EaseTagView *headTagView;
-
-@property (nonatomic, strong) UIButton *followButton;
-@property (nonatomic, strong) UIButton *messageButton;
-@property (nonatomic, strong) UIButton *replyButton;
+@property (nonatomic, strong) UIImageView *headImageView;
+@property (nonatomic, strong) UILabel *nameLabel;
 
 @property (nonatomic, strong) UIButton *kickButton;
 @property (nonatomic, strong) UIButton *muteButton;
+@property (nonatomic, strong) UIButton *blockButton;
 
-@property (nonatomic, strong) EaseProfileTextView *followTextView;
-@property (nonatomic, strong) EaseProfileTextView *followingTextView;
-
-@property (nonatomic, strong) UILabel *descLabel;
+@property (nonatomic, strong) UIButton *adminButton;
 
 @end
 
 @implementation EaseProfileLiveView
 
-- (instancetype)initWithUsername:(NSString*)username;
+- (instancetype)initWithUsername:(NSString*)username
+                      chatroomId:(NSString*)chatroomId
+                         isOwner:(BOOL)isOwner
 {
     self = [super init];
     if (self) {
         _username = [username copy];
+        _chatroomId = [chatroomId copy];
+        _isOwner = isOwner;
         [self addSubview:self.profileCardView];
-        [self addSubview:self.headTagView];
+        [self addSubview:self.headImageView];
+        [self addSubview:self.nameLabel];
         
         if (username.length > 0 && ![username isEqualToString:[EMClient sharedClient].currentUsername]) {
-            [self.profileCardView addSubview:self.kickButton];
             [self.profileCardView addSubview:self.muteButton];
-            [self.profileCardView addSubview:self.followButton];
-            [self.profileCardView addSubview:self.messageButton];
-            [self.profileCardView addSubview:self.replyButton];
-            
-            UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.followButton.frame) - 0.5, self.followButton.top + 12, 1, 30)];
-            line1.backgroundColor = RGBACOLOR(99, 99, 99, 1);
-            [self.profileCardView addSubview:line1];
-            
-            UIView *line2 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.messageButton.frame) - 0.5, self.followButton.top + 12, 1, 30)];
-            line2.backgroundColor = RGBACOLOR(99, 99, 99, 1);
-            [self.profileCardView addSubview:line2];
+            [self.profileCardView addSubview:self.blockButton];
+            [self.profileCardView addSubview:self.kickButton];
+            if (_isOwner) {
+                [self.profileCardView addSubview:self.adminButton];
+            }
         }
-        [self.profileCardView addSubview:self.followTextView];
-        [self.profileCardView addSubview:self.followingTextView];
-        [self.profileCardView addSubview:self.descLabel];
-        
-        UIView *line = [[UIView alloc] initWithFrame:CGRectMake(self.width/2 - 0.5, _followTextView.top, 1, 20)];
-        line.backgroundColor = RGBACOLOR(99, 99, 99, 1);
-        [self.profileCardView addSubview:line];
     }
     return self;
 }
 
 #pragma mark - getter
 
-- (UILabel*)descLabel
+- (UIImageView*)headImageView
 {
-    if (_descLabel == nil) {
-        _descLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _followTextView.bottom + 10.f, KScreenWidth, 16.f)];
-        _descLabel.font = [UIFont systemFontOfSize:14.f];
-        _descLabel.textColor = kDefaultSystemTextColor;
-        _descLabel.text = @"Text Example text ExampleText Example.";
-        _descLabel.textAlignment = NSTextAlignmentCenter;
+    if (_headImageView == nil) {
+        _headImageView = [[UIImageView alloc] init];
+        _headImageView.frame = CGRectMake((KScreenWidth - 60)/2, self.profileCardView.top + 41.f, 60.f, 60.f);
+        _headImageView.layer.cornerRadius = _headImageView.width/2;
+        _headImageView.backgroundColor = RGBACOLOR(222, 222, 222, 1);
+        _headImageView.layer.masksToBounds = YES;
+        _headImageView.contentMode = UIViewContentModeScaleAspectFill;
+        _headImageView.image = [UIImage imageNamed:@"live_default_user"];
     }
-    return _descLabel;
+    return _headImageView;
 }
 
-- (EaseProfileTextView*)followTextView
+- (UILabel*)nameLabel
 {
-    if (_followTextView == nil) {
-        _followTextView = [[EaseProfileTextView alloc] initWithFrame:CGRectMake(KScreenWidth/2 - 100, 89.f, 100.f, 18.f) name:NSLocalizedString(@"profile.follow", @"Follow") number:@"10"];
+    if (_nameLabel == nil) {
+        _nameLabel = [[UILabel alloc] init];
+        _nameLabel.frame = CGRectMake(50.f, _headImageView.bottom + 16.f, self.width - 100, 20.f);
+        _nameLabel.textAlignment = NSTextAlignmentCenter;
+        _nameLabel.textColor = kDefaultSystemTextColor;
+        _nameLabel.font = [UIFont systemFontOfSize:17.f];
+        _nameLabel.text = _username;
     }
-    return _followTextView;
-}
-
-- (EaseProfileTextView*)followingTextView
-{
-    if (_followingTextView == nil) {
-        _followingTextView = [[EaseProfileTextView alloc] initWithFrame:CGRectMake(KScreenWidth/2, 89.f, 100.f, 18.f) name:NSLocalizedString(@"profile.following", @"Following") number:@"100"];
-    }
-    return _followingTextView;
-}
-
-- (EaseTagView*)headTagView
-{
-    if (_headTagView == nil) {
-        _headTagView = [[EaseTagView alloc] initWithFrame:CGRectMake((KScreenWidth - 86.f)/2, self.height - 206.f - 30, 86.f, 108.f) name:_username imageName:nil];
-        [_headTagView setNameColor:kDefaultSystemTextColor];
-    }
-    return _headTagView;
+    return _nameLabel;
 }
 
 - (UIView*)profileCardView
 {
     if (_profileCardView == nil) {
-        _profileCardView = [[UIView alloc] initWithFrame:CGRectMake(0, self.height - 206.f, self.width, 206.f)];
+        _profileCardView = [[UIView alloc] initWithFrame:CGRectMake(0, self.height - 283.f, self.width, 283.f)];
         _profileCardView.backgroundColor = [UIColor whiteColor];
     }
     return _profileCardView;
-}
-
-- (UIButton*)followButton
-{
-    if (_followButton == nil) {
-        _followButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _followButton.frame = CGRectMake(0, _profileCardView.height - 54.f, _profileCardView.width/3, 54.f);
-        _followButton.backgroundColor = kDefaultSystemBgColor;
-        [_followButton setTitle:NSLocalizedString(@"profile.follow", @"Follow") forState:UIControlStateNormal];
-        [_followButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    }
-    return _followButton;
-}
-
-- (UIButton*)messageButton
-{
-    if (_messageButton == nil) {
-        _messageButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _messageButton.frame = CGRectMake(_followButton.left + _followButton.width, _profileCardView.height - 54.f, _profileCardView.width/3, 54.f);
-        _messageButton.backgroundColor = kDefaultSystemBgColor;
-        [_messageButton setTitle:NSLocalizedString(@"profile.message", @"Message") forState:UIControlStateNormal];
-        [_messageButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [_messageButton addTarget:self action:@selector(messageAction) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _messageButton;
-}
-
-- (UIButton*)replyButton
-{
-    if (_replyButton == nil) {
-        _replyButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _replyButton.frame = CGRectMake(_messageButton.left + _messageButton.width, _profileCardView.height - 54.f, _profileCardView.width/3, 54.f);
-        _replyButton.backgroundColor = kDefaultSystemBgColor;
-        [_replyButton setTitle:NSLocalizedString(@"profile.reply", @"Reply") forState:UIControlStateNormal];
-        [_replyButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [_replyButton addTarget:self action:@selector(replyAction) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _replyButton;
 }
 
 - (UIButton*)kickButton
 {
     if (_kickButton == nil) {
         _kickButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _kickButton.frame = CGRectMake(14.f, 5.f, 23.f, 28.f);
-        [_kickButton setImage:[UIImage imageNamed:@"popup_admin_kick"] forState:UIControlStateNormal];
+        _kickButton.frame = CGRectMake(20 + ((KScreenWidth - 20 * 2) / 3) * 2, 150, ((KScreenWidth - 20 * 2) / 3), 30.f);
+        [_kickButton setImage:[UIImage imageNamed:@"kick"] forState:UIControlStateNormal];
         [_kickButton setTitle:NSLocalizedString(@"profile.kick", @"Kick") forState:UIControlStateNormal];
-        [_kickButton setTitleColor:kDefaultSystemTextColor forState:UIControlStateNormal];
-        [_kickButton.titleLabel setFont:[UIFont systemFontOfSize:9.f]];
+        [_kickButton setTitleColor:RGBACOLOR(76, 76, 76, 1) forState:UIControlStateNormal];
+        [_kickButton.titleLabel setFont:[UIFont systemFontOfSize:15.f]];
         
-        CGFloat totalHeight = (_kickButton.imageView.height + _kickButton.titleLabel.height);
-        [_kickButton setImageEdgeInsets:UIEdgeInsetsMake(-(totalHeight - _kickButton.imageView.height), 0.0, 0.0, -_kickButton.titleLabel.width)];
-        [_kickButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0, -_kickButton.imageView.width, -(totalHeight - _kickButton.titleLabel.height),0.0)];
+        [_kickButton setImageEdgeInsets:UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)];
+        [_kickButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)];
+        
+        [_kickButton addTarget:self action:@selector(kickAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _kickButton;
 }
@@ -176,35 +115,118 @@
 {
     if (_muteButton == nil) {
         _muteButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _muteButton.frame = CGRectMake(57.f , 5.f, 23.f, 28.f);
-        [_muteButton setImage:[UIImage imageNamed:@"popup_admin_mute"] forState:UIControlStateNormal];
+        _muteButton.frame = CGRectMake(20, 150.f, ((KScreenWidth - 20 * 2) / 3), 30.f);
+        [_muteButton setImage:[UIImage imageNamed:@"notalk"] forState:UIControlStateNormal];
         [_muteButton setTitle:NSLocalizedString(@"profile.mute", @"Mute") forState:UIControlStateNormal];
-        [_muteButton setTitleColor:kDefaultSystemTextColor forState:UIControlStateNormal];
-        [_muteButton.titleLabel setFont:[UIFont systemFontOfSize:9.f]];
+        [_muteButton setTitleColor:RGBACOLOR(76, 76, 76, 1) forState:UIControlStateNormal];
+        [_muteButton.titleLabel setFont:[UIFont systemFontOfSize:15.f]];
         
-        CGFloat totalHeight = (_muteButton.imageView.height + _muteButton.titleLabel.height);
-        [_muteButton setImageEdgeInsets:UIEdgeInsetsMake(-(totalHeight - _muteButton.imageView.height), 0.0, 0.0, -_muteButton.titleLabel.width)];
-        [_muteButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0, -_muteButton.imageView.width, -(totalHeight - _muteButton.titleLabel.height),0.0)];
+        [_muteButton setImageEdgeInsets:UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)];
+        [_muteButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)];
+        
+        [_muteButton addTarget:self action:@selector(muteAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _muteButton;
 }
 
-#pragma mark - action
-
-- (void)replyAction
+- (UIButton*)blockButton
 {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectReplyWithUsername:)]) {
-        [self.delegate didSelectReplyWithUsername:_username];
-        [self removeFromParentView];
+    if (_blockButton == nil) {
+        _blockButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _blockButton.frame = CGRectMake(20 + ((KScreenWidth - 20 * 2) / 3), 150.f, ((KScreenWidth - 20 * 2) / 3), 30.f);
+        [_blockButton setImage:[UIImage imageNamed:@"admin"] forState:UIControlStateNormal];
+        [_blockButton setTitle:NSLocalizedString(@"profile.block", @"Block") forState:UIControlStateNormal];
+        [_blockButton setTitleColor:RGBACOLOR(76, 76, 76, 1) forState:UIControlStateNormal];
+        [_blockButton.titleLabel setFont:[UIFont systemFontOfSize:15.f]];
+        
+        [_blockButton setImageEdgeInsets:UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)];
+        [_blockButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)];
+        
+        [_blockButton addTarget:self action:@selector(blockAction) forControlEvents:UIControlEventTouchUpInside];
     }
+    return _blockButton;
 }
 
-- (void)messageAction
+- (UIButton*)adminButton
 {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectMessageWithUsername:)]) {
-        [self.delegate didSelectMessageWithUsername:_username];
-        [self removeFromParentView];
+    if (_adminButton == nil) {
+        _adminButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _adminButton.backgroundColor = kDefaultLoginButtonColor;
+        _adminButton.frame = CGRectMake((self.width - 300)/2, _blockButton.bottom + 20.f, 300.f, 45.f);
+        [_adminButton setTitle:NSLocalizedString(@"profile.setAdmin", @"Set Admin") forState:UIControlStateNormal];
+        
+        _adminButton.layer.cornerRadius = 4.f;
+        
+        [_adminButton addTarget:self action:@selector(setAdminAction) forControlEvents:UIControlEventTouchUpInside];
     }
+    return _adminButton;
+}
+
+#pragma mark - action
+
+- (void)muteAction
+{
+    MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"%@...",NSLocalizedString(@"profile.mute", @"Mute")] toView:self];
+    __weak MBProgressHUD *weakHud = hud;
+    [[EMClient sharedClient].roomManager muteMembers:@[_username]
+                                    muteMilliseconds:-1
+                                        fromChatroom:_chatroomId
+                                          completion:^(EMChatroom *aChatroom, EMError *aError) {
+                                              if (!aError) {
+                                                  [weakHud hide:YES afterDelay:0.5];
+                                              } else {
+                                                  [weakHud setLabelText:aError.errorDescription];
+                                                  [weakHud hide:YES afterDelay:0.5];
+                                              }
+                                          }];
+}
+
+- (void)kickAction
+{
+    MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"%@...",NSLocalizedString(@"profile.kick", @"Kick")] toView:self];
+    __weak MBProgressHUD *weakHud = hud;
+    [[EMClient sharedClient].roomManager removeMembers:@[_username]
+                                          fromChatroom:_chatroomId
+                                            completion:^(EMChatroom *aChatroom, EMError *aError) {
+                                                if (!aError) {
+                                                    [weakHud hide:YES afterDelay:0.5];
+                                                } else {
+                                                    [weakHud setLabelText:aError.errorDescription];
+                                                    [weakHud hide:YES afterDelay:0.5];
+                                                }
+                                            }];
+}
+
+- (void)blockAction
+{
+    MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"%@...",NSLocalizedString(@"profile.block", @"Block")]  toView:self];
+    __weak MBProgressHUD *weakHud = hud;
+    [[EMClient sharedClient].roomManager blockMembers:@[_username]
+                                         fromChatroom:_chatroomId
+                                           completion:^(EMChatroom *aChatroom, EMError *aError) {
+                                               if (!aError) {
+                                                   [weakHud hide:YES afterDelay:0.5];
+                                               } else {
+                                                   [weakHud setLabelText:aError.errorDescription];
+                                                   [weakHud hide:YES afterDelay:0.5];
+                                               }
+                                           }];
+}
+
+- (void)setAdminAction
+{
+    MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"%@...",NSLocalizedString(@"profile.setAdmin", @"Set Admin")] toView:self];
+    __weak MBProgressHUD *weakHud = hud;
+    [[EMClient sharedClient].roomManager addAdmin:_username
+                                       toChatroom:_chatroomId
+                                       completion:^(EMChatroom *aChatroomp, EMError *aError) {
+                                           if (!aError) {
+                                               [weakHud hide:YES afterDelay:0.5];
+                                           } else {
+                                               [weakHud setLabelText:aError.errorDescription];
+                                               [weakHud hide:YES afterDelay:0.5];
+                                           }
+                                       }];
 }
 
 @end
