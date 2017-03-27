@@ -10,11 +10,13 @@
 
 #import "EaseLiveHeaderListView.h"
 
-@class EasePublishModel;
+@class EaseLiveRoom;
 @interface EaseLiveCastView : UIView
 
-- (instancetype)initWithFrame:(CGRect)frame model:(EasePublishModel*)model;
+- (instancetype)initWithFrame:(CGRect)frame room:(EaseLiveRoom*)room;
 
 @property (nonatomic, weak) id<EaseLiveHeaderListViewDelegate> delegate;
+
+- (void)setNumberOfChatroom:(NSInteger)number;
 
 @end

@@ -10,6 +10,4 @@
 
 @interface EaseMainViewController : UITabBarController
 
--(void)setupUnreadMessageCount;
-
 @end

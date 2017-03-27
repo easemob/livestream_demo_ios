@@ -8,9 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@class EasePublishModel;
+@class EaseLiveRoom;
 @interface EaseLiveViewController : UIViewController
 
-- (instancetype)initWithStreamModel:(EasePublishModel*)model;
+- (instancetype)initWithLiveRoom:(EaseLiveRoom*)room;
 
 @end

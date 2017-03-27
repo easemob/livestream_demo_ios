@@ -10,4 +10,7 @@
 
 @interface EaseLiveTVListViewController : UIViewController
 
+@property (nonatomic, strong) UIBarButtonItem *searchBarItem;
+@property (nonatomic, strong) UIBarButtonItem *logoutItem;
+
 @end

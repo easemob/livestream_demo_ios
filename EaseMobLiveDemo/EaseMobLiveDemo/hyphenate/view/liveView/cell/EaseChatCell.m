@@ -7,7 +7,6 @@
 //
 
 #import "EaseChatCell.h"
-#import "EaseTextAttachment.h"
 
 @interface EaseChatCell ()
 
@@ -18,13 +17,12 @@
 
 - (void)setMesssage:(EMMessage*)message
 {
-    self.textLabel.attributedText = [EaseChatCell _attributedStringWithMessage:message];
-    
     self.textLabel.textColor = [UIColor whiteColor];
     self.textLabel.shadowColor = [UIColor blackColor];
     self.textLabel.shadowOffset = CGSizeMake(1, 1);
     self.backgroundColor = [UIColor clearColor];
     self.selectionStyle = UITableViewCellSelectionStyleNone;
+    self.textLabel.attributedText = [EaseChatCell _attributedStringWithMessage:message];
     
     self.textLabel.numberOfLines = (int)([EaseChatCell heightForMessage:message]/15.f) + 1;
 }
@@ -32,7 +30,7 @@
 + (CGFloat)heightForMessage:(EMMessage *)message
 {
     if (message) {
-        CGRect rect = [[EaseChatCell _attributedStringWithMessage:message] boundingRectWithSize:CGSizeMake(KScreenWidth - 105, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+        CGRect rect = [[EaseChatCell _attributedStringWithMessage:message] boundingRectWithSize:CGSizeMake(KScreenWidth, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin context:nil];
         
         if (rect.size.height < 25.f) {
             return 25.f;
@@ -44,11 +42,17 @@
 
 + (NSMutableAttributedString*)_attributedStringWithMessage:(EMMessage*)message
 {
-    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:[EaseChatCell latestMessageTitleForConversationModel:message] attributes:nil];
+    
+    NSString *text = [EaseChatCell latestMessageTitleForConversationModel:message];
+    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
     NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
     paraStyle.lineBreakMode = NSLineBreakByWordWrapping;
     NSDictionary *attributes = @{NSParagraphStyleAttributeName: paraStyle,NSFontAttributeName :[UIFont systemFontOfSize:15.0f]};
     [string addAttributes:attributes range:NSMakeRange(0, string.length)];
+    if ([message.from isEqualToString:[EMClient sharedClient].currentUsername]) {
+        NSRange range = [text rangeOfString:[NSString stringWithFormat:@"%@: " ,[EMClient sharedClient].currentUsername] options:NSCaseInsensitiveSearch];
+        [string addAttribute:NSForegroundColorAttributeName value:RGBACOLOR(25, 163, 255, 1) range:NSMakeRange(range.length + range.location, text.length - (range.length + range.location))];
+    }
     return string;
 }
 

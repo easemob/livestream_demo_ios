@@ -8,9 +8,10 @@
 
 #import "EaseLiveCollectionViewCell.h"
 
-#import "EasePublishModel.h"
+#import "EaseLiveRoom.h"
+#import <SDWebImage/UIImageView+WebCache.h>
 
-#define kLabelDefaultHeight 30.f
+#define kLabelDefaultHeight 22.f
 #define kCellSpace 5.f
 
 @interface EaseLiveCollectionViewCell ()
@@ -29,10 +30,8 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self addSubview:self.liveImageView];
+        [self.contentView addSubview:self.liveImageView];
         [self.liveImageView addSubview:self.liveFooter];
-        
-        //[self.liveFooter addSubview:self.headImageView];
         [self.liveFooter addSubview:self.textLable];
         [self.liveFooter addSubview:self.numLabel];
     }
@@ -43,8 +42,8 @@
 {
     if (_textLable == nil) {
         _textLable = [[UILabel alloc] init];
-        _textLable.frame = CGRectMake(10.f, 0, CGRectGetWidth(self.frame)/2 - 10.f, kLabelDefaultHeight);
-        _textLable.font = [UIFont systemFontOfSize:15];
+        _textLable.frame = CGRectMake(8.f, 0, CGRectGetWidth(self.frame)/2, 14.f);
+        _textLable.font = [UIFont systemFontOfSize:14.f];
         _textLable.textColor = [UIColor whiteColor];
         _textLable.textAlignment = NSTextAlignmentLeft;
         _textLable.layer.masksToBounds = YES;
@@ -59,8 +58,8 @@
 {
     if (_numLabel == nil) {
         _numLabel = [[UILabel alloc] init];
-        _numLabel.frame = CGRectMake(CGRectGetWidth(self.frame)/2 - 10.f, 0, CGRectGetWidth(self.frame)/2, kLabelDefaultHeight);
-        _numLabel.font = [UIFont systemFontOfSize:15];
+        _numLabel.frame = CGRectMake(CGRectGetWidth(self.frame) - 50.f, 2.f, 42.f, 12.f);
+        _numLabel.font = [UIFont systemFontOfSize:12];
         _numLabel.textColor = [UIColor whiteColor];
         _numLabel.textAlignment = NSTextAlignmentRight;
         _numLabel.backgroundColor = [UIColor clearColor];
@@ -97,15 +96,26 @@
         _liveImageView.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
         _liveImageView.contentMode = UIViewContentModeScaleAspectFill;
         _liveImageView.layer.masksToBounds = YES;
+        _liveImageView.backgroundColor = RGBACOLOR(200, 200, 200, 1);
     }
     return _liveImageView;
 }
 
-- (void)setModel:(EasePublishModel *)model
+- (void)setLiveRoom:(EaseLiveRoom*)room
 {
-    _textLable.text = model.name;
-    _liveImageView.image = [UIImage imageNamed:model.headImageName];
-    _numLabel.text = model.number;
+    _textLable.text = room.title;
+    if (room.coverPictureUrl.length > 0) {
+        UIImage *image = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:room.coverPictureUrl];
+        if (image) {
+            _liveImageView.image = image;
+        } else {
+            _liveImageView.image = [UIImage imageNamed:@"default_image"];
+        }
+    } else {
+        _liveImageView.image = [UIImage imageNamed:@"default_image"];
+    }
+    _numLabel.text = [NSString stringWithFormat:@"%ld",(long)room.session.currentUserCount];
 }
+
 
 @end
