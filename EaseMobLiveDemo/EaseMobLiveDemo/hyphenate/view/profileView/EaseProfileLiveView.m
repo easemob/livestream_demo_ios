@@ -166,7 +166,7 @@
 
 - (void)muteAction
 {
-    MBProgressHUD *hud = [MBProgressHUD showMessag:@"禁言中..." toView:self];
+    MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"%@...",NSLocalizedString(@"profile.mute", @"Mute")] toView:self];
     __weak MBProgressHUD *weakHud = hud;
     [[EMClient sharedClient].roomManager muteMembers:@[_username]
                                     muteMilliseconds:-1
@@ -183,7 +183,7 @@
 
 - (void)kickAction
 {
-    MBProgressHUD *hud = [MBProgressHUD showMessag:@"踢人中..." toView:self];
+    MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"%@...",NSLocalizedString(@"profile.kick", @"Kick")] toView:self];
     __weak MBProgressHUD *weakHud = hud;
     [[EMClient sharedClient].roomManager removeMembers:@[_username]
                                           fromChatroom:_chatroomId
@@ -199,7 +199,7 @@
 
 - (void)blockAction
 {
-    MBProgressHUD *hud = [MBProgressHUD showMessag:@"加入黑名单..." toView:self];
+    MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"%@...",NSLocalizedString(@"profile.block", @"Block")]  toView:self];
     __weak MBProgressHUD *weakHud = hud;
     [[EMClient sharedClient].roomManager blockMembers:@[_username]
                                          fromChatroom:_chatroomId
@@ -215,7 +215,7 @@
 
 - (void)setAdminAction
 {
-    MBProgressHUD *hud = [MBProgressHUD showMessag:@"设置房管..." toView:self];
+    MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"%@...",NSLocalizedString(@"profile.setAdmin", @"Set Admin")] toView:self];
     __weak MBProgressHUD *weakHud = hud;
     [[EMClient sharedClient].roomManager addAdmin:_username
                                        toChatroom:_chatroomId

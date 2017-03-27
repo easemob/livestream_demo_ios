@@ -90,7 +90,7 @@
 
 - (void)setNumberOfChatroom:(NSInteger)number
 {
-    _numberLabel.text = [NSString stringWithFormat:@"%ld人",(long)number];
+    _numberLabel.text = [NSString stringWithFormat:@"%ld%@",(long)number ,NSLocalizedString(@"profile.people", @"")];
 }
 
 @end

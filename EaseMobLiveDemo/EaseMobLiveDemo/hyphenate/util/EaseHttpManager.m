@@ -355,6 +355,7 @@ static EaseHttpManager *sharedInstance = nil;
                         NSString *statusStr = [data objectForKey:@"status"];
                         if (statusStr.length > 0) {
                             status = [EaseLiveSession statusWithValue:statusStr];
+                            ret = YES;
                         }
                     }
                 }

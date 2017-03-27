@@ -81,6 +81,10 @@
 "endview.comment" = "评论数";
 "endview.audience" = "观众数";
 "endview.button.ok" = "关闭";
+"endview.continue.live" = "继续直播";
+"endview.live.end" = "直播已中断";
+"endview.live.watch" = "人看过";
+"endview.wheather.leave" = "是否退出直播间";
 
 //setting
 "profile.kick" = "踢人";
@@ -93,10 +97,10 @@
 "profile.setAdmin" = "设置房管";
 "profile.admin" = "房管";
 "profile.mute" = "禁言";
-"profile.block" = "黑名单";
 "profile.admin.remove" = "移除房管";
 "profile.mute.cancel" = "取消禁言";
 "profile.block.remove" = "移除黑名单";
+"profile.people" = "人";
 
 //message
 "message.image" = "[图片]";
@@ -104,6 +108,9 @@
 "message.video" = "[视频]";
 "message.file" = "[文件]";
 "message.location" = "[位置]";
+
+//chat
+"chat.input.placeholder" = "输入新消息";
 
 //search
 "search.placeholder" = "输入房间号";

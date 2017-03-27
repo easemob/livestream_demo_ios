@@ -49,7 +49,7 @@
         _continueButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _continueButton.frame = CGRectMake((KScreenWidth - 300)/2, KScreenHeight - 75.f, 300.f, 45.f);
         _continueButton.backgroundColor = kDefaultLoginButtonColor;
-        [_continueButton setTitle:@"继续直播" forState:UIControlStateNormal];
+        [_continueButton setTitle:NSLocalizedString(@"endview.continue.live", @"Continue") forState:UIControlStateNormal];
         [_continueButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_continueButton addTarget:self action:@selector(continueAction) forControlEvents:UIControlEventTouchUpInside];
         _continueButton.layer.cornerRadius = 4.f;
@@ -97,7 +97,7 @@
         _endLabel.textAlignment = NSTextAlignmentCenter;
         _endLabel.textColor = [UIColor whiteColor];
         _endLabel.font = [UIFont systemFontOfSize:25 weight:100];
-        _endLabel.text = @"直播已经结束";
+        _endLabel.text = NSLocalizedString(@"endview.live.end", @"Live Finished");
     }
     return _endLabel;
 }

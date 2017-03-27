@@ -22,6 +22,7 @@
 #import "EaseAdminView.h"
 #import "UIViewController+DismissKeyboard.h"
 #import "EaseLiveRoom.h"
+#import "EaseCreateLiveViewController.h"
 
 #define kDefaultTop 30.f
 #define kDefaultLeft 10.f
@@ -211,7 +212,7 @@
 
 - (void)closeLiveAction
 {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"是否退出直播间" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:NSLocalizedString(@"endview.wheather.leave", @"Are you sure leave Live?") preferredStyle:UIAlertControllerStyleAlert];
     
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:NSLocalizedString(@"publish.cancel", @"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         
@@ -235,7 +236,7 @@
                                                         completion:^(EaseLiveSession *session, BOOL success) {
                                                             if (success) {
                                                                 [weakSelf _shutDownLive];
-                                                                [weakSelf.endLiveView setAudience:[NSString stringWithFormat:@"%ld人",(long)session.totalWatchCount]];
+                                                                [weakSelf.endLiveView setAudience:[NSString stringWithFormat:@"%ld%@",(long)session.totalWatchCount,NSLocalizedString(@"endview.live.watch", @" Watched")]];
                                                                 [self.view addSubview:self.endLiveView];
                                                                 [self.view bringSubviewToFront:self.endLiveView];
                                                             }
