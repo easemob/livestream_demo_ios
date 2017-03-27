@@ -3,7 +3,7 @@
 //  UCloudMediaRecorderDemo
 //
 //  Created by yisanmao on 16/1/27.
-//  Copyright © 2016年 zmw. All rights reserved.
+//  Copyright © 2016年 https://ucloud.cn/. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
