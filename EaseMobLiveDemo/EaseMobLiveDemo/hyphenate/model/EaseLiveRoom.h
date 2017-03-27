@@ -62,10 +62,11 @@
  */
 @property (nonatomic, copy) NSString *coverPictureUrl;
 
+/*
+ *  直播场次
+ */
 @property (nonatomic, strong) EaseLiveSession *session;
 
 - (instancetype)initWithParameter:(NSDictionary*)parameter;
-
-- (NSDictionary*)parameters;
 
 @end

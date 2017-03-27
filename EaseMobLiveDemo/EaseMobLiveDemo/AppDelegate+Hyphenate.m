@@ -26,12 +26,6 @@
     options.isAutoAcceptGroupInvitation = NO;
     options.enableConsoleLog = YES;
     
-    options.enableDnsConfig = NO;
-    options.restServer = @"120.26.4.73:81";
-    options.chatServer = @"120.26.4.73";
-    options.chatPort = 6717;
-    options.usingHttpsOnly = NO;
-    
     [[EMClient sharedClient] initializeSDKWithOptions:options];
     
     [self _setupAppDelegateNotifications];

@@ -60,7 +60,7 @@
         _registerButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _registerButton.frame = CGRectMake((KScreenWidth - kDefaultWidth)/2, _registerView.bottom + 51.f, kDefaultWidth, kDefaultHeight);
         
-        [_registerButton setTitle:NSLocalizedString(@"login.button.signup", @"Ok") forState:UIControlStateNormal];
+        [_registerButton setTitle:NSLocalizedString(@"login.button.login", @"Log in") forState:UIControlStateNormal];
         [_registerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_registerButton setBackgroundColor:kDefaultLoginButtonColor];
         [_registerButton addTarget:self action:@selector(registerAction) forControlEvents:UIControlEventTouchUpInside];
@@ -173,11 +173,22 @@
                          alertTitle = NSLocalizedString(@"login.signup.failed", @"Sign up failed");
                          break;
                  }
+                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert.title.tips", @"Tips") message:alertTitle delegate:nil cancelButtonTitle:NSLocalizedString(@"alert.cancelButton.title", @"Ok") otherButtonTitles:nil];
+                 [alert show];
              } else {
-                 [weakSelf.navigationController popViewControllerAnimated:YES];
+                 EMError *error = [[EMClient sharedClient] loginWithUsername:_usernameTextField.text password:_passwordTextField.text];
+                 if (!error) {
+                     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+                     [ud setObject:[EMClient sharedClient].currentUsername forKey:kLiveLastLoginUsername];
+                     [ud synchronize];
+                     [[EMClient sharedClient].options setIsAutoLogin:YES];
+                     [[NSNotificationCenter defaultCenter] postNotificationName:@"loginStateChange" object:@YES];
+                 } else {
+                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert.title.tips", @"Tips") message:NSLocalizedString(@"login.signup.succeed", @"Sign up succeed") delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"alert.cancelButton.title", @"Ok"), nil];
+                     [alert show];
+                     [weakSelf.navigationController popViewControllerAnimated:YES];
+                 }
              }
-             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert.title.tips", @"Tips") message:alertTitle delegate:nil cancelButtonTitle:NSLocalizedString(@"alert.cancelButton.title", @"Ok") otherButtonTitles:nil];
-             [alert show];
          });
      });
 }

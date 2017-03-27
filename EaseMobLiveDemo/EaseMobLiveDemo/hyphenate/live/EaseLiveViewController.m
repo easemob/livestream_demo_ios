@@ -83,28 +83,34 @@
     [self.playerManager setPortraitViewHeight:height];
 
     __weak EaseLiveViewController *weakSelf = self;
-
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [weakSelf.chatview joinChatroomWithCompletion:^(BOOL success) {
-            if (success) {
-                [weakSelf.headerListView loadHeaderListWithChatroomId:[_room.chatroomId copy]];
-                _chatroom = [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:_room.chatroomId error:nil];
-                
-                NSString *path = _room.session.mobilepullstream;
-                [weakSelf.playerManager buildMediaPlayer:path];
-            } else {
-                [weakSelf showHint:@"加入聊天室失败"];
-            }
+    [self.chatview joinChatroomWithCompletion:^(BOOL success) {
+        if (success) {
+            [weakSelf.headerListView loadHeaderListWithChatroomId:[_room.chatroomId copy]];
+            _chatroom = [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:_room.chatroomId error:nil];
+            [[EaseHttpManager sharedInstance] getLiveRoomWithRoomId:_room.roomId
+                                                         completion:^(EaseLiveRoom *room, BOOL success) {
+                                                             if (success) {
+                                                                 _room = room;
+                                                                 NSString *path = _room.session.mobilepullstream;
+                                                                 [weakSelf.playerManager buildMediaPlayer:path];
+                                                             } else {
+                                                                 NSString *path = _room.session.mobilepullstream;
+                                                                 [weakSelf.playerManager buildMediaPlayer:path];
+                                                             }
+                                                             [weakSelf.view bringSubviewToFront:weakSelf.liveView];
+                                                             [weakSelf.view layoutSubviews];
+                                                         }];
+        } else {
+            [weakSelf showHint:@"加入聊天室失败"];
             [weakSelf.view bringSubviewToFront:weakSelf.liveView];
             [weakSelf.view layoutSubviews];
-        }];
-    });
+        }
+    }];
     
     [[EMClient sharedClient].roomManager addDelegate:self delegateQueue:nil];
     [[EMClient sharedClient] addDelegate:self delegateQueue:nil];
     
     [self setupForDismissKeyboard];
-
 }
 
 - (void)didReceiveMemoryWarning {
@@ -246,13 +252,6 @@
                                                                                      isOwner:isOwner];
         profileLiveView.delegate = self;
         [profileLiveView showFromParentView:self.view];
-    }
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (alertView.tag == 1000) {
-        
     }
 }
 

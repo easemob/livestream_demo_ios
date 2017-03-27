@@ -213,7 +213,7 @@
         _textView.scrollEnabled = YES;
         _textView.returnKeyType = UIReturnKeySend;
         _textView.enablesReturnKeyAutomatically = YES; // UITextView内部判断send按钮是否可以用
-        _textView.placeHolder = @"输入新消息";
+        _textView.placeHolder = NSLocalizedString(@"chat.input.placeholder", @"input a new message");
         _textView.delegate = self;
         _textView.backgroundColor = RGBACOLOR(236, 236, 236, 1);
         _textView.layer.cornerRadius = 4.0f;
@@ -715,7 +715,7 @@
                                                           _chatroom = [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:_chatroomId error:&error];
                                                           ret = YES;
                                                           if (!error) {
-                                                              BOOL ret = _chatroom.permissionType == EMGroupPermissionTypeAdmin || _chatroom.permissionType == EMGroupPermissionTypeAdmin;
+                                                              BOOL ret = _chatroom.permissionType == EMChatroomPermissionTypeAdmin || _chatroom.permissionType == EMChatroomPermissionTypeOwner;
                                                               if (ret) {
                                                                   [weakSelf.bottomView addSubview:weakSelf.adminButton];
                                                                   [weakSelf layoutSubviews];

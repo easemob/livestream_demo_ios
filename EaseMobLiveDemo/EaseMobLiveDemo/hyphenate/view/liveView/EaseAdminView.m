@@ -395,7 +395,7 @@
     if (_chatroom) {
         NSString *username = [_chatroom.adminList objectAtIndex:btn.tag];
         __weak EaseAdminView *weakSelf = self;
-        MBProgressHUD *hud = [MBProgressHUD showMessag:@"移除房管..." toView:self];
+        MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"%@..." ,NSLocalizedString(@"profile.admin.remove", @"Remove")] toView:self];
         __weak MBProgressHUD *weakHud = hud;
         [[EMClient sharedClient].roomManager removeAdmin:username
                                             fromChatroom:_chatroomId
@@ -416,7 +416,7 @@
     UIButton *btn = (UIButton*)sender;
     NSString *username = [_muteList objectAtIndex:btn.tag];
     __weak EaseAdminView *weakSelf = self;
-    MBProgressHUD *hud = [MBProgressHUD showMessag:@"取消禁言..." toView:self];
+    MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"%@..." ,NSLocalizedString(@"profile.mute.cancel", @"Cancel")] toView:self];
     __weak MBProgressHUD *weakHud = hud;
     [[EMClient sharedClient].roomManager unmuteMembers:@[username]
                                           fromChatroom:_chatroomId
@@ -439,7 +439,7 @@
     UIButton *btn = (UIButton*)sender;
     NSString *username = [_blockList objectAtIndex:btn.tag];
     __weak EaseAdminView *weakSelf = self;
-    MBProgressHUD *hud = [MBProgressHUD showMessag:@"移除黑名单..." toView:self];
+    MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"%@..." ,NSLocalizedString(@"profile.block.remove", @"Remove")] toView:self];
     __weak MBProgressHUD *weakHud = hud;
     [[EMClient sharedClient].roomManager unblockMembers:@[username]
                                            fromChatroom:_chatroomId
