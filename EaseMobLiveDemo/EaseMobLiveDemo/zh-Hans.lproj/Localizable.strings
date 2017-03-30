@@ -82,7 +82,7 @@
 "endview.audience" = "观众数";
 "endview.button.ok" = "关闭";
 "endview.continue.live" = "继续直播";
-"endview.live.end" = "直播已中断";
+"endview.live.end" = "直播暂停";
 "endview.live.watch" = "人看过";
 "endview.wheather.leave" = "是否退出直播间";
 

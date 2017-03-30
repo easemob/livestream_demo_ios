@@ -203,6 +203,11 @@
                                                                                      isOwner:isOwner];
         profileLiveView.delegate = self;
         [profileLiveView showFromParentView:self.view];
+    } else {
+        EaseProfileLiveView *profileLiveView = [[EaseProfileLiveView alloc] initWithUsername:username
+                                                                                  chatroomId:_room.chatroomId];
+        profileLiveView.delegate = self;
+        [profileLiveView showFromParentView:self.view];
     }
 }
 
@@ -427,6 +432,7 @@
             if ([self.playerManager respondsToSelector:@selector(restartPlayer)]) {
                 [self.playerManager performSelector:@selector(restartPlayer) withObject:nil afterDelay:15.f];
             }
+            [MBProgressHUD showError:@"视频播放错误，请稍候再试" toView:self.view];
         }
     }
 }

@@ -34,15 +34,9 @@
                       chatroomId:(NSString*)chatroomId
                          isOwner:(BOOL)isOwner
 {
-    self = [super init];
+    self = [self initWithUsername:username chatroomId:chatroomId];
     if (self) {
-        _username = [username copy];
-        _chatroomId = [chatroomId copy];
         _isOwner = isOwner;
-        [self addSubview:self.profileCardView];
-        [self addSubview:self.headImageView];
-        [self addSubview:self.nameLabel];
-        
         if (username.length > 0 && ![username isEqualToString:[EMClient sharedClient].currentUsername]) {
             [self.profileCardView addSubview:self.muteButton];
             [self.profileCardView addSubview:self.blockButton];
@@ -51,6 +45,20 @@
                 [self.profileCardView addSubview:self.adminButton];
             }
         }
+    }
+    return self;
+}
+
+- (instancetype)initWithUsername:(NSString*)username
+                      chatroomId:(NSString*)chatroomId
+{
+    self = [super init];
+    if (self) {
+        _username = [username copy];
+        _chatroomId = [chatroomId copy];
+        [self addSubview:self.profileCardView];
+        [self addSubview:self.headImageView];
+        [self addSubview:self.nameLabel];
     }
     return self;
 }
@@ -103,8 +111,8 @@
         [_kickButton setTitleColor:RGBACOLOR(76, 76, 76, 1) forState:UIControlStateNormal];
         [_kickButton.titleLabel setFont:[UIFont systemFontOfSize:15.f]];
         
-        [_kickButton setImageEdgeInsets:UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)];
-        [_kickButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)];
+        [_kickButton setImageEdgeInsets:UIEdgeInsetsMake(0.0, 30.0, 0.0, 0.0)];
+        [_kickButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0, 30.0, 0.0, 0.0)];
         
         [_kickButton addTarget:self action:@selector(kickAction) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -121,8 +129,8 @@
         [_muteButton setTitleColor:RGBACOLOR(76, 76, 76, 1) forState:UIControlStateNormal];
         [_muteButton.titleLabel setFont:[UIFont systemFontOfSize:15.f]];
         
-        [_muteButton setImageEdgeInsets:UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)];
-        [_muteButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)];
+        [_muteButton setImageEdgeInsets:UIEdgeInsetsMake(0.0, -30.0, 0.0, 0.0)];
+        [_muteButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0, -30.0, 0.0, 0.0)];
         
         [_muteButton addTarget:self action:@selector(muteAction) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -133,14 +141,14 @@
 {
     if (_blockButton == nil) {
         _blockButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _blockButton.frame = CGRectMake(20 + ((KScreenWidth - 20 * 2) / 3), 150.f, ((KScreenWidth - 20 * 2) / 3), 30.f);
+        _blockButton.frame = CGRectMake(20 + ((KScreenWidth - 20 * 2) / 3), 150.f, ((KScreenWidth) / 3), 30.f);
         [_blockButton setImage:[UIImage imageNamed:@"admin"] forState:UIControlStateNormal];
         [_blockButton setTitle:NSLocalizedString(@"profile.block", @"Block") forState:UIControlStateNormal];
         [_blockButton setTitleColor:RGBACOLOR(76, 76, 76, 1) forState:UIControlStateNormal];
         [_blockButton.titleLabel setFont:[UIFont systemFontOfSize:15.f]];
         
-        [_blockButton setImageEdgeInsets:UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)];
-        [_blockButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)];
+        [_blockButton setImageEdgeInsets:UIEdgeInsetsMake(0.0, -10.0, 0.0, 0.0)];
+        [_blockButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0, -10.0, 0.0, 0.0)];
         
         [_blockButton addTarget:self action:@selector(blockAction) forControlEvents:UIControlEventTouchUpInside];
     }

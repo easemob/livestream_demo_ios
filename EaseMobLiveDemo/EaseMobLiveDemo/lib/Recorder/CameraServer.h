@@ -110,6 +110,12 @@ typedef void(^WatermarkBlock)();
 @property (nonatomic, assign) UCloudVideoOrientation videoOrientation;
 
 /*!
+ @property streamMirrorFrontFacing
+ @abstract 推流镜像，只对前置有效
+ */
+@property (nonatomic, assign) BOOL streamMirrorFrontFacing;
+
+/*!
  @property reconnectInterval
  @abstract 重推流间隔,默认3秒
  */
@@ -150,9 +156,15 @@ typedef void(^WatermarkBlock)();
  */
 + (CameraServer*) server;
 
-
-
+/*!
+ @method setWatermarkView:Block:
+ 
+ @abstract 设置水印
+ 
+ @param watermarkView 设置水印视图
+ */
 - (void)setWatermarkView:(UIView *)watermarkView Block:(WatermarkBlock)block;
+
 /*!
  @method configureCameraWithOutputUrl:filter:messageCallBack:deviceBlock:cameraData:
  @abstract server初始化(不会自动开始要在底层配置完成之后调用cameraStart)

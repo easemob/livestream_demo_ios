@@ -23,4 +23,7 @@
                       chatroomId:(NSString*)chatroomId
                          isOwner:(BOOL)isOwner;
 
+- (instancetype)initWithUsername:(NSString*)username
+                      chatroomId:(NSString*)chatroomId;
+
 @end

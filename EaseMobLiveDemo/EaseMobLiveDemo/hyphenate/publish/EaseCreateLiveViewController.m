@@ -149,8 +149,8 @@
 {
     if (_relevanceBtn == nil) {
         _relevanceBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _relevanceBtn.frame = CGRectMake(0, 0, 110.f, 44.f);
-        [_relevanceBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, -5, -55)];
+        _relevanceBtn.frame = CGRectMake(0, 0, 85.f, 44.f);
+        [_relevanceBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, -5, -30)];
         [_relevanceBtn.titleLabel setFont:[UIFont systemFontOfSize:17.f]];
         [_relevanceBtn setTitle:NSLocalizedString(@"publish.relevance", @"Relevance") forState:UIControlStateNormal];
         [_relevanceBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -492,8 +492,11 @@
     }
     
     __weak typeof(self) weakSelf = self;
+    MBProgressHUD *hud = [MBProgressHUD showMessag:@"创建中..." toView:self.view];
+    __weak MBProgressHUD *weakHud = hud;
     [[EaseHttpManager sharedInstance] createLiveRoomWithRoom:liveRoom
                                                   completion:^(EaseLiveRoom *room, BOOL success) {
+                                                      [weakHud hide:YES];
                                                       if (success) {
                                                           EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:room];
                                                           [weakSelf presentViewController:publishView
@@ -540,10 +543,13 @@
         return;
     }
     
+    MBProgressHUD *hud = [MBProgressHUD showMessag:@"创建中..." toView:self.view];
+    __weak MBProgressHUD *weakHud = hud;
     __weak typeof(self) weakSelf = self;
-    if (_liveRoom.session.status == EaseLiveSessionOngoing || _liveRoom.session.status == EaseLiveSessionNotStart) {
+    dispatch_block_t modifyBlock = ^{
         [[EaseHttpManager sharedInstance] modifyLiveRoomWithRoom:_liveRoom
                                                       completion:^(EaseLiveRoom *room, BOOL success) {
+                                                          [weakHud hide:YES];
                                                           if (success) {
                                                               EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:_liveRoom];
                                                               [weakSelf presentViewController:publishView animated:YES completion:^{
@@ -553,9 +559,24 @@
                                                               [weakSelf showHint:@"创建失败"];
                                                           }
                                                       }];
+    };
+    if (_liveRoom.session.status == EaseLiveSessionOngoing) {
+        modifyBlock();
+    } else if (_liveRoom.session.status == EaseLiveSessionNotStart) {
+        [[EaseHttpManager sharedInstance] modifyLiveRoomStatusWithRoomId:_liveRoom.roomId
+                                                                  status:EaseLiveSessionOngoing
+                                                              completion:^(BOOL success) {
+                                                                  if (success) {
+                                                                      modifyBlock();
+                                                                  } else {
+                                                                      [weakHud hide:YES];
+                                                                      [weakSelf showHint:@"创建失败"];
+                                                                  }
+                                                              }];
     } else {
         [[EaseHttpManager sharedInstance] createLiveSessionWithRoom:_liveRoom
                                                          completion:^(EaseLiveRoom *room, BOOL success) {
+                                                             [weakHud hide:YES];
                                                              if (success) {
                                                                  EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:room];
                                                                  [weakSelf presentViewController:publishView animated:YES completion:^{

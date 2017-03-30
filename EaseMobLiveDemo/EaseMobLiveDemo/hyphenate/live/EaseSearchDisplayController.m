@@ -169,8 +169,6 @@
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar
 {
-    //    [searchBar setShowsCancelButton:YES animated:YES];
-    
     return YES;
 }
 
@@ -180,16 +178,16 @@
         [self.resultsSource removeAllObjects];
         [self.collectionView reloadData];
     } else {
-        __weak typeof(self) weakSelf = self;
-        [[RealtimeSearchUtil currentUtil] realtimeSearchWithSource:self.searchSource searchText:searchText collationStringSelector:@selector(title) resultBlock:^(NSArray *results) {
-            if (results) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [weakSelf.resultsSource removeAllObjects];
-                    [weakSelf.resultsSource addObjectsFromArray:results];
-                    [weakSelf.collectionView reloadData];
-                });
-            }
-        }];
+//        __weak typeof(self) weakSelf = self;
+//        [[RealtimeSearchUtil currentUtil] realtimeSearchWithSource:self.searchSource searchText:searchText collationStringSelector:@selector(title) resultBlock:^(NSArray *results) {
+//            if (results) {
+//                dispatch_async(dispatch_get_main_queue(), ^{
+//                    [weakSelf.resultsSource removeAllObjects];
+//                    [weakSelf.resultsSource addObjectsFromArray:results];
+//                    [weakSelf.collectionView reloadData];
+//                });
+//            }
+//        }];
     }
 }
 
@@ -201,6 +199,20 @@
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     [searchBar resignFirstResponder];
+    __weak typeof(self) weakSelf = self;
+    [[EaseHttpManager sharedInstance] getLiveRoomWithRoomId:searchBar.text
+                                                 completion:^(EaseLiveRoom *room, BOOL success) {
+                                                     if (success) {
+                                                         [weakSelf.resultsSource removeAllObjects];
+                                                         if (room.chatroomId.length > 0) {
+                                                             [weakSelf.resultsSource addObject:room];
+                                                         }
+                                                         [weakSelf.collectionView reloadData];
+                                                     } else {
+                                                         [weakSelf.resultsSource removeAllObjects];
+                                                         [weakSelf.collectionView reloadData];
+                                                     }
+                                                 }];
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
@@ -209,7 +221,6 @@
     [[RealtimeSearchUtil currentUtil] realtimeSearchStop];
     [searchBar resignFirstResponder];
     [self.navigationController popViewControllerAnimated:YES];
-    //    [searchBar setShowsCancelButton:NO animated:YES];
 }
 
 @end

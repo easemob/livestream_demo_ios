@@ -96,16 +96,6 @@
     [self.view layoutSubviews];
     [self setBtnStateInSel:1];
     [self startAction];
-    
-//    [[EaseHttpManager sharedInstance] modifyLiveRoomStatusWithRoomId:_room.roomId
-//                                                              status:EaseLiveSessionOngoing
-//                                                          completion:^(BOOL success) {
-//                                                              if (success) {
-//                                                                  [weakSelf showHint:@"更新成功"];
-//                                                              } else {
-//                                                                  [weakSelf showHint:@"更新失败"];
-//                                                              }
-//                                                          }];
 }
 
 - (void)dealloc
@@ -212,20 +202,7 @@
 
 - (void)closeLiveAction
 {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:NSLocalizedString(@"endview.wheather.leave", @"Are you sure leave Live?") preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:NSLocalizedString(@"publish.cancel", @"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        
-    }];
-    
-    UIAlertAction *ok = [UIAlertAction actionWithTitle:NSLocalizedString(@"publish.ok", @"Ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self stopCameraAction];
-    }];
-    
-    [alert addAction:cancel];
-    [alert addAction:ok];
-    
-    [self presentViewController:alert animated:YES completion:NULL];
+    [self stopCameraAction];
 }
 
 //停止直播
@@ -574,6 +551,7 @@
 {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"被踢出直播聊天室" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
     [alert show];
+    [self _shutDownLive];
     [self didClickEndButton];
 }
 

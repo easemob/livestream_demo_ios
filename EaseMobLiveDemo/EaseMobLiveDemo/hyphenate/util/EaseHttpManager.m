@@ -93,7 +93,7 @@
 #define kHttpRequestTimeout 60.f
 #define kHttpRequestMaxOperation 5
 
-#define kDefaultDomain @"http://120.26.4.73:81"
+#define kDefaultDomain @"http://a1.easemob.com"
 
 static EaseHttpManager *sharedInstance = nil;
 
@@ -123,7 +123,7 @@ static EaseHttpManager *sharedInstance = nil;
         [securityPolicy setAllowInvalidCertificates:YES];
         [_sessionManager setSecurityPolicy:securityPolicy];
         [_sessionManager.requestSerializer setValue:@"application/json; charset=UTF-8" forHTTPHeaderField:@"content-type"];
-        [_sessionManager.requestSerializer setCachePolicy:NSURLRequestUseProtocolCachePolicy];
+        [_sessionManager.requestSerializer setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
         [_sessionManager.requestSerializer setTimeoutInterval:kHttpRequestTimeout];
         [_sessionManager.operationQueue setMaxConcurrentOperationCount:kHttpRequestMaxOperation];
         _sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
