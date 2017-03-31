@@ -45,9 +45,11 @@
 
 @property (nonatomic, weak) id<EaseChatViewDelegate> delegate;
 
-- (void)joinChatroomWithCompletion:(void (^)(BOOL success))aCompletion;
+- (void)joinChatroomWithIsCount:(BOOL)aIsCount
+                     completion:(void (^)(BOOL success))aCompletion;
 
-- (void)leaveChatroomWithCompletion:(void (^)(BOOL success))aCompletion;
+- (void)leaveChatroomWithIsCount:(BOOL)aIsCount
+                      completion:(void (^)(BOOL success))aCompletion;
 
 - (void)sendGiftWithId:(NSString*)giftId;
 

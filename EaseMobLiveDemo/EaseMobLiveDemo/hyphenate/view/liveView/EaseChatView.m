@@ -703,11 +703,13 @@
     return result;
 }
 
-- (void)joinChatroomWithCompletion:(void (^)(BOOL success))aCompletion
+- (void)joinChatroomWithIsCount:(BOOL)aIsCount
+                     completion:(void (^)(BOOL success))aCompletion
 {
     __weak typeof(self) weakSelf = self;
     [[EaseHttpManager sharedInstance] joinLiveRoomWithRoomId:_room.roomId
                                                   chatroomId:_room.chatroomId
+                                                     isCount:aIsCount
                                                   completion:^(BOOL success) {
                                                       BOOL ret = NO;
                                                       if (success) {
@@ -726,11 +728,13 @@
                                                   }];
 }
 
-- (void)leaveChatroomWithCompletion:(void (^)(BOOL success))aCompletion
+- (void)leaveChatroomWithIsCount:(BOOL)aIsCount
+                      completion:(void (^)(BOOL success))aCompletion
 {
     __weak typeof(self) weakSelf = self;
     [[EaseHttpManager sharedInstance] leaveLiveRoomWithRoomId:_room.roomId
                                                    chatroomId:_room.chatroomId
+                                                      isCount:aIsCount
                                                    completion:^(BOOL success) {
                                                        BOOL ret = NO;
                                                        if (success) {

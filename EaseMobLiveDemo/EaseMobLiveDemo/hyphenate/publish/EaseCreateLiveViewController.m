@@ -578,6 +578,7 @@
                                                          completion:^(EaseLiveRoom *room, BOOL success) {
                                                              [weakHud hide:YES];
                                                              if (success) {
+                                                                 modifyBlock();
                                                                  EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:room];
                                                                  [weakSelf presentViewController:publishView animated:YES completion:^{
                                                                      [weakSelf.navigationController popToRootViewControllerAnimated:NO];

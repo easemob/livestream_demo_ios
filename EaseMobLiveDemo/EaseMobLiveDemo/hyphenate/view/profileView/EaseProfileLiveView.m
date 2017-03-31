@@ -176,12 +176,14 @@
 {
     MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"%@...",NSLocalizedString(@"profile.mute", @"Mute")] toView:self];
     __weak MBProgressHUD *weakHud = hud;
+    __weak typeof(self) weakSelf = self;
     [[EMClient sharedClient].roomManager muteMembers:@[_username]
                                     muteMilliseconds:-1
                                         fromChatroom:_chatroomId
                                           completion:^(EMChatroom *aChatroom, EMError *aError) {
                                               if (!aError) {
-                                                  [weakHud hide:YES afterDelay:0.5];
+                                                  [weakHud hide:YES];
+                                                  [weakSelf removeFromParentView];
                                               } else {
                                                   [weakHud setLabelText:aError.errorDescription];
                                                   [weakHud hide:YES afterDelay:0.5];
@@ -193,11 +195,13 @@
 {
     MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"%@...",NSLocalizedString(@"profile.kick", @"Kick")] toView:self];
     __weak MBProgressHUD *weakHud = hud;
+    __weak typeof(self) weakSelf = self;
     [[EMClient sharedClient].roomManager removeMembers:@[_username]
                                           fromChatroom:_chatroomId
                                             completion:^(EMChatroom *aChatroom, EMError *aError) {
                                                 if (!aError) {
-                                                    [weakHud hide:YES afterDelay:0.5];
+                                                    [weakHud hide:YES];
+                                                    [weakSelf removeFromParentView];
                                                 } else {
                                                     [weakHud setLabelText:aError.errorDescription];
                                                     [weakHud hide:YES afterDelay:0.5];
@@ -209,11 +213,13 @@
 {
     MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"%@...",NSLocalizedString(@"profile.block", @"Block")]  toView:self];
     __weak MBProgressHUD *weakHud = hud;
+    __weak typeof(self) weakSelf = self;
     [[EMClient sharedClient].roomManager blockMembers:@[_username]
                                          fromChatroom:_chatroomId
                                            completion:^(EMChatroom *aChatroom, EMError *aError) {
                                                if (!aError) {
-                                                   [weakHud hide:YES afterDelay:0.5];
+                                                   [weakHud hide:YES];
+                                                   [weakSelf removeFromParentView];
                                                } else {
                                                    [weakHud setLabelText:aError.errorDescription];
                                                    [weakHud hide:YES afterDelay:0.5];
@@ -225,11 +231,13 @@
 {
     MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"%@...",NSLocalizedString(@"profile.setAdmin", @"Set Admin")] toView:self];
     __weak MBProgressHUD *weakHud = hud;
+    __weak typeof(self) weakSelf = self;
     [[EMClient sharedClient].roomManager addAdmin:_username
                                        toChatroom:_chatroomId
                                        completion:^(EMChatroom *aChatroomp, EMError *aError) {
                                            if (!aError) {
-                                               [weakHud hide:YES afterDelay:0.5];
+                                               [weakHud hide:YES];
+                                               [weakSelf removeFromParentView];
                                            } else {
                                                [weakHud setLabelText:aError.errorDescription];
                                                [weakHud hide:YES afterDelay:0.5];

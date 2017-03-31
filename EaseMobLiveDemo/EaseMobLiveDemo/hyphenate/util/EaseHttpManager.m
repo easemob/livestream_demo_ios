@@ -561,6 +561,7 @@ static EaseHttpManager *sharedInstance = nil;
 
 - (void)joinLiveRoomWithRoomId:(NSString*)aRoomId
                     chatroomId:(NSString*)aChatroomId
+                       isCount:(BOOL)aIsCount
                     completion:(void (^)(BOOL success))aCompletion
 {
     __weak typeof(self) weakSelf = self;
@@ -569,10 +570,12 @@ static EaseHttpManager *sharedInstance = nil;
         [[EMClient sharedClient].roomManager joinChatroom:aChatroomId error:&error];
         BOOL ret = NO;
         if (!error) {
-            [weakSelf _doPutCountWithRoomId:aRoomId
-                                   type:@"join"
-                                  count:1
-                             completion:NULL];
+            if (aIsCount) {
+                [weakSelf _doPutCountWithRoomId:aRoomId
+                                           type:@"join"
+                                          count:1
+                                     completion:NULL];
+            }
             ret = YES;
         }
         
@@ -586,6 +589,7 @@ static EaseHttpManager *sharedInstance = nil;
 
 - (void)leaveLiveRoomWithRoomId:(NSString*)aRoomId
                      chatroomId:(NSString*)aChatroomId
+                        isCount:(BOOL)aIsCount
                      completion:(void (^)(BOOL success))aCompletion
 {
     __weak typeof(self) weakSelf = self;
@@ -594,10 +598,12 @@ static EaseHttpManager *sharedInstance = nil;
         [[EMClient sharedClient].roomManager leaveChatroom:aChatroomId error:&error];
         BOOL ret = NO;
         if (!error) {
-            [weakSelf _doPutCountWithRoomId:aRoomId
-                                       type:@"leave"
-                                      count:1
-                                 completion:NULL];
+            if (aIsCount) {
+                [weakSelf _doPutCountWithRoomId:aRoomId
+                                           type:@"leave"
+                                          count:1
+                                     completion:NULL];
+            }
             ret = YES;
         }
         

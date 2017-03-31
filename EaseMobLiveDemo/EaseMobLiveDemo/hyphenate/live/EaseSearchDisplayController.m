@@ -205,9 +205,18 @@
                                                      if (success) {
                                                          [weakSelf.resultsSource removeAllObjects];
                                                          if (room.chatroomId.length > 0) {
-                                                             [weakSelf.resultsSource addObject:room];
+                                                             [[EaseHttpManager sharedInstance] getLiveRoomCurrentWithRoomId:searchBar.text
+                                                                                                                 completion:^(EaseLiveSession *session, BOOL success) {
+                                                                                                                     if (success) {
+                                                                                                                         room.session.currentUserCount = session.currentUserCount;
+                                                                                                                     }
+                                                                                                                     [weakSelf.resultsSource addObject:room];
+                                                                                                                     [weakSelf.collectionView reloadData];
+                                                                                                                 }];
+                                                             
+                                                         } else {
+                                                             [weakSelf.collectionView reloadData];
                                                          }
-                                                         [weakSelf.collectionView reloadData];
                                                      } else {
                                                          [weakSelf.resultsSource removeAllObjects];
                                                          [weakSelf.collectionView reloadData];

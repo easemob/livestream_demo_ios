@@ -171,10 +171,12 @@
  *
  *  @param aRoomId          直播聊天室ID
  *  @param aChatroomId      聊天室ID
+ *  @param aIsCount         是否计数
  *  @param aCompletion      完成的回调block
  */
 - (void)joinLiveRoomWithRoomId:(NSString*)aRoomId
                     chatroomId:(NSString*)aChatroomId
+                       isCount:(BOOL)aIsCount
                     completion:(void (^)(BOOL success))aCompletion;
 
 /*
@@ -182,10 +184,12 @@
  *
  *  @param aRoomId          直播聊天室ID
  *  @param aChatroomId      聊天室ID
+ *  @param aIsCount         是否计数
  *  @param aCompletion      完成的回调block
  */
 - (void)leaveLiveRoomWithRoomId:(NSString*)aRoomId
                      chatroomId:(NSString*)aChatroomId
+                        isCount:(BOOL)aIsCount
                      completion:(void (^)(BOOL success))aCompletion;
 
 /*
