@@ -79,15 +79,6 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"loginStateChange" object:@NO];
 }
 
-- (void)connectionStateDidChange:(EMConnectionState)aConnectionState
-{
-    if (aConnectionState == EMConnectionDisconnected) {
-        [MBProgressHUD showError:@"与服务器断开连接" toView:nil];
-    } else if (aConnectionState == EMConnectionConnected) {
-        [MBProgressHUD showError:@"与服务器连接建立" toView:nil];
-    }
-}
-
 - (void)applicationWillResignActive:(UIApplication *)application {
     
     
