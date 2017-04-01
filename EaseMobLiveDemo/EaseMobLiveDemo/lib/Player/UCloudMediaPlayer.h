@@ -113,27 +113,27 @@ typedef void(^UCloudMediaCompletionBlock)(NSInteger defaultNum, NSArray *data);
 
 /*!
  @property cachedDuration
- @abstract 丢帧策略缓存时长阀值，适用于直播，单位 ms，建议范围:0-5000，推荐设为3000。
+ @abstract 丢帧策略缓存时长阀值，适用于直播，单位 ms，建议范围:0-5000，默认为3000。
  @discussion 当 cachedDuration > 0，播放器会触发追帧策略，缩短播放延时。cachedDuration <= 0 不启用。
  */
 @property (assign, nonatomic) NSInteger             cachedDuration;
 
 /*!
  @property bufferDuration
- @abstract 卡顿时的缓存时长，适用于直播，单位 ms，建议范围：1000-6000，推荐设为3000。
+ @abstract 卡顿时的缓存时长，适用于直播，单位 ms，建议范围：1000-6000，默认为3000。
  @discussion 当播放器发生卡顿开始缓存时，缓冲视频数据时长为bufferDuration。该值越大卡顿缓冲时间越长，但是后续卡顿率会所有降低。当bufferDuration设置为0时，播放器将不发生缓冲，有数据则即刻播放，对网络比较敏感，容易发生卡顿，如果对延时要求不高的可以适当设置cachedDuration缓存一定量的音视频数据
  */
 @property (assign, nonatomic) NSInteger             bufferDuration;
 
 /*!
  @property prepareTimeout
- @abstract 适用于直播、点播，播放准备完成超时时间设置，单位 ms，默认10000，超时会收到UCloudPlayerPlaybackDidFinishNotification消息
+ @abstract 暂时适用于直播，播放准备完成超时时间设置，单位 ms，默认10000，推荐范围5000-150000，超时会收到UCloudPlayerPlaybackDidFinishNotification消息
  */
 @property (assign, nonatomic) NSInteger             prepareTimeout;
 
 /*!
  @property getAVFrameTimeout
- @abstract 适用于直播、点播，获取音频或视频帧超时设置，单位 ms，默认10000，超时会收到UCloudPlayerPlaybackDidFinishNotification消息
+ @abstract 暂时适用于直播，获取音频或视频帧超时设置，单位 ms，默认10000，推荐范围5000-150000，超时会收到UCloudPlayerPlaybackDidFinishNotification消息
  */
 @property (assign, nonatomic) NSInteger             getAVFrameTimeout;
 /**

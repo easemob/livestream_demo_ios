@@ -93,7 +93,7 @@ typedef enum {
 @property (nonatomic, assign) NSInteger totalWatchCount;
 
 /*
- *  
+ *  当前在线人数
  */
 @property (nonatomic, assign) NSInteger currentUserCount;
 

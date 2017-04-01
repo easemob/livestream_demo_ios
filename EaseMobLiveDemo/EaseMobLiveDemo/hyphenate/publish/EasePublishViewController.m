@@ -87,25 +87,16 @@
     
     [self.view addSubview:self.chatview];
     [self.view addSubview:self.headerListView];
-    [self.chatview joinChatroomWithCompletion:^(BOOL success) {
-        if (success) {
-            [self.headerListView loadHeaderListWithChatroomId:_room.chatroomId];
-        }
-    }];
+    [self.chatview joinChatroomWithIsCount:NO
+                                completion:^(BOOL success) {
+                                    if (success) {
+                                        [self.headerListView loadHeaderListWithChatroomId:_room.chatroomId];
+                                    }
+                                }];
     [self.view addSubview:self.roomNameLabel];
     [self.view layoutSubviews];
     [self setBtnStateInSel:1];
     [self startAction];
-    
-//    [[EaseHttpManager sharedInstance] modifyLiveRoomStatusWithRoomId:_room.roomId
-//                                                              status:EaseLiveSessionOngoing
-//                                                          completion:^(BOOL success) {
-//                                                              if (success) {
-//                                                                  [weakSelf showHint:@"更新成功"];
-//                                                              } else {
-//                                                                  [weakSelf showHint:@"更新失败"];
-//                                                              }
-//                                                          }];
 }
 
 - (void)dealloc
@@ -212,20 +203,7 @@
 
 - (void)closeLiveAction
 {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:NSLocalizedString(@"endview.wheather.leave", @"Are you sure leave Live?") preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:NSLocalizedString(@"publish.cancel", @"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        
-    }];
-    
-    UIAlertAction *ok = [UIAlertAction actionWithTitle:NSLocalizedString(@"publish.ok", @"Ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self stopCameraAction];
-    }];
-    
-    [alert addAction:cancel];
-    [alert addAction:ok];
-    
-    [self presentViewController:alert animated:YES completion:NULL];
+    [self stopCameraAction];
 }
 
 //停止直播
@@ -407,25 +385,26 @@
     __weak EasePublishViewController *weakSelf = self;
     
     dispatch_block_t block = ^{
-        [weakSelf.chatview leaveChatroomWithCompletion:^(BOOL success) {
-            if (success) {
-                [[EMClient sharedClient].chatManager deleteConversation:_room.chatroomId isDeleteMessages:YES completion:NULL];
-            } else {
-                [weakSelf showHint:@"退出聊天室失败"];
-            }
-            if (weakSelf.videoView)
-            {
-                [weakSelf.videoView removeFromSuperview];
-            }
-            weakSelf.videoView = nil;
-            weakSelf.closeBtn.enabled = YES;
-            
-            [UIApplication sharedApplication].idleTimerDisabled = NO;
-            [weakSelf removeNoti];
-            [weakSelf dismissViewControllerAnimated:YES completion:^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationRefreshList object:@(YES)];
-            }];
-        }];
+        [weakSelf.chatview leaveChatroomWithIsCount:NO
+                                         completion:^(BOOL success) {
+                                             if (success) {
+                                                 [[EMClient sharedClient].chatManager deleteConversation:_room.chatroomId isDeleteMessages:YES completion:NULL];
+                                             } else {
+                                                 [weakSelf showHint:@"退出聊天室失败"];
+                                             }
+                                             if (weakSelf.videoView)
+                                             {
+                                                 [weakSelf.videoView removeFromSuperview];
+                                             }
+                                             weakSelf.videoView = nil;
+                                             weakSelf.closeBtn.enabled = YES;
+                                             
+                                             [UIApplication sharedApplication].idleTimerDisabled = NO;
+                                             [weakSelf removeNoti];
+                                             [weakSelf dismissViewControllerAnimated:YES completion:^{
+                                                 [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationRefreshList object:@(YES)];
+                                             }];
+                                         }];
     };
     
     [[EaseHttpManager sharedInstance] modifyLiveRoomStatusWithRoomId:_room.roomId
@@ -517,7 +496,9 @@
                        user:(NSString *)aUsername
 {
     if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
-        [_headerListView joinChatroomWithUsername:aUsername];
+        if (![aChatroom.owner isEqualToString:aUsername]) {
+            [_headerListView joinChatroomWithUsername:aUsername];
+        }
     }
 }
 
@@ -525,7 +506,9 @@
                         user:(NSString *)aUsername
 {
     if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
-        [_headerListView leaveChatroomWithUsername:aUsername];
+        if (![aChatroom.owner isEqualToString:aUsername]) {
+            [_headerListView leaveChatroomWithUsername:aUsername];
+        }
     }
 }
 
@@ -574,6 +557,7 @@
 {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"被踢出直播聊天室" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
     [alert show];
+    [self _shutDownLive];
     [self didClickEndButton];
 }
 

@@ -83,29 +83,30 @@
     [self.playerManager setPortraitViewHeight:height];
 
     __weak EaseLiveViewController *weakSelf = self;
-    [self.chatview joinChatroomWithCompletion:^(BOOL success) {
-        if (success) {
-            [weakSelf.headerListView loadHeaderListWithChatroomId:[_room.chatroomId copy]];
-            _chatroom = [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:_room.chatroomId error:nil];
-            [[EaseHttpManager sharedInstance] getLiveRoomWithRoomId:_room.roomId
-                                                         completion:^(EaseLiveRoom *room, BOOL success) {
-                                                             if (success) {
-                                                                 _room = room;
-                                                                 NSString *path = _room.session.mobilepullstream;
-                                                                 [weakSelf.playerManager buildMediaPlayer:path];
-                                                             } else {
-                                                                 NSString *path = _room.session.mobilepullstream;
-                                                                 [weakSelf.playerManager buildMediaPlayer:path];
-                                                             }
-                                                             [weakSelf.view bringSubviewToFront:weakSelf.liveView];
-                                                             [weakSelf.view layoutSubviews];
-                                                         }];
-        } else {
-            [weakSelf showHint:@"加入聊天室失败"];
-            [weakSelf.view bringSubviewToFront:weakSelf.liveView];
-            [weakSelf.view layoutSubviews];
-        }
-    }];
+    [self.chatview joinChatroomWithIsCount:YES
+                                completion:^(BOOL success) {
+                                    if (success) {
+                                        [weakSelf.headerListView loadHeaderListWithChatroomId:[_room.chatroomId copy]];
+                                        _chatroom = [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:_room.chatroomId error:nil];
+                                        [[EaseHttpManager sharedInstance] getLiveRoomWithRoomId:_room.roomId
+                                                                                     completion:^(EaseLiveRoom *room, BOOL success) {
+                                                                                         if (success) {
+                                                                                             _room = room;
+                                                                                             NSString *path = _room.session.mobilepullstream;
+                                                                                             [weakSelf.playerManager buildMediaPlayer:path];
+                                                                                         } else {
+                                                                                             NSString *path = _room.session.mobilepullstream;
+                                                                                             [weakSelf.playerManager buildMediaPlayer:path];
+                                                                                         }
+                                                                                         [weakSelf.view bringSubviewToFront:weakSelf.liveView];
+                                                                                         [weakSelf.view layoutSubviews];
+                                                                                     }];
+                                    } else {
+                                        [weakSelf showHint:@"加入聊天室失败"];
+                                        [weakSelf.view bringSubviewToFront:weakSelf.liveView];
+                                        [weakSelf.view layoutSubviews];
+                                    }
+                                }];
     
     [[EMClient sharedClient].roomManager addDelegate:self delegateQueue:nil];
     [[EMClient sharedClient] addDelegate:self delegateQueue:nil];
@@ -203,6 +204,11 @@
                                                                                      isOwner:isOwner];
         profileLiveView.delegate = self;
         [profileLiveView showFromParentView:self.view];
+    } else {
+        EaseProfileLiveView *profileLiveView = [[EaseProfileLiveView alloc] initWithUsername:username
+                                                                                  chatroomId:_room.chatroomId];
+        profileLiveView.delegate = self;
+        [profileLiveView showFromParentView:self.view];
     }
 }
 
@@ -281,7 +287,9 @@
                        user:(NSString *)aUsername
 {
     if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
-        [_headerListView joinChatroomWithUsername:aUsername];
+        if (![aChatroom.owner isEqualToString:aUsername]) {
+            [_headerListView joinChatroomWithUsername:aUsername];
+        }
     }
 }
 
@@ -289,7 +297,9 @@
                         user:(NSString *)aUsername
 {
     if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
-        [_headerListView leaveChatroomWithUsername:aUsername];
+        if (![aChatroom.owner isEqualToString:aUsername]) {
+            [_headerListView leaveChatroomWithUsername:aUsername];
+        }
     }
 }
 
@@ -404,12 +414,13 @@
     
     __weak typeof(self) weakSelf =  self;
     NSString *chatroomId = [_room.chatroomId copy];
-    [weakSelf.chatview leaveChatroomWithCompletion:^(BOOL success) {
-        if (success) {
-            [[EMClient sharedClient].chatManager deleteConversation:chatroomId isDeleteMessages:YES completion:NULL];
-        }
-        [weakSelf dismissViewControllerAnimated:YES completion:NULL];
-    }];
+    [weakSelf.chatview leaveChatroomWithIsCount:YES
+                                     completion:^(BOOL success) {
+                                         if (success) {
+                                             [[EMClient sharedClient].chatManager deleteConversation:chatroomId isDeleteMessages:YES completion:NULL];
+                                         }
+                                         [weakSelf dismissViewControllerAnimated:YES completion:NULL];
+                                     }];
     
     [_burstTimer invalidate];
     _burstTimer = nil;
@@ -427,6 +438,7 @@
             if ([self.playerManager respondsToSelector:@selector(restartPlayer)]) {
                 [self.playerManager performSelector:@selector(restartPlayer) withObject:nil afterDelay:15.f];
             }
+            [MBProgressHUD showError:@"视频播放错误，请稍候再试" toView:self.view];
         }
     }
 }

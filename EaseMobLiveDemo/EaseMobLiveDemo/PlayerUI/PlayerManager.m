@@ -598,15 +598,15 @@ static bool showing = NO;
 
             // 尝试重连，注意这里需要你自己来处理重连尝试的次数以及重连的时间间隔
             if (_retryConnectNumber > 0) {
-                NSLog(@"视频播放错误，小U君正在为您抢救，剩余次数%ld", _retryConnectNumber);
-                [self performSelector:@selector(restartPlayer) withObject:self afterDelay:5.0f];
+                //NSLog(@"视频播放错误，小U君正在为您抢救，剩余次数%ld", _retryConnectNumber);
+                //[self performSelector:@selector(restartPlayer) withObject:self afterDelay:5.0f];
                 
                 return;
             }
             
             _retryAlert.message = @"视频播放错误，请稍候再试";
             _retryAlert.tag = AlertViewPlayerError;
-            [MBProgressHUD showError:_retryAlert.message toView:nil];
+            //[MBProgressHUD showError:_retryAlert.message toView:nil];
         }
     }
     else if ([noti.name isEqualToString:UCloudPlayerVideoChangeRotationNotification]&& self.supportAngleChange) {

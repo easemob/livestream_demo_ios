@@ -93,7 +93,7 @@
 #define kHttpRequestTimeout 60.f
 #define kHttpRequestMaxOperation 5
 
-#define kDefaultDomain @"http://120.26.4.73:81"
+#define kDefaultDomain @"http://a1.easemob.com"
 
 static EaseHttpManager *sharedInstance = nil;
 
@@ -123,7 +123,7 @@ static EaseHttpManager *sharedInstance = nil;
         [securityPolicy setAllowInvalidCertificates:YES];
         [_sessionManager setSecurityPolicy:securityPolicy];
         [_sessionManager.requestSerializer setValue:@"application/json; charset=UTF-8" forHTTPHeaderField:@"content-type"];
-        [_sessionManager.requestSerializer setCachePolicy:NSURLRequestUseProtocolCachePolicy];
+        [_sessionManager.requestSerializer setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
         [_sessionManager.requestSerializer setTimeoutInterval:kHttpRequestTimeout];
         [_sessionManager.operationQueue setMaxConcurrentOperationCount:kHttpRequestMaxOperation];
         _sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
@@ -561,6 +561,7 @@ static EaseHttpManager *sharedInstance = nil;
 
 - (void)joinLiveRoomWithRoomId:(NSString*)aRoomId
                     chatroomId:(NSString*)aChatroomId
+                       isCount:(BOOL)aIsCount
                     completion:(void (^)(BOOL success))aCompletion
 {
     __weak typeof(self) weakSelf = self;
@@ -569,10 +570,12 @@ static EaseHttpManager *sharedInstance = nil;
         [[EMClient sharedClient].roomManager joinChatroom:aChatroomId error:&error];
         BOOL ret = NO;
         if (!error) {
-            [weakSelf _doPutCountWithRoomId:aRoomId
-                                   type:@"join"
-                                  count:1
-                             completion:NULL];
+            if (aIsCount) {
+                [weakSelf _doPutCountWithRoomId:aRoomId
+                                           type:@"join"
+                                          count:1
+                                     completion:NULL];
+            }
             ret = YES;
         }
         
@@ -586,6 +589,7 @@ static EaseHttpManager *sharedInstance = nil;
 
 - (void)leaveLiveRoomWithRoomId:(NSString*)aRoomId
                      chatroomId:(NSString*)aChatroomId
+                        isCount:(BOOL)aIsCount
                      completion:(void (^)(BOOL success))aCompletion
 {
     __weak typeof(self) weakSelf = self;
@@ -594,10 +598,12 @@ static EaseHttpManager *sharedInstance = nil;
         [[EMClient sharedClient].roomManager leaveChatroom:aChatroomId error:&error];
         BOOL ret = NO;
         if (!error) {
-            [weakSelf _doPutCountWithRoomId:aRoomId
-                                       type:@"leave"
-                                      count:1
-                                 completion:NULL];
+            if (aIsCount) {
+                [weakSelf _doPutCountWithRoomId:aRoomId
+                                           type:@"leave"
+                                          count:1
+                                     completion:NULL];
+            }
             ret = YES;
         }
         
