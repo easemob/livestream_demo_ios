@@ -8,23 +8,37 @@
 
 //home
 "home.tabbar.finder" = "广场";
-"home.tabbar.live" = "直播";
-"home.tabbar.message" = "私信";
-"home.tabbar.profile" = "个人";
 
 //live
 "live.header.hot" = "热门";
 "live.header.beauty" = "美女";
 "live.header.handsome" = "帅哥";
+"live.room.name" = "房间号";
 
 //Publish
 "publish.button.live" = "开始直播";
+"publish.title" = "创建直播间";
+"publish.home" = "首页";
+"publish.relevance" = "关联直播间";
+"publish.liveName" = "直播名称";
+"publish.liveDesc" = "直播描述";
+"publish.introduceSelf" = "介绍自己";
+"publish.photo" = "拍照上传";
+"publish.albums" = "相册上传";
+"publish.cancel" = "取消";
+"publish.save" = "保存";
+"publish.ok" = "确认";
+"publish.back" = "返回";
+"publish.relevance.title" = "关联直播间";
+"publish.addcoverimage" = "添加直播封面";
+"publish.liveroomid" = "直播间编号";
 
 //title
 "title.login" = "登录";
 "title.signup" = "注册";
 "title.update" = "版本信息";
 "title.message" = "私信";
+"title.live" = "环信直播";
 
 //login
 "login.button.login" = "登录";
@@ -32,7 +46,7 @@
 "login.button.signup" = "注册";
 "login.textfield.username" = "用户名";
 "login.textfield.password" = "密码";
-"login.textfield.confirm.password" = "密码确认";
+"login.textfield.confirm.password" = "确认密码";
 "login.alert.username.empty" = "用户名为空";
 "login.alert.password.empty" = "密码为空";
 "login.alert.password.error" = "您的确认密码和密码不一致";
@@ -56,9 +70,9 @@
 "error.invalid.username.password" = "用户名密码错误";
 
 //button
-"button.share" = "分享";
-"button.cancel" = "取消";
 "button.recharge" = "充值";
+"button.live" = "我要直播";
+"button.logout" = "登出";
 
 //endView
 "endview.like" = "喜欢数";
@@ -67,21 +81,26 @@
 "endview.comment" = "评论数";
 "endview.audience" = "观众数";
 "endview.button.ok" = "关闭";
+"endview.continue.live" = "继续直播";
+"endview.live.end" = "直播暂停";
+"endview.live.watch" = "人看过";
+"endview.wheather.leave" = "是否退出直播间";
 
 //setting
-"setting.logout.text" = "退出登陆";
-"setting.update.button.update" = "检测更新";
-"setting.update.button.refresh" = "刷新";
-"setting.update.label.version" = "版本";
-"setting.profile.followers" = "关注";
-"setting.profile.following" = "粉丝";
-"setting.profile.like" = "喜欢";
 "profile.kick" = "踢人";
 "profile.mute" = "禁言";
 "profile.follow" = "关注";
 "profile.following" = "粉丝";
 "profile.message" = "私信";
 "profile.reply" = "回复";
+"profile.block" = "加入黑名单";
+"profile.setAdmin" = "设置房管";
+"profile.admin" = "房管";
+"profile.mute" = "禁言";
+"profile.admin.remove" = "移除房管";
+"profile.mute.cancel" = "取消禁言";
+"profile.block.remove" = "移除黑名单";
+"profile.people" = "人";
 
 //message
 "message.image" = "[图片]";
@@ -89,3 +108,9 @@
 "message.video" = "[视频]";
 "message.file" = "[文件]";
 "message.location" = "[位置]";
+
+//chat
+"chat.input.placeholder" = "输入新消息";
+
+//search
+"search.placeholder" = "输入房间号";

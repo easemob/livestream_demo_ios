@@ -12,6 +12,8 @@
 
 - (void)didClickEndButton;
 
+- (void)didClickContinueButton;
+
 @end
 
 @interface EaseEndLiveView : UIView
@@ -19,10 +21,9 @@
 @property (nonatomic, weak) id<EaseEndLiveViewDelegate> delegate;
 
 - (instancetype)initWithUsername:(NSString*)username
-                            like:(NSString*)like
-                            time:(NSString*)time
-                        audience:(NSString*)audience
-                        comments:(NSString*)comments;
+                        audience:(NSString*)audience;
+
+- (void)setAudience:(NSString*)audience;
 
 
 @end

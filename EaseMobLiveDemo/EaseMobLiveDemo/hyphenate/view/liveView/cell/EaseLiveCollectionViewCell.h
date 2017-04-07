@@ -8,9 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@class EasePublishModel;
+@class EaseLiveRoom;
 @interface EaseLiveCollectionViewCell : UICollectionViewCell
 
-- (void)setModel:(EasePublishModel*)model;
+- (void)setLiveRoom:(EaseLiveRoom*)room;
 
 @end

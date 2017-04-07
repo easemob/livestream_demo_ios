@@ -10,57 +10,41 @@
 
 #import "UCloudMediaPlayer.h"
 #import "CameraServer.h"
-#import "UCloudMediaViewController.h"
 #import "FilterManager.h"
 #import "EaseChatView.h"
 #import "EaseTextView.h"
-#import "UIViewController+DismissKeyboard.h"
-#import "EaseParseManager.h"
-#import "PFObject.h"
 #import "EaseHeartFlyView.h"
-#import "EaseGiftFlyView.h"
-#import "EaseBarrageFlyView.h"
 #import "EaseLiveHeaderListView.h"
-#import "EasePrintImageView.h"
 #import "EaseEndLiveView.h"
 #import "UIImage+Color.h"
 #import "EaseProfileLiveView.h"
 #import "EaseLiveCastView.h"
-#import "EasePublishModel.h"
-#import "EaseConversationViewController.h"
-#import "EaseChatViewController.h"
+#import "EaseAdminView.h"
+#import "UIViewController+DismissKeyboard.h"
+#import "EaseLiveRoom.h"
+#import "EaseCreateLiveViewController.h"
 
-#define kDefaultTop 31.f
-#define kDefaultLeft 18.f
+#define kDefaultTop 30.f
+#define kDefaultLeft 10.f
 
-@interface EasePublishViewController () <EaseChatViewDelegate,UITextViewDelegate,EMChatroomManagerDelegate,EaseEndLiveViewDelegate,TapBackgroundViewDelegate,EaseLiveHeaderListViewDelegate,EaseProfileLiveViewDelegate,UIAlertViewDelegate>
+@interface EasePublishViewController () <EaseChatViewDelegate,UITextViewDelegate,EMChatroomManagerDelegate,EaseEndLiveViewDelegate,TapBackgroundViewDelegate,EaseLiveHeaderListViewDelegate,EaseProfileLiveViewDelegate,UIAlertViewDelegate,EMClientDelegate>
 {
     BOOL _isload;
     BOOL _isShutDown;
     
     UIView *_blackView;
-    NSTimer *_burstTimer;
     
     BOOL _isPublish;
     
-    EasePublishModel *_model;
-    
-    NSString *_chatroomID;
+    EaseLiveRoom *_room;
 }
 
 @property (nonatomic, strong) UIButton *closeBtn;
-@property (nonatomic, strong) UIButton *changeBtn;
-@property (nonatomic, strong) UIButton *flashBtn;
-@property (nonatomic, strong) UIButton *microphoneBtn;
 
-@property (nonatomic, strong) EaseLiveCastView *castView;
 @property (nonatomic, strong) EaseLiveHeaderListView *headerListView;
-@property (nonatomic, strong) EasePrintImageView *printImageView;
 @property (nonatomic, strong) EaseEndLiveView *endLiveView;
+@property (nonatomic, strong) UILabel *roomNameLabel;
 @property (nonatomic, strong) UIWindow *subWindow;
-
-//发布直播
-@property (nonatomic, strong) UIButton *startButton;
 
 //直播相关
 @property (strong, nonatomic) FilterManager *filterManager;
@@ -69,81 +53,58 @@
 @property (strong, nonatomic) AVCaptureDevice *currentDev;
 @property (nonatomic, assign) BOOL shouldAutoStarted;
 
-@property (strong, nonatomic) NSTimer *timer;
+@property (strong, nonatomic) UITapGestureRecognizer *singleTapGR;
 
 //聊天室
 @property (strong, nonatomic) EaseChatView *chatview;
-@property (copy, nonatomic) NSString *streamId;
 
 @end
 
 @implementation EasePublishViewController
 
+- (instancetype)initWithLiveRoom:(EaseLiveRoom*)room
+{
+    self = [super init];
+    if (self) {
+        _room = room;
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"发布直播";
+    
     self.view.backgroundColor = [UIColor colorWithRed:0.88 green:0.88 blue:0.88 alpha:1.0];
     
-    self.streamId = @"em_100001";
-    _chatroomID = @"218746635482562996";
-    if ([[EMClient sharedClient].currentUsername isEqualToString:@"test2"]) {
-        self.streamId = @"em_100002";
-        _chatroomID = @"218747106892972464";
-    } else if ([[EMClient sharedClient].currentUsername isEqualToString:@"test3"]) {
-        self.streamId = @"em_100003";
-        _chatroomID = @"218747152489251244";
-    } else if ([[EMClient sharedClient].currentUsername isEqualToString:@"test4"]) {
-        self.streamId = @"em_100004";
-        _chatroomID = @"218747179836113332";
-    } else if ([[EMClient sharedClient].currentUsername isEqualToString:@"test5"]) {
-        self.streamId = @"em_100005";
-        _chatroomID = @"218747226120257964";
-    } else if ([[EMClient sharedClient].currentUsername isEqualToString:@"test6"]) {
-        self.streamId = @"em_100006";
-        _chatroomID = @"218747262707171768";
-    }
+    [[EMClient sharedClient].roomManager addDelegate:self delegateQueue:nil];
+    [[EMClient sharedClient] addDelegate:self delegateQueue:nil];
+    
+    [self.view addSubview:self.closeBtn];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
     
     [self setupForDismissKeyboard];
     
-    [self.view addSubview:self.castView];
-    
-    [self.view addSubview:self.startButton];
-    
     [self.view addSubview:self.chatview];
     [self.view addSubview:self.headerListView];
-    [self.view addSubview:self.flashBtn];
-    [self.view addSubview:self.closeBtn];
-    [self.view addSubview:self.changeBtn];
-    [self.view addSubview:self.microphoneBtn];
+    [self.chatview joinChatroomWithIsCount:NO
+                                completion:^(BOOL success) {
+                                    if (success) {
+                                        [self.headerListView loadHeaderListWithChatroomId:_room.chatroomId];
+                                    }
+                                }];
+    [self.view addSubview:self.roomNameLabel];
+    [self.view layoutSubviews];
     [self setBtnStateInSel:1];
-    
-    [[EMClient sharedClient].roomManager addDelegate:self delegateQueue:nil];
-    
-    if ([[EMClient sharedClient].currentUsername isEqualToString:@"test1"] ||
-        [[EMClient sharedClient].currentUsername isEqualToString:@"test2"] ||
-        [[EMClient sharedClient].currentUsername isEqualToString:@"test3"] ||
-        [[EMClient sharedClient].currentUsername isEqualToString:@"test4"] ||
-        [[EMClient sharedClient].currentUsername isEqualToString:@"test5"] ||
-        [[EMClient sharedClient].currentUsername isEqualToString:@"test6"]) {
-        [self startAction];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
-    } else {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"Demo必须使用test1,test2,test3,test4,test5,test6账号发起直播" delegate:self cancelButtonTitle:@"确认" otherButtonTitles:nil, nil];
-        alert.tag = 1000;
-        [alert show];
-    }
+    [self startAction];
 }
 
 - (void)dealloc
 {
     [[EMClient sharedClient].roomManager removeDelegate:self];
+    [[EMClient sharedClient] removeDelegate:self];
     
     _chatview.delegate = nil;
-    
-    if (_burstTimer) {
-        [_burstTimer invalidate];
-        _burstTimer = nil;
-    }
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -161,95 +122,40 @@
 - (EaseEndLiveView*)endLiveView
 {
     if (_endLiveView == nil) {
-        _endLiveView = [[EaseEndLiveView alloc] initWithUsername:[EMClient sharedClient].currentUsername like:@"6851" time:@"54:12" audience:@"265381" comments:@"75192"];
+        _endLiveView = [[EaseEndLiveView alloc] initWithUsername:[EMClient sharedClient].currentUsername audience:@"265381人看过"];
         _endLiveView.delegate = self;
     }
     return _endLiveView;
 }
 
-- (EasePrintImageView*)printImageView
-{
-    if (_printImageView == nil) {
-        _printImageView = [[EasePrintImageView alloc] init];
-    }
-    return _printImageView;
-}
-
 - (EaseLiveHeaderListView*)headerListView
 {
     if (_headerListView == nil) {
-        _headerListView = [[EaseLiveHeaderListView alloc] initWithFrame:CGRectMake(kDefaultLeft, 71.f, KScreenWidth - 30.f, 30.f)];
+        _headerListView = [[EaseLiveHeaderListView alloc] initWithFrame:CGRectMake(0, kDefaultTop, KScreenWidth - 50, 30.f) room:_room];
         _headerListView.delegate = self;
     }
     return _headerListView;
 }
 
+- (UILabel*)roomNameLabel
+{
+    if (_roomNameLabel == nil) {
+        _roomNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 69.f, KScreenWidth - 20.f, 15)];
+        _roomNameLabel.text = [NSString stringWithFormat:@"%@: %@" ,NSLocalizedString(@"live.room.name", @"Room ID") ,_room.roomId];
+        _roomNameLabel.font = [UIFont systemFontOfSize:12.f];
+        _roomNameLabel.textAlignment = NSTextAlignmentRight;
+        _roomNameLabel.textColor = [UIColor whiteColor];
+    }
+    return _roomNameLabel;
+}
+
 - (EaseChatView*)chatview
 {
     if (_chatview == nil) {
-        _chatview = [[EaseChatView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds) - 200, CGRectGetWidth(self.view.bounds), 200) chatroomId:_chatroomID isPublish:YES];
+        _chatview = [[EaseChatView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds) - 200, CGRectGetWidth(self.view.bounds), 200) room:_room isPublish:YES];
         _chatview.delegate = self;
     }
     return _chatview;
-}
-
-- (EaseLiveCastView*)castView
-{
-    if (_castView == nil) {
-        _model = [[EasePublishModel alloc] init];
-        _model.name = [EMClient sharedClient].currentUsername;
-        _castView = [[EaseLiveCastView alloc] initWithFrame:CGRectMake(kDefaultLeft, kDefaultTop, 120.f, 30.f) model:_model];
-        _castView.delegate = self;
-    }
-    return _castView;
-}
-
-- (UIButton*)startButton
-{
-    if (_startButton == nil) {
-        _startButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _startButton.frame = CGRectMake(0, CGRectGetHeight(self.view.frame) - 54.f, CGRectGetWidth(self.view.frame), 54.f);
-        [_startButton setBackgroundColor:kDefaultSystemBgColor];
-        [_startButton setTitle:NSLocalizedString(@"publish.button.live", @"Publish Live") forState:UIControlStateNormal];
-        [_startButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [_startButton addTarget:self action:@selector(publishAction) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _startButton;
-}
-
-- (UIButton*)microphoneBtn
-{
-    if(_microphoneBtn == nil) {
-        _microphoneBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _microphoneBtn.frame = CGRectMake(KScreenWidth - 160, kDefaultTop, 30, 30);
-        [_microphoneBtn setImage:[UIImage imageNamed:@"live_mac"] forState:UIControlStateNormal];
-        [_microphoneBtn setImage:[UIImage imageNamed:@"live_mac_close"] forState:UIControlStateSelected];
-        [_microphoneBtn addTarget:self action:@selector(macAction) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _microphoneBtn;
-}
-
-- (UIButton*)flashBtn
-{
-    if (_flashBtn == nil) {
-        _flashBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _flashBtn.frame = CGRectMake(KScreenWidth - 120, kDefaultTop, 30, 30);
-        [_flashBtn setImage:[UIImage imageNamed:@"live_flash"] forState:UIControlStateNormal];
-        [_flashBtn setImage:[UIImage imageNamed:@"live_flash_close"] forState:UIControlStateSelected];
-        [_flashBtn addTarget:self action:@selector(flashAction) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _flashBtn;
-}
-
-- (UIButton*)changeBtn
-{
-    if (_changeBtn == nil) {
-        _changeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _changeBtn.frame = CGRectMake(KScreenWidth - 80, kDefaultTop, 30, 30);
-        [_changeBtn setImage:[UIImage imageNamed:@"live_cam"] forState:UIControlStateNormal];
-        [_changeBtn addTarget:self action:@selector(changeAction) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _changeBtn;
 }
 
 - (UIButton*)closeBtn
@@ -257,8 +163,8 @@
     if (_closeBtn == nil) {
         _closeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _closeBtn.frame = CGRectMake(KScreenWidth - 40, kDefaultTop, 30, 30);
-        [_closeBtn setImage:[UIImage imageNamed:@"live_close"] forState:UIControlStateNormal];
-        [_closeBtn addTarget:self action:@selector(stopCameraAction) forControlEvents:UIControlEventTouchUpInside];
+        [_closeBtn setImage:[UIImage imageNamed:@"close"] forState:UIControlStateNormal];
+        [_closeBtn addTarget:self action:@selector(closeLiveAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _closeBtn;
 }
@@ -280,38 +186,12 @@
     }];
 }
 
-- (void)didSelectHeadImage
-{
-    if ([self.subWindow isKeyWindow]) {
-        [self closeAction];
-        return;
-    }
-    EaseProfileLiveView *profileLiveView = [[EaseProfileLiveView alloc] initWithUsername:[EMClient sharedClient].currentUsername];
-    profileLiveView.delegate = self;
-    [profileLiveView showFromParentView:self.view];
-}
-
-- (void)flashAction
-{
-    _flashBtn.selected = !_flashBtn.selected;
-    if (_flashBtn.selected) {
-        [[CameraServer server] setFlashState:UCloudCameraCode_On];
-    } else {
-        [[CameraServer server] setFlashState:UCloudCameraCode_Off];
-    }
-}
-
-- (void)macAction
-{
-    _microphoneBtn.selected = !_microphoneBtn.selected;
-}
-
 //点击屏幕点赞特效
 -(void)showTheLoveAction
 {
     EaseHeartFlyView* heart = [[EaseHeartFlyView alloc]initWithFrame:CGRectMake(0, 0, 55, 50)];
     [_chatview addSubview:heart];
-    CGPoint fountainSource = CGPointMake(KScreenWidth - (20 + 50/2.0), _chatview.height - 100);
+    CGPoint fountainSource = CGPointMake(KScreenWidth - (20 + 50/2.0), _chatview.height);
     heart.center = fountainSource;
     [heart animateInView:_chatview];
 }
@@ -321,58 +201,30 @@
     [[CameraServer server] changeCamera];
 }
 
+- (void)closeLiveAction
+{
+    [self stopCameraAction];
+}
+
 //停止直播
 - (void)stopCameraAction
 {
-    if (_burstTimer) {
-        [_burstTimer invalidate];
-        _burstTimer = nil;
-    }
-    
-    self.shouldAutoStarted = NO;
-    self.closeBtn.enabled = NO;
-    __weak EasePublishViewController *weakSelf = self;
-    [self.timer invalidate];
-    self.timer = nil;
-    [[CameraServer server] shutdown:^{
-        if (weakSelf.videoView)
-        {
-            [weakSelf.videoView removeFromSuperview];
-        }
-        weakSelf.videoView = nil;
-        
-        weakSelf.closeBtn.enabled = YES;
-        
-        [UIApplication sharedApplication].idleTimerDisabled = NO;
-        [weakSelf removeNoti];
-        
-        if (_isPublish) {
-            [weakSelf.view addSubview:self.endLiveView];
-            [weakSelf.view bringSubviewToFront:self.endLiveView];
-        } else {
-            [weakSelf dismissViewControllerAnimated:YES completion:nil];
-        }
-    }];
+    __weak typeof(self) weakSelf = self;
+    [[EaseHttpManager sharedInstance] getLiveRoomCurrentWithRoomId:_room.roomId
+                                                        completion:^(EaseLiveSession *session, BOOL success) {
+                                                            if (success) {
+                                                                [weakSelf _shutDownLive];
+                                                                [weakSelf.endLiveView setAudience:[NSString stringWithFormat:@"%ld%@",(long)session.totalWatchCount,NSLocalizedString(@"endview.live.watch", @" Watched")]];
+                                                                [self.view addSubview:self.endLiveView];
+                                                                [self.view bringSubviewToFront:self.endLiveView];
+                                                            }
+                                                        }];
 }
 
 //切换摄像头
 - (void)changeCameraAction
 {
-    self.changeBtn.enabled = NO;
     [[CameraServer server] changeCamera];
-    self.changeBtn.enabled = YES;
-}
-
-- (void)publishAction
-{
-    _isPublish = YES;
-    __weak EasePublishViewController *weakSelf = self;
-    [_closeBtn addTarget:self action:@selector(stopCameraAction) forControlEvents:UIControlEventTouchUpInside];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [weakSelf.chatview joinChatroom];
-        [weakSelf.headerListView loadHeaderListWithChatroomId:kDefaultChatroomId];
-    });
-    [self setBtnStateInSel:2];
 }
 
 //发布直播
@@ -405,15 +257,13 @@
     
     [self buildData];
     
-    [[CameraServer server] setSecretkey:CGIKey];
+    [[CameraServer server] setSecretKey:CGIKey];
     //11.4  4.05 2.05 1.75
-    [[CameraServer server] setBitrate:3.05];
+    [[CameraServer server] setBitrate:UCloudVideoBitrateLow];
     //
-    NSString *path = RecordDomain(self.streamId);
+    NSString *path = _room.session.mobilepushstream;
     
     __weak EasePublishViewController *weakSelf = self;
-    
-    self.startButton.enabled = NO;
     NSArray *filters = [self.filterManager filters];
     [[CameraServer server] configureCameraWithOutputUrl:path
                                                  filter:filters
@@ -447,24 +297,26 @@
                                             }
                                             else if (code == UCloudCamera_PublishOk)
                                             {
-                                                weakSelf.startButton.enabled = YES;
-                                                [[CameraServer server] cameraStart];
+                                                [[CameraServer server] cameraPrepare];
                                                 [weakSelf.filterManager setCurrentValue:weakSelf.filters];
+                                                [weakSelf.closeBtn addTarget:self action:@selector(closeLiveAction) forControlEvents:UIControlEventTouchUpInside];
+                                                dispatch_async(dispatch_get_main_queue(), ^{
+                                                    [weakSelf setBtnStateInSel:2];
+                                                });
+                                                [[CameraServer server] cameraStart];
                                             }
                                             else if (code == UCloudCamera_StartPublish)
                                             {
-                                                weakSelf.startButton.enabled = YES;
+                                                _isPublish = YES;
                                             }
                                             else if (code == UCloudCamera_Permission)
                                             {
                                                 UIAlertView *alterView = [[UIAlertView alloc] initWithTitle:@"相机授权" message:@"没有权限访问您的相机，请在“设置－隐私－相机”中允许使用" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil, nil];
                                                 [alterView show];
-                                                weakSelf.startButton.enabled = YES;
                                             }
                                             else if (code == UCloudCamera_Micphone)
                                             {
                                                 [[[UIAlertView alloc] initWithTitle:@"麦克风授权" message:@"没有权限访问您的麦克风，请在“设置－隐私－麦克风”中允许使用" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil, nil] show];
-                                                weakSelf.startButton.enabled = YES;
                                             }
                                             
                                         }
@@ -502,19 +354,6 @@
                                                 return nil;
                                             }];
     [UIApplication sharedApplication].idleTimerDisabled = YES;
-    
-    if (_burstTimer == nil) {
-        _burstTimer = [NSTimer scheduledTimerWithTimeInterval:0.5f target:self selector:@selector(showTheLoveAction) userInfo:nil repeats:YES];
-    }
-}
-
-#pragma mark - UIAlertViewDelegate
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (alertView.tag == 1000) {
-        [self closeAction];
-    }
 }
 
 #pragma mark - EaseLiveHeaderListViewDelegate
@@ -525,7 +364,9 @@
         [self closeAction];
         return;
     }
-    EaseProfileLiveView *profileLiveView = [[EaseProfileLiveView alloc] initWithUsername:username];
+    EaseProfileLiveView *profileLiveView = [[EaseProfileLiveView alloc] initWithUsername:username
+                                                                              chatroomId:_room.chatroomId
+                                                                                 isOwner:YES];
     profileLiveView.delegate = self;
     [profileLiveView showFromParentView:self.view];
 }
@@ -541,15 +382,47 @@
 
 - (void)didClickEndButton
 {
-    __weak typeof(self) weakSelf = self;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [weakSelf.chatview leaveChatroom];
-    });
+    __weak EasePublishViewController *weakSelf = self;
     
-    [_burstTimer invalidate];
-    _burstTimer = nil;
+    dispatch_block_t block = ^{
+        [weakSelf.chatview leaveChatroomWithIsCount:NO
+                                         completion:^(BOOL success) {
+                                             if (success) {
+                                                 [[EMClient sharedClient].chatManager deleteConversation:_room.chatroomId isDeleteMessages:YES completion:NULL];
+                                             } else {
+                                                 [weakSelf showHint:@"退出聊天室失败"];
+                                             }
+                                             if (weakSelf.videoView)
+                                             {
+                                                 [weakSelf.videoView removeFromSuperview];
+                                             }
+                                             weakSelf.videoView = nil;
+                                             weakSelf.closeBtn.enabled = YES;
+                                             
+                                             [UIApplication sharedApplication].idleTimerDisabled = NO;
+                                             [weakSelf removeNoti];
+                                             [weakSelf dismissViewControllerAnimated:YES completion:^{
+                                                 [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationRefreshList object:@(YES)];
+                                             }];
+                                         }];
+    };
     
-    [weakSelf dismissViewControllerAnimated:YES completion:NULL];
+    [[EaseHttpManager sharedInstance] modifyLiveRoomStatusWithRoomId:_room.roomId
+                                                              status:EaseLiveSessionCompleted
+                                                          completion:^(BOOL success) {
+                                                              if (!success) {
+                                                                  [weakSelf showHint:@"更新失败"];
+                                                              }
+                                                              block();
+                                                          }];
+    
+    self.shouldAutoStarted = NO;
+    self.closeBtn.enabled = NO;
+}
+
+- (void)didClickContinueButton
+{
+    [self _recoverLive];
 }
 
 #pragma mark - EaseChatViewDelegate
@@ -559,6 +432,13 @@
     if ([self.subWindow isKeyWindow]) {
         return;
     }
+    
+    if (toHeight == 200) {
+        [self.view removeGestureRecognizer:self.singleTapGR];
+    } else {
+        [self.view addGestureRecognizer:self.singleTapGR];
+    }
+    
     if (!self.chatview.hidden) {
         [UIView animateWithDuration:0.3 animations:^{
             CGRect rect = self.chatview.frame;
@@ -568,63 +448,33 @@
     }
 }
 
-- (void)didReceiveGiftWithCMDMessage:(EMMessage *)message
+- (void)didReceivePraiseWithCMDMessage:(EMMessage *)message
 {
-    EaseGiftFlyView *flyView = [[EaseGiftFlyView alloc] initWithMessage:message];
-    [self.view addSubview:flyView];
-    [flyView animateInView:self.view];
-}
-
-- (void)didReceiveBarrageWithCMDMessage:(EMMessage *)message
-{
-    EaseBarrageFlyView *barrageFlyView = [[EaseBarrageFlyView alloc] initWithMessage:message];
-    [self.view addSubview:barrageFlyView];
-    [barrageFlyView animateInView:self.view];
-}
-
-- (void)didSelectPrintScreenButton
-{
-    UIGraphicsBeginImageContext(self.view.bounds.size);
-    [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *image1= UIGraphicsGetImageFromCurrentImageContext();
-    
-    UIGraphicsBeginImageContext([[CameraServer server] getCameraView].bounds.size);
-    [[[CameraServer server] getCameraView].layer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *image2 = UIGraphicsGetImageFromCurrentImageContext();;
-    UIImage *image = [UIImage addImage:image2 toImage:image1];
-    
-    self.printImageView.image = image;
-    [self.view addSubview:_printImageView];
-}
-
-- (void)didSelectMessageButton
-{
-    UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    titleButton.frame = CGRectMake(0, 0, 44, 44);
-    [titleButton setImage:[UIImage imageNamed:@"popup_close"] forState:UIControlStateNormal];
-    [titleButton addTarget:self action:@selector(closeAction) forControlEvents:UIControlEventTouchUpInside];
-    
-    EaseConversationViewController *conversationList = [[EaseConversationViewController alloc] init];
-    conversationList.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:titleButton];
-    UINavigationController *navigationController = nil;
-    navigationController = [[UINavigationController alloc] initWithRootViewController:conversationList];
-    [navigationController.navigationBar setBarTintColor:[UIColor whiteColor]];
-    [navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:kDefaultSystemTextColor, NSForegroundColorAttributeName, [UIFont systemFontOfSize:18.0], NSFontAttributeName, nil]];
-    [self.subWindow setRootViewController:navigationController];
-    [self.subWindow makeKeyAndVisible];
-    [self.view addSubview:self.subWindow];
-    
-    [UIView animateWithDuration:0.3 animations:^{
-        self.subWindow.top = KScreenHeight - self.subWindow.height;
-    }];
+    [self showTheLoveAction];
 }
 
 - (void)didSelectUserWithMessage:(EMMessage *)message
 {
     [self.view endEditing:YES];
-    EaseProfileLiveView *profileLiveView = [[EaseProfileLiveView alloc] initWithUsername:message.from];
+    EaseProfileLiveView *profileLiveView = [[EaseProfileLiveView alloc] initWithUsername:message.from
+                                                                              chatroomId:_room.chatroomId
+                                                                                 isOwner:YES];
+    profileLiveView.profileDelegate = self;
     profileLiveView.delegate = self;
     [profileLiveView showFromParentView:self.view];
+}
+
+- (void)didSelectChangeCameraButton
+{
+    [[CameraServer server] changeCamera];
+}
+
+- (void)didSelectAdminButton:(BOOL)isOwner
+{
+    EaseAdminView *adminView = [[EaseAdminView alloc] initWithChatroomId:_room.chatroomId
+                                                                 isOwner:isOwner];
+    adminView.delegate = self;
+    [adminView showFromParentView:self.view];
 }
 
 #pragma mark - UITextViewDelegate
@@ -640,50 +490,82 @@
 
 #pragma mark - EaseProfileLiveViewDelegate
 
-- (void)didSelectReplyWithUsername:(NSString*)username
-{
-    if (_chatview) {
-        [_chatview sendMessageAtWithUsername:username];
-    }
-}
-
-- (void)didSelectMessageWithUsername:(NSString *)username
-{
-    UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    titleButton.frame = CGRectMake(0, 0, 44, 44);
-    [titleButton setImage:[UIImage imageNamed:@"popup_close"] forState:UIControlStateNormal];
-    [titleButton addTarget:self action:@selector(closeAction) forControlEvents:UIControlEventTouchUpInside];
-    
-    EaseChatViewController *chatview = [[EaseChatViewController alloc] initWithConversationChatter:username conversationType:EMConversationTypeChat];
-    chatview.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:titleButton];
-    chatview.navigationItem.leftBarButtonItem = nil;
-    UINavigationController *navigationController = nil;
-    navigationController = [[UINavigationController alloc] initWithRootViewController:chatview];
-    [navigationController.navigationBar setBarTintColor:[UIColor whiteColor]];
-    [navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:kDefaultSystemTextColor, NSForegroundColorAttributeName, [UIFont systemFontOfSize:18.0], NSFontAttributeName, nil]];
-    [self.subWindow setRootViewController:navigationController];
-    [self.subWindow makeKeyAndVisible];
-    [self.view addSubview:self.subWindow];
-    
-    [UIView animateWithDuration:0.3 animations:^{
-        self.subWindow.top = KScreenHeight - self.subWindow.height;
-    }];
-}
-
 #pragma mark - EMChatroomManagerDelegate
 
-- (void)didReceiveUserJoinedChatroom:(EMChatroom *)aChatroom username:(NSString *)aUsername
+- (void)userDidJoinChatroom:(EMChatroom *)aChatroom
+                       user:(NSString *)aUsername
 {
-    if ([aChatroom.chatroomId isEqualToString:kDefaultChatroomId]) {
-        [_headerListView joinChatroomWithUsername:aUsername];
+    if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
+        if (![aChatroom.owner isEqualToString:aUsername]) {
+            [_headerListView joinChatroomWithUsername:aUsername];
+        }
     }
 }
 
-- (void)didReceiveUserLeavedChatroom:(EMChatroom *)aChatroom username:(NSString *)aUsername
+- (void)userDidLeaveChatroom:(EMChatroom *)aChatroom
+                        user:(NSString *)aUsername
 {
-    if ([aChatroom.chatroomId isEqualToString:kDefaultChatroomId]) {
-        [_headerListView leaveChatroomWithUsername:aUsername];
+    if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
+        if (![aChatroom.owner isEqualToString:aUsername]) {
+            [_headerListView leaveChatroomWithUsername:aUsername];
+        }
     }
+}
+
+- (void)chatroomMuteListDidUpdate:(EMChatroom *)aChatroom
+                addedMutedMembers:(NSArray *)aMutes
+                       muteExpire:(NSInteger)aMuteExpire
+{
+    if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
+        NSMutableString *text = [NSMutableString string];
+        for (NSString *name in aMutes) {
+            [text appendString:name];
+        }
+        [self showHint:[NSString stringWithFormat:@"禁言成员:%@",text]];
+    }
+}
+
+- (void)chatroomMuteListDidUpdate:(EMChatroom *)aChatroom
+              removedMutedMembers:(NSArray *)aMutes
+{
+    if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
+        NSMutableString *text = [NSMutableString string];
+        for (NSString *name in aMutes) {
+            [text appendString:name];
+        }
+        [self showHint:[NSString stringWithFormat:@"解除禁言:%@",text]];
+    }
+}
+
+- (void)chatroomOwnerDidUpdate:(EMChatroom *)aChatroom
+                      newOwner:(NSString *)aNewOwner
+                      oldOwner:(NSString *)aOldOwner
+{
+    if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:[NSString stringWithFormat:@"聊天室创建者有更新:%@",aChatroom.chatroomId] preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction *ok = [UIAlertAction actionWithTitle:NSLocalizedString(@"publish.ok", @"Ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self didClickEndButton];
+        }];
+        
+        [alert addAction:ok];
+    }
+}
+
+- (void)didDismissFromChatroom:(EMChatroom *)aChatroom
+                        reason:(EMChatroomBeKickedReason)aReason
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"被踢出直播聊天室" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+    [alert show];
+    [self _shutDownLive];
+    [self didClickEndButton];
+}
+
+#pragma mark - EMClientDelegate
+
+- (void)userAccountDidLoginFromOtherDevice
+{
+    [self _shutDownLive];
 }
 
 #pragma mark - private
@@ -720,18 +602,13 @@
 - (void)setBtnStateInSel:(NSInteger)num
 {
     if (num == 1) {
-        self.startButton.hidden = NO;
         self.chatview.hidden = YES;
         self.headerListView.hidden = YES;
-        self.microphoneBtn.hidden = YES;
     } else {
-        self.startButton.hidden = YES;
         self.chatview.hidden = NO;
         self.headerListView.hidden = NO;
-        self.microphoneBtn.hidden = NO;
     }
 }
-
 
 - (void)noti:(NSNotification *)noti
 {
@@ -750,32 +627,40 @@
     }
     else if ([noti.name isEqualToString:UIApplicationDidEnterBackgroundNotification] || [noti.name isEqualToString:UIApplicationWillResignActiveNotification])
     {
-        [_burstTimer invalidate];
-        _burstTimer = nil;
-        while (!_isShutDown) {
-            [[CameraServer server] shutdown:^{
-                _blackView = [[CameraServer server] createBlurringScreenshot];
-                _blackView.backgroundColor = [UIColor blackColor];
-                [self.videoView addSubview:_blackView];
-                
-                UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc]init];
-                activity.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
-                activity.center = _blackView.center;
-                [activity startAnimating];
-                [_blackView addSubview:activity];
-                
-            }];
-            _isShutDown = YES;
-        }
-        _isload = NO;
+        [self _shutDownLive];
     }
     else if ([noti.name isEqualToString:UIApplicationDidBecomeActiveNotification])
     {
-        while (!_isload) {
-            [self startAction];
-            _isShutDown = NO;
-            _isload = YES;
-        }
+        [self _recoverLive];
+    }
+}
+
+- (void)_shutDownLive;
+{
+    while (!_isShutDown) {
+        [[CameraServer server] shutdown:^{
+            _blackView = [[CameraServer server] createBlurringScreenshot];
+            _blackView.backgroundColor = [UIColor blackColor];
+            [self.videoView addSubview:_blackView];
+            
+            UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc]init];
+            activity.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+            activity.center = _blackView.center;
+            [activity startAnimating];
+            [_blackView addSubview:activity];
+            
+        }];
+        _isShutDown = YES;
+    }
+    _isload = NO;
+}
+
+- (void)_recoverLive
+{
+    while (!_isload) {
+        [self startAction];
+        _isShutDown = NO;
+        _isload = YES;
     }
 }
 
@@ -800,5 +685,17 @@
     }
 }
 
+#pragma mark - override
+
+- (void)setupForDismissKeyboard
+{
+    _singleTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                           action:@selector(tapAnywhereToDismissKeyboard:)];
+}
+
+- (void)tapAnywhereToDismissKeyboard:(UIGestureRecognizer *)gestureRecognizer {
+    [self.view endEditing:YES];
+    [self.chatview endEditing:YES];
+}
 
 @end

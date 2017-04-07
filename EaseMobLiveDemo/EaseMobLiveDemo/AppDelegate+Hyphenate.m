@@ -8,13 +8,13 @@
 
 #import "AppDelegate+Hyphenate.h"
 
+#import <HyphenateLite/EMOptions+PrivateDeploy.h>
+
 @implementation AppDelegate (Hyphenate)
 
 - (void)initHyphenateSDK
 {
-    [[EMClient sharedClient] addDelegate:self delegateQueue:nil];
-    
-    EMOptions *options = [EMOptions optionsWithAppkey:@"easemob-demo#livedemo"];
+    EMOptions *options = [EMOptions optionsWithAppkey:@"easemob-demo#chatdemoui"];
     
     NSString *apnsCertName = nil;
 #if DEBUG
@@ -25,6 +25,7 @@
     options.apnsCertName = apnsCertName;
     options.isAutoAcceptGroupInvitation = NO;
     options.enableConsoleLog = YES;
+    
     [[EMClient sharedClient] initializeSDKWithOptions:options];
     
     [self _setupAppDelegateNotifications];
@@ -37,6 +38,8 @@
     } else {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"loginStateChange" object:@NO];
     }
+    
+    [[EMClient sharedClient] addDelegate:self delegateQueue:nil];
 }
 
 #pragma mark - app delegate notifications
@@ -86,11 +89,6 @@
     //iOS8 regist APNS
     if ([application respondsToSelector:@selector(registerForRemoteNotifications)]) {
         [application registerForRemoteNotifications];
-    }else{
-        UIRemoteNotificationType notificationTypes = UIRemoteNotificationTypeBadge |
-        UIRemoteNotificationTypeSound |
-        UIRemoteNotificationTypeAlert;
-        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:notificationTypes];
     }
 #endif
 }
