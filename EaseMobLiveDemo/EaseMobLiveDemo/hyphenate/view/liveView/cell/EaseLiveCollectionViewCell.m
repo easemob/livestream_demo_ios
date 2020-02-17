@@ -21,6 +21,7 @@
 @property (nonatomic, strong) UIView *liveFooter;
 @property (nonatomic, strong) UILabel *textLable;
 @property (nonatomic, strong) UILabel *numLabel;
+@property (nonatomic, strong) UILabel *statusLabel;
 
 @end
 
@@ -31,6 +32,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self.contentView addSubview:self.liveImageView];
+        [self.liveImageView addSubview:self.statusLabel];
         [self.liveImageView addSubview:self.liveFooter];
         [self.liveFooter addSubview:self.textLable];
         [self.liveFooter addSubview:self.numLabel];
@@ -69,6 +71,21 @@
     return _numLabel;
 }
 
+- (UILabel*)statusLabel
+{
+    if (_statusLabel == nil) {
+        _statusLabel = [[UILabel alloc] init];
+        _statusLabel.frame = CGRectMake(2.0f, 10, CGRectGetWidth(self.frame)/2, 14.f);
+        _statusLabel.font = [UIFont systemFontOfSize:12];
+        _statusLabel.textColor = [UIColor whiteColor];
+        _statusLabel.textAlignment = NSTextAlignmentRight;
+        _statusLabel.backgroundColor = [UIColor clearColor];
+        _statusLabel.shadowColor = [UIColor blackColor];
+        _statusLabel.shadowOffset = CGSizeMake(1, 1);
+    }
+    return _statusLabel;
+}
+
 - (UIView*)liveFooter
 {
     if (_liveFooter == nil) {
@@ -103,6 +120,7 @@
 
 - (void)setLiveRoom:(EaseLiveRoom*)room
 {
+    _statusLabel.text = @"虚位以待";
     _textLable.text = room.title;
     if (room.coverPictureUrl.length > 0) {
         UIImage *image = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:room.coverPictureUrl];
@@ -114,7 +132,7 @@
     } else {
         _liveImageView.image = [UIImage imageNamed:@"default_image"];
     }
-    _numLabel.text = [NSString stringWithFormat:@"%ld",(long)room.session.currentUserCount];
+    _numLabel.text = [NSString stringWithFormat:@"%ld人在看",(long)room.session.currentUserCount];
 }
 
 

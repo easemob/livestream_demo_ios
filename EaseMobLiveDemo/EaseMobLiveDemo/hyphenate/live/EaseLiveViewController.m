@@ -23,6 +23,7 @@
 #import "EaseLiveGiftView.h"
 #import "EaseLiveRoom.h"
 #import "EaseAdminView.h"
+#import "EaseAnchorCardView.h"
 
 #define kDefaultTop 30.f
 #define kDefaultLeft 10.f
@@ -152,6 +153,7 @@
     if (_headerListView == nil) {
         _headerListView = [[EaseLiveHeaderListView alloc] initWithFrame:CGRectMake(0, kDefaultTop, CGRectGetMinX(self.closeButton.frame), 30.f) room:_room];
         _headerListView.delegate = self;
+        [_headerListView setLiveCastDelegate];
     }
     return _headerListView;
 }
@@ -210,6 +212,15 @@
         profileLiveView.delegate = self;
         [profileLiveView showFromParentView:self.view];
     }
+}
+
+//主播信息卡片
+- (void)didClickAnchorCard:(EaseLiveRoom *)room
+{
+    [self.view endEditing:YES];
+    EaseAnchorCardView *anchorCardView = [[EaseAnchorCardView alloc]initWithLiveRoom:room];
+    anchorCardView.delegate = self;
+    [anchorCardView showFromParentView:self.view];
 }
 
 #pragma  mark - TapBackgroundViewDelegate

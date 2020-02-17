@@ -22,6 +22,7 @@
 #import "EaseAdminView.h"
 #import "UIViewController+DismissKeyboard.h"
 #import "EaseLiveRoom.h"
+#import "EaseAnchorCardView.h"
 #import "EaseCreateLiveViewController.h"
 
 #define kDefaultTop 30.f
@@ -133,6 +134,7 @@
     if (_headerListView == nil) {
         _headerListView = [[EaseLiveHeaderListView alloc] initWithFrame:CGRectMake(0, kDefaultTop, KScreenWidth - 50, 30.f) room:_room];
         _headerListView.delegate = self;
+        [_headerListView setLiveCastDelegate];
     }
     return _headerListView;
 }
@@ -475,6 +477,15 @@
                                                                  isOwner:isOwner];
     adminView.delegate = self;
     [adminView showFromParentView:self.view];
+}
+
+//主播信息卡片
+- (void)didClickAnchorCard:(EaseLiveRoom *)room
+{
+    [self.view endEditing:YES];
+    EaseAnchorCardView *anchorCardView = [[EaseAnchorCardView alloc]initWithLiveRoom:room];
+    anchorCardView.delegate = self;
+    [anchorCardView showFromParentView:self.view];
 }
 
 #pragma mark - UITextViewDelegate

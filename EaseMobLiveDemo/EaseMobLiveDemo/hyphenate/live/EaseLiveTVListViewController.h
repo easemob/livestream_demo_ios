@@ -8,9 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
+typedef enum : NSInteger{
+    kTabbarItemTag_Live,
+    kTabbarItemTag_Broadcast,
+    kTabbarItemTag_Settings
+}kTabbarItemBehavior;
+
 @interface EaseLiveTVListViewController : UIViewController
 
 @property (nonatomic, strong) UIBarButtonItem *searchBarItem;
 @property (nonatomic, strong) UIBarButtonItem *logoutItem;
+
+- (instancetype)initWithBehavior:(kTabbarItemBehavior)tabBarBehavior;
 
 @end

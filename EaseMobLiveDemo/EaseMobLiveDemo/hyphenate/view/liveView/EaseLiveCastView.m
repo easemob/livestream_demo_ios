@@ -17,7 +17,9 @@
 
 @property (nonatomic, strong) UIImageView *headImageView;
 @property (nonatomic, strong) UILabel *nameLabel;
-@property (nonatomic, strong) UILabel *numberLabel;
+//@property (nonatomic, strong) UILabel *numberLabel;
+@property (nonatomic, strong) UILabel *praiseLabel;
+@property (nonatomic, strong) UILabel *giftLabel;
 
 @end
 
@@ -30,7 +32,9 @@
         _room = room;
         [self addSubview:self.headImageView];
         [self addSubview:self.nameLabel];
-        [self addSubview:self.numberLabel];
+        [self addSubview:self.praiseLabel];
+        [self addSubview:self.giftLabel];
+        //[self addSubview:self.numberLabel];
     }
     return self;
 }
@@ -67,6 +71,30 @@
     return _nameLabel;
 }
 
+- (UILabel*)praiseLabel
+{
+    if (_praiseLabel == nil) {
+        _praiseLabel = [[UILabel alloc] init];
+        _praiseLabel.frame = CGRectMake(_headImageView.width + 10.f, self.height/2, (self.width - _headImageView.width)/2 - 5.0, self.height/2);
+        _praiseLabel.font = [UIFont systemFontOfSize:12.f];
+        _praiseLabel.textColor = [UIColor whiteColor];
+        _praiseLabel.text = @"赞:900";
+    }
+    return _praiseLabel;
+}
+
+- (UILabel*)giftLabel
+{
+    if (_giftLabel == nil) {
+        _giftLabel = [[UILabel alloc] init];
+        _giftLabel.frame = CGRectMake(_headImageView.width + 2.f + _praiseLabel.width, self.height/2, (self.width - _headImageView.width)/2 - 5.0, self.height/2);
+        _giftLabel.font = [UIFont systemFontOfSize:12.f];
+        _giftLabel.textColor = [UIColor whiteColor];
+        _giftLabel.text = @"礼物:900";
+    }
+    return _giftLabel;
+}
+/*
 - (UILabel*)numberLabel
 {
     if (_numberLabel == nil) {
@@ -76,13 +104,13 @@
         _numberLabel.textColor = [UIColor whiteColor];
     }
     return _numberLabel;
-}
+}*/
 
 #pragma mark - action
 - (void)didSelectHeadImage
 {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectHeaderWithUsername:)]) {
-        [self.delegate didSelectHeaderWithUsername:_room.session.anchor];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didClickAnchorCard:)]) {
+        [self.delegate didClickAnchorCard:_room];
     }
 }
 
@@ -90,7 +118,7 @@
 
 - (void)setNumberOfChatroom:(NSInteger)number
 {
-    _numberLabel.text = [NSString stringWithFormat:@"%ld%@",(long)number ,NSLocalizedString(@"profile.people", @"")];
+    //_numberLabel.text = [NSString stringWithFormat:@"%ld%@",(long)number ,NSLocalizedString(@"profile.people", @"")];
 }
 
 @end

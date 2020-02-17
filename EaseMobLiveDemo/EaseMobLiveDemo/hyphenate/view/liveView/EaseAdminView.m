@@ -16,6 +16,7 @@
 @interface EaseAdminCell : UITableViewCell
 
 @property (nonatomic, strong) UIButton *clickButton;
+- (void)setClickBtnHid:(BOOL)isHidden;
 
 @end
 
@@ -27,12 +28,19 @@
         _clickButton = [[UIButton alloc] init];
         _clickButton.frame = CGRectMake(self.width - 90, (65 - 30)/2, 80, 30);
         [_clickButton setTitleColor:RGBACOLOR(255, 116, 49, 1) forState:UIControlStateNormal];
-        _clickButton.layer.borderWidth = 1.f;
-        _clickButton.layer.borderColor = RGBACOLOR(255, 116, 49, 1).CGColor;
-        _clickButton.layer.cornerRadius = 4.f;
+        //_clickButton.layer.borderWidth = 1.f;
+        //_clickButton.layer.borderColor = RGBACOLOR(255, 116, 49, 1).CGColor;
+        //_clickButton.layer.cornerRadius = 4.f;
         [_clickButton.titleLabel setFont:[UIFont systemFontOfSize:15]];
     }
     return _clickButton;
+}
+
+- (void)setClickBtnHid:(BOOL)isHidden
+{
+    if (isHidden) {
+        [self.clickButton setHidden:YES];
+    }
 }
 
 - (void)layoutSubviews
@@ -40,7 +48,7 @@
     [super layoutSubviews];
     
     self.clickButton.left = self.width - 90;
-    [self.contentView addSubview:self.clickButton];
+    [self.contentView addSubview:_clickButton];
 }
 
 @end
@@ -49,6 +57,9 @@
 {
     NSString* _chatroomId;
     EMChatroom *_chatroom;
+    
+    MJRefreshFooter *_refreshMemberFooter;
+    NSInteger _memberPageNum;
     
     MJRefreshFooter *_refreshMuteFooter;
     NSInteger _mutePageNum;
@@ -74,6 +85,9 @@
 @property (nonatomic, strong) NSMutableArray *muteList;
 @property (nonatomic, strong) NSMutableArray *blockList;
 
+@property (nonatomic, strong) NSMutableArray *memberList;
+@property (nonatomic, strong) NSString *cursor;
+
 @property (nonatomic, strong) UIScrollView *mainScrollView;
 
 @end
@@ -87,17 +101,22 @@
     if (self) {
         _chatroomId = chatroomId;
         _isOwner = isOwner;
+        _cursor = nil;
         [self addSubview:self.adminView];
         
         [self.adminView addSubview:self.adminListBtn];
-        [self.adminView addSubview:self.muteListBtn];
-        [self.adminView addSubview:self.blockListBtn];
+        if (_isOwner) {
+            [self.adminView addSubview:self.muteListBtn];
+            [self.adminView addSubview:self.blockListBtn];
+        }
         [self.adminView addSubview:self.selectLine];
         [self.adminView addSubview:self.line];
         [self.adminView addSubview:self.mainScrollView];
         [self.mainScrollView addSubview:self.adminTableView];
-        [self.mainScrollView addSubview:self.muteTableView];
-        [self.mainScrollView addSubview:self.blockTableView];
+        if (_isOwner) {
+            [self.mainScrollView addSubview:self.muteTableView];
+            [self.mainScrollView addSubview:self.blockTableView];
+        }
     }
     return self;
 }
@@ -118,7 +137,6 @@
     if (_adminListBtn == nil) {
         _adminListBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _adminListBtn.frame = CGRectMake(0, 0, KScreenWidth/3, kButtonDefaultHeight);
-        [_adminListBtn setTitle:NSLocalizedString(@"profile.admin", @"Admin") forState:UIControlStateNormal];
         [_adminListBtn setTitleColor:RGBACOLOR(76, 76, 76, 1) forState:UIControlStateNormal];
         _adminListBtn.tag = 100;
         [_adminListBtn addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -131,7 +149,7 @@
     if (_muteListBtn == nil) {
         _muteListBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _muteListBtn.frame = CGRectMake(CGRectGetMaxX(_adminListBtn.frame), 0, KScreenWidth/3, kButtonDefaultHeight);
-        [_muteListBtn setTitle:NSLocalizedString(@"profile.mute", @"Mute") forState:UIControlStateNormal];
+        //[_muteListBtn setTitle:NSLocalizedString(@"profile.mute", @"Mute") forState:UIControlStateNormal];
         [_muteListBtn setTitleColor:RGBACOLOR(76, 76, 76, 1) forState:UIControlStateNormal];
         _muteListBtn.tag = 101;
         [_muteListBtn addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -144,7 +162,7 @@
     if (_blockListBtn == nil) {
         _blockListBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _blockListBtn.frame = CGRectMake(CGRectGetMaxX(_muteListBtn.frame), 0, KScreenWidth/3, kButtonDefaultHeight);
-        [_blockListBtn setTitle:NSLocalizedString(@"profile.block", @"Block") forState:UIControlStateNormal];
+        //[_blockListBtn setTitle:NSLocalizedString(@"profile.block", @"Block") forState:UIControlStateNormal];
         [_blockListBtn setTitleColor:RGBACOLOR(76, 76, 76, 1) forState:UIControlStateNormal];
         _blockListBtn.tag = 102;
         [_blockListBtn addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -193,14 +211,23 @@
         _adminTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
         _adminTableView.tableFooterView = [[UIView alloc] init];
         
-        _chatroom = [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:_chatroomId error:nil];
+        [self _loadMemberList:YES];
         
+        _chatroom = [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:_chatroomId error:nil];
         __weak EaseAdminView *weakSelf = self;
         _adminTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
             _chatroom = [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:_chatroomId error:nil];
+            [weakSelf _loadMemberList:YES];
             [weakSelf _tableViewDidFinishTriggerHeader:YES reload:YES tableView:_adminTableView];
         }];
         _adminTableView.mj_header.accessibilityIdentifier = @"refresh_admin_header";
+        
+        _adminTableView.mj_footer = [MJRefreshBackFooter footerWithRefreshingBlock:^{
+            [weakSelf _loadMemberList:NO];
+            [weakSelf _tableViewDidFinishTriggerHeader:NO reload:YES tableView:_adminTableView];
+        }];
+        _adminTableView.mj_footer = nil;
+        _adminTableView.mj_footer.accessibilityIdentifier = @"refresh_admin_footer";
     }
     return _adminTableView;
 }
@@ -266,6 +293,14 @@
     return _blockTableView;
 }
 
+- (NSMutableArray*)memberList
+{
+    if (_memberList == nil) {
+        _memberList = [[NSMutableArray alloc] init];
+    }
+    return _memberList;
+}
+
 - (NSMutableArray*)muteList
 {
     if (_muteList == nil) {
@@ -288,7 +323,7 @@
 {
     if (tableView == _adminTableView) {
         if (_chatroom) {
-            return [_chatroom.adminList count];
+            return [_memberList count];
         }
         return 0;
     } else if (tableView == _muteTableView) {
@@ -303,16 +338,28 @@
     EaseAdminCell *cell;
     NSString *username = nil;
     if (tableView == _adminTableView) {
-        static NSString *CellIdentifier = @"admin";
-        cell = (EaseAdminCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        // Configure the cell...
-        if (cell == nil) {
-            cell = [[EaseAdminCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        static NSString *CellIdentifierAdmin = @"admin";
+        static NSString *CellIdentifierMember = @"member";
+        username = [_memberList objectAtIndex:indexPath.row];
+        if (indexPath.row == 0) {
+            cell = [[EaseAdminCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierAdmin];
+            [cell.clickButton setTitle:@"房间禁言" forState:UIControlStateNormal];
+        } else if ([_chatroom.adminList containsObject:username]) {
+            cell = (EaseAdminCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifierAdmin];
+            // Configure the cell...
+            if (cell == nil) {
+                cell = [[EaseAdminCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierAdmin];
+            }
+            [cell.clickButton setTitle:NSLocalizedString(@"profile.admin.remove", @"Remove") forState:UIControlStateNormal];
+            [cell.clickButton addTarget:self action:@selector(removeAdminAction:) forControlEvents:UIControlEventTouchUpInside];
+        } else {
+            cell = (EaseAdminCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifierMember];
+            // Configure the cell...
+            if (cell == nil) {
+                cell = [[EaseAdminCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierMember];
+            }
         }
-        username = [_chatroom.adminList objectAtIndex:indexPath.row];
         cell.textLabel.text = username;
-        [cell.clickButton setTitle:NSLocalizedString(@"profile.admin.remove", @"Remove") forState:UIControlStateNormal];
-        [cell.clickButton addTarget:self action:@selector(removeAdminAction:) forControlEvents:UIControlEventTouchUpInside];
     } else if (tableView == _muteTableView) {
         static NSString *CellIdentifier = @"mute";
         cell = (EaseAdminCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -401,7 +448,8 @@
                                             fromChatroom:_chatroomId
                                               completion:^(EMChatroom *aChatroom, EMError *aError) {
                                                   if (!aError) {
-                                                      [weakSelf.adminTableView reloadData];
+                                                      _chatroom = aChatroom;
+                                                      [weakSelf _loadMemberList:YES];
                                                       [weakHud hide:YES afterDelay:0.5];
                                                   } else {
                                                       [weakHud setLabelText:aError.errorDescription];
@@ -424,6 +472,7 @@
                                                 if (!aError) {
                                                     [weakSelf.muteTableView beginUpdates];
                                                     [weakSelf.muteList removeObjectAtIndex:btn.tag];
+                                                    [_muteListBtn setTitle:[NSString stringWithFormat:@"禁言(%lu)",(unsigned long)[weakSelf.muteList count]] forState:UIControlStateNormal];
                                                     [self.muteTableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:btn.tag inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
                                                     [self.muteTableView endUpdates];
                                                     [weakHud hide:YES afterDelay:0.5];
@@ -447,6 +496,7 @@
                                                  if (!aError) {
                                                      [weakSelf.blockTableView beginUpdates];
                                                      [weakSelf.blockList removeObjectAtIndex:btn.tag];
+                                                     [_blockListBtn setTitle:[NSString stringWithFormat:@"黑名单(%lu)",(unsigned long)[weakSelf.blockList count]] forState:UIControlStateNormal];
                                                      [self.blockTableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:btn.tag inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
                                                      [self.blockTableView endUpdates];
                                                      [weakHud hide:YES afterDelay:0.5];
@@ -488,12 +538,38 @@
         }
         
         if (isHeader) {
+            if (tableView == self.adminTableView) {
+                self.cursor = nil;
+            }
             [tableView.mj_header endRefreshing];
         }
         else{
             [tableView.mj_footer endRefreshing];
         }
     });
+}
+
+- (void)_loadMemberList:(BOOL)isHeader
+{
+    __weak typeof(self) weakself = self;
+    [[EMClient sharedClient].roomManager getChatroomMemberListFromServerWithId:_chatroomId cursor:self.cursor pageSize:50 completion:^(EMCursorResult *aResult, EMError *aError) {
+        if (!aError) {
+           if (isHeader) {
+               [weakself.memberList removeAllObjects];
+               [weakself.memberList addObject:_chatroom.owner];
+               [weakself.memberList addObjectsFromArray:_chatroom.adminList];
+           }
+           weakself.cursor = aResult.cursor;
+           [weakself.memberList addObjectsFromArray:aResult.list];
+            [_adminListBtn setTitle:[NSString stringWithFormat:@"成员(%lu)",(unsigned long)[weakself.memberList count]] forState:UIControlStateNormal];
+           if ([aResult.list count] == 0 || [aResult.cursor length] == 0) {
+               weakself.adminTableView.mj_footer = nil;
+           } else {
+               weakself.adminTableView.mj_footer = _refreshMemberFooter;
+           }
+           [weakself _tableViewDidFinishTriggerHeader:isHeader reload:YES tableView:_adminTableView];
+        }
+    }];
 }
 
 - (void)_loadMuteList:(BOOL)isHeader
@@ -508,7 +584,7 @@
                                                                               [weakSelf.muteList removeAllObjects];
                                                                           }
                                                                           [weakSelf.muteList addObjectsFromArray:aList];
-                                                                          
+                                                                          [_muteListBtn setTitle:[NSString stringWithFormat:@"禁言(%lu)",(unsigned long)[weakSelf.muteList count]] forState:UIControlStateNormal];
                                                                           if ([aList count] < kDefaultPageSize) {
                                                                               weakSelf.muteTableView.mj_footer = nil;
                                                                           } else {
@@ -531,7 +607,7 @@
                                                                                [weakSelf.blockList removeAllObjects];
                                                                            }
                                                                            [weakSelf.blockList addObjectsFromArray:aList];
-                                                                           
+                                                                           [_blockListBtn setTitle:[NSString stringWithFormat:@"黑名单(%lu)",(unsigned long)[weakSelf.blockList count]] forState:UIControlStateNormal];
                                                                            if ([aList count] < kDefaultPageSize) {
                                                                                weakSelf.blockTableView.mj_footer = nil;
                                                                            } else {

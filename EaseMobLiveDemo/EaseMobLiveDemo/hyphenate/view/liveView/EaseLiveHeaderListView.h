@@ -12,6 +12,8 @@
 
 - (void)didSelectHeaderWithUsername:(NSString*)username;
 
+- (void)didClickAnchorCard:(EaseLiveRoom*)room;
+
 @end
 
 @class EasePublishModel;
@@ -29,5 +31,7 @@
 - (void)joinChatroomWithUsername:(NSString*)username;
 
 - (void)leaveChatroomWithUsername:(NSString*)username;
+
+- (void)setLiveCastDelegate;
 
 @end

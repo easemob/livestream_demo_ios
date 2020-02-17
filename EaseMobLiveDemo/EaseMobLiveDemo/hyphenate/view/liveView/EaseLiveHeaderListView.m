@@ -52,10 +52,10 @@
 }
 
 @property (nonatomic, strong) UICollectionView *collectionView;
-@property (nonatomic, strong) EaseLiveCastView *liveCastView;
 @property (nonatomic, strong) NSMutableArray *dataArray;
-
+@property (nonatomic, strong) EaseLiveCastView *liveCastView;
 @property (nonatomic, assign) NSInteger occupantsCount;
+@property (nonatomic, strong) UILabel *numberLabel;
 
 @end
 
@@ -79,6 +79,7 @@
         _room = room;
         [self addSubview:self.collectionView];
         [self addSubview:self.liveCastView];
+        [self addSubview:self.numberLabel];
     }
     return self;
 }
@@ -102,7 +103,7 @@
         if (KScreenWidth > 320) {
             width = 170;
         }
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(self.width - width - 10.f, 0, width, CGRectGetHeight(self.frame)) collectionViewLayout:flowLayout];
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(self.width - width + 12.f, 0, width, CGRectGetHeight(self.frame)) collectionViewLayout:flowLayout];
         _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         
         [_collectionView registerClass:[EaseLiveHeaderCell class] forCellWithReuseIdentifier:kCollectionIdentifier];
@@ -121,12 +122,29 @@
     return _collectionView;
 }
 
+
 - (EaseLiveCastView*)liveCastView
 {
     if (_liveCastView == nil) {
-        _liveCastView = [[EaseLiveCastView alloc] initWithFrame:CGRectMake(10, 0, 120.f, 30.f) room:_room];
+        _liveCastView = [[EaseLiveCastView alloc] initWithFrame:CGRectMake(10, 0, 150.f, 30.f) room:_room];
     }
     return _liveCastView;
+}
+
+- (void)setLiveCastDelegate
+{
+    self.liveCastView.delegate = self.delegate;
+}
+
+- (UILabel*)numberLabel
+{
+    if (_numberLabel == nil) {
+        _numberLabel = [[UILabel alloc] init];
+        _numberLabel.frame = CGRectMake(self.collectionView.width + self.liveCastView.width + 10.f, 0, 20.f, 30.f);
+        _numberLabel.font = [UIFont systemFontOfSize:12.f];
+        _numberLabel.textColor = [UIColor whiteColor];
+    }
+    return _numberLabel;
 }
 
 #pragma mark - public
@@ -137,7 +155,7 @@
                                                                        completion:^(EMChatroom *aChatroom, EMError *aError) {
                                                                            if (!aError) {
                                                                                weakself.occupantsCount = aChatroom.occupantsCount;
-                                                                               [weakself.liveCastView setNumberOfChatroom:weakself.occupantsCount];
+                                                                               weakself.numberLabel.text = [NSString stringWithFormat:@"%ld%@",(long)weakself.occupantsCount ,NSLocalizedString(@"profile.people", @"")];
                                                                            }
                                                                        }];
     

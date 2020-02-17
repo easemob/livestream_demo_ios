@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C1237E423FA445F00C4135B /* EaseAnchorCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C1237E323FA445F00C4135B /* EaseAnchorCardView.m */; };
+		3C27576123F2938F004DF2C3 /* EaseBorderCastViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C27576023F2938F004DF2C3 /* EaseBorderCastViewController.m */; };
+		3C27576423F293A4004DF2C3 /* EaseSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C27576323F293A4004DF2C3 /* EaseSettingsViewController.m */; };
+		3C27576623F53C47004DF2C3 /* ic_Gift@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C27576523F53C47004DF2C3 /* ic_Gift@2x.png */; };
+		3C27576823F53C5B004DF2C3 /* ic_Gift@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C27576723F53C5A004DF2C3 /* ic_Gift@3x.png */; };
 		C68D8F3A512EBB7D55D835D0 /* libPods-EaseMobLiveDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF86793993FB1D45A5254772 /* libPods-EaseMobLiveDemo.a */; };
 		D21C54611E658F8B0019A341 /* EaseAdminView.m in Sources */ = {isa = PBXBuildFile; fileRef = D21C54601E658F8B0019A341 /* EaseAdminView.m */; };
 		D23C12971E6FEED4007C5012 /* EaseLiveRoom.m in Sources */ = {isa = PBXBuildFile; fileRef = D23C12961E6FEED4007C5012 /* EaseLiveRoom.m */; };
@@ -140,6 +145,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3C1237E223FA445F00C4135B /* EaseAnchorCardView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseAnchorCardView.h; sourceTree = "<group>"; };
+		3C1237E323FA445F00C4135B /* EaseAnchorCardView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseAnchorCardView.m; sourceTree = "<group>"; };
+		3C27575F23F2938F004DF2C3 /* EaseBorderCastViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseBorderCastViewController.h; sourceTree = "<group>"; };
+		3C27576023F2938F004DF2C3 /* EaseBorderCastViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseBorderCastViewController.m; sourceTree = "<group>"; };
+		3C27576223F293A4004DF2C3 /* EaseSettingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseSettingsViewController.h; sourceTree = "<group>"; };
+		3C27576323F293A4004DF2C3 /* EaseSettingsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseSettingsViewController.m; sourceTree = "<group>"; };
+		3C27576523F53C47004DF2C3 /* ic_Gift@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ic_Gift@2x.png"; path = "../../../../../../../../直播资源/ic_Gift@2x.png"; sourceTree = "<group>"; };
+		3C27576723F53C5A004DF2C3 /* ic_Gift@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ic_Gift@3x.png"; path = "../../../../../../../../直播资源/ic_Gift@3x.png"; sourceTree = "<group>"; };
 		3EF28DDAEBA5A9451CF1F4AF /* Pods-EaseMobLiveDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EaseMobLiveDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		9A41D9499C63F9EC6616B282 /* libPods-UCloudMediaRecorderDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-UCloudMediaRecorderDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D21C545F1E658F8B0019A341 /* EaseAdminView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EaseAdminView.h; sourceTree = "<group>"; };
@@ -548,6 +561,7 @@
 		D275D7C41E666C44001BBA61 /* @2x */ = {
 			isa = PBXGroup;
 			children = (
+				3C27576523F53C47004DF2C3 /* ic_Gift@2x.png */,
 				D2CC47181E7FFBED005459DF /* default_image@2x.png */,
 				D275D7C51E666C44001BBA61 /* admin@2x.png */,
 				D275D7C61E666C44001BBA61 /* back@2x.png */,
@@ -568,6 +582,7 @@
 		D275D7D11E666C44001BBA61 /* @3x */ = {
 			isa = PBXGroup;
 			children = (
+				3C27576723F53C5A004DF2C3 /* ic_Gift@3x.png */,
 				D2CC471A1E7FFBF5005459DF /* default_image@3x.png */,
 				D275D7D21E666C44001BBA61 /* admin@3x.png */,
 				D275D7D31E666C44001BBA61 /* back@3x.png */,
@@ -880,6 +895,8 @@
 				D2E368B61D3F7E7800B1C90C /* EaseProfileLiveView.m */,
 				D21C545F1E658F8B0019A341 /* EaseAdminView.h */,
 				D21C54601E658F8B0019A341 /* EaseAdminView.m */,
+				3C1237E223FA445F00C4135B /* EaseAnchorCardView.h */,
+				3C1237E323FA445F00C4135B /* EaseAnchorCardView.m */,
 			);
 			path = liveView;
 			sourceTree = "<group>";
@@ -995,6 +1012,10 @@
 				D2F4E1141D12C8AB00BB7E1A /* EaseLiveViewController.m */,
 				D2E36B3F1D41CD2900B1C90C /* EaseSearchDisplayController.h */,
 				D2E36B401D41CD2900B1C90C /* EaseSearchDisplayController.m */,
+				3C27575F23F2938F004DF2C3 /* EaseBorderCastViewController.h */,
+				3C27576023F2938F004DF2C3 /* EaseBorderCastViewController.m */,
+				3C27576223F293A4004DF2C3 /* EaseSettingsViewController.h */,
+				3C27576323F293A4004DF2C3 /* EaseSettingsViewController.m */,
 			);
 			path = live;
 			sourceTree = "<group>";
@@ -1198,6 +1219,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 				"zh-Hans",
@@ -1225,6 +1247,7 @@
 				D27B20341E4D770F00318031 /* icon_topview_right_button_normal.png in Resources */,
 				D275D7EC1E666C44001BBA61 /* chat@3x.png in Resources */,
 				D2F4E2421D12C8AB00BB7E1A /* sr_refresh.png in Resources */,
+				3C27576623F53C47004DF2C3 /* ic_Gift@2x.png in Resources */,
 				D27B202B1E4D770F00318031 /* icon_bottomview_brightness_button_selected.png in Resources */,
 				D27B20201E4D770F00318031 /* bg_screen_shot_complete.png in Resources */,
 				D27B20351E4D770F00318031 /* icon_topview_right_button_selected.png in Resources */,
@@ -1247,6 +1270,7 @@
 				D27B20241E4D770F00318031 /* bright_point.png in Resources */,
 				D2CC471B1E7FFBF5005459DF /* default_image@3x.png in Resources */,
 				D2F4E25A1D12C8AB00BB7E1A /* live_default_user@2x.png in Resources */,
+				3C27576823F53C5B004DF2C3 /* ic_Gift@3x.png in Resources */,
 				D275D7E41E666C44001BBA61 /* list@2x.png in Resources */,
 				D275D7F31E666C44001BBA61 /* open@3x.png in Resources */,
 				D275D7F11E666C44001BBA61 /* live@3x.png in Resources */,
@@ -1358,6 +1382,7 @@
 				D21C54611E658F8B0019A341 /* EaseAdminView.m in Sources */,
 				D27B1FE81E4D76BE00318031 /* FilterManager.m in Sources */,
 				D2E368A11D3F243F00B1C90C /* EaseLiveHeaderListView.m in Sources */,
+				3C1237E423FA445F00C4135B /* EaseAnchorCardView.m in Sources */,
 				D2F4E24B1D12C8AB00BB7E1A /* EaseMainViewController.m in Sources */,
 				D2E368BD1D40812E00B1C90C /* EaseLiveGiftView.m in Sources */,
 				D2E3689D1D3F243F00B1C90C /* EaseChatView.m in Sources */,
@@ -1370,6 +1395,7 @@
 				D27B201C1E4D770F00318031 /* YzdHUDImageView.m in Sources */,
 				D2F52C481D478EFC0094BB4A /* EaseLiveCastView.m in Sources */,
 				D2E368C01D4084CB00B1C90C /* EaseBaseSubView.m in Sources */,
+				3C27576123F2938F004DF2C3 /* EaseBorderCastViewController.m in Sources */,
 				D27B201E1E4D770F00318031 /* YzdHUDLabel.m in Sources */,
 				D2E3689F1D3F243F00B1C90C /* EaseInputTextView.m in Sources */,
 				D27B20371E4D770F00318031 /* UCloudBrightnessView.m in Sources */,
@@ -1399,6 +1425,7 @@
 				D2F4E2411D12C8AB00BB7E1A /* MBProgressHUD+Add.m in Sources */,
 				D2E368B11D3F4E8400B1C90C /* EaseBaseViewController.m in Sources */,
 				D27B20381E4D770F00318031 /* UCloudLoadingView.m in Sources */,
+				3C27576423F293A4004DF2C3 /* EaseSettingsViewController.m in Sources */,
 				D23C12971E6FEED4007C5012 /* EaseLiveRoom.m in Sources */,
 				D2E3699A1D40AF4800B1C90C /* EaseLiveCollectionViewCell.m in Sources */,
 				D23C129A1E6FEF86007C5012 /* EaseLiveSession.m in Sources */,

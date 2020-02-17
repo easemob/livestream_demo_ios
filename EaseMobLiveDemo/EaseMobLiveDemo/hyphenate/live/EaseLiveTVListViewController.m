@@ -35,15 +35,25 @@
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIButton *liveButton;
+@property (nonatomic) kTabbarItemBehavior tabBarBehavior; //tabbar行为：看直播/开播/设置
 
 @end
 
 @implementation EaseLiveTVListViewController
 
+- (instancetype)initWithBehavior:(kTabbarItemBehavior)tabBarBehavior
+{
+    self = [super init];
+       if (self) {
+           _tabBarBehavior = tabBarBehavior;
+       }
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = NSLocalizedString(@"title.live", @"Easemob Live");
+    //self.title = NSLocalizedString(@"title.live", @"Easemob Live");
     if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
         [self setEdgesForExtendedLayout:UIRectEdgeNone];
     }
@@ -89,7 +99,7 @@
     _isLoading = YES;
     __weak EaseLiveTVListViewController *weakSelf = self;
     [[EaseHttpManager sharedInstance] fetchLiveRoomsOngoingWithCursor:_cursor
-                                                                limit:kDefaultPageSize
+                                                                limit:8
                                                            completion:^(EMCursorResult *result, BOOL success) {
                                                                if (success) {
                                                                    if (isHeader) {
@@ -298,22 +308,22 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(CGRectGetWidth(self.view.frame)/2 - 0.5f, CGRectGetWidth(self.view.frame)/2 - 0.5f);
+    return CGSizeMake(CGRectGetWidth(self.view.frame)/2 - 15.0f, CGRectGetWidth(self.view.frame)/2 - 15.0f);
 }
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
-    return UIEdgeInsetsMake(0, 0, 0, 0);
+    return UIEdgeInsetsMake(10, 10, 10, 10);
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
 {
-    return 1.0f;
+    return 10.0f;
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
 {
-    return 0.0f;
+    return 10.0f;
 }
 
 #pragma mark - UICollectionViewDelegate
@@ -321,8 +331,16 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     EaseLiveRoom *room = [self.dataArray objectAtIndex:indexPath.row];
-    EaseLiveViewController *view = [[EaseLiveViewController alloc] initWithLiveRoom:room];
-    [self.navigationController presentViewController:view animated:YES completion:NULL];
+    UIViewController *view;
+    if (self.tabBarBehavior == kTabbarItemTag_Live) {
+        view = [[EaseLiveViewController alloc] initWithLiveRoom:room];
+        view.modalPresentationStyle = UIModalPresentationFullScreen;
+        [self.navigationController presentViewController:view animated:YES completion:NULL];
+    } else if (self.tabBarBehavior == kTabbarItemTag_Broadcast) {
+        //加上room的状态，是否正有人占用该直播间？？？
+        view = [[EaseCreateLiveViewController alloc]init];
+        [self.navigationController pushViewController:view animated:NO];
+    }
 }
 
 -(BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath

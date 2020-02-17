@@ -44,11 +44,12 @@
 @property (strong, nonatomic) UIView *bottomView;
 @property (strong, nonatomic) UIButton *sendTextButton;
 @property (strong, nonatomic) UIButton *changeCameraButton;
-@property (strong, nonatomic) UIButton *adminButton;
-@property (strong, nonatomic) UIButton *likeButton;
+@property (strong, nonatomic) UIButton *adminButton;//成员列表
+@property (strong, nonatomic) UIButton *likeButton;//喜欢/赞
+@property (strong, nonatomic) UIButton *giftButton;//礼物
 
 @property (strong, nonatomic) UIView *bottomSendMsgView;
-@property (strong, nonatomic) UIButton *faceButton;
+@property (strong, nonatomic) UIButton *faceButton;//表情
 @property (strong, nonatomic) EMConversation *conversation;
 
 @property (strong, nonatomic) UIView *faceView;
@@ -83,8 +84,10 @@
         if (isPublish) {
             [self.bottomView addSubview:self.adminButton];
             [self.bottomView addSubview:self.changeCameraButton];
+            [self.bottomView addSubview:self.giftButton];
         } else {
             [self.bottomView addSubview:self.likeButton];
+            [self.bottomView addSubview:self.giftButton];
         }
         
         self.bottomSendMsgView.hidden = YES;
@@ -166,7 +169,7 @@
 {
     if (_changeCameraButton == nil) {
         _changeCameraButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _changeCameraButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*2 - kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
+        _changeCameraButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*2 - 2*kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
         [_changeCameraButton setImage:[UIImage imageNamed:@"reversal_camera"] forState:UIControlStateNormal];
         [_changeCameraButton addTarget:self action:@selector(changeCameraAction) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -177,11 +180,22 @@
 {
     if (_likeButton == nil) {
         _likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _likeButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*2 - kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
+        _likeButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*2 - 2*kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
         [_likeButton setImage:[UIImage imageNamed:@"like"] forState:UIControlStateNormal];
         [_likeButton addTarget:self action:@selector(praiseAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _likeButton;
+}
+
+- (UIButton*)giftButton
+{
+    if (_giftButton == nil) {
+        _giftButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _giftButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*2 - kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
+        [_giftButton setImage:[UIImage imageNamed:@"ic_Gift"] forState:UIControlStateNormal];
+        [_giftButton addTarget:self action:@selector(praiseAction) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _giftButton;
 }
 
 - (UIButton*)adminButton
@@ -200,6 +214,8 @@
     if (_bottomSendMsgView == nil) {
         _bottomSendMsgView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.tableView.frame), CGRectGetWidth(self.bounds), 50.f)];
         _bottomSendMsgView.backgroundColor = RGBACOLOR(255, 255, 255, 1);
+        _bottomSendMsgView.layer.borderWidth = 1;
+        _bottomSendMsgView.layer.borderColor = [UIColor lightGrayColor].CGColor;
     }
     return _bottomSendMsgView;
 }
