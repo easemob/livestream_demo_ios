@@ -28,6 +28,8 @@
 
 - (void)didSelectAdminButton:(BOOL)isOwner;
 
+- (void)didSelectGiftButton;
+
 @end
 
 @interface EaseChatView : UIView

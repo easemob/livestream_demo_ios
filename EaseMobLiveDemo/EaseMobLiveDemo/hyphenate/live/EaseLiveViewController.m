@@ -24,6 +24,10 @@
 #import "EaseLiveRoom.h"
 #import "EaseAdminView.h"
 #import "EaseAnchorCardView.h"
+#import "EaseLiveGiftView.h"
+#import "EaseGiftConfirmView.h"
+#import "EaseGiftCell.h"
+#import "EaseCustomKeyBoardView.h"
 
 #define kDefaultTop 30.f
 #define kDefaultLeft 10.f
@@ -280,13 +284,33 @@
     [adminView showFromParentView:self.view];
 }
 
+- (void)didSelectGiftButton
+{
+    EaseLiveGiftView *giftView = [[EaseLiveGiftView alloc]init];
+    giftView.giftDelegate = self;
+    giftView.delegate = self;
+    [giftView showFromParentView:self.view];
+}
+
 #pragma mark - EaseLiveGiftViewDelegate
 
-- (void)didSelectGiftWithGiftId:(NSString *)giftId
+- (void)didConfirmGift:(EaseGiftCell *)giftCell giftNum:(long)num
 {
+    EaseGiftConfirmView *confirmView = [[EaseGiftConfirmView alloc]initWithGiftInfo:giftCell giftNum:num titleText:@"确定赠送"];
+    confirmView.delegate = self;
+    [confirmView showFromParentView:self.view];
     if (_chatview) {
-        [_chatview sendGiftWithId:giftId];
+        [_chatview sendGiftWithId:@"1"];
     }
+}
+
+//自定义礼物数量
+- (void)giftNumCustom:(EaseLiveGiftView *)liveGiftView
+{
+    EaseCustomKeyBoardView *keyBoardView = [[EaseCustomKeyBoardView alloc]init];
+    keyBoardView.customGiftNumDelegate = liveGiftView;
+    keyBoardView.delegate = self;
+    [keyBoardView showFromParentView:self.view];
 }
 
 #pragma mark - EaseProfileLiveViewDelegate

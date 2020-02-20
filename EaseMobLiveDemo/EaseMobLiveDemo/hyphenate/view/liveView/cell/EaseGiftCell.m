@@ -10,10 +10,6 @@
 
 @interface EaseGiftCell ()
 
-@property (nonatomic, strong) UIImageView *giftImageView;
-@property (nonatomic, strong) UILabel *nameLabel;
-@property (nonatomic, strong) UILabel *priceLabel;
-
 @end
 
 @implementation EaseGiftCell
@@ -25,6 +21,9 @@
         [self addSubview:self.giftImageView];
         [self addSubview:self.nameLabel];
         [self addSubview:self.priceLabel];
+        self.layer.cornerRadius = 2;
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapAction:)];
+        [self.contentView addGestureRecognizer:tap];
     }
     return self;
 }
@@ -43,7 +42,7 @@
 {
     if (_nameLabel == nil) {
         _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _giftImageView.bottom, self.width, (self.height - self.width)/2)];
-        _nameLabel.textColor = kDefaultSystemTextColor;
+        _nameLabel.textColor = [UIColor whiteColor];
         _nameLabel.font = [UIFont systemFontOfSize:14.f];
         _nameLabel.textAlignment = NSTextAlignmentCenter;
     }
@@ -54,7 +53,7 @@
 {
     if (_priceLabel == nil) {
         _priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _nameLabel.bottom, self.width, (self.height - self.width)/2)];
-        _priceLabel.textColor = kDefaultSystemTextColor;
+        _priceLabel.textColor = [UIColor whiteColor];
         _priceLabel.font = [UIFont systemFontOfSize:14.f];
         _priceLabel.textAlignment = NSTextAlignmentCenter;
     }
@@ -75,8 +74,15 @@
         _nameLabel.text = name;
     }
     
-    if (price.length > 0) {
-        _priceLabel.text = price;
+    _priceLabel.text = [NSString stringWithFormat:@"%@ 信币",price];
+}
+
+#pragma mark - Action
+
+- (void)cellTapAction:(UITapGestureRecognizer *)tap
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(giftCellDidSelected:)]) {
+        [self.delegate giftCellDidSelected:self];
     }
 }
 

@@ -114,3 +114,14 @@
 
 //search
 "search.placeholder" = "输入房间号";
+
+//gift
+"gift.balloons" = "比翼双飞";
+"gift.bouquet" = "春花烂漫";
+"gift.box" = "大礼包";
+"gift.cake" = "生日蛋糕";
+"gift.dog" = "小狗狗";
+"gift.rings" = "金镯子";
+"gift.rose" = "香水玫瑰";
+"gift.wishs_come_true" = "心想事成";
+

@@ -193,7 +193,7 @@
         _giftButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _giftButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*2 - kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
         [_giftButton setImage:[UIImage imageNamed:@"ic_Gift"] forState:UIControlStateNormal];
-        [_giftButton addTarget:self action:@selector(praiseAction) forControlEvents:UIControlEventTouchUpInside];
+        [_giftButton addTarget:self action:@selector(giftAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _giftButton;
 }
@@ -454,9 +454,13 @@
         [self _willShowBottomView:nil];
     }
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(easeChatViewDidChangeFrameToHeight:)]) {
-        CGFloat toHeight = endFrame.size.height + self.frame.size.height + (self.textView.height - 30);
-        [self.delegate easeChatViewDidChangeFrameToHeight:toHeight];
+    UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
+    UIView *firstResponder = [keyWindow performSelector:@selector(firstResponder)];
+    if ([firstResponder isEqual:self.textView]) {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(easeChatViewDidChangeFrameToHeight:)]) {
+            CGFloat toHeight = endFrame.size.height + self.frame.size.height + (self.textView.height - 30);
+            [self.delegate easeChatViewDidChangeFrameToHeight:toHeight];
+        }
     }
 }
 
@@ -695,6 +699,15 @@
             [weakSelf performSelector:@selector(_uploadPraiseCountToServer) withObject:nil afterDelay:10.f];
         }
     }];
+}
+
+- (void)giftAction
+{
+    if (_delegate && [_delegate respondsToSelector:@selector(didSelectGiftButton)]) {
+        [_delegate didSelectGiftButton];
+        _giftButton.selected = !_giftButton.selected;
+    }
+    
 }
 
 - (void)_uploadPraiseCountToServer
