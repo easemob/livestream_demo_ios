@@ -7,9 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EaseLiveRoom.h"
 
 @interface EaseCreateLiveViewController : UIViewController
 
 - (instancetype)initWithRelevance:(BOOL)isRelevance;
+
+- (instancetype)initWithLiveroom:(EaseLiveRoom *)liveroom;
 
 @end

@@ -7,8 +7,8 @@
 //
 
 #import "EaseLiveCastView.h"
-
 #import "EaseLiveRoom.h"
+#import "EaseDefaultDataHelper.h"
 
 @interface EaseLiveCastView ()
 {
@@ -23,6 +23,9 @@
 
 @end
 
+extern NSArray<NSString*> *nickNameArray;
+extern NSMutableDictionary *anchorInfoDic;
+
 @implementation EaseLiveCastView
 
 - (instancetype)initWithFrame:(CGRect)frame room:(EaseLiveRoom*)room
@@ -30,10 +33,15 @@
     self = [super initWithFrame:frame];
     if (self) {
         _room = room;
+        self.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.25];
+        self.layer.cornerRadius = frame.size.height / 2;
         [self addSubview:self.headImageView];
         [self addSubview:self.nameLabel];
-        [self addSubview:self.praiseLabel];
-        [self addSubview:self.giftLabel];
+        if ([_room.anchor isEqualToString:[EMClient sharedClient].currentUsername]) {
+            [self addSubview:self.praiseLabel];
+            [self addSubview:self.giftLabel];
+        }
+        [self _setviewData];
         //[self addSubview:self.numberLabel];
     }
     return self;
@@ -43,10 +51,10 @@
 {
     if (_headImageView == nil) {
         _headImageView = [[UIImageView alloc] init];
-        _headImageView.frame = CGRectMake(0, 0, self.height, self.height);
-        _headImageView.image = [UIImage imageNamed:@"live_default_user"];
+        _headImageView.frame = CGRectMake(2, 2, self.height - 4, self.height - 4);
+        _headImageView.image = [UIImage imageNamed:@"Logo"];
         _headImageView.layer.masksToBounds = YES;
-        _headImageView.layer.cornerRadius = CGRectGetHeight(_headImageView.frame)/2;
+        _headImageView.layer.cornerRadius = (self.height - 4)/2;
         _headImageView.contentMode = UIViewContentModeScaleAspectFill;
         
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectHeadImage)];
@@ -60,13 +68,10 @@
 {
     if (_nameLabel == nil) {
         _nameLabel = [[UILabel alloc] init];
-        _nameLabel.frame = CGRectMake(_headImageView.width + 10.f, 0.f, self.width - (_headImageView.width + 10.f), self.height/2);
-        _nameLabel.font = [UIFont systemFontOfSize:12.f];
+        _nameLabel.frame = CGRectMake(_headImageView.width + 10.f, self.height / 4, self.width - (_headImageView.width + 10.f), self.height/2);
+        _nameLabel.font = [UIFont systemFontOfSize:14.f];
         _nameLabel.textColor = [UIColor whiteColor];
-        
-        if (_room) {
-            _nameLabel.text = _room.session.anchor;
-        }
+        _nameLabel.textAlignment = NSTextAlignmentLeft;
     }
     return _nameLabel;
 }
@@ -75,10 +80,11 @@
 {
     if (_praiseLabel == nil) {
         _praiseLabel = [[UILabel alloc] init];
-        _praiseLabel.frame = CGRectMake(_headImageView.width + 10.f, self.height/2, (self.width - _headImageView.width)/2 - 5.0, self.height/2);
+        _praiseLabel.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y + self.height + 5, self.width / 2, self.height / 2);
         _praiseLabel.font = [UIFont systemFontOfSize:12.f];
-        _praiseLabel.textColor = [UIColor whiteColor];
+        _praiseLabel.textColor = [UIColor colorWithRed:255/255.0 green:199/255.0 blue:0/255.0 alpha:1.0];
         _praiseLabel.text = @"赞:900";
+        _praiseLabel.textAlignment = NSTextAlignmentLeft;
     }
     return _praiseLabel;
 }
@@ -87,13 +93,39 @@
 {
     if (_giftLabel == nil) {
         _giftLabel = [[UILabel alloc] init];
-        _giftLabel.frame = CGRectMake(_headImageView.width + 2.f + _praiseLabel.width, self.height/2, (self.width - _headImageView.width)/2 - 5.0, self.height/2);
+        _giftLabel.frame = CGRectMake(self.frame.origin.x + _praiseLabel.width, self.frame.origin.y + self.height + 5, self.width / 2, self.height / 2);
         _giftLabel.font = [UIFont systemFontOfSize:12.f];
-        _giftLabel.textColor = [UIColor whiteColor];
+        _giftLabel.textColor = [UIColor colorWithRed:255/255.0 green:199/255.0 blue:0/255.0 alpha:1.0];
         _giftLabel.text = @"礼物:900";
+        _giftLabel.textAlignment = NSTextAlignmentLeft;
     }
     return _giftLabel;
 }
+
+- (void)_setviewData
+{
+    if (_room) {
+        if ([_room.anchor isEqualToString:EMClient.sharedClient.currentUsername]) {
+            _nameLabel.text = EaseDefaultDataHelper.shared.defaultNickname;
+        } else {
+            NSMutableDictionary *anchorInfo = [anchorInfoDic objectForKey:_room.roomId];
+            if (anchorInfo && [anchorInfo objectForKey:kBROADCASTING_CURRENT_ANCHOR] && ![[anchorInfo objectForKey:kBROADCASTING_CURRENT_ANCHOR] isEqualToString:@""]) {
+                _nameLabel.text = [anchorInfo objectForKey:kBROADCASTING_CURRENT_ANCHOR_NICKNAME];
+            } else {
+                anchorInfo = [[NSMutableDictionary alloc]initWithCapacity:3];
+                [anchorInfo setObject:_room.anchor forKey:kBROADCASTING_CURRENT_ANCHOR];//当前房间主播
+                int random = (arc4random() % 100);
+                NSString *randomNickname = nickNameArray[random];
+                _nameLabel.text = randomNickname;
+                [anchorInfo setObject:_nameLabel.text forKey:kBROADCASTING_CURRENT_ANCHOR_NICKNAME];//当前房间主播昵称
+                random = (arc4random() % 7) + 1;
+                [anchorInfo setObject:[NSString stringWithFormat:@"avatat_%d",random] forKey:kBROADCASTING_CURRENT_ANCHOR_AVATAR];//当前房间主播头像
+                [anchorInfoDic setObject:anchorInfo forKey:_room.roomId];
+            }
+        }
+    }
+}
+
 /*
 - (UILabel*)numberLabel
 {

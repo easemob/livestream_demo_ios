@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EaseBaseViewController.h"
 
 @class EaseLiveRoom;
 @interface EaseLiveCollectionViewCell : UICollectionViewCell
 
-- (void)setLiveRoom:(EaseLiveRoom*)room;
+- (void)setLiveRoom:(EaseLiveRoom*)room liveBehavior:(kTabbarItemBehavior)liveBehavior;
 
 @end

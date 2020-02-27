@@ -24,6 +24,7 @@
 #import "EaseLiveRoom.h"
 #import "EaseAnchorCardView.h"
 #import "EaseCreateLiveViewController.h"
+#import "EaseDefaultDataHelper.h"
 
 #define kDefaultTop 30.f
 #define kDefaultLeft 10.f
@@ -68,6 +69,8 @@
     self = [super init];
     if (self) {
         _room = room;
+        EaseDefaultDataHelper.shared.currentRoomId = _room.roomId;
+        [EaseDefaultDataHelper.shared archive];
     }
     return self;
 }
@@ -94,7 +97,7 @@
                                         [self.headerListView loadHeaderListWithChatroomId:_room.chatroomId];
                                     }
                                 }];
-    [self.view addSubview:self.roomNameLabel];
+    //[self.view addSubview:self.roomNameLabel];
     [self.view layoutSubviews];
     [self setBtnStateInSel:1];
     [self startAction];
@@ -123,7 +126,7 @@
 - (EaseEndLiveView*)endLiveView
 {
     if (_endLiveView == nil) {
-        _endLiveView = [[EaseEndLiveView alloc] initWithUsername:[EMClient sharedClient].currentUsername audience:@"265381人看过"];
+        _endLiveView = [[EaseEndLiveView alloc] initWithUsername:_room.title audience:@"265381人看过"];
         _endLiveView.delegate = self;
     }
     return _endLiveView;
@@ -132,7 +135,7 @@
 - (EaseLiveHeaderListView*)headerListView
 {
     if (_headerListView == nil) {
-        _headerListView = [[EaseLiveHeaderListView alloc] initWithFrame:CGRectMake(0, kDefaultTop, KScreenWidth - 50, 30.f) room:_room];
+        _headerListView = [[EaseLiveHeaderListView alloc] initWithFrame:CGRectMake(0, kDefaultTop, KScreenWidth, 40.f) room:_room];
         _headerListView.delegate = self;
         [_headerListView setLiveCastDelegate];
     }
@@ -159,7 +162,7 @@
     }
     return _chatview;
 }
-
+/*
 - (UIButton*)closeBtn
 {
     if (_closeBtn == nil) {
@@ -169,10 +172,15 @@
         [_closeBtn addTarget:self action:@selector(closeLiveAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _closeBtn;
-}
+}*/
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
+}
+
+- (void)didSelectedExitButton
+{
+    [self closeLiveAction];
 }
 
 #pragma mark - Action
@@ -214,9 +222,11 @@
     __weak typeof(self) weakSelf = self;
     [[EaseHttpManager sharedInstance] getLiveRoomCurrentWithRoomId:_room.roomId
                                                         completion:^(EaseLiveSession *session, BOOL success) {
-                                                            if (success) {
+                                                            //当前没有接口，肯定失败
+                                                            if (!success) {
                                                                 [weakSelf _shutDownLive];
-                                                                [weakSelf.endLiveView setAudience:[NSString stringWithFormat:@"%ld%@",(long)session.totalWatchCount,NSLocalizedString(@"endview.live.watch", @" Watched")]];
+                                                                //[weakSelf.endLiveView setAudience:[NSString stringWithFormat:@"%ld%@",(long)session.totalWatchCount,NSLocalizedString(@"endview.live.watch", @" Watched")]];
+                                                                [weakSelf.endLiveView setAudience:@"2000人正在观看"];
                                                                 [self.view addSubview:self.endLiveView];
                                                                 [self.view bringSubviewToFront:self.endLiveView];
                                                             }
@@ -408,7 +418,7 @@
                                              }];
                                          }];
     };
-    
+    /*
     [[EaseHttpManager sharedInstance] modifyLiveRoomStatusWithRoomId:_room.roomId
                                                               status:EaseLiveSessionCompleted
                                                           completion:^(BOOL success) {
@@ -416,7 +426,17 @@
                                                                   [weakSelf showHint:@"更新失败"];
                                                               }
                                                               block();
-                                                          }];
+                                                          }];*/
+    [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOffline:_room completion:^(EaseLiveRoom *room, BOOL success) {
+        if (success) {
+            _room = room;
+            
+            //重置本地保存的直播间id
+            EaseDefaultDataHelper.shared.currentRoomId = @"";
+            [EaseDefaultDataHelper.shared archive];
+        }
+        block();
+    }];
     
     self.shouldAutoStarted = NO;
     self.closeBtn.enabled = NO;
@@ -471,14 +491,6 @@
     [[CameraServer server] changeCamera];
 }
 
-- (void)didSelectAdminButton:(BOOL)isOwner
-{
-    EaseAdminView *adminView = [[EaseAdminView alloc] initWithChatroomId:_room.chatroomId
-                                                                 isOwner:isOwner];
-    adminView.delegate = self;
-    [adminView showFromParentView:self.view];
-}
-
 //主播信息卡片
 - (void)didClickAnchorCard:(EaseLiveRoom *)room
 {
@@ -486,6 +498,15 @@
     EaseAnchorCardView *anchorCardView = [[EaseAnchorCardView alloc]initWithLiveRoom:room];
     anchorCardView.delegate = self;
     [anchorCardView showFromParentView:self.view];
+}
+
+//成员列表
+- (void)didSelectMemberListButton:(BOOL)isOwner
+{
+    EaseAdminView *adminView = [[EaseAdminView alloc] initWithChatroomId:_room.chatroomId
+                                                                 isOwner:isOwner];
+    adminView.delegate = self;
+    [adminView showFromParentView:self.view];
 }
 
 #pragma mark - UITextViewDelegate

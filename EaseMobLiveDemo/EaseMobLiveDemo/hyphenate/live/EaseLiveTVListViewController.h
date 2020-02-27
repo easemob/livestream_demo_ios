@@ -7,14 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EaseBaseViewController.h"
 
-typedef enum : NSInteger{
-    kTabbarItemTag_Live,
-    kTabbarItemTag_Broadcast,
-    kTabbarItemTag_Settings
-}kTabbarItemBehavior;
-
-@interface EaseLiveTVListViewController : UIViewController
+@interface EaseLiveTVListViewController : EaseBaseViewController
 
 @property (nonatomic, strong) UIBarButtonItem *searchBarItem;
 @property (nonatomic, strong) UIBarButtonItem *logoutItem;

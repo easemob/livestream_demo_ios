@@ -24,13 +24,39 @@
                     completion:(void (^)(EaseLiveRoom *room, BOOL success))aCompletion;
 
 /*
- *  修改直播聊天室
+*  g获取直播聊天室详情
+*
+*  @param aRoom            直播聊天室
+*  @param aCompletion      完成的回调block
+*/
+- (void)fetchLiveroomDetail:(NSString *)roomId completion:(void (^)(EaseLiveRoom *room, BOOL success))aCompletion;
+
+/*
+ *  修改直播聊天室详情
  *
  *  @param aRoom            直播聊天室
  *  @param aCompletion      完成的回调block
  */
 - (void)modifyLiveRoomWithRoom:(EaseLiveRoom*)aRoom
                     completion:(void (^)(EaseLiveRoom *room, BOOL success))aCompletion;
+
+/*
+*  更新直播间状态为ongoing
+*
+*  @param aRoom            直播间
+*  @param aCompletion      完成的回调block
+*/
+- (void)modifyLiveroomStatusWithOngoing:(EaseLiveRoom *)room
+                             completion:(void (^)(EaseLiveRoom *room, BOOL success))aCompletion;
+
+/*
+*  更新直播间状态为offline
+*
+*  @param aRoom            直播间
+*  @param aCompletion      完成的回调block
+*/
+- (void)modifyLiveroomStatusWithOffline:(EaseLiveRoom *)room
+                             completion:(void (^)(EaseLiveRoom *room, BOOL success))aCompletion;
 
 
 /*
@@ -50,6 +76,17 @@
  */
 - (void)deleteLiveRoomWithRoomId:(NSString*)aRoomId
                       completion:(void (^)(BOOL success))aCompletion;
+
+/*
+ *  获取当前appKey下的直播房间列表
+ *
+ *  @param aPage          第几页
+ *  @param aPageSize      每页大小
+ *  @param aCompletion    完成的回调block
+ */
+- (void)fetchLiveRoomsWithCursor:(NSString*)aCursor
+                            limit:(NSInteger)aLimit
+                            completion:(void (^)(EMCursorResult *result, BOOL success))aCompletion;
 
 /*
  *  获取正在直播聊天室列表
@@ -77,10 +114,10 @@
  *  @param aRoomId          直播聊天室ID
  *  @param aStatus          直播聊天室状态
  *  @param aCompletion      完成的回调block
- */
+ *
 - (void)modifyLiveRoomStatusWithRoomId:(NSString*)aRoomId
                                 status:(EaseLiveSessionStatus)aStatus
-                            completion:(void (^)(BOOL success))aCompletion;
+                            completion:(void (^)(BOOL success))aCompletion;*/
 
 /*
  *  创建新的直播场次

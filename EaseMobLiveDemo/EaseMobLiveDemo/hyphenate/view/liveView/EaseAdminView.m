@@ -138,6 +138,7 @@
         _adminListBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _adminListBtn.frame = CGRectMake(0, 0, KScreenWidth/3, kButtonDefaultHeight);
         [_adminListBtn setTitleColor:RGBACOLOR(76, 76, 76, 1) forState:UIControlStateNormal];
+        [_adminListBtn setTitle:@"成员" forState:UIControlStateNormal];
         _adminListBtn.tag = 100;
         [_adminListBtn addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -151,6 +152,7 @@
         _muteListBtn.frame = CGRectMake(CGRectGetMaxX(_adminListBtn.frame), 0, KScreenWidth/3, kButtonDefaultHeight);
         //[_muteListBtn setTitle:NSLocalizedString(@"profile.mute", @"Mute") forState:UIControlStateNormal];
         [_muteListBtn setTitleColor:RGBACOLOR(76, 76, 76, 1) forState:UIControlStateNormal];
+        [_muteListBtn setTitle:@"禁言" forState:UIControlStateNormal];
         _muteListBtn.tag = 101;
         [_muteListBtn addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -164,6 +166,7 @@
         _blockListBtn.frame = CGRectMake(CGRectGetMaxX(_muteListBtn.frame), 0, KScreenWidth/3, kButtonDefaultHeight);
         //[_blockListBtn setTitle:NSLocalizedString(@"profile.block", @"Block") forState:UIControlStateNormal];
         [_blockListBtn setTitleColor:RGBACOLOR(76, 76, 76, 1) forState:UIControlStateNormal];
+        [_blockListBtn setTitle:@"黑名单" forState:UIControlStateNormal];
         _blockListBtn.tag = 102;
         [_blockListBtn addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -383,7 +386,8 @@
         [cell.clickButton setTitle:NSLocalizedString(@"profile.block.remove", @"Remove") forState:UIControlStateNormal];
         [cell.clickButton addTarget:self action:@selector(removeBlackAction:) forControlEvents:UIControlEventTouchUpInside];
     }
-    cell.imageView.image = [UIImage imageNamed:@"live_default_user"];
+    int random = (arc4random() % 7) + 1;
+    cell.imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"avatat_%d",random]];
     cell.clickButton.tag = indexPath.row;
     if (tableView == _adminTableView) {
         if (_isOwner) {

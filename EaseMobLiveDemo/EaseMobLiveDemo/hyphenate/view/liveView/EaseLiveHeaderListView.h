@@ -14,6 +14,8 @@
 
 - (void)didClickAnchorCard:(EaseLiveRoom*)room;
 
+- (void)didSelectMemberListButton:(BOOL)isOwner;
+
 @end
 
 @class EasePublishModel;

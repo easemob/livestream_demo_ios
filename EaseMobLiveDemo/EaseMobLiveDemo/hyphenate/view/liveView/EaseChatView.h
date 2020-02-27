@@ -26,9 +26,11 @@
 
 - (void)didSelectChangeCameraButton;
 
-- (void)didSelectAdminButton:(BOOL)isOwner;
+//- (void)didSelectAdminButton:(BOOL)isOwner;
 
 - (void)didSelectGiftButton;
+
+- (void)didSelectedExitButton;
 
 @end
 

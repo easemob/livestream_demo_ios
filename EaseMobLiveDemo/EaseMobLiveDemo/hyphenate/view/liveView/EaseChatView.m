@@ -45,6 +45,7 @@
 @property (strong, nonatomic) UIButton *sendTextButton;
 @property (strong, nonatomic) UIButton *changeCameraButton;
 @property (strong, nonatomic) UIButton *adminButton;//成员列表
+@property (strong, nonatomic) UIButton *exitButton;//退出
 @property (strong, nonatomic) UIButton *likeButton;//喜欢/赞
 @property (strong, nonatomic) UIButton *giftButton;//礼物
 
@@ -81,15 +82,14 @@
         //底部功能按钮
         [self addSubview:self.bottomView];
         [self.bottomView addSubview:self.sendTextButton];
+        //[self.bottomView addSubview:self.adminButton];
+        [self.bottomView addSubview:self.exitButton];
         if (isPublish) {
-            [self.bottomView addSubview:self.adminButton];
             [self.bottomView addSubview:self.changeCameraButton];
-            [self.bottomView addSubview:self.giftButton];
         } else {
             [self.bottomView addSubview:self.likeButton];
-            [self.bottomView addSubview:self.giftButton];
         }
-        
+        [self.bottomView addSubview:self.giftButton];
         self.bottomSendMsgView.hidden = YES;
         _curtime = (long long)([[NSDate date] timeIntervalSince1970]*1000);
         _defaultHeight = self.height;
@@ -170,10 +170,26 @@
     if (_changeCameraButton == nil) {
         _changeCameraButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _changeCameraButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*2 - 2*kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
+        _changeCameraButton.backgroundColor = [UIColor brownColor];
+        _changeCameraButton.layer.cornerRadius = kButtonWitdh / 2;
         [_changeCameraButton setImage:[UIImage imageNamed:@"reversal_camera"] forState:UIControlStateNormal];
         [_changeCameraButton addTarget:self action:@selector(changeCameraAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _changeCameraButton;
+}
+
+- (UIButton*)exitButton
+{
+    if (_exitButton == nil) {
+        _exitButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _exitButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*3 - 3*kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
+        [_exitButton setImage:[UIImage imageNamed:@"ic_exit"] forState:UIControlStateNormal];
+        _exitButton.imageEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 0);
+        _exitButton.backgroundColor = [UIColor colorWithRed:255/255.0 green:92/255.0 blue:92/255.0 alpha:0.25];
+        _exitButton.layer.cornerRadius = kButtonWitdh / 2;
+        [_exitButton addTarget:self action:@selector(exitAction) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _exitButton;
 }
 
 - (UIButton*)likeButton
@@ -181,8 +197,11 @@
     if (_likeButton == nil) {
         _likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _likeButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*2 - 2*kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
-        [_likeButton setImage:[UIImage imageNamed:@"like"] forState:UIControlStateNormal];
-        [_likeButton addTarget:self action:@selector(praiseAction) forControlEvents:UIControlEventTouchUpInside];
+        _likeButton.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.25];
+        _likeButton.layer.cornerRadius = kButtonWitdh / 2;
+        [_likeButton setImage:[UIImage imageNamed:@"ic_praise"] forState:UIControlStateNormal];
+        [_likeButton setImage:[UIImage imageNamed:@"ic_praised"] forState:(UIControlState)UIControlEventTouchDown];
+        [_likeButton addTarget:self action:@selector(praiseAction:) forControlEvents:UIControlEventTouchDown];
     }
     return _likeButton;
 }
@@ -191,7 +210,9 @@
 {
     if (_giftButton == nil) {
         _giftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _giftButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*2 - kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
+        _giftButton.frame = CGRectMake(KScreenWidth - kDefaultSpace - kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
+        _giftButton.backgroundColor = [UIColor colorWithRed:240/255.0 green:85/255.0 blue:34/255.0 alpha:1.0];
+        _giftButton.layer.cornerRadius = kButtonWitdh / 2;
         [_giftButton setImage:[UIImage imageNamed:@"ic_Gift"] forState:UIControlStateNormal];
         [_giftButton addTarget:self action:@selector(giftAction) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -204,7 +225,7 @@
         _adminButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _adminButton.frame = CGRectMake(CGRectGetMaxX(_sendTextButton.frame) + kDefaultSpace*2, 6.f, kButtonWitdh, kButtonHeight);
         [_adminButton setImage:[UIImage imageNamed:@"list"] forState:UIControlStateNormal];
-        [_adminButton addTarget:self action:@selector(adminAction) forControlEvents:UIControlEventTouchUpInside];
+        //[_adminButton addTarget:self action:@selector(adminAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _adminButton;
 }
@@ -454,6 +475,7 @@
         [self _willShowBottomView:nil];
     }
     
+    //防止自定义数字键盘弹起导致本页面上移
     UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
     UIView *firstResponder = [keyWindow performSelector:@selector(firstResponder)];
     if ([firstResponder isEqual:self.textView]) {
@@ -673,6 +695,7 @@
     }
 }
 
+/*
 - (void)adminAction
 {
     if (_delegate && [_delegate respondsToSelector:@selector(didSelectAdminButton:)]) {
@@ -683,15 +706,16 @@
         [_delegate didSelectAdminButton:isOwner];
         _adminButton.selected = !_adminButton.selected;
     }
-}
+}*/
 
-- (void)praiseAction
+- (void)praiseAction:(UIButton *)sender
 {
+    self.likeButton.selected = !self.likeButton.selected;
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_uploadPraiseCountToServer) object:nil];
     EMMessage *message = [self _sendCMDMessageTo:_chatroomId messageType:EMChatTypeChatRoom messageExt:@{kPraiseCount:@(1)} action:kPraiseAction];
     __weak EaseChatView *weakSelf = self;
     [[EMClient sharedClient].chatManager sendMessage:message progress:NULL completion:^(EMMessage *message, EMError *error) {
-        if (!error) {
+        if (error) {
             if (weakSelf.delegate && [weakSelf.delegate respondsToSelector:@selector(didReceivePraiseWithCMDMessage:)]) {
                 [weakSelf.delegate didReceivePraiseWithCMDMessage:message];
             }
@@ -699,6 +723,13 @@
             [weakSelf performSelector:@selector(_uploadPraiseCountToServer) withObject:nil afterDelay:10.f];
         }
     }];
+}
+
+- (void)exitAction
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectedExitButton)]) {
+        [self.delegate didSelectedExitButton];
+    }
 }
 
 - (void)giftAction

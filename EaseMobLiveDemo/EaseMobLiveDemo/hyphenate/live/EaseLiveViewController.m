@@ -42,7 +42,6 @@
 
 @property (nonatomic, strong) PlayerManager *playerManager;
 
-@property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *sendButton;
 @property (nonatomic, strong) EaseChatView *chatview;
 @property (nonatomic, strong) EaseLiveHeaderListView *headerListView;
@@ -69,13 +68,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.view.backgroundColor = [UIColor colorWithRed:90/255.0 green:93/255.0 blue:208/255.0 alpha:1.0];
     
     [self.view addSubview:self.liveView];
     
     [self.liveView addSubview:self.chatview];
-    [self.liveView addSubview:self.closeButton];
     [self.liveView addSubview:self.headerListView];
-    [self.liveView addSubview:self.roomNameLabel];
+    //[self.liveView addSubview:self.roomNameLabel];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noti:) name:UCloudPlayerPlaybackDidFinishNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
     
@@ -155,7 +154,7 @@
 - (EaseLiveHeaderListView*)headerListView
 {
     if (_headerListView == nil) {
-        _headerListView = [[EaseLiveHeaderListView alloc] initWithFrame:CGRectMake(0, kDefaultTop, CGRectGetMinX(self.closeButton.frame), 30.f) room:_room];
+        _headerListView = [[EaseLiveHeaderListView alloc] initWithFrame:CGRectMake(0, kDefaultTop, CGRectGetWidth(self.view.frame), 40.f) room:_room];
         _headerListView.delegate = self;
         [_headerListView setLiveCastDelegate];
     }
@@ -183,15 +182,9 @@
     return _chatview;
 }
 
-- (UIButton*)closeButton
+- (void)didSelectedExitButton
 {
-    if (_closeButton == nil) {
-        _closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _closeButton.frame = CGRectMake(KScreenWidth - 40.f, kDefaultTop, 30.f, 30.f);
-        [_closeButton setImage:[UIImage imageNamed:@"close"] forState:UIControlStateNormal];
-        [_closeButton addTarget:self action:@selector(closeButtonAction) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _closeButton;
+    [self closeButtonAction];
 }
 
 #pragma mark - EaseLiveHeaderListViewDelegate
@@ -225,6 +218,15 @@
     EaseAnchorCardView *anchorCardView = [[EaseAnchorCardView alloc]initWithLiveRoom:room];
     anchorCardView.delegate = self;
     [anchorCardView showFromParentView:self.view];
+}
+
+//成员列表
+- (void)didSelectMemberListButton:(BOOL)isOwner
+{
+    EaseAdminView *adminView = [[EaseAdminView alloc] initWithChatroomId:_room.chatroomId
+                                                                 isOwner:isOwner];
+    adminView.delegate = self;
+    [adminView showFromParentView:self.view];
 }
 
 #pragma  mark - TapBackgroundViewDelegate
@@ -274,14 +276,6 @@
         profileLiveView.delegate = self;
         [profileLiveView showFromParentView:self.view];
     }
-}
-
-- (void)didSelectAdminButton:(BOOL)isOwner
-{
-    EaseAdminView *adminView = [[EaseAdminView alloc] initWithChatroomId:_room.chatroomId
-                                                                 isOwner:isOwner];
-    adminView.delegate = self;
-    [adminView showFromParentView:self.view];
 }
 
 - (void)didSelectGiftButton

@@ -29,7 +29,8 @@
     if (self) {
         self.backgroundColor = [UIColor clearColor];
         _headerImage = [[UIImageView alloc] init];
-        _headerImage.image = [UIImage imageNamed:@"live_default_user"];
+        int random = (arc4random() % 7) + 1;
+        _headerImage.image = [UIImage imageNamed:[NSString stringWithFormat:@"avatat_%d",random]];
         _headerImage.frame = CGRectMake(0, 0, CGRectGetHeight(self.frame), CGRectGetHeight(self.frame));
         _headerImage.layer.cornerRadius = CGRectGetHeight(self.frame)/2;
         _headerImage.layer.masksToBounds = YES;
@@ -55,11 +56,14 @@
 @property (nonatomic, strong) NSMutableArray *dataArray;
 @property (nonatomic, strong) EaseLiveCastView *liveCastView;
 @property (nonatomic, assign) NSInteger occupantsCount;
-@property (nonatomic, strong) UILabel *numberLabel;
+@property (nonatomic, strong) UIButton *numberBtn;
 
 @end
 
 @implementation EaseLiveHeaderListView
+{
+    EMChatroom *_chatroom;
+}
 
 - (instancetype)initWithFrame:(CGRect)frame model:(EasePublishModel*)model
 {
@@ -79,7 +83,7 @@
         _room = room;
         [self addSubview:self.collectionView];
         [self addSubview:self.liveCastView];
-        [self addSubview:self.numberLabel];
+        [self addSubview:self.numberBtn];
     }
     return self;
 }
@@ -126,7 +130,7 @@
 - (EaseLiveCastView*)liveCastView
 {
     if (_liveCastView == nil) {
-        _liveCastView = [[EaseLiveCastView alloc] initWithFrame:CGRectMake(10, 0, 150.f, 30.f) room:_room];
+        _liveCastView = [[EaseLiveCastView alloc] initWithFrame:CGRectMake(10, 0, 120.f, 40.f) room:_room];
     }
     return _liveCastView;
 }
@@ -136,15 +140,33 @@
     self.liveCastView.delegate = self.delegate;
 }
 
-- (UILabel*)numberLabel
+- (UIButton*)numberBtn
 {
-    if (_numberLabel == nil) {
-        _numberLabel = [[UILabel alloc] init];
-        _numberLabel.frame = CGRectMake(self.collectionView.width + self.liveCastView.width + 10.f, 0, 20.f, 30.f);
-        _numberLabel.font = [UIFont systemFontOfSize:12.f];
-        _numberLabel.textColor = [UIColor whiteColor];
+    if (_numberBtn == nil) {
+        _numberBtn = [[UIButton alloc] init];
+        _numberBtn.frame = CGRectMake(self.frame.size.width - 60.f, 5.f, 50.f, 30.f);
+        _numberBtn.titleLabel.font = [UIFont systemFontOfSize:14.f];
+        _numberBtn.titleLabel.textColor = [UIColor whiteColor];
+        _numberBtn.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.6];
+        [_numberBtn setTitle:@"1人" forState:UIControlStateNormal];
+        _numberBtn.layer.cornerRadius = 15.f;
+        [_numberBtn addTarget:self action:@selector(memberListAction) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _numberLabel;
+    return _numberBtn;
+}
+
+#pragma Action
+
+- (void)memberListAction
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectMemberListButton:)]) {
+        BOOL isOwner = NO;
+        if (_chatroom && _chatroom.permissionType == EMChatroomPermissionTypeOwner) {
+            isOwner = YES;
+        }
+        [self.delegate didSelectMemberListButton:isOwner];
+        _numberBtn.selected = !_numberBtn.selected;
+    }
 }
 
 #pragma mark - public
@@ -154,8 +176,9 @@
     [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:chatroomId
                                                                        completion:^(EMChatroom *aChatroom, EMError *aError) {
                                                                            if (!aError) {
+                                                                               _chatroom = aChatroom;
                                                                                weakself.occupantsCount = aChatroom.occupantsCount;
-                                                                               weakself.numberLabel.text = [NSString stringWithFormat:@"%ld%@",(long)weakself.occupantsCount ,NSLocalizedString(@"profile.people", @"")];
+                                                                               [weakself.numberBtn setTitle:[NSString stringWithFormat:@"%ld%@",(long)weakself.occupantsCount ,NSLocalizedString(@"profile.people", @"")] forState:UIControlStateNormal];
                                                                            }
                                                                        }];
     
