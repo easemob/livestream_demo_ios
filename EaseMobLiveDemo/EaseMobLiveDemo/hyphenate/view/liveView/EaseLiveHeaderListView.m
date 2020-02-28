@@ -148,7 +148,7 @@
         _numberBtn.titleLabel.font = [UIFont systemFontOfSize:14.f];
         _numberBtn.titleLabel.textColor = [UIColor whiteColor];
         _numberBtn.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.6];
-        [_numberBtn setTitle:@"1人" forState:UIControlStateNormal];
+        [_numberBtn setTitle:[NSString stringWithFormat:@"%ld人",(long)_room.currentUserCount] forState:UIControlStateNormal];
         _numberBtn.layer.cornerRadius = 15.f;
         [_numberBtn addTarget:self action:@selector(memberListAction) forControlEvents:UIControlEventTouchUpInside];
     }

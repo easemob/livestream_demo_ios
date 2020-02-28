@@ -94,13 +94,15 @@
         make.right.equalTo(bgView).offset(-40);
     }];
     
-    [bgView addSubview:self.attentionBtn];
-    [_attentionBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.equalTo(@120);
-        make.height.equalTo(@35);
-        make.centerX.equalTo(bgView.mas_centerX);
-        make.bottom.equalTo(bgView.mas_bottom).offset(-15);
-    }];
+    if (![_room.anchor isEqualToString:EMClient.sharedClient.currentUsername]) {
+        [bgView addSubview:self.attentionBtn];
+        [_attentionBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.width.equalTo(@120);
+            make.height.equalTo(@35);
+            make.centerX.equalTo(bgView.mas_centerX);
+            make.bottom.equalTo(bgView.mas_bottom).offset(-15);
+        }];
+    }
 }
 
 - (UIImageView*)headImageView

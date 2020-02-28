@@ -77,6 +77,7 @@
 		3C1238A324077FD300C4135B /* avatat_7@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C12389C24077FD300C4135B /* avatat_7@3x.png */; };
 		3C1238A424077FD300C4135B /* avatat_1@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C12389D24077FD300C4135B /* avatat_1@3x.png */; };
 		3C1238A524077FD300C4135B /* avatat_3@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C12389E24077FD300C4135B /* avatat_3@3x.png */; };
+		3C1238AA2408C97300C4135B /* Zapfino.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3C1238A92408C97300C4135B /* Zapfino.ttf */; };
 		3C27576423F293A4004DF2C3 /* EaseSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C27576323F293A4004DF2C3 /* EaseSettingsViewController.m */; };
 		3C27576623F53C47004DF2C3 /* ic_Gift@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C27576523F53C47004DF2C3 /* ic_Gift@2x.png */; };
 		3C27576823F53C5B004DF2C3 /* ic_Gift@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C27576723F53C5A004DF2C3 /* ic_Gift@3x.png */; };
@@ -289,6 +290,7 @@
 		3C12389C24077FD300C4135B /* avatat_7@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "avatat_7@3x.png"; path = "../../../../../../../../直播资源/avatat_7@3x.png"; sourceTree = "<group>"; };
 		3C12389D24077FD300C4135B /* avatat_1@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "avatat_1@3x.png"; path = "../../../../../../../../直播资源/avatat_1@3x.png"; sourceTree = "<group>"; };
 		3C12389E24077FD300C4135B /* avatat_3@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "avatat_3@3x.png"; path = "../../../../../../../../直播资源/avatat_3@3x.png"; sourceTree = "<group>"; };
+		3C1238A92408C97300C4135B /* Zapfino.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zapfino.ttf; sourceTree = "<group>"; };
 		3C27576223F293A4004DF2C3 /* EaseSettingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseSettingsViewController.h; sourceTree = "<group>"; };
 		3C27576323F293A4004DF2C3 /* EaseSettingsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseSettingsViewController.m; sourceTree = "<group>"; };
 		3C27576523F53C47004DF2C3 /* ic_Gift@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ic_Gift@2x.png"; path = "../../../../../../../../直播资源/ic_Gift@2x.png"; sourceTree = "<group>"; };
@@ -1366,6 +1368,7 @@
 		E94670C61BD78B9B00374D7A = {
 			isa = PBXGroup;
 			children = (
+				3C1238A92408C97300C4135B /* Zapfino.ttf */,
 				E96F3D891C17FE410099718A /* Default-568h@2x.png */,
 				D2F4E0EA1D12C8AB00BB7E1A /* EaseMobLiveDemo */,
 				E93E8F451CC9D16B0076EC23 /* Frameworks */,
@@ -1451,6 +1454,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C1238AA2408C97300C4135B /* Zapfino.ttf in Resources */,
 				3C12380523FBA0EC00C4135B /* gift.balloons@3x.png in Resources */,
 				D27B20321E4D770F00318031 /* icon_topview_left__button_selected.png in Resources */,
 				3C1238A024077FD300C4135B /* avatat_5@3x.png in Resources */,
