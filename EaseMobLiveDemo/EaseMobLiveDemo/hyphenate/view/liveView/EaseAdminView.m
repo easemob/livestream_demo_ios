@@ -9,46 +9,124 @@
 #import "EaseAdminView.h"
 
 #import "MJRefresh.h"
+#import "EaseDefaultDataHelper.h"
+#import "EaseCustomSwitch.h"
+#import <QuartzCore/CALayer.h>
 
 #define kButtonDefaultHeight 50.f
 #define kDefaultPageSize 10
 
 @interface EaseAdminCell : UITableViewCell
+{
+    BOOL _isAllthesilence;//全体禁言
+}
 
+@property (nonatomic, strong) UILabel *identityLabel;
 @property (nonatomic, strong) UIButton *clickButton;
-- (void)setClickBtnHid:(BOOL)isHidden;
+@property (nonatomic, strong) UIView *anchorIdentity;
+@property (nonatomic, strong) CAGradientLayer *livingGl;
+@property (nonatomic, strong) UIImageView *headImageView;
+@property (strong, nonatomic) EaseCustomSwitch *muteSwitch;//房间禁言开关
 
 @end
 
 @implementation EaseAdminCell
 
+
 - (UIButton*)clickButton
 {
     if (_clickButton == nil) {
         _clickButton = [[UIButton alloc] init];
-        _clickButton.frame = CGRectMake(self.width - 90, (65 - 30)/2, 80, 30);
-        [_clickButton setTitleColor:RGBACOLOR(255, 116, 49, 1) forState:UIControlStateNormal];
-        //_clickButton.layer.borderWidth = 1.f;
-        //_clickButton.layer.borderColor = RGBACOLOR(255, 116, 49, 1).CGColor;
-        //_clickButton.layer.cornerRadius = 4.f;
-        [_clickButton.titleLabel setFont:[UIFont systemFontOfSize:15]];
+        _clickButton.frame = CGRectMake(self.width - 125, (65 - 30)/2, 60, 30);
+        [_clickButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_clickButton.titleLabel setFont:[UIFont systemFontOfSize:12]];
     }
     return _clickButton;
 }
 
-- (void)setClickBtnHid:(BOOL)isHidden
+- (EaseCustomSwitch*)muteSwitch
 {
-    if (isHidden) {
-        [self.clickButton setHidden:YES];
+    if (_muteSwitch == nil) {
+        _muteSwitch = [[EaseCustomSwitch alloc]initWithTextFont:[UIFont systemFontOfSize:12.f] OnText:@"" offText:@"" onBackGroundColor:RGBACOLOR(4, 174, 240, 1) offBackGroundColor:RGBACOLOR(191, 191, 191, 1) onButtonColor:RGBACOLOR(255, 255, 255, 1) offButtonColor:RGBACOLOR(255, 255, 255, 1) onTextColor:RGBACOLOR(4, 174, 240, 1) andOffTextColor:RGBACOLOR(191, 191, 191, 1)];
+        _muteSwitch.frame = CGRectMake(self.width - 60, (65 - 24) / 2, 44.f, 24.f);
+        _muteSwitch.changeStateBlock = ^(BOOL isOn) {
+            _isAllthesilence = isOn;
+        };
     }
+    return _muteSwitch;
+}
+
+- (UIView*)anchorIdentity
+{
+    if (_anchorIdentity == nil) {
+        _anchorIdentity = [[UIView alloc] initWithFrame:CGRectMake(self.width - 200, (65 - 15)/2, 45.f, 15.f)];
+        _anchorIdentity.backgroundColor = [UIColor clearColor];
+        _anchorIdentity.layer.cornerRadius = 7.5;
+        [_anchorIdentity.layer addSublayer:self.livingGl];
+        [_anchorIdentity addSubview:self.headImageView];
+        [self.headImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.width.height.equalTo(@11.f);
+            make.left.equalTo(_anchorIdentity.mas_left).offset(2.f);
+            make.top.equalTo(_anchorIdentity.mas_top).offset(2.f);
+        }];
+        [_anchorIdentity addSubview:self.identityLabel];
+        [self.identityLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.width.equalTo(@24.f);
+            make.height.equalTo(@15.f);
+            make.left.equalTo(self.headImageView.mas_right).offset(4.f);
+            make.top.equalTo(_anchorIdentity.mas_top);
+        }];
+    }
+    return _anchorIdentity;
+}
+
+- (UIImageView*)headImageView
+{
+    if (_headImageView == nil) {
+        _headImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon-living"]];
+        _headImageView.contentMode = UIViewContentModeScaleAspectFill;
+        _headImageView.layer.masksToBounds = YES;
+    }
+    return _headImageView;
+}
+
+- (UILabel*)identityLabel
+{
+    if (_identityLabel == nil) {
+        _identityLabel = [[UILabel alloc]init];
+        _identityLabel.text = @"主播";
+        _identityLabel.textColor = [UIColor whiteColor];
+        _identityLabel.font = [UIFont systemFontOfSize:10.f];
+    }
+    return _identityLabel;
+}
+
+- (CAGradientLayer *)livingGl{
+    if(_livingGl == nil){
+        _livingGl = [CAGradientLayer layer];
+        _livingGl.frame = CGRectMake(0,0,_anchorIdentity.frame.size.width,_anchorIdentity.frame.size.height);
+        _livingGl.startPoint = CGPointMake(0.76, 0.84);
+        _livingGl.endPoint = CGPointMake(0.26, 0.14);
+        _livingGl.colors = @[(__bridge id)[UIColor colorWithRed:90/255.0 green:93/255.0 blue:208/255.0 alpha:1.0].CGColor, (__bridge id)[UIColor colorWithRed:4/255.0 green:174/255.0 blue:240/255.0 alpha:1.0].CGColor];
+        _livingGl.locations = @[@(0), @(1.0f)];
+        _livingGl.cornerRadius = 7.5;
+    }
+    
+    return _livingGl;
 }
 
 - (void)layoutSubviews
 {
     [super layoutSubviews];
     
-    self.clickButton.left = self.width - 90;
-    [self.contentView addSubview:_clickButton];
+    [self.contentView addSubview:self.muteSwitch];
+    [self.contentView addSubview:self.clickButton];
+    [self.contentView addSubview:self.anchorIdentity];
+    self.contentView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6];
+    
+    CGRect textLabelFrame = self.textLabel.frame;
+    textLabelFrame.size.width=150.0f;
+    self.textLabel.frame = textLabelFrame;
 }
 
 @end
@@ -72,6 +150,7 @@
 
 @property (nonatomic, strong) UIView *adminView;
 
+@property (nonatomic, strong) UIImageView *auidenceImg;
 @property (nonatomic, strong) UIButton *adminListBtn;
 @property (nonatomic, strong) UIButton *muteListBtn;
 @property (nonatomic, strong) UIButton *blockListBtn;
@@ -127,9 +206,18 @@
 {
     if (_adminView == nil) {
          _adminView = [[UIView alloc] initWithFrame:CGRectMake(0, self.height - 320.f, self.width, 320.f)];
-        _adminView.backgroundColor = [UIColor whiteColor];
+        _adminView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
     }
     return _adminView;
+}
+
+- (UIImageView*)auidenceImg
+{
+    if (_auidenceImg == nil) {
+        _auidenceImg = [[UIImageView alloc]initWithFrame:CGRectMake(5, 16, 18, 18)];
+        _auidenceImg.image = [UIImage imageNamed:@"auidence"];
+    }
+    return _auidenceImg;
 }
 
 - (UIButton*)adminListBtn
@@ -137,9 +225,11 @@
     if (_adminListBtn == nil) {
         _adminListBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _adminListBtn.frame = CGRectMake(0, 0, KScreenWidth/3, kButtonDefaultHeight);
-        [_adminListBtn setTitleColor:RGBACOLOR(76, 76, 76, 1) forState:UIControlStateNormal];
-        [_adminListBtn setTitle:@"成员" forState:UIControlStateNormal];
+        [_adminListBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_adminListBtn setTitle:@"观众" forState:UIControlStateNormal];
+        [_adminListBtn.titleLabel setFont:[UIFont fontWithName:@"阿里巴巴普惠体-R" size:15.f]];
         _adminListBtn.tag = 100;
+        [_adminListBtn addSubview:self.auidenceImg];
         [_adminListBtn addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _adminListBtn;
@@ -151,8 +241,9 @@
         _muteListBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _muteListBtn.frame = CGRectMake(CGRectGetMaxX(_adminListBtn.frame), 0, KScreenWidth/3, kButtonDefaultHeight);
         //[_muteListBtn setTitle:NSLocalizedString(@"profile.mute", @"Mute") forState:UIControlStateNormal];
-        [_muteListBtn setTitleColor:RGBACOLOR(76, 76, 76, 1) forState:UIControlStateNormal];
-        [_muteListBtn setTitle:@"禁言" forState:UIControlStateNormal];
+        [_muteListBtn setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.59] forState:UIControlStateNormal];
+        [_muteListBtn setTitle:@"观众禁言" forState:UIControlStateNormal];
+        [_muteListBtn.titleLabel setFont:[UIFont fontWithName:@"阿里巴巴普惠体-R" size:15.f]];
         _muteListBtn.tag = 101;
         [_muteListBtn addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -165,8 +256,9 @@
         _blockListBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _blockListBtn.frame = CGRectMake(CGRectGetMaxX(_muteListBtn.frame), 0, KScreenWidth/3, kButtonDefaultHeight);
         //[_blockListBtn setTitle:NSLocalizedString(@"profile.block", @"Block") forState:UIControlStateNormal];
-        [_blockListBtn setTitleColor:RGBACOLOR(76, 76, 76, 1) forState:UIControlStateNormal];
-        [_blockListBtn setTitle:@"黑名单" forState:UIControlStateNormal];
+        [_blockListBtn setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.59] forState:UIControlStateNormal];
+        [_blockListBtn setTitle:@"白名单" forState:UIControlStateNormal];
+        [_blockListBtn.titleLabel setFont:[UIFont fontWithName:@"阿里巴巴普惠体-R" size:15.f]];
         _blockListBtn.tag = 102;
         [_blockListBtn addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -210,8 +302,8 @@
         _adminTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.mainScrollView.width, self.mainScrollView.height) style:UITableViewStylePlain];
         _adminTableView.dataSource = self;
         _adminTableView.delegate = self;
-        _adminTableView.backgroundColor = [UIColor clearColor];
-        _adminTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        _adminTableView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
+        _adminTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _adminTableView.tableFooterView = [[UIView alloc] init];
         
         [self _loadMemberList:YES];
@@ -241,8 +333,8 @@
         _muteTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.mainScrollView.width, 0, self.mainScrollView.width, self.mainScrollView.height) style:UITableViewStylePlain];
         _muteTableView.dataSource = self;
         _muteTableView.delegate = self;
-        _muteTableView.backgroundColor = [UIColor clearColor];
-        _muteTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        _muteTableView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
+        _muteTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _muteTableView.tableFooterView = [[UIView alloc] init];
         
         [self _loadMuteList:YES];
@@ -271,8 +363,8 @@
         _blockTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.mainScrollView.width * 2, 0, self.mainScrollView.width, self.mainScrollView.height) style:UITableViewStylePlain];
         _blockTableView.dataSource = self;
         _blockTableView.delegate = self;
-        _blockTableView.backgroundColor = [UIColor clearColor];
-        _blockTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        _blockTableView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
+        _blockTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _blockTableView.tableFooterView = [[UIView alloc] init];
         
         [self _loadBlockList:YES];
@@ -336,8 +428,10 @@
     }
 }
 
+extern NSMutableDictionary*anchorInfoDic;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSMutableDictionary *anchorInfo = [anchorInfoDic objectForKey:_chatroom.chatroomId];
     EaseAdminCell *cell;
     NSString *username = nil;
     if (tableView == _adminTableView) {
@@ -347,6 +441,8 @@
         if (indexPath.row == 0) {
             cell = [[EaseAdminCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierAdmin];
             [cell.clickButton setTitle:@"房间禁言" forState:UIControlStateNormal];
+            cell.anchorIdentity.hidden = YES;
+            cell.muteSwitch.hidden = YES;
         } else if ([_chatroom.adminList containsObject:username]) {
             cell = (EaseAdminCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifierAdmin];
             // Configure the cell...
@@ -362,7 +458,19 @@
                 cell = [[EaseAdminCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierMember];
             }
         }
+        
         cell.textLabel.text = username;
+        if ([username isEqualToString:_chatroom.owner]){
+            cell.anchorIdentity.hidden = NO;
+            cell.muteSwitch.hidden = NO;
+            cell.textLabel.text = [anchorInfo objectForKey:kBROADCASTING_CURRENT_ANCHOR_NICKNAME];
+        } else {
+            cell.anchorIdentity.hidden = YES;
+            cell.muteSwitch.hidden = YES;
+        }
+        if ([username isEqualToString:EMClient.sharedClient.currentUsername]) {
+            cell.textLabel.text = EaseDefaultDataHelper.shared.defaultNickname;
+        }
     } else if (tableView == _muteTableView) {
         static NSString *CellIdentifier = @"mute";
         cell = (EaseAdminCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -374,6 +482,8 @@
         cell.textLabel.text = username;
         [cell.clickButton setTitle:NSLocalizedString(@"profile.mute.cancel", @"Cancel") forState:UIControlStateNormal];
         [cell.clickButton addTarget:self action:@selector(removeMuteAction:) forControlEvents:UIControlEventTouchUpInside];
+        cell.anchorIdentity.hidden = YES;
+        cell.muteSwitch.hidden = YES;
     } else {
         static NSString *CellIdentifier = @"block";
         cell = (EaseAdminCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -385,15 +495,30 @@
         cell.textLabel.text = username;
         [cell.clickButton setTitle:NSLocalizedString(@"profile.block.remove", @"Remove") forState:UIControlStateNormal];
         [cell.clickButton addTarget:self action:@selector(removeBlackAction:) forControlEvents:UIControlEventTouchUpInside];
+        cell.muteSwitch.hidden = YES;
+        cell.anchorIdentity.hidden = YES;
     }
+    
     int random = (arc4random() % 7) + 1;
     cell.imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"avatat_%d",random]];
     cell.clickButton.tag = indexPath.row;
+   
     if (tableView == _adminTableView) {
-        if (_isOwner) {
+        if ([username isEqualToString:_chatroom.owner]) {
+            cell.imageView.image = [UIImage imageNamed:[anchorInfo objectForKey:kBROADCASTING_CURRENT_ANCHOR_AVATAR]];
+            if ([username isEqualToString:EMClient.sharedClient.currentUsername]) {
+                cell.imageView.image = [UIImage imageNamed:@"default_anchor_avatar"];
+            }
             cell.clickButton.hidden = NO;
+            cell.muteSwitch.hidden = NO;
+            cell.anchorIdentity.hidden = NO;
         } else {
+            if ([username isEqualToString:EMClient.sharedClient.currentUsername]) {
+                cell.imageView.image = [UIImage imageNamed:@"default_anchor_avatar"];
+            }
             cell.clickButton.hidden = YES;
+            cell.muteSwitch.hidden = YES;
+            cell.anchorIdentity.hidden = YES;
         }
     } else {
         BOOL ret = username.length > 0 && [username isEqualToString:[EMClient sharedClient].currentUsername];
@@ -403,6 +528,18 @@
             cell.clickButton.hidden = NO;
         }
     }
+    CALayer *cellImageLayer = cell.imageView.layer;
+    [cellImageLayer setCornerRadius:15];
+    [cellImageLayer setMasksToBounds:YES];
+    
+    CGSize itemSize = CGSizeMake(30, 30);
+    UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
+    CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
+    [cell.imageView.image drawInRect:imageRect];
+    cell.imageView.image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    cell.textLabel.textColor= [UIColor whiteColor];
     return cell;
 }
 
@@ -500,7 +637,7 @@
                                                  if (!aError) {
                                                      [weakSelf.blockTableView beginUpdates];
                                                      [weakSelf.blockList removeObjectAtIndex:btn.tag];
-                                                     [_blockListBtn setTitle:[NSString stringWithFormat:@"黑名单(%lu)",(unsigned long)[weakSelf.blockList count]] forState:UIControlStateNormal];
+                                                     [_blockListBtn setTitle:[NSString stringWithFormat:@"白名单(%lu)",(unsigned long)[weakSelf.blockList count]] forState:UIControlStateNormal];
                                                      [self.blockTableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:btn.tag inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
                                                      [self.blockTableView endUpdates];
                                                      [weakHud hide:YES afterDelay:0.5];
@@ -520,11 +657,18 @@
         return;
     }
     
+    [_blockListBtn setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.59] forState:UIControlStateNormal];
+    [_muteListBtn setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.59] forState:UIControlStateNormal];
+    [_adminListBtn setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.59] forState:UIControlStateNormal];
+    
     CGFloat pointX = _adminListBtn.centerX - 50;
+    [_adminListBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     if (tagBtn.tag == 101) {
         pointX = _muteListBtn.centerX - 50;
+        [_muteListBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     } else if (tagBtn.tag == 102) {
         pointX = _blockListBtn.centerX - 50;
+        [_blockListBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     }
     
     [UIView animateWithDuration:0.25 animations:^{
@@ -565,7 +709,7 @@
            }
            weakself.cursor = aResult.cursor;
            [weakself.memberList addObjectsFromArray:aResult.list];
-            [_adminListBtn setTitle:[NSString stringWithFormat:@"成员(%lu)",(unsigned long)[weakself.memberList count]] forState:UIControlStateNormal];
+            [_adminListBtn setTitle:[NSString stringWithFormat:@"观众(%lu)",(unsigned long)[weakself.memberList count]] forState:UIControlStateNormal];
            if ([aResult.list count] == 0 || [aResult.cursor length] == 0) {
                weakself.adminTableView.mj_footer = nil;
            } else {
@@ -611,7 +755,7 @@
                                                                                [weakSelf.blockList removeAllObjects];
                                                                            }
                                                                            [weakSelf.blockList addObjectsFromArray:aList];
-                                                                           [_blockListBtn setTitle:[NSString stringWithFormat:@"黑名单(%lu)",(unsigned long)[weakSelf.blockList count]] forState:UIControlStateNormal];
+                                                                           [_blockListBtn setTitle:[NSString stringWithFormat:@"白名单(%lu)",(unsigned long)[weakSelf.blockList count]] forState:UIControlStateNormal];
                                                                            if ([aList count] < kDefaultPageSize) {
                                                                                weakSelf.blockTableView.mj_footer = nil;
                                                                            } else {

@@ -32,6 +32,8 @@
 
 - (void)didSelectedExitButton;
 
+- (void)didSelectedBarrageSwitch:(EMMessage*)msg;
+
 @end
 
 @interface EaseChatView : UIView

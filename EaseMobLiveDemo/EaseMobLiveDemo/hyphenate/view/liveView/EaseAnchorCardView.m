@@ -94,6 +94,7 @@
         make.right.equalTo(bgView).offset(-40);
     }];
     
+    NSLog(@"%@", EMClient.sharedClient.currentUsername);
     if (![_room.anchor isEqualToString:EMClient.sharedClient.currentUsername]) {
         [bgView addSubview:self.attentionBtn];
         [_attentionBtn mas_makeConstraints:^(MASConstraintMaker *make) {

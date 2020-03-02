@@ -925,7 +925,6 @@ constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
 
 - (NSString*)_getUserToken
 {
-    return @"YWMt8TbwuFiAEeqOuGsIf0qA7DVmw9AoHRHovY8Z72GFBFy-l90g_toR6YtyDVUkLInSAwMAAAFwgP62agBPGgBNxDHiaoMvdj-c9HgnL7ex2HAr_UUiM0rFFWPlgJdHIw";
     NSString *userToken = nil;
     BOOL isRefresh = NO;
     EMClient *client = [EMClient sharedClient];

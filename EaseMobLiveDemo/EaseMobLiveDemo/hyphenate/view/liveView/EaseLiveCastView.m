@@ -104,9 +104,17 @@ extern NSMutableDictionary *anchorInfoDic;
 
 - (void)_setviewData
 {
+    extern NSArray<NSString*>*nickNameArray;
     if (_room) {
         if ([_room.anchor isEqualToString:EMClient.sharedClient.currentUsername]) {
-            _nameLabel.text = EaseDefaultDataHelper.shared.defaultNickname;
+            if (![EaseDefaultDataHelper.shared.defaultNickname isEqualToString:@""]) {
+                _nameLabel.text = EaseDefaultDataHelper.shared.defaultNickname;
+            } else {
+                int random = (arc4random() % 100);
+                EaseDefaultDataHelper.shared.defaultNickname = nickNameArray[random];
+                [EaseDefaultDataHelper.shared archive];
+                _nameLabel.text = EaseDefaultDataHelper.shared.defaultNickname;
+            }
         } else {
             NSMutableDictionary *anchorInfo = [anchorInfoDic objectForKey:_room.roomId];
             if (anchorInfo && [anchorInfo objectForKey:kBROADCASTING_CURRENT_ANCHOR] && ![[anchorInfo objectForKey:kBROADCASTING_CURRENT_ANCHOR] isEqualToString:@""]) {

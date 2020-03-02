@@ -495,7 +495,7 @@
                                                       }
                                                   }];*/
     _liveRoom.anchor = [EMClient sharedClient].currentUsername;
-    [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOngoing:_liveRoom completion:^(EaseLiveRoom *room, BOOL success) {
+    [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOffline:_liveRoom completion:^(EaseLiveRoom *room, BOOL success) {
         [weakHud hide:YES];
         if (success) {
             _liveRoom = room;

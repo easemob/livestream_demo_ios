@@ -46,8 +46,8 @@
         [self.contentView addSubview:self.liveImageView];
         [self.liveImageView addSubview:self.liveHeader];
         [self.liveImageView addSubview:self.liveFooter];
-        [self.liveImageView addSubview:self.studioOccupancy];
-        [self.liveImageView addSubview:self.broadcastView];
+        [self.liveImageView addSubview:self.studioOccupancy];//正在直播
+        [self.liveImageView addSubview:self.broadcastView];//开播
         [self.liveFooter addSubview:self.textLable];
         [self.liveFooter addSubview:self.numLabel];
         [self.liveFooter addSubview:self.descLabel];
@@ -279,7 +279,7 @@
             self.studioOccupancy.hidden = NO;
             self.broadcastView.hidden = YES;
             self.liveFooter.hidden = NO;
-            self.userInteractionEnabled = NO;
+            //self.userInteractionEnabled = NO;
         } else if (room.status == offline) {
             self.studioOccupancy.hidden = YES;
             self.broadcastView.hidden = NO;
@@ -288,6 +288,5 @@
         }
     }
 }
-
 
 @end

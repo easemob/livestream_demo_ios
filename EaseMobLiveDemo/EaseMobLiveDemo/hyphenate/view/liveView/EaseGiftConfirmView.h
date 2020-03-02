@@ -9,12 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "EaseBaseSubView.h"
 #import "EaseGiftCell.h"
+#import "JPGiftCellModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EaseGiftConfirmView : EaseBaseSubView
 
-@property (nonatomic, copy) BOOL (^doneCompletion)(BOOL aConfirm);
+@property (nonatomic, copy) void (^doneCompletion)(BOOL aConfirm,JPGiftCellModel *giftModel);
 
 - (instancetype)initWithGiftInfo:(EaseGiftCell *)giftCell giftNum:(long)num titleText:(NSString *)titleText;
 

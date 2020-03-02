@@ -131,14 +131,17 @@
     if (btn.tag == 1) {
         confirm = true;
     }
-    BOOL isPop = YES;
     if (_doneCompletion) {
-        isPop = _doneCompletion(confirm);
+        JPGiftCellModel *cellModel = [[JPGiftCellModel alloc]init];
+        cellModel.user_icon = [UIImage imageNamed:@"default_anchor_avatar"];
+        cellModel.icon = _giftCell.giftImageView.image;
+        cellModel.icon_gif = _giftCell.giftImageView.image;
+        cellModel.name = _giftCell.nameLabel.text;
+        cellModel.username = EMClient.sharedClient.currentUsername;
+        cellModel.count = &(_giftNum);
+        _doneCompletion(confirm,cellModel);
     }
-    
-    if (isPop) {
-        [self removeFromParentView];
-    }
+    [self removeFromParentView];
 }
 
 @end

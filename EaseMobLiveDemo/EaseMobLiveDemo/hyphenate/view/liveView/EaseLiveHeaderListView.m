@@ -29,8 +29,6 @@
     if (self) {
         self.backgroundColor = [UIColor clearColor];
         _headerImage = [[UIImageView alloc] init];
-        int random = (arc4random() % 7) + 1;
-        _headerImage.image = [UIImage imageNamed:[NSString stringWithFormat:@"avatat_%d",random]];
         _headerImage.frame = CGRectMake(0, 0, CGRectGetHeight(self.frame), CGRectGetHeight(self.frame));
         _headerImage.layer.cornerRadius = CGRectGetHeight(self.frame)/2;
         _headerImage.layer.masksToBounds = YES;
@@ -107,7 +105,7 @@
         if (KScreenWidth > 320) {
             width = 170;
         }
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(self.width - width + 12.f, 0, width, CGRectGetHeight(self.frame)) collectionViewLayout:flowLayout];
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(width, 0, self.width - width - 65, CGRectGetHeight(self.frame)) collectionViewLayout:flowLayout];
         _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         
         [_collectionView registerClass:[EaseLiveHeaderCell class] forCellWithReuseIdentifier:kCollectionIdentifier];
@@ -148,7 +146,7 @@
         _numberBtn.titleLabel.font = [UIFont systemFontOfSize:14.f];
         _numberBtn.titleLabel.textColor = [UIColor whiteColor];
         _numberBtn.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.6];
-        [_numberBtn setTitle:[NSString stringWithFormat:@"%ld人",(long)_room.currentUserCount] forState:UIControlStateNormal];
+        //[_numberBtn setTitle:[NSString stringWithFormat:@"%ld人",(long)_room.currentUserCount] forState:UIControlStateNormal];
         _numberBtn.layer.cornerRadius = 15.f;
         [_numberBtn addTarget:self action:@selector(memberListAction) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -203,7 +201,7 @@
     }
     [self.dataArray insertObject:[username copy] atIndex:0];
     self.occupantsCount++;
-    [self.liveCastView setNumberOfChatroom:self.occupantsCount];
+    [_numberBtn setTitle:[NSString stringWithFormat:@"%ld人",self.occupantsCount] forState:UIControlStateNormal];
     [self.collectionView reloadData];
 }
 
@@ -216,7 +214,10 @@
         }
     }
     self.occupantsCount--;
-    [self.liveCastView setNumberOfChatroom:self.occupantsCount];
+    if (self.occupantsCount < 1) {
+        self.occupantsCount = 1;
+    }
+    [_numberBtn setTitle:[NSString stringWithFormat:@"%ld人",self.occupantsCount] forState:UIControlStateNormal];
     [self.collectionView reloadData];
 }
 
@@ -235,7 +236,8 @@
 {
     EaseLiveHeaderCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCollectionIdentifier forIndexPath:indexPath];
     
-    [cell setHeadImage:[UIImage imageNamed:@"live_default_user"]];
+    int random = (arc4random() % 7) + 1;
+    [cell setHeadImage:[UIImage imageNamed:[NSString stringWithFormat:@"avatat_%d",random]]];
     return cell;
 }
 

@@ -29,6 +29,16 @@
 #import "EaseGiftCell.h"
 #import "EaseCustomKeyBoardView.h"
 
+#import "JPGiftCellModel.h"
+#import "JPGiftModel.h"
+#import "JPGiftShowManager.h"
+#import "UIImageView+WebCache.h"
+#import "JPGiftCellModel.h"
+#import "JPGiftModel.h"
+#import "JPGiftShowManager.h"
+
+#import "EaseBarrageFlyView.h"
+
 #define kDefaultTop 30.f
 #define kDefaultLeft 10.f
 
@@ -52,6 +62,9 @@
 @property (nonatomic, strong) UILabel *roomNameLabel;
 
 @property (nonatomic, strong) UITapGestureRecognizer *singleTapGR;
+
+/** gifimage */
+@property(nonatomic,strong) UIImageView *gifImageView;
 
 @end
 
@@ -187,6 +200,16 @@
     [self closeButtonAction];
 }
 
+- (UIImageView *)gifImageView{
+    
+    if (!_gifImageView) {
+        
+        _gifImageView = [[UIImageView alloc] initWithFrame:CGRectMake(7.5, 0, 360, 225)];
+        _gifImageView.hidden = YES;
+    }
+    return _gifImageView;
+}
+
 #pragma mark - EaseLiveHeaderListViewDelegate
 
 - (void)didSelectHeaderWithUsername:(NSString *)username
@@ -286,6 +309,13 @@
     [giftView showFromParentView:self.view];
 }
 
+- (void)didSelectedBarrageSwitch:(EMMessage*)msg
+{
+    EaseBarrageFlyView *barrageView = [[EaseBarrageFlyView alloc]initWithMessage:msg];
+    [self.view addSubview:barrageView];
+    [barrageView animateInView:self.view];
+}
+
 #pragma mark - EaseLiveGiftViewDelegate
 
 - (void)didConfirmGift:(EaseGiftCell *)giftCell giftNum:(long)num
@@ -293,6 +323,12 @@
     EaseGiftConfirmView *confirmView = [[EaseGiftConfirmView alloc]initWithGiftInfo:giftCell giftNum:num titleText:@"确定赠送"];
     confirmView.delegate = self;
     [confirmView showFromParentView:self.view];
+    __weak typeof(self) weakself = self;
+    [confirmView setDoneCompletion:^(BOOL aConfirm,JPGiftCellModel *giftModel) {
+        if (aConfirm) {
+            [weakself sendGiftAction:giftModel];
+        }
+    }];
     if (_chatview) {
         [_chatview sendGiftWithId:@"1"];
     }
@@ -420,6 +456,38 @@
         self.window.hidden = YES;
         [self.view.window makeKeyAndVisible];
     }];
+}
+
+- (void)sendGiftAction:(JPGiftCellModel*)cellModel
+{
+    JPGiftModel *giftModel = [[JPGiftModel alloc]init];
+    giftModel.userIcon = cellModel.user_icon;
+    giftModel.userName = cellModel.username;
+    giftModel.giftName = cellModel.name;
+    giftModel.giftImage = cellModel.icon;
+    giftModel.giftGifImage = cellModel.icon_gif;
+    giftModel.defaultCount = 0;
+    giftModel.sendCount = *(cellModel.count);
+    [[JPGiftShowManager sharedManager] showGiftViewWithBackView:self.view info:giftModel completeBlock:^(BOOL finished) {
+               //结束
+           } completeShowGifImageBlock:^(JPGiftModel *giftModel) {
+               //展示gifimage
+               dispatch_async(dispatch_get_main_queue(), ^{
+                   
+                   UIWindow *window = [UIApplication sharedApplication].keyWindow;
+                   [window addSubview:self.gifImageView];
+                   //[self.gifImageView sd_setImageWithURL:[NSURL URLWithString:giftModel.giftGifImage]];
+                   self.gifImageView.image = giftModel.giftImage;
+                   self.gifImageView.hidden = NO;
+                   
+                   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                       self.gifImageView.hidden = YES;
+                       //[self.gifImageView sd_setImageWithURL:[NSURL URLWithString:@""]];
+                       //self.gifImageView.image = giftModel.giftGifImage;
+                       [self.gifImageView removeFromSuperview];
+                   });
+               });
+           }];
 }
 
 -(void)showTheLoveAction

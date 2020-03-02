@@ -10,6 +10,7 @@
 #import "EaseInputTextView.h"
 #import "EaseChatCell.h"
 #import "EaseLiveRoom.h"
+#import "EaseCustomSwitch.h"
 
 #define kGiftAction @"cmd_gift"
 #define kPraiseAction @"cmd_live_praise"
@@ -33,6 +34,8 @@
     long long _curtime;
     CGFloat _previousTextViewContentHeight;
     CGFloat _defaultHeight;
+    
+    BOOL _isBarrageInfo;//弹幕消息
 }
 
 @property (strong, nonatomic) NSMutableArray *datasource;
@@ -50,6 +53,7 @@
 @property (strong, nonatomic) UIButton *giftButton;//礼物
 
 @property (strong, nonatomic) UIView *bottomSendMsgView;
+@property (strong, nonatomic) EaseCustomSwitch *barrageSwitch;//弹幕开关
 @property (strong, nonatomic) UIButton *faceButton;//表情
 @property (strong, nonatomic) EMConversation *conversation;
 
@@ -67,6 +71,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         _chatroomId = chatroomId;
+        _isBarrageInfo = false;
         [[EMClient sharedClient].chatManager addDelegate:self delegateQueue:dispatch_get_main_queue()];
         [[EMClient sharedClient].roomManager addDelegate:self delegateQueue:nil];
         self.datasource = [NSMutableArray array];
@@ -77,6 +82,7 @@
 
         //底部消息发送按钮
         [self addSubview:self.bottomSendMsgView];
+        [self.bottomSendMsgView addSubview:self.barrageSwitch];
         [self.bottomSendMsgView addSubview:self.textView];
         [self.bottomSendMsgView addSubview:self.faceButton];
         //底部功能按钮
@@ -241,11 +247,23 @@
     return _bottomSendMsgView;
 }
 
+- (EaseCustomSwitch*)barrageSwitch
+{
+    if (_barrageSwitch == nil) {
+        _barrageSwitch = [[EaseCustomSwitch alloc]initWithTextFont:[UIFont systemFontOfSize:12.f] OnText:@"弹" offText:@"弹" onBackGroundColor:RGBACOLOR(4, 174, 240, 1) offBackGroundColor:RGBACOLOR(191, 191, 191, 1) onButtonColor:RGBACOLOR(255, 255, 255, 1) offButtonColor:RGBACOLOR(255, 255, 255, 1) onTextColor:RGBACOLOR(4, 174, 240, 1) andOffTextColor:RGBACOLOR(191, 191, 191, 1)];
+        _barrageSwitch.frame = CGRectMake(kDefaulfLeftSpace, 13.f, 44.f, 24.f);
+        _barrageSwitch.changeStateBlock = ^(BOOL isOn) {
+            _isBarrageInfo = isOn;
+        };
+    }
+    return _barrageSwitch;
+}
+
 - (EaseInputTextView*)textView
 {
     if (_textView == nil) {
         //输入框
-        _textView = [[EaseInputTextView alloc] initWithFrame:CGRectMake(kDefaulfLeftSpace, 10.f, CGRectGetWidth(self.bounds) - CGRectGetWidth(self.faceButton.frame) - kDefaulfLeftSpace*3, 30.f)];
+        _textView = [[EaseInputTextView alloc] initWithFrame:CGRectMake(2*kDefaulfLeftSpace + 44, 10.f, CGRectGetWidth(self.bounds) - CGRectGetWidth(self.faceButton.frame) - kDefaulfLeftSpace*3 - 44, 30.f)];
         _textView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         _textView.scrollEnabled = YES;
         _textView.returnKeyType = UIReturnKeySend;
@@ -335,12 +353,28 @@
 
 #pragma mark - EMChatroomManagerDelegate
 
+//有用户加入聊天室
+- (void)userDidJoinChatroom:(EMChatroom *)aChatroom user:(NSString *)aUsername
+{
+    EMTextMessageBody *body = [[EMTextMessageBody alloc] initWithText:@"进入了直播间"];
+    NSMutableDictionary *ext = [[NSMutableDictionary alloc]init];
+    [ext setObject:@"em_join" forKey:@"em_join"];
+    EMMessage *joinMsg = [[EMMessage alloc] initWithConversationID:aChatroom.chatroomId from:aUsername to:aChatroom.chatroomId body:body ext:ext];
+    joinMsg.chatType = EMChatTypeChatRoom;
+    if ([self.datasource count] >= 200) {
+        [self.datasource removeObjectsInRange:NSMakeRange(0, 190)];
+    }
+    [self.datasource addObject:joinMsg];
+    [self.tableView reloadData];
+    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.datasource count] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+}
+
 - (void)chatroomAdminListDidUpdate:(EMChatroom *)aChatroom
                         addedAdmin:(NSString *)aAdmin;
 {
     if ([aChatroom.chatroomId isEqualToString:_chatroomId]) {
         if ([aAdmin isEqualToString:[EMClient sharedClient].currentUsername]) {
-            [self.bottomView addSubview:self.adminButton];
+            //[self.bottomView addSubview:self.adminButton];
             [self layoutSubviews];
         }
     }
@@ -667,6 +701,9 @@
                 [weakSelf.datasource addObject:message];
                 [weakSelf.tableView reloadData];
                 [weakSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[weakSelf.datasource count] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+                if (_isBarrageInfo && weakSelf.delegate && [weakSelf.delegate respondsToSelector:@selector(didSelectedBarrageSwitch:)]) {
+                    [weakSelf.delegate didSelectedBarrageSwitch:message];
+                }
             } else {
                 [MBProgressHUD showError:@"消息发送失败" toView:weakSelf];
             }
@@ -779,7 +816,7 @@
                                                           if (!error) {
                                                               BOOL ret = _chatroom.permissionType == EMChatroomPermissionTypeAdmin || _chatroom.permissionType == EMChatroomPermissionTypeOwner;
                                                               if (ret) {
-                                                                  [weakSelf.bottomView addSubview:weakSelf.adminButton];
+                                                                  //[weakSelf.bottomView addSubview:weakSelf.adminButton];
                                                                   [weakSelf layoutSubviews];
                                                               }
                                                           }

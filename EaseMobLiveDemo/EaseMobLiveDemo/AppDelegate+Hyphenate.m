@@ -11,8 +11,6 @@
 
 #import <HyphenateLite/EMOptions+PrivateDeploy.h>
 
-NSString *defaultPwd = @"000000";//默认密码
-
 NSArray<NSString*> *nickNameArray;//本地昵称库
 
 NSMutableDictionary *anchorInfoDic;//直播间主播本应用显示信息库
@@ -23,7 +21,7 @@ NSMutableDictionary *anchorInfoDic;//直播间主播本应用显示信息库
 {
     EMOptions *options = [EMOptions optionsWithAppkey:@"easemob-demo#chatdemoui"];
     
-    [options setEnableDnsConfig:true];
+    [options setEnableDnsConfig:false];
     [options setRestServer:@"a1-hsb.easemob.com"];
     [options setChatPort:6717];
     [options setChatServer:@"39.107.54.56"];
@@ -51,11 +49,7 @@ NSMutableDictionary *anchorInfoDic;//直播间主播本应用显示信息库
     if (isAutoLogin) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"loginStateChange" object:@YES];
     } else {
-        if (EaseDefaultDataHelper.shared.isInitiativeLogin) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"loginStateChange" object:@NO];
-        } else {
-            [self autoRegistAccount];
-        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"loginStateChange" object:@NO];
     }
     
     [[EMClient sharedClient] addDelegate:self delegateQueue:nil];
@@ -70,25 +64,6 @@ NSMutableDictionary *anchorInfoDic;//直播间主播本应用显示信息库
                     @"楼恕",@"司马穴凇",@"公孙赦",@"那伊",@"冼觊",@"丰核",@"钟创",@"沙迈",@"单寇",@"屋庐丘",@"李李",@"惠婷",@"池学",@"冯貂",@"东乡期",
                     @"毋丘出",@"左颀",@"宰绝",@"谷唐",@"萧格",@"谈草",@"商炅",@"米秀",@"习垂",@"黄崔",@"单遇观",@"茹启",@"田瓮",@"蒋蹯苻",@"呼延汶",
                     @"林犍",@"左丘芍",@"东宅蜇",@"谭七",@"徐仙",@"欧阳使",@"龙偃",@"山鹰",@"况梁",@"江胭",@"展思"];
-}
-
-//游客自动注册账户
-- (void)autoRegistAccount
-{
-    NSString *uuidAccount = [UIDevice currentDevice].identifierForVendor.UUIDString;//默认账户id
-     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-         [[EMClient sharedClient] registerWithUsername:uuidAccount password:defaultPwd];
-         dispatch_async(dispatch_get_main_queue(), ^{
-             EMError *error = [[EMClient sharedClient] loginWithUsername:uuidAccount password:defaultPwd];
-             if (!error) {
-                 NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-                 [ud setObject:[EMClient sharedClient].currentUsername forKey:kLiveLastLoginUsername];
-                 [ud synchronize];
-                 [[EMClient sharedClient].options setIsAutoLogin:YES];
-                 [[NSNotificationCenter defaultCenter] postNotificationName:@"loginStateChange" object:@YES];
-            }
-         });
-     });
 }
 
 #pragma mark - app delegate notifications
