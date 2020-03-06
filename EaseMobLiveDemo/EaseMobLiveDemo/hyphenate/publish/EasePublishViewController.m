@@ -12,7 +12,6 @@
 #import "CameraServer.h"
 #import "FilterManager.h"
 #import "EaseChatView.h"
-#import "EaseTextView.h"
 #import "EaseHeartFlyView.h"
 #import "EaseLiveHeaderListView.h"
 #import "EaseEndLiveView.h"
@@ -20,11 +19,18 @@
 #import "EaseProfileLiveView.h"
 #import "EaseLiveCastView.h"
 #import "EaseAdminView.h"
-#import "UIViewController+DismissKeyboard.h"
 #import "EaseLiveRoom.h"
 #import "EaseAnchorCardView.h"
 #import "EaseCreateLiveViewController.h"
 #import "EaseDefaultDataHelper.h"
+#import "EaseAudienceBehaviorView.h"
+#import "EaseBarrageFlyView.h"
+#import "JPGiftCellModel.h"
+#import "JPGiftModel.h"
+#import "JPGiftShowManager.h"
+#import "EaseLiveGiftHelper.h"
+#import "EaseLiveCastView.h"
+#import "EaseGiftListView.h"
 
 #define kDefaultTop 30.f
 #define kDefaultLeft 10.f
@@ -38,7 +44,12 @@
     
     BOOL _isPublish;
     
+    BOOL _isAllMute;
+    
     EaseLiveRoom *_room;
+    
+    NSInteger _praiseNum;//赞
+    NSInteger _giftsNum;//礼物
 }
 
 @property (nonatomic, strong) UIButton *closeBtn;
@@ -69,6 +80,8 @@
     self = [super init];
     if (self) {
         _room = room;
+        _praiseNum = [EaseDefaultDataHelper.shared.praiseStatisticstCount intValue];
+        _giftsNum = [EaseDefaultDataHelper.shared.giftNumbers intValue];
         EaseDefaultDataHelper.shared.currentRoomId = _room.roomId;
         [EaseDefaultDataHelper.shared archive];
     }
@@ -162,6 +175,7 @@
     }
     return _chatview;
 }
+
 /*
 - (UIButton*)closeBtn
 {
@@ -449,6 +463,70 @@
 
 #pragma mark - EaseChatViewDelegate
 
+//礼物列表
+- (void)didSelectGiftButton:(BOOL)isOwner
+{
+    if (isOwner) {
+        EaseGiftListView *giftListView = [[EaseGiftListView alloc]init];
+        giftListView.delegate = self;
+        [giftListView showFromParentView:self.view];
+    }
+}
+
+//有观众送礼物
+- (void)userSendGifts:(EMMessage*)msg count:(NSInteger)count
+{
+    EMCustomMessageBody *msgBody = (EMCustomMessageBody*)msg.body;
+    JPGiftCellModel *cellModel = [[JPGiftCellModel alloc]init];
+    cellModel.user_icon = [UIImage imageNamed:@"default_anchor_avatar"];
+    NSString *giftid = [msgBody.ext objectForKey:@"id"];
+    int index = [[giftid substringFromIndex:5] intValue];
+    NSDictionary *dict = EaseLiveGiftHelper.sharedInstance.giftArray[index-1];
+    cellModel.icon = [UIImage imageNamed:(NSString *)[dict allKeys][0]];
+    cellModel.name = EaseLiveGiftHelper.sharedInstance.giftArray[index-1];
+    cellModel.username = msg.from;
+    cellModel.count = &(count);
+    [self sendGiftAction:cellModel];
+    
+    ++_giftsNum;
+    [self.headerListView.liveCastView setNumberOfGift:_giftsNum];
+    //礼物份数
+    EaseDefaultDataHelper.shared.giftNumbers = [NSString stringWithFormat:@"%ld",(long)_giftsNum];
+    //送礼物人列表
+    if (![EaseDefaultDataHelper.shared.rewardCount containsObject:msg.from]) {
+        [EaseDefaultDataHelper.shared.rewardCount addObject:msg.from];
+    }
+    NSMutableDictionary *giftDetailDic = (NSMutableDictionary*)[EaseDefaultDataHelper.shared.giftStatisticsCount objectForKey:giftid];
+    long num = [[giftDetailDic objectForKey:msg.from] longLongValue];
+    [giftDetailDic setObject:[NSString stringWithFormat:@"%ld",(num+count)] forKey:msg.from];
+    //礼物统计字典
+    [EaseDefaultDataHelper.shared.giftStatisticsCount setObject:giftDetailDic forKey:giftid];
+    [EaseDefaultDataHelper.shared archive];
+}
+
+- (void)sendGiftAction:(JPGiftCellModel*)cellModel
+{
+    JPGiftModel *giftModel = [[JPGiftModel alloc]init];
+    giftModel.userIcon = cellModel.user_icon;
+    giftModel.userName = cellModel.username;
+    giftModel.giftName = cellModel.name;
+    giftModel.giftImage = cellModel.icon;
+    //giftModel.giftGifImage = cellModel.icon_gif;
+    giftModel.defaultCount = 0;
+    giftModel.sendCount = *(cellModel.count);
+    [[JPGiftShowManager sharedManager] showGiftViewWithBackView:self.view info:giftModel completeBlock:^(BOOL finished) {
+               //结束
+    }];
+}
+
+//弹幕
+- (void)didSelectedBarrageSwitch:(EMMessage*)msg
+{
+    EaseBarrageFlyView *barrageView = [[EaseBarrageFlyView alloc]initWithMessage:msg];
+    [self.view addSubview:barrageView];
+    [barrageView animateInView:self.view];
+}
+
 - (void)easeChatViewDidChangeFrameToHeight:(CGFloat)toHeight
 {
     if ([self.subWindow isKeyWindow]) {
@@ -470,20 +548,25 @@
     }
 }
 
-- (void)didReceivePraiseWithCMDMessage:(EMMessage *)message
+//收到点赞
+- (void)didReceivePraiseMessage:(EMMessage *)message
 {
     [self showTheLoveAction];
+    ++_praiseNum;
+    [self.headerListView.liveCastView setNumberOfPraise:_praiseNum];
+    EaseDefaultDataHelper.shared.praiseStatisticstCount = [NSString stringWithFormat:@"%ld",(long)_praiseNum];
+    [EaseDefaultDataHelper.shared archive];
 }
 
+//操作观众对象
 - (void)didSelectUserWithMessage:(EMMessage *)message
 {
     [self.view endEditing:YES];
-    EaseProfileLiveView *profileLiveView = [[EaseProfileLiveView alloc] initWithUsername:message.from
-                                                                              chatroomId:_room.chatroomId
-                                                                                 isOwner:YES];
-    profileLiveView.profileDelegate = self;
-    profileLiveView.delegate = self;
-    [profileLiveView showFromParentView:self.view];
+    if (![message.from isEqualToString:_room.anchor]) {
+        EaseAudienceBehaviorView *audienceBehaviorView = [[EaseAudienceBehaviorView alloc]initWithOperateUser:message.from chatroomId: _room.chatroomId];
+        audienceBehaviorView.delegate = self;
+        [audienceBehaviorView showFromParentView:self.view];
+    }
 }
 
 - (void)didSelectChangeCameraButton
@@ -523,6 +606,17 @@
 #pragma mark - EaseProfileLiveViewDelegate
 
 #pragma mark - EMChatroomManagerDelegate
+
+- (void)chatroomWhiteListDidUpdate:(EMChatroom *)aChatroom addedWhiteListMembers:(NSArray *)aMembers
+{
+    NSLog(@"房主以添加");
+}
+
+extern bool isAllTheSilence;
+- (void)chatroomAllMemberMuteChanged:(EMChatroom *)aChatroom isAllMemberMuted:(BOOL)aMuted
+{
+    isAllTheSilence = aMuted;
+}
 
 - (void)userDidJoinChatroom:(EMChatroom *)aChatroom
                        user:(NSString *)aUsername

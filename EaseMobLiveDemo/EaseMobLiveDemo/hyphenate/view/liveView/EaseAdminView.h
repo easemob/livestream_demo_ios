@@ -8,9 +8,21 @@
 
 #import "EaseBaseSubView.h"
 
+@protocol EaseMuteDelegate <NSObject>
+
+@required
+- (void)muteStatusDidchange:(EMChatroom *)chatRoom;
+
+@end
+
+
 @interface EaseAdminView : EaseBaseSubView
 
 - (instancetype)initWithChatroomId:(NSString*)chatroomId
                            isOwner:(BOOL)isOwner;
 
+@property (nonatomic, weak) id<EaseMuteDelegate> muteDelegate;
+
 @end
+
+

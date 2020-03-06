@@ -8,7 +8,6 @@
 
 #import "EaseLoginViewController.h"
 
-#import "UIViewController+DismissKeyboard.h"
 #import "EaseSignUpViewController.h"
 #import "EaseDefaultDataHelper.h"
 
@@ -44,8 +43,6 @@ NSString *defaultPwd = @"000000";//默认密码
     }
     
     self.title = NSLocalizedString(@"title.login", @"Log in");
-    
-    [self setupForDismissKeyboard];
     
     self.loginView = [[UIView alloc] initWithFrame:CGRectMake(0, 216.f, KScreenWidth, kDefaultTextHeight * 2 + 1.f)];
     self.loginView.backgroundColor = [UIColor whiteColor];

@@ -20,7 +20,10 @@
 
 @class EasePublishModel;
 @class EaseLiveRoom;
+@class EaseLiveCastView;
 @interface EaseLiveHeaderListView : UIView
+
+@property (nonatomic, strong) EaseLiveCastView *liveCastView;
 
 - (instancetype)initWithFrame:(CGRect)frame model:(EasePublishModel*)model;
 

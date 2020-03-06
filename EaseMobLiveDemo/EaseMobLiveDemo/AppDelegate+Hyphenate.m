@@ -9,7 +9,7 @@
 #import "AppDelegate+Hyphenate.h"
 #import "EaseDefaultDataHelper.h"
 
-#import <HyphenateLite/EMOptions+PrivateDeploy.h>
+#import <Hyphenate/EMOptions+PrivateDeploy.h>
 
 NSArray<NSString*> *nickNameArray;//本地昵称库
 

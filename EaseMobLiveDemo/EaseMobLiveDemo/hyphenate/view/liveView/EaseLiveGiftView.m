@@ -223,6 +223,7 @@
     
     NSDictionary *dict = self.giftArray[row];
     [cell setGiftWithImageName:(NSString *)[dict allKeys][0] name:NSLocalizedString((NSString *)[dict allKeys][0], @"")  price:((NSNumber *)[dict objectForKey:[dict allKeys][0]]).description];
+    cell.giftId = [NSString stringWithFormat:@"gift_%ld",(row+1)];
     return cell;
 }
 

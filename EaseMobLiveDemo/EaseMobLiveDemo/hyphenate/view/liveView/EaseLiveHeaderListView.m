@@ -52,7 +52,6 @@
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) NSMutableArray *dataArray;
-@property (nonatomic, strong) EaseLiveCastView *liveCastView;
 @property (nonatomic, assign) NSInteger occupantsCount;
 @property (nonatomic, strong) UIButton *numberBtn;
 

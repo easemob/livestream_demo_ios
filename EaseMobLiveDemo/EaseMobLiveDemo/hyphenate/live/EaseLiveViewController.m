@@ -36,8 +36,7 @@
 #import "JPGiftCellModel.h"
 #import "JPGiftModel.h"
 #import "JPGiftShowManager.h"
-
-#import "EaseBarrageFlyView.h"
+#import "EaseLiveGiftHelper.h"
 
 #define kDefaultTop 30.f
 #define kDefaultLeft 10.f
@@ -282,31 +281,36 @@
     }
 }
 
-- (void)didReceivePraiseWithCMDMessage:(EMMessage *)message
+- (void)didReceivePraiseMessage:(EMMessage *)message
 {
     [self showTheLoveAction];
 }
 
-- (void)didSelectUserWithMessage:(EMMessage *)message
+- (void)didSelectGiftButton:(BOOL)isOwner
 {
-    [self.view endEditing:YES];
-    BOOL isOwner = _chatroom.permissionType == EMChatroomPermissionTypeOwner;
-    BOOL ret = _chatroom.permissionType == EMChatroomPermissionTypeAdmin || isOwner;
-    if (ret || _enableAdmin) {
-        EaseProfileLiveView *profileLiveView = [[EaseProfileLiveView alloc] initWithUsername:message.from
-                                                                                  chatroomId:_room.chatroomId
-                                                                                     isOwner:isOwner];
-        profileLiveView.delegate = self;
-        [profileLiveView showFromParentView:self.view];
+    if (!isOwner) {
+        EaseLiveGiftView *giftView = [[EaseLiveGiftView alloc]init];
+        giftView.giftDelegate = self;
+        giftView.delegate = self;
+        [giftView showFromParentView:self.view];
     }
 }
 
-- (void)didSelectGiftButton
+//有观众送礼物
+- (void)userSendGifts:(EMMessage*)msg count:(NSInteger)count
 {
-    EaseLiveGiftView *giftView = [[EaseLiveGiftView alloc]init];
-    giftView.giftDelegate = self;
-    giftView.delegate = self;
-    [giftView showFromParentView:self.view];
+    EMCustomMessageBody *msgBody = (EMCustomMessageBody*)msg.body;
+    JPGiftCellModel *cellModel = [[JPGiftCellModel alloc]init];
+    cellModel.id = [msgBody.ext objectForKey:@"id"];
+    cellModel.user_icon = [UIImage imageNamed:@"default_anchor_avatar"];
+    NSString *giftid = [msgBody.ext objectForKey:@"id"];
+    int index = [[giftid substringFromIndex:5] intValue];
+    NSDictionary *dict = EaseLiveGiftHelper.sharedInstance.giftArray[index-1];
+    cellModel.icon = [UIImage imageNamed:(NSString *)[dict allKeys][0]];
+    cellModel.name = EaseLiveGiftHelper.sharedInstance.giftArray[index-1];
+    cellModel.username = msg.from;
+    cellModel.count = &(count);
+    [self sendGiftAction:cellModel];
 }
 
 - (void)didSelectedBarrageSwitch:(EMMessage*)msg
@@ -320,18 +324,19 @@
 
 - (void)didConfirmGift:(EaseGiftCell *)giftCell giftNum:(long)num
 {
-    EaseGiftConfirmView *confirmView = [[EaseGiftConfirmView alloc]initWithGiftInfo:giftCell giftNum:num titleText:@"确定赠送"];
+    EaseGiftConfirmView *confirmView = [[EaseGiftConfirmView alloc]initWithGiftInfo:giftCell giftNum:num titleText:@"确定赠送" giftId:giftCell.giftId];
     confirmView.delegate = self;
     [confirmView showFromParentView:self.view];
     __weak typeof(self) weakself = self;
     [confirmView setDoneCompletion:^(BOOL aConfirm,JPGiftCellModel *giftModel) {
         if (aConfirm) {
-            [weakself sendGiftAction:giftModel];
+            [weakself.chatview sendGiftAction:giftModel.id num:*(giftModel.count) completion:^(BOOL success) {
+                if (success) {
+                    [weakself sendGiftAction:giftModel];
+                }
+            }];
         }
     }];
-    if (_chatview) {
-        [_chatview sendGiftWithId:@"1"];
-    }
 }
 
 //自定义礼物数量
@@ -347,6 +352,11 @@
 
 
 #pragma mark - EMChatroomManagerDelegate
+
+- (void)chatroomAllMemberMuteChanged:(EMChatroom *)aChatroom isAllMemberMuted:(BOOL)aMuted
+{
+    NSLog(@"观众");
+}
 
 - (void)userDidJoinChatroom:(EMChatroom *)aChatroom
                        user:(NSString *)aUsername
@@ -465,28 +475,12 @@
     giftModel.userName = cellModel.username;
     giftModel.giftName = cellModel.name;
     giftModel.giftImage = cellModel.icon;
-    giftModel.giftGifImage = cellModel.icon_gif;
+    //giftModel.giftGifImage = cellModel.icon_gif;
     giftModel.defaultCount = 0;
     giftModel.sendCount = *(cellModel.count);
     [[JPGiftShowManager sharedManager] showGiftViewWithBackView:self.view info:giftModel completeBlock:^(BOOL finished) {
                //结束
            } completeShowGifImageBlock:^(JPGiftModel *giftModel) {
-               //展示gifimage
-               dispatch_async(dispatch_get_main_queue(), ^{
-                   
-                   UIWindow *window = [UIApplication sharedApplication].keyWindow;
-                   [window addSubview:self.gifImageView];
-                   //[self.gifImageView sd_setImageWithURL:[NSURL URLWithString:giftModel.giftGifImage]];
-                   self.gifImageView.image = giftModel.giftImage;
-                   self.gifImageView.hidden = NO;
-                   
-                   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                       self.gifImageView.hidden = YES;
-                       //[self.gifImageView sd_setImageWithURL:[NSURL URLWithString:@""]];
-                       //self.gifImageView.image = giftModel.giftGifImage;
-                       [self.gifImageView removeFromSuperview];
-                   });
-               });
            }];
 }
 

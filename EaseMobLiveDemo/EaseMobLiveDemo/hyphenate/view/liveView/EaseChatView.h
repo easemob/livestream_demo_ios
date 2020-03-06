@@ -20,7 +20,7 @@
 
 - (void)didReceiveBarrageWithCMDMessage:(EMMessage*)message;
 
-- (void)didReceivePraiseWithCMDMessage:(EMMessage *)message;
+- (void)didReceivePraiseMessage:(EMMessage *)message;
 
 - (void)didSelectUserWithMessage:(EMMessage*)message;
 
@@ -28,11 +28,13 @@
 
 //- (void)didSelectAdminButton:(BOOL)isOwner;
 
-- (void)didSelectGiftButton;
+- (void)didSelectGiftButton:(BOOL)isOwner;//礼物
 
 - (void)didSelectedExitButton;
 
 - (void)didSelectedBarrageSwitch:(EMMessage*)msg;
+
+- (void)userSendGifts:(EMMessage*)msg count:(NSInteger)count;//观众送礼物
 
 @end
 
@@ -60,5 +62,7 @@
 - (void)sendGiftWithId:(NSString*)giftId;
 
 - (void)sendMessageAtWithUsername:(NSString*)username;
+
+- (void)sendGiftAction:(NSString *)giftId num:(NSInteger)num completion:(void (^)(BOOL success))aCompletion;
 
 @end

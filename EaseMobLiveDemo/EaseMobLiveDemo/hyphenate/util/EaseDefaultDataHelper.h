@@ -22,6 +22,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) BOOL isInitiativeLogin;//是否主动登陆
 
+@property (nonatomic, strong) NSString *praiseStatisticstCount;//点赞统计
+@property (nonatomic, strong) NSMutableDictionary *giftStatisticsCount;//礼物统计
+@property (nonatomic, strong) NSMutableArray *rewardCount;//打赏人列表
+@property (nonatomic, strong) NSString *giftNumbers;//礼物份数
+
+
 + (instancetype)shared;
 
 - (void)archive;

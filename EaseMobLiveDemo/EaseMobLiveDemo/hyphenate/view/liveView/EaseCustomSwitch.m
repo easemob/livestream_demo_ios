@@ -38,11 +38,12 @@
 
 @implementation EaseCustomSwitch
 
-- (instancetype)initWithTextFont:(UIFont *)textFont OnText:(NSString *)onText offText:(NSString *)offText onBackGroundColor:(UIColor *)bgOnColor offBackGroundColor:(UIColor *)bgOffColor onButtonColor:(UIColor *)btnOnColor offButtonColor:(UIColor *)btnOffColor onTextColor:(UIColor *)textOnColor andOffTextColor:(UIColor *)textOffColor
+- (instancetype)initWithTextFont:(UIFont *)textFont OnText:(NSString *)onText offText:(NSString *)offText onBackGroundColor:(UIColor *)bgOnColor offBackGroundColor:(UIColor *)bgOffColor onButtonColor:(UIColor *)btnOnColor offButtonColor:(UIColor *)btnOffColor onTextColor:(UIColor *)textOnColor andOffTextColor:(UIColor *)textOffColor isOn:(BOOL)isOn frame:(CGRect)frame
 {
     self = [super init];
     if (self) {
-        self.isOn = NO;
+        self.isOn = isOn;
+        self.frame = frame;
         
         if (onText) {
             self.onText = onText;
@@ -110,7 +111,11 @@
         
         [self prepareUI];
         
-        [self stateOff];
+        if (self.isOn) {
+            [self stateOn];
+        } else {
+            [self stateOff];
+        }
     }
     return self;
 }
@@ -130,7 +135,6 @@
     
     [self frameSetup];
     
-    
     [self addGestureRecognizer:self.tapGes];
     
 }
@@ -139,7 +143,12 @@
     
     CGFloat x,y,w,h;
     
-    x = 2;
+    if (self.isOn) {
+        x = self.frame.size.width - self.btnView.frame.size.width - 2;
+    } else {
+        x = 2;
+    }
+    //x = 2;
     y = 2;
     w = self.frame.size.height - 2 * 2;
     h = self.frame.size.height - 2 * 2;

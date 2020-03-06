@@ -17,6 +17,8 @@
 
 @property (nonatomic, weak) id<EaseLiveHeaderListViewDelegate> delegate;
 
-- (void)setNumberOfChatroom:(NSInteger)number;
+- (void)setNumberOfPraise:(NSInteger)number;
+
+- (void)setNumberOfGift:(NSInteger)number;
 
 @end

@@ -15,6 +15,8 @@
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UILabel *priceLabel;
 
+@property (nonatomic, assign) NSString *giftId;
+
 @property (nonatomic, weak) id<EaseGiftCellDelegate> delegate;
 
 - (void)setGiftWithImageName:(NSString*)imageName

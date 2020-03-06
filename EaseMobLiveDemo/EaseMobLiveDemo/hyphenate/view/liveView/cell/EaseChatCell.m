@@ -6,10 +6,14 @@
 //  Copyright © 2016年 zmw. All rights reserved.
 //
 
+#define KCustomerWidth [[UIScreen mainScreen] bounds].size.width - 32
 #import "EaseChatCell.h"
+#import "Masonry.h"
+#import "EaseEmojiHelper.h"
+#import "EaseLiveGiftHelper.h"
 
 @interface EaseChatCell ()
-
+@property (nonatomic,strong)UIView *blankView;
 @end
 
 @implementation EaseChatCell
@@ -18,19 +22,19 @@
 - (void)setMesssage:(EMMessage*)message
 {
     self.textLabel.textColor = [UIColor whiteColor];
-    self.textLabel.shadowColor = [UIColor blackColor];
-    self.textLabel.shadowOffset = CGSizeMake(1, 1);
+    self.textLabel.layer.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.2].CGColor;
+    self.textLabel.layer.cornerRadius = 2;
     self.backgroundColor = [UIColor clearColor];
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     self.textLabel.attributedText = [EaseChatCell _attributedStringWithMessage:message];
-    
     self.textLabel.numberOfLines = (int)([EaseChatCell heightForMessage:message]/15.f) + 1;
+
 }
 
 + (CGFloat)heightForMessage:(EMMessage *)message
 {
     if (message) {
-        CGRect rect = [[EaseChatCell _attributedStringWithMessage:message] boundingRectWithSize:CGSizeMake(KScreenWidth, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+        CGRect rect = [[EaseChatCell _attributedStringWithMessage:message] boundingRectWithSize:CGSizeMake(KCustomerWidth, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin context:nil];
         
         if (rect.size.height < 25.f) {
             return 25.f;
@@ -61,8 +65,8 @@
                 latestMessageTitle = @"[图片]";
             } break;
             case EMMessageBodyTypeText:{
-                NSString *didReceiveText = [EaseConvertToCommonEmoticonsHelper
-                                            convertToSystemEmoticons:((EMTextMessageBody *)messageBody).text];
+                NSString *didReceiveText = [EaseEmojiHelper
+                                            convertEmoji:((EMTextMessageBody *)messageBody).text];
                 latestMessageTitle = didReceiveText;
             } break;
             case EMMessageBodyTypeVoice:{
@@ -76,6 +80,19 @@
             } break;
             case EMMessageBodyTypeFile: {
                 latestMessageTitle = @"[文件]";
+            } break;
+            case EMMessageBodyTypeCustom: {
+                EMCustomMessageBody *customBody = (EMCustomMessageBody*)messageBody;
+                if ([customBody.event isEqualToString:@"chatroom_barrage"]) {
+                    latestMessageTitle = (NSString*)[customBody.ext objectForKey:@"txt"];
+                } else if ([customBody.event isEqualToString:@"chatroom_like"]) {
+                    latestMessageTitle = @"给主播点了一个赞";
+                } else if ([customBody.event isEqualToString:@"chatroom_gift"]) {
+                    NSString *giftid = [customBody.ext objectForKey:@"id"];
+                    int index = [[giftid substringFromIndex:5] intValue];
+                    NSDictionary *dict = EaseLiveGiftHelper.sharedInstance.giftArray[index-1];
+                    latestMessageTitle = [NSString stringWithFormat:@" 赠送了 %@x%@",NSLocalizedString((NSString *)[dict allKeys][0],@""),(NSString*)[customBody.ext objectForKey:@"num"]];
+                }
             } break;
             default: {
             } break;
@@ -99,6 +116,12 @@
         attributedStr = [[NSMutableAttributedString alloc] initWithString:latestMessageTitle];
         NSRange range = [[attributedStr string] rangeOfString:[NSString stringWithFormat:@"%@: " ,lastMessage.from] options:NSCaseInsensitiveSearch];
         [attributedStr addAttribute:NSForegroundColorAttributeName value:RGBACOLOR(255, 199, 0, 1) range:NSMakeRange(range.length + range.location, attributedStr.length - (range.length + range.location))];
+        if (lastMessage.body.type == EMMessageBodyTypeCustom) {
+            EMCustomMessageBody *customBody = (EMCustomMessageBody*)lastMessage.body;
+            if ([customBody.event isEqualToString:@"chatroom_like"] || [customBody.event isEqualToString:@"chatroom_gift"]) {
+                [attributedStr addAttribute:NSForegroundColorAttributeName value:RGBACOLOR(104, 255, 149, 1) range:NSMakeRange(range.length + range.location, attributedStr.length - (range.length + range.location))];
+            }
+        }
     }
     return attributedStr;
 }

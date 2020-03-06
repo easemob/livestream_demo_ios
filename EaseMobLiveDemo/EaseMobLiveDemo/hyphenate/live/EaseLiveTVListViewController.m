@@ -19,6 +19,8 @@
 #import "EaseHttpManager.h"
 #import "EaseLiveRoom.h"
 #import "EaseSearchDisplayController.h"
+#import "SDImageCache.h"
+#import "SDWebImageDownloader.h"
 
 @interface EaseLiveTVListViewController () <UIScrollViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource,SRRefreshDelegate,EMClientDelegate>
 {
@@ -307,10 +309,11 @@
                                                              progress:NULL
                                                             completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
                                                                 if (image) {
-                                                                    [[SDImageCache sharedImageCache] storeImage:image forKey:room.coverPictureUrl toDisk:NO];
-                                                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                                                        [weakSelf.collectionView reloadData];
-                                                                    });
+                                                                    [[SDImageCache sharedImageCache] storeImage:image forKey:room.coverPictureUrl toDisk:NO completion:^{
+                                                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                                                            [weakSelf.collectionView reloadData];
+                                                                        });
+                                                                    }];
                                                                 }
                                                             }];
     }

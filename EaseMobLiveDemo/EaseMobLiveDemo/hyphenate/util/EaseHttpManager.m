@@ -920,7 +920,7 @@ constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
 
 - (void)_setHeaderToken
 {
-    [[_sessionManager requestSerializer] setValue:[NSString stringWithFormat:@"Bearer %@", [self _getUserToken]] forHTTPHeaderField:@"Authorization"];
+    [[_sessionManager requestSerializer] setValue:[NSString stringWithFormat:@"Bearer %@", [EMClient sharedClient].accessUserToken] forHTTPHeaderField:@"Authorization"];
 }
 
 - (NSString*)_getUserToken
