@@ -14,7 +14,6 @@
 #define kDefaultHeight 45.f
 #define kDefaultTextHeight 50.f
 #define kDefaultWidth (KScreenWidth - 75.f)
-NSString *defaultPwd = @"000000";//默认密码
 
 @interface EaseLoginViewController ()<UITextFieldDelegate>
 
@@ -36,11 +35,6 @@ NSString *defaultPwd = @"000000";//默认密码
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    if (!EaseDefaultDataHelper.shared.isInitiativeLogin) {
-        [self autoRegistAccount];
-        return;
-    }
     
     self.title = NSLocalizedString(@"title.login", @"Log in");
     
@@ -132,24 +126,6 @@ NSString *defaultPwd = @"000000";//默认密码
     return _loginButton;
 }
 
-//游客自动注册账户
-- (void)autoRegistAccount
-{
-    NSString *uuidAccount = [UIDevice currentDevice].identifierForVendor.UUIDString;//默认账户id
-    uuidAccount = [[uuidAccount stringByReplacingOccurrencesOfString:@"-" withString:@""] lowercaseString];
-     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-         [[EMClient sharedClient] registerWithUsername:uuidAccount password:defaultPwd];
-         EMError *error = [[EMClient sharedClient] loginWithUsername:uuidAccount password:defaultPwd];
-          if (!error) {
-              NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-              [ud setObject:[EMClient sharedClient].currentUsername forKey:kLiveLastLoginUsername];
-              [ud synchronize];
-              [[EMClient sharedClient].options setIsAutoLogin:YES];
-              [[NSNotificationCenter defaultCenter] postNotificationName:@"loginStateChange" object:@YES];
-         }
-     });
-}
-
 - (void)registAction
 {
     EaseSignUpViewController *signUpView = [[EaseSignUpViewController alloc] init];
@@ -177,7 +153,7 @@ NSString *defaultPwd = @"000000";//默认密码
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         EMError *error = [[EMClient sharedClient] loginWithUsername:_usernameTextField.text password:_passwordTextField.text];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [weakHud hide:YES];
+            [weakHud hideAnimated:YES];
             if (!error) {
                 NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
                 [ud setObject:[EMClient sharedClient].currentUsername forKey:kLiveLastLoginUsername];

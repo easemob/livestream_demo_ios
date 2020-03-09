@@ -50,16 +50,12 @@
 		3C12386A2403E12200C4135B /* default_anchor_avatar@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C1238692403E12100C4135B /* default_anchor_avatar@3x.png */; };
 		3C12386F2404C49200C4135B /* attention@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C12386B2404C49200C4135B /* attention@2x.png */; };
 		3C1238702404C49200C4135B /* Icons-Plus-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C12386C2404C49200C4135B /* Icons-Plus-white@2x.png */; };
-		3C1238712404C49200C4135B /* ic_praised@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C12386D2404C49200C4135B /* ic_praised@2x.png */; };
 		3C1238722404C49200C4135B /* ic_chat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C12386E2404C49200C4135B /* ic_chat@2x.png */; };
 		3C1238772404C4AC00C4135B /* Icons-Plus-white@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C1238732404C4AB00C4135B /* Icons-Plus-white@3x.png */; };
 		3C1238782404C4AC00C4135B /* attention@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C1238742404C4AB00C4135B /* attention@3x.png */; };
-		3C1238792404C4AC00C4135B /* ic_praised@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C1238752404C4AC00C4135B /* ic_praised@3x.png */; };
 		3C12387A2404C4AC00C4135B /* ic_chat@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C1238762404C4AC00C4135B /* ic_chat@3x.png */; };
 		3C12387C2405030600C4135B /* backPic@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C12387B2405030600C4135B /* backPic@2x.png */; };
 		3C12387E2405031300C4135B /* backPic@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C12387D2405031300C4135B /* backPic@3x.png */; };
-		3C123880240515F200C4135B /* ic_praise@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C12387F240515F200C4135B /* ic_praise@2x.png */; };
-		3C123882240515FD00C4135B /* ic_praise@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C123881240515FD00C4135B /* ic_praise@3x.png */; };
 		3C123884240633BC00C4135B /* icon-enter@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C123883240633BC00C4135B /* icon-enter@2x.png */; };
 		3C123886240633C600C4135B /* icon-enter@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C123885240633C500C4135B /* icon-enter@3x.png */; };
 		3C1238892406839700C4135B /* EaseDefaultDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C1238882406839700C4135B /* EaseDefaultDataHelper.m */; };
@@ -99,11 +95,16 @@
 		3C72AD6F240F9804007BC99F /* EMEmoticonGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C72AD6E240F9804007BC99F /* EMEmoticonGroup.m */; };
 		3C72AD73240FAF26007BC99F /* send@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C72AD72240FAF25007BC99F /* send@2x.png */; };
 		3C72AD75240FAF30007BC99F /* send@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C72AD74240FAF30007BC99F /* send@3x.png */; };
+		3C88C88C241625CA00A34021 /* ic_praise@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C88C88A241625CA00A34021 /* ic_praise@3x.png */; };
+		3C88C88D241625CA00A34021 /* ic_praised@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C88C88B241625CA00A34021 /* ic_praised@3x.png */; };
+		3C88C890241625EA00A34021 /* ic_praised@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C88C88E241625E900A34021 /* ic_praised@2x.png */; };
+		3C88C891241625EA00A34021 /* ic_praise@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C88C88F241625EA00A34021 /* ic_praise@2x.png */; };
 		3C8AD50A24125BBC002B6464 /* Hyphenate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C8AD50824125BB0002B6464 /* Hyphenate.framework */; };
 		3C8AD50B24125BBC002B6464 /* Hyphenate.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3C8AD50824125BB0002B6464 /* Hyphenate.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3C8AD50E24127AE3002B6464 /* EaseGiftListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8AD50D24127AE2002B6464 /* EaseGiftListView.m */; };
 		3C8AD51024128726002B6464 /* giftrecord@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C8AD50F24128726002B6464 /* giftrecord@2x.png */; };
 		3C8AD51224128730002B6464 /* giftrecord@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C8AD51124128730002B6464 /* giftrecord@3x.png */; };
+		3C8AD5152412AD41002B6464 /* EaseTransitionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8AD5142412AD41002B6464 /* EaseTransitionViewController.m */; };
 		3C9F89EB240E3C3C00653B2F /* EaseAudienceBehaviorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C9F89EA240E3C3C00653B2F /* EaseAudienceBehaviorView.m */; };
 		C68D8F3A512EBB7D55D835D0 /* libPods-EaseMobLiveDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF86793993FB1D45A5254772 /* libPods-EaseMobLiveDemo.a */; };
 		D21C54611E658F8B0019A341 /* EaseAdminView.m in Sources */ = {isa = PBXBuildFile; fileRef = D21C54601E658F8B0019A341 /* EaseAdminView.m */; };
@@ -300,16 +301,12 @@
 		3C1238692403E12100C4135B /* default_anchor_avatar@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "default_anchor_avatar@3x.png"; path = "../../../../../../../../直播资源/default_anchor_avatar@3x.png"; sourceTree = "<group>"; };
 		3C12386B2404C49200C4135B /* attention@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "attention@2x.png"; path = "../../../../../../../../直播资源/attention@2x.png"; sourceTree = "<group>"; };
 		3C12386C2404C49200C4135B /* Icons-Plus-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icons-Plus-white@2x.png"; path = "../../../../../../../../直播资源/Icons-Plus-white@2x.png"; sourceTree = "<group>"; };
-		3C12386D2404C49200C4135B /* ic_praised@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ic_praised@2x.png"; path = "../../../../../../../../直播资源/ic_praised@2x.png"; sourceTree = "<group>"; };
 		3C12386E2404C49200C4135B /* ic_chat@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ic_chat@2x.png"; path = "../../../../../../../../直播资源/ic_chat@2x.png"; sourceTree = "<group>"; };
 		3C1238732404C4AB00C4135B /* Icons-Plus-white@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icons-Plus-white@3x.png"; path = "../../../../../../../../直播资源/Icons-Plus-white@3x.png"; sourceTree = "<group>"; };
 		3C1238742404C4AB00C4135B /* attention@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "attention@3x.png"; path = "../../../../../../../../直播资源/attention@3x.png"; sourceTree = "<group>"; };
-		3C1238752404C4AC00C4135B /* ic_praised@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ic_praised@3x.png"; path = "../../../../../../../../直播资源/ic_praised@3x.png"; sourceTree = "<group>"; };
 		3C1238762404C4AC00C4135B /* ic_chat@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ic_chat@3x.png"; path = "../../../../../../../../直播资源/ic_chat@3x.png"; sourceTree = "<group>"; };
 		3C12387B2405030600C4135B /* backPic@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "backPic@2x.png"; path = "../../../../../../../../直播资源/backPic@2x.png"; sourceTree = "<group>"; };
 		3C12387D2405031300C4135B /* backPic@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "backPic@3x.png"; path = "../../../../../../../../直播资源/backPic@3x.png"; sourceTree = "<group>"; };
-		3C12387F240515F200C4135B /* ic_praise@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ic_praise@2x.png"; path = "../../../../../../../../直播资源/ic_praise@2x.png"; sourceTree = "<group>"; };
-		3C123881240515FD00C4135B /* ic_praise@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ic_praise@3x.png"; path = "../../../../../../../../直播资源/ic_praise@3x.png"; sourceTree = "<group>"; };
 		3C123883240633BC00C4135B /* icon-enter@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-enter@2x.png"; path = "../../../../../../../../直播资源/icon-enter@2x.png"; sourceTree = "<group>"; };
 		3C123885240633C500C4135B /* icon-enter@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-enter@3x.png"; path = "../../../../../../../../直播资源/icon-enter@3x.png"; sourceTree = "<group>"; };
 		3C1238872406839700C4135B /* EaseDefaultDataHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseDefaultDataHelper.h; sourceTree = "<group>"; };
@@ -363,11 +360,17 @@
 		3C72AD6E240F9804007BC99F /* EMEmoticonGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMEmoticonGroup.m; sourceTree = "<group>"; };
 		3C72AD72240FAF25007BC99F /* send@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "send@2x.png"; sourceTree = "<group>"; };
 		3C72AD74240FAF30007BC99F /* send@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "send@3x.png"; sourceTree = "<group>"; };
+		3C88C88A241625CA00A34021 /* ic_praise@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_praise@3x.png"; sourceTree = "<group>"; };
+		3C88C88B241625CA00A34021 /* ic_praised@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_praised@3x.png"; sourceTree = "<group>"; };
+		3C88C88E241625E900A34021 /* ic_praised@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_praised@2x.png"; sourceTree = "<group>"; };
+		3C88C88F241625EA00A34021 /* ic_praise@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_praise@2x.png"; sourceTree = "<group>"; };
 		3C8AD50824125BB0002B6464 /* Hyphenate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Hyphenate.framework; sourceTree = "<group>"; };
 		3C8AD50C24127AE2002B6464 /* EaseGiftListView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseGiftListView.h; sourceTree = "<group>"; };
 		3C8AD50D24127AE2002B6464 /* EaseGiftListView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseGiftListView.m; sourceTree = "<group>"; };
 		3C8AD50F24128726002B6464 /* giftrecord@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "giftrecord@2x.png"; sourceTree = "<group>"; };
 		3C8AD51124128730002B6464 /* giftrecord@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "giftrecord@3x.png"; sourceTree = "<group>"; };
+		3C8AD5132412AD41002B6464 /* EaseTransitionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseTransitionViewController.h; sourceTree = "<group>"; };
+		3C8AD5142412AD41002B6464 /* EaseTransitionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseTransitionViewController.m; sourceTree = "<group>"; };
 		3C9F89E9240E3C3C00653B2F /* EaseAudienceBehaviorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseAudienceBehaviorView.h; sourceTree = "<group>"; };
 		3C9F89EA240E3C3C00653B2F /* EaseAudienceBehaviorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseAudienceBehaviorView.m; sourceTree = "<group>"; };
 		3EF28DDAEBA5A9451CF1F4AF /* Pods-EaseMobLiveDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EaseMobLiveDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo.debug.xcconfig"; sourceTree = "<group>"; };
@@ -822,9 +825,9 @@
 				3C123883240633BC00C4135B /* icon-enter@2x.png */,
 				3C12387B2405030600C4135B /* backPic@2x.png */,
 				3C12386B2404C49200C4135B /* attention@2x.png */,
-				3C12387F240515F200C4135B /* ic_praise@2x.png */,
-				3C12386D2404C49200C4135B /* ic_praised@2x.png */,
 				3C12386E2404C49200C4135B /* ic_chat@2x.png */,
+				3C88C88F241625EA00A34021 /* ic_praise@2x.png */,
+				3C88C88E241625E900A34021 /* ic_praised@2x.png */,
 				3C12386C2404C49200C4135B /* Icons-Plus-white@2x.png */,
 				3C1238672403E11800C4135B /* default_anchor_avatar@2x.png */,
 				3C12386323FFFEED00C4135B /* ic_exit@2x.png */,
@@ -876,9 +879,9 @@
 				3C12389C24077FD300C4135B /* avatat_7@3x.png */,
 				3C123885240633C500C4135B /* icon-enter@3x.png */,
 				3C12387D2405031300C4135B /* backPic@3x.png */,
+				3C88C88A241625CA00A34021 /* ic_praise@3x.png */,
+				3C88C88B241625CA00A34021 /* ic_praised@3x.png */,
 				3C1238742404C4AB00C4135B /* attention@3x.png */,
-				3C123881240515FD00C4135B /* ic_praise@3x.png */,
-				3C1238752404C4AC00C4135B /* ic_praised@3x.png */,
 				3C1238762404C4AC00C4135B /* ic_chat@3x.png */,
 				3C1238732404C4AB00C4135B /* Icons-Plus-white@3x.png */,
 				3C1238692403E12100C4135B /* default_anchor_avatar@3x.png */,
@@ -1269,6 +1272,8 @@
 		D2F4E0F51D12C8AB00BB7E1A /* hyphenate */ = {
 			isa = PBXGroup;
 			children = (
+				3C8AD5132412AD41002B6464 /* EaseTransitionViewController.h */,
+				3C8AD5142412AD41002B6464 /* EaseTransitionViewController.m */,
 				D2F4E10C1D12C8AB00BB7E1A /* EaseLoginViewController.h */,
 				D2F4E10D1D12C8AB00BB7E1A /* EaseLoginViewController.m */,
 				D2E368781D3CFD3500B1C90C /* EaseSignUpViewController.h */,
@@ -1608,7 +1613,6 @@
 				3C12385423FE853200C4135B /* Logo@3x.png in Resources */,
 				D275D7E91E666C44001BBA61 /* search@2x.png in Resources */,
 				3C1237F323FBA0D800C4135B /* gift.dog@2x.png in Resources */,
-				3C1238792404C4AC00C4135B /* ic_praised@3x.png in Resources */,
 				D2F4E2501D12C8AB00BB7E1A /* demo.css in Resources */,
 				D2F4E2521D12C8AB00BB7E1A /* iconfont.css in Resources */,
 				3C44F44A240CB0E700445129 /* X@3x.png in Resources */,
@@ -1616,12 +1620,10 @@
 				D275D7E01E666C44001BBA61 /* chat@2x.png in Resources */,
 				D27B20231E4D770F00318031 /* bg_screen_shot_frame.png in Resources */,
 				D27B203A1E4D770F00318031 /* UCloudMediaViewController.xib in Resources */,
-				3C123882240515FD00C4135B /* ic_praise@3x.png in Resources */,
 				3C12389524077FBF00C4135B /* avatat_1@2x.png in Resources */,
 				3C44F453240D011400445129 /* auidence@2x.png in Resources */,
 				3C72AD75240FAF30007BC99F /* send@3x.png in Resources */,
 				3C1238702404C49200C4135B /* Icons-Plus-white@2x.png in Resources */,
-				3C123880240515F200C4135B /* ic_praise@2x.png in Resources */,
 				D275D7E31E666C44001BBA61 /* like@2x.png in Resources */,
 				D27B20311E4D770F00318031 /* icon_screen_shot_action.png in Resources */,
 				3C1238782404C4AC00C4135B /* attention@3x.png in Resources */,
@@ -1658,6 +1660,7 @@
 				D275D7E41E666C44001BBA61 /* list@2x.png in Resources */,
 				D275D7F31E666C44001BBA61 /* open@3x.png in Resources */,
 				3C1237F523FBA0D800C4135B /* gift.cake@2x.png in Resources */,
+				3C88C891241625EA00A34021 /* ic_praise@2x.png in Resources */,
 				D275D7F11E666C44001BBA61 /* live@3x.png in Resources */,
 				D27B20291E4D770F00318031 /* ic_screen_shot.png in Resources */,
 				D27B202A1E4D770F00318031 /* icon_bottomview_brightness_button_normal.png in Resources */,
@@ -1676,6 +1679,7 @@
 				3C12386023FFF41000C4135B /* icon-broadcast@2x.png in Resources */,
 				3C12380223FBA0EC00C4135B /* gift.dog@3x.png in Resources */,
 				D275D7E51E666C44001BBA61 /* live@2x.png in Resources */,
+				3C88C88C241625CA00A34021 /* ic_praise@3x.png in Resources */,
 				3C123884240633BC00C4135B /* icon-enter@2x.png in Resources */,
 				3C1238A424077FD300C4135B /* avatat_1@3x.png in Resources */,
 				D275D7E81E666C44001BBA61 /* reversal_camera@2x.png in Resources */,
@@ -1696,13 +1700,14 @@
 				D275D7F01E666C44001BBA61 /* list@3x.png in Resources */,
 				D2E368221D3C7EFF00B1C90C /* Localizable.strings in Resources */,
 				D27B20271E4D770F00318031 /* danmu.png in Resources */,
+				3C88C890241625EA00A34021 /* ic_praised@2x.png in Resources */,
 				D27B202F1E4D770F00318031 /* icon_bottomview_volume_button_selected.png in Resources */,
-				3C1238712404C49200C4135B /* ic_praised@2x.png in Resources */,
 				D275D7EE1E666C44001BBA61 /* kick@3x.png in Resources */,
 				D27B20211E4D770F00318031 /* bg_screen_shot_complete@2x.png in Resources */,
 				3C44F451240D010A00445129 /* auidence@3x.png in Resources */,
 				D2F4E2551D12C8AB00BB7E1A /* iconfont.ttf in Resources */,
 				3C12386423FFFEEE00C4135B /* ic_exit@2x.png in Resources */,
+				3C88C88D241625CA00A34021 /* ic_praised@3x.png in Resources */,
 				D27B20251E4D770F00318031 /* brightness_bgiphone.png in Resources */,
 				D275D7EB1E666C44001BBA61 /* back@3x.png in Resources */,
 				D2FD8DF71E6011670097B20D /* input_bar_1_icon_keyboard@2x.png in Resources */,
@@ -1795,6 +1800,7 @@
 				3C12380E23FD1CA500C4135B /* EaseGiftConfirmView.m in Sources */,
 				D2F4E2651D12C8AB00BB7E1A /* EaseGiftFlyView.m in Sources */,
 				D27B201C1E4D770F00318031 /* YzdHUDImageView.m in Sources */,
+				3C8AD5152412AD41002B6464 /* EaseTransitionViewController.m in Sources */,
 				D2F52C481D478EFC0094BB4A /* EaseLiveCastView.m in Sources */,
 				3C44F439240BE51600445129 /* JPGiftCountLabel.m in Sources */,
 				D2E368C01D4084CB00B1C90C /* EaseBaseSubView.m in Sources */,
@@ -1897,8 +1903,8 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Shanghai UCloud Information Technology Co.,Ltd (TKGBFB7R6R)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Distribution: EaseMob Inc. (JC854K845H)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: EaseMob Inc. (JC854K845H)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1946,8 +1952,8 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Shanghai UCloud Information Technology Co.,Ltd (TKGBFB7R6R)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Distribution: EaseMob Inc. (JC854K845H)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: EaseMob Inc. (JC854K845H)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1977,6 +1983,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 499WYUV8Q2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2008,6 +2015,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.easemob.enterprise.demo.live;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -2018,8 +2026,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 499WYUV8Q2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (

@@ -100,15 +100,16 @@
 - (UIView*)giftTagView
 {
     if (_giftTagView == nil) {
-        _giftTagView = [[UIView alloc]initWithFrame:CGRectMake(0, _bottomView.height - 90.f, self.width, 40.f)];
+        _giftTagView = [[UIView alloc]initWithFrame:CGRectMake(0, _bottomView.top - 50.f, self.width, 50.f)];
         _giftTagView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
-        UIImageView *giftImg = [[UIImageView alloc]initWithFrame:CGRectMake(15, _giftTagView.height + 5.f, 20.f, 20.f)];
+        UIImageView *giftImg = [[UIImageView alloc]initWithFrame:CGRectMake(15, 10.f, 20.f, 20.f)];
         giftImg.image = [UIImage imageNamed:@"ic_Gift"];
         [_giftTagView addSubview:giftImg];
-        UILabel *giftTag = [[UILabel alloc]initWithFrame:CGRectMake(40.f, _giftTagView.height + 5.f, 40.f, 20.f)];
+        UILabel *giftTag = [[UILabel alloc]initWithFrame:CGRectMake(40.f, 10.f, 40.f, 20.f)];
         giftTag.text = @"礼物";
         giftTag.font = [UIFont systemFontOfSize:16.f];
         giftTag.textColor = [UIColor whiteColor];
+        giftTag.backgroundColor = [UIColor clearColor];
         [_giftTagView addSubview:giftTag];
     }
     return _giftTagView;
@@ -223,7 +224,7 @@
     
     NSDictionary *dict = self.giftArray[row];
     [cell setGiftWithImageName:(NSString *)[dict allKeys][0] name:NSLocalizedString((NSString *)[dict allKeys][0], @"")  price:((NSNumber *)[dict objectForKey:[dict allKeys][0]]).description];
-    cell.giftId = [NSString stringWithFormat:@"gift_%ld",(row+1)];
+    cell.giftId = [NSString stringWithFormat:@"gift_%ld",(long)(row+1)];
     return cell;
 }
 
@@ -271,7 +272,7 @@
 //自定义礼物数量
 - (void)customGiftNum:(NSString *)giftNum
 {
-    _giftNum = [giftNum longLongValue];
+    _giftNum = (long)[giftNum longLongValue];
     [self.giftNumBtn setTitle:[NSString stringWithFormat:@"%lu",_giftNum] forState:UIControlStateNormal];
 }
 
@@ -279,6 +280,8 @@
 //刷礼物
 - (void)brushGiftACtion
 {
+    self.selectedGiftDesc.hidden = YES;
+    self.selectedGiftNumView.hidden = YES;
     if (self.selectedGiftCell) {
         if (self.giftDelegate && [self.giftDelegate respondsToSelector:@selector(didConfirmGift:giftNum:)]) {
             [self.giftDelegate didConfirmGift:self.selectedGiftCell giftNum:_giftNum];

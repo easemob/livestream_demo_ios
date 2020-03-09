@@ -9,7 +9,6 @@
 #import "EaseLiveCastView.h"
 #import "EaseLiveRoom.h"
 #import "EaseDefaultDataHelper.h"
-#import "EaseDefaultDataHelper.h"
 
 @interface EaseLiveCastView ()
 {

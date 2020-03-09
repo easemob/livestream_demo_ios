@@ -18,6 +18,7 @@ static NSString *eDefaultData_giftNumbers = @"giftNumbers";
 
 static EaseDefaultDataHelper *shared = nil;
 
+extern NSArray<NSString*> *nickNameArray;
 @implementation EaseDefaultDataHelper
 
 + (instancetype)shared
@@ -34,11 +35,12 @@ static EaseDefaultDataHelper *shared = nil;
 {
     self = [super init];
     if (self) {
-        self.defaultNickname = @"";
+        int random = (arc4random() % 100);
+        self.defaultNickname = nickNameArray[random];
         self.currentRoomId = @"";
         self.isInitiativeLogin = NO;
         self.praiseStatisticstCount = @"";
-        self.giftStatisticsCount = [[NSMutableDictionary alloc]init];
+        self.giftStatisticsCount = [self emptyGiftStatisticsCount];
         self.rewardCount = [[NSMutableArray alloc]init];
         self.giftNumbers = @"";
     }

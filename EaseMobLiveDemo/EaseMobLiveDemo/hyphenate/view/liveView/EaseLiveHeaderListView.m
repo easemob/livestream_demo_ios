@@ -200,7 +200,7 @@
     }
     [self.dataArray insertObject:[username copy] atIndex:0];
     self.occupantsCount++;
-    [_numberBtn setTitle:[NSString stringWithFormat:@"%ld人",self.occupantsCount] forState:UIControlStateNormal];
+    [_numberBtn setTitle:[NSString stringWithFormat:@"%ld人",(long)self.occupantsCount] forState:UIControlStateNormal];
     [self.collectionView reloadData];
 }
 
@@ -216,7 +216,7 @@
     if (self.occupantsCount < 1) {
         self.occupantsCount = 1;
     }
-    [_numberBtn setTitle:[NSString stringWithFormat:@"%ld人",self.occupantsCount] forState:UIControlStateNormal];
+    [_numberBtn setTitle:[NSString stringWithFormat:@"%ld人",(long)self.occupantsCount] forState:UIControlStateNormal];
     [self.collectionView reloadData];
 }
 
@@ -292,10 +292,11 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    /*
     NSString *username = [self.dataArray objectAtIndex:indexPath.row];
     if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectHeaderWithUsername:)]) {
         [self.delegate didSelectHeaderWithUsername:username];
-    }
+    }*/
 }
 
 -(BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath

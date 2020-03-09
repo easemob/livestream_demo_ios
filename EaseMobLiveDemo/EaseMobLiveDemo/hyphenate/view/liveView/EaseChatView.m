@@ -43,6 +43,9 @@ typedef enum : NSInteger{
     CGFloat _defaultHeight;
     
     BOOL _isBarrageInfo;//弹幕消息
+    
+    NSTimer *_timer;
+    NSInteger _praiseInterval;//点赞间隔
 }
 
 @property (strong, nonatomic) NSMutableArray *datasource;
@@ -81,6 +84,7 @@ BOOL isAllTheSilence;//全体禁言
     if (self) {
         _chatroomId = chatroomId;
         _isBarrageInfo = false;
+        _praiseInterval = 3;
         [[EMClient sharedClient].chatManager addDelegate:self delegateQueue:dispatch_get_main_queue()];
         [[EMClient sharedClient].roomManager addDelegate:self delegateQueue:nil];
         self.datasource = [NSMutableArray array];
@@ -221,8 +225,8 @@ BOOL isAllTheSilence;//全体禁言
         _likeButton.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.25];
         _likeButton.layer.cornerRadius = kButtonWitdh / 2;
         [_likeButton setImage:[UIImage imageNamed:@"ic_praise"] forState:UIControlStateNormal];
-        [_likeButton setImage:[UIImage imageNamed:@"ic_praised"] forState:(UIControlState)UIControlEventTouchDown];
-        [_likeButton addTarget:self action:@selector(praiseAction:) forControlEvents:UIControlEventTouchDown];
+        [_likeButton setImage:[UIImage imageNamed:@"ic_praised"] forState:UIControlStateHighlighted];
+        [_likeButton addTarget:self action:@selector(praiseAction:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _likeButton;
 }
@@ -374,20 +378,6 @@ BOOL isAllTheSilence;//全体禁言
         if ([message.conversationId isEqualToString:_chatroomId]) {
             if (message.timestamp < _curtime) {
                 continue;
-            }
-            EMCmdMessageBody *body = (EMCmdMessageBody*)message.body;
-            if (body) {
-                if ([body.action isEqualToString:kGiftAction]) {
-                    if (_delegate && [_delegate respondsToSelector:@selector(didReceiveGiftWithCMDMessage:)]) {
-                        [_delegate didReceiveGiftWithCMDMessage:message];
-                    }
-                }
-                
-                if ([body.action isEqualToString:kPraiseAction]) {
-                    if (_delegate && [_delegate respondsToSelector:@selector(didReceivePraiseMessage:)]) {
-                        [_delegate didReceivePraiseMessage:message];
-                    }
-                }
             }
         }
     }
@@ -659,7 +649,7 @@ BOOL isAllTheSilence;//全体禁言
 }
 
 #pragma mark - private
-
+//自定义消息：礼物/赞 消息
 - (EMMessage *)_sendCustomMessage:(NSString *)text
                            num:(NSInteger)num
                              to:(NSString *)toUser
@@ -669,7 +659,7 @@ BOOL isAllTheSilence;//全体禁言
     EMMessageBody *body;
     NSMutableDictionary *extDic = [[NSMutableDictionary alloc]init];
     if (msgType == customMessageType_praise) {
-        [extDic setObject:@1 forKey:@"num"];
+        [extDic setObject:@"1" forKey:@"num"];
         body = [[EMCustomMessageBody alloc]initWithEvent:@"chatroom_like" ext:extDic];
     } else if (msgType == customMessageType_gift){
         [extDic setObject:text forKey:@"id"];
@@ -690,11 +680,13 @@ BOOL isAllTheSilence;//全体禁言
 
 {
     EMMessageBody *body;
+    //弹幕消息
     if (_isBarrageInfo) {
         NSMutableDictionary *extDic = [[NSMutableDictionary alloc]init];
         [extDic setObject:text forKey:@"txt"];
         body = [[EMCustomMessageBody alloc]initWithEvent:@"chatroom_barrage" ext:extDic];
     } else {
+        //文本消息
         body = [[EMTextMessageBody alloc] initWithText:text];
     }
     NSString *from = [[EMClient sharedClient] currentUsername];
@@ -823,7 +815,7 @@ BOOL isAllTheSilence;//全体禁言
     [self _setSendState:YES];
     [self _willShowInputTextViewToHeight:[self _getTextViewContentH:self.textView] refresh:YES];
 }
-
+//文本/弹幕消息
 - (void)sendText
 {
     if (self.textView.text.length > 0) {
@@ -865,20 +857,7 @@ BOOL isAllTheSilence;//全体禁言
         _changeCameraButton.selected = !_changeCameraButton.selected;
     }
 }
-
-/*
-- (void)adminAction
-{
-    if (_delegate && [_delegate respondsToSelector:@selector(didSelectAdminButton:)]) {
-        BOOL isOwner = NO;
-        if (_chatroom && _chatroom.permissionType == EMChatroomPermissionTypeOwner) {
-            isOwner = YES;
-        }
-        [_delegate didSelectAdminButton:isOwner];
-        _adminButton.selected = !_adminButton.selected;
-    }
-}*/
-
+//发送礼物
 - (void)sendGiftAction:(NSString *)giftId
                    num:(NSInteger)num
                     completion:(void (^)(BOOL success))aCompletion
@@ -903,11 +882,13 @@ BOOL isAllTheSilence;//全体禁言
         aCompletion(ret);
     }];
 }
-
+//赞
 - (void)praiseAction:(UIButton *)sender
 {
-    self.likeButton.selected = !self.likeButton.selected;
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_uploadPraiseCountToServer) object:nil];
+    if (_praiseInterval != 3) {
+        return;
+    }
+    [self startTimer];
     EMMessage *message = [self _sendCustomMessage:nil num:0 to:_chatroomId messageType:EMChatTypeChatRoom customMsgType:customMessageType_praise];
     __weak EaseChatView *weakSelf = self;
     [[EMClient sharedClient].chatManager sendMessage:message progress:NULL completion:^(EMMessage *message, EMError *error) {
@@ -925,6 +906,29 @@ BOOL isAllTheSilence;//全体禁言
             [MBProgressHUD showError:@"点赞失败" toView:weakSelf];
         }
     }];
+}
+
+- (void)startTimer {
+    [self stopTimer];
+    _praiseInterval = 3;
+    _timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(setupPraiseInterval) userInfo:nil repeats:YES];
+    [_timer fire];
+}
+
+- (void)stopTimer {
+    if (_timer) {
+        [_timer invalidate];
+        _timer = nil;
+    }
+}
+
+- (void)setupPraiseInterval{
+    if(_praiseInterval < 1){
+        [self stopTimer];
+        _praiseInterval = 3;
+        return;
+    }
+    _praiseInterval -= 1;
 }
 
 - (void)exitAction
@@ -947,17 +951,6 @@ BOOL isAllTheSilence;//全体禁言
             [_delegate didSelectGiftButton:NO];
         }
     }
-}
-
-- (void)_uploadPraiseCountToServer
-{
-    [[EaseHttpManager sharedInstance] savePraiseCountToServerWithRoomId:_room.roomId
-                                                                  count:_praiseCount
-                                                             completion:^(NSInteger count, BOOL success) {
-                                                                 if (success) {
-                                                                     _praiseCount = 0;
-                                                                 }
-                                                             }];
 }
 
 #pragma mark - public
@@ -1013,25 +1006,6 @@ BOOL isAllTheSilence;//全体禁言
                                                        }
                                                        aCompletion(ret);
                                                    }];
-}
-
-- (void)sendGiftWithId:(NSString*)giftId
-{
-    EMMessage *message = [self _sendCMDMessageTo:_chatroomId messageType:EMChatTypeChatRoom messageExt:nil action:kGiftAction];
-    [[EMClient sharedClient].chatManager sendMessage:message progress:nil completion:^(EMMessage *message, EMError *error) {
-        if (!error) {
-            EMCmdMessageBody *body = (EMCmdMessageBody*)message.body;
-            if (body) {
-                if ([body.action isEqualToString:kGiftAction]) {
-                    if (_delegate && [_delegate respondsToSelector:@selector(didReceiveGiftWithCMDMessage:)]) {
-                        [_delegate didReceiveGiftWithCMDMessage:message];
-                    }
-                }
-            }
-        } else {
-            //发送失败
-        }
-    }];
 }
 
 - (void)sendMessageAtWithUsername:(NSString *)username

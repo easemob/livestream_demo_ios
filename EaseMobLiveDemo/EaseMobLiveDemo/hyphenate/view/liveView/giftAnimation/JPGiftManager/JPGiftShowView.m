@@ -13,6 +13,11 @@
 static const NSInteger animationTime = 5;
 
 @interface JPGiftShowView()
+{
+    NSInteger _num;
+    NSTimer *_timer;
+    NSInteger _refreshInterval;//刷新间隔
+}
 @property(nonatomic,strong) UIImageView *xImgView;
 @end
 
@@ -128,15 +133,47 @@ static const NSInteger animationTime = 5;
     
     _giftCount = giftCount;
     self.currentGiftCount += giftCount;
-    self.countLabel.text = [NSString stringWithFormat:@"%ld",(long)self.currentGiftCount];
+    [self startTimer];
     NSLog(@"累计礼物数 %zd",self.currentGiftCount);
-    if (self.currentGiftCount > 1) {
-        [self p_SetAnimation:self.countLabel];
-        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hiddenGiftShowView) object:nil];//可以取消成功。
-        [self performSelector:@selector(hiddenGiftShowView) withObject:nil afterDelay:animationTime];
-        
-    }else {
-        [self performSelector:@selector(hiddenGiftShowView) withObject:nil afterDelay:animationTime];
+}
+
+- (void)startTimer {
+    [self stopTimer];
+    _num = 1;
+    //ios设备最快刷新60hz 60次/秒
+    if (self.currentGiftCount >= 120) {
+        _refreshInterval = (NSInteger)(self.currentGiftCount / 120);
+    } else {
+        _refreshInterval = 1;
+    }
+    double _timeInterval = 2 / self.currentGiftCount;
+    _timer = [NSTimer scheduledTimerWithTimeInterval:_timeInterval target:self selector:@selector(setupBtnText) userInfo:nil repeats:YES];
+    [_timer fire];
+}
+
+- (void)stopTimer {
+    if (_timer) {
+        [_timer invalidate];
+        _timer = nil;
+    }
+}
+
+- (void)setupBtnText{
+    self.countLabel.text = [NSString stringWithFormat:@"%ld",(long)_num];
+    if(_num >= self.currentGiftCount){
+        [self stopTimer];
+        if (self.currentGiftCount > 1) {
+            [self p_SetAnimation:self.countLabel];
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hiddenGiftShowView) object:nil];//可以取消成功。
+            [self performSelector:@selector(hiddenGiftShowView) withObject:nil afterDelay:animationTime];
+            
+        }else {
+            [self performSelector:@selector(hiddenGiftShowView) withObject:nil afterDelay:animationTime];
+        }
+    }
+    _num += _refreshInterval;
+    if (_num > self.currentGiftCount) {
+        _num = self.currentGiftCount;
     }
 }
 

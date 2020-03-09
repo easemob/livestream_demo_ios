@@ -49,7 +49,11 @@ NSMutableDictionary *anchorInfoDic;//直播间主播本应用显示信息库
     if (isAutoLogin) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"loginStateChange" object:@YES];
     } else {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"loginStateChange" object:@NO];
+        if (!EaseDefaultDataHelper.shared.isInitiativeLogin) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"autoRegistAccount" object:nil];
+        } else {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"loginStateChange" object:@NO];
+        }
     }
     
     [[EMClient sharedClient] addDelegate:self delegateQueue:nil];

@@ -198,7 +198,7 @@ extern BOOL isAllTheSilence;
 
 @end
 
-extern bool isAllTheSilence;
+extern BOOL isAllTheSilence;
 @implementation EaseAdminView
 
 - (instancetype)initWithChatroomId:(NSString*)chatroomId
@@ -255,7 +255,7 @@ extern bool isAllTheSilence;
         _adminListBtn.frame = CGRectMake(0, 0, KScreenWidth/3, kButtonDefaultHeight);
         [_adminListBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_adminListBtn setTitle:@"观众" forState:UIControlStateNormal];
-        [_adminListBtn.titleLabel setFont:[UIFont fontWithName:@"阿里巴巴普惠体-R" size:15.f]];
+        [_adminListBtn.titleLabel setFont:[UIFont fontWithName:@"Alibaba-PuHuiTi" size:15.f]];
         _adminListBtn.tag = 100;
         [_adminListBtn addSubview:self.auidenceImg];
         [_adminListBtn addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -271,7 +271,7 @@ extern bool isAllTheSilence;
         //[_whitelistBtn setTitle:NSLocalizedString(@"profile.block", @"Block") forState:UIControlStateNormal];
         [_whitelistBtn setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.59] forState:UIControlStateNormal];
         [_whitelistBtn setTitle:@"白名单" forState:UIControlStateNormal];
-        [_whitelistBtn.titleLabel setFont:[UIFont fontWithName:@"阿里巴巴普惠体-R" size:15.f]];
+        [_whitelistBtn.titleLabel setFont:[UIFont fontWithName:@"Alibaba-PuHuiTi" size:15.f]];
         _whitelistBtn.tag = 101;
         [_whitelistBtn addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -286,7 +286,7 @@ extern bool isAllTheSilence;
         //[_muteListBtn setTitle:NSLocalizedString(@"profile.mute", @"Mute") forState:UIControlStateNormal];
         [_muteListBtn setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.59] forState:UIControlStateNormal];
         [_muteListBtn setTitle:@"观众禁言" forState:UIControlStateNormal];
-        [_muteListBtn.titleLabel setFont:[UIFont fontWithName:@"阿里巴巴普惠体-R" size:15.f]];
+        [_muteListBtn.titleLabel setFont:[UIFont fontWithName:@"Alibaba-PuHuiTi" size:15.f]];
         _muteListBtn.tag = 102;
         [_muteListBtn addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -454,14 +454,16 @@ extern bool isAllTheSilence;
 }
 
 extern NSMutableDictionary*anchorInfoDic;
+extern NSArray<NSString*> *nickNameArray;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSMutableDictionary *anchorInfo = [anchorInfoDic objectForKey:_chatroom.chatroomId];
     EaseAdminCell *cell;
-    NSString *username = nil;
+    int random = (arc4random() % 100);
+    NSString *username = nickNameArray[random];
     if (tableView == _adminTableView) {
         static NSString *CellIdentifierMember = @"audience";
-        username = [_memberList objectAtIndex:indexPath.row];
+        NSString *tempUsername = [_memberList objectAtIndex:indexPath.row];
         cell = (EaseAdminCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifierMember];
         if (cell == nil) {
             cell = [[EaseAdminCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierMember];
@@ -473,9 +475,8 @@ extern NSMutableDictionary*anchorInfoDic;
         } else {
             cell.anchorIdentity.hidden = YES;
         }
-        
         cell.textLabel.text = username;
-        if ([username isEqualToString:_chatroom.owner] && [username isEqualToString:EMClient.sharedClient.currentUsername]){
+        if ([tempUsername isEqualToString:_chatroom.owner] && [tempUsername isEqualToString:EMClient.sharedClient.currentUsername]){
             cell.muteSwitch.hidden = NO;
             cell.clickButton.hidden = NO;
             cell.textLabel.text = [anchorInfo objectForKey:kBROADCASTING_CURRENT_ANCHOR_NICKNAME];
@@ -483,7 +484,7 @@ extern NSMutableDictionary*anchorInfoDic;
             cell.muteSwitch.hidden = YES;
             cell.clickButton.hidden = YES;
         }
-        if ([username isEqualToString:EMClient.sharedClient.currentUsername]) {
+        if ([tempUsername isEqualToString:EMClient.sharedClient.currentUsername]) {
             cell.textLabel.text = EaseDefaultDataHelper.shared.defaultNickname;
         }
         __weak typeof(self) weakSelf = self;
@@ -499,7 +500,7 @@ extern NSMutableDictionary*anchorInfoDic;
         if (cell == nil) {
             cell = [[EaseAdminCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         }
-        username = [_muteList objectAtIndex:indexPath.row];
+        //username = [_muteList objectAtIndex:indexPath.row];
         cell.textLabel.text = username;
         [cell.clickButton setTitle:@"解禁" forState:UIControlStateNormal];
         [cell.clickButton addTarget:self action:@selector(removeMuteAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -513,7 +514,7 @@ extern NSMutableDictionary*anchorInfoDic;
         if (cell == nil) {
             cell = [[EaseAdminCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         }
-        username = [_whitelist objectAtIndex:indexPath.row];
+        //username = [_whitelist objectAtIndex:indexPath.row];
         cell.textLabel.text = username;
         [cell.clickButton setTitle:@"删除" forState:UIControlStateNormal];
         [cell.clickButton addTarget:self action:@selector(removeWhitelistAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -522,7 +523,7 @@ extern NSMutableDictionary*anchorInfoDic;
         cell.mutingLabel.hidden = YES;
     }
     
-    int random = (arc4random() % 7) + 1;
+    random = (arc4random() % 7) + 1;
     cell.imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"avatat_%d",random]];
     cell.clickButton.tag = indexPath.row;
    

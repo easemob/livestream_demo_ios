@@ -59,7 +59,6 @@
 - (void)leaveChatroomWithIsCount:(BOOL)aIsCount
                       completion:(void (^)(BOOL success))aCompletion;
 
-- (void)sendGiftWithId:(NSString*)giftId;
 
 - (void)sendMessageAtWithUsername:(NSString*)username;
 

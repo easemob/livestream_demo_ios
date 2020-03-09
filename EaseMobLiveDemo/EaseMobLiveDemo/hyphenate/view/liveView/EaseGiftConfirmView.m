@@ -81,7 +81,7 @@
         make.width.equalTo(@46);
     }];
     UILabel *nameLabel = [[UILabel alloc]init];
-    nameLabel.text = [NSString stringWithFormat:@"%lu个 %@",_giftNum,self.giftCell.nameLabel.text];
+    nameLabel.text = [NSString stringWithFormat:@"%ld个 %@",(long)_giftNum,self.giftCell.nameLabel.text];
     nameLabel.textColor = [UIColor blackColor];
     nameLabel.font = [UIFont systemFontOfSize:18.0];
     [memberView addSubview:nameLabel];

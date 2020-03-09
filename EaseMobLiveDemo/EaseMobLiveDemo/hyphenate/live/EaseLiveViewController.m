@@ -10,8 +10,6 @@
 
 #import "UCloudMediaPlayer.h"
 #import "CameraServer.h"
-#import "UCloudMediaViewController.h"
-#import "PlayerManager.h"
 #import "EaseChatView.h"
 #import "AppDelegate.h"
 #import "EaseHeartFlyView.h"
@@ -49,8 +47,6 @@
     BOOL _enableAdmin;
 }
 
-@property (nonatomic, strong) PlayerManager *playerManager;
-
 @property (nonatomic, strong) UIButton *sendButton;
 @property (nonatomic, strong) EaseChatView *chatview;
 @property (nonatomic, strong) EaseLiveHeaderListView *headerListView;
@@ -87,16 +83,9 @@
     [self.liveView addSubview:self.chatview];
     [self.liveView addSubview:self.headerListView];
     //[self.liveView addSubview:self.roomNameLabel];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noti:) name:UCloudPlayerPlaybackDidFinishNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
     
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
-    self.playerManager = [[PlayerManager alloc] init];
-    self.playerManager.retryConnectNumber = 0;
-    self.playerManager.view = self.view;
-    self.playerManager.viewContorller = self;
-    float height = self.view.frame.size.height;
-    [self.playerManager setPortraitViewHeight:height];
 
     __weak EaseLiveViewController *weakSelf = self;
     [self.chatview joinChatroomWithIsCount:YES
@@ -106,16 +95,6 @@
                                         _chatroom = [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:_room.chatroomId error:nil];
                                         [[EaseHttpManager sharedInstance] getLiveRoomWithRoomId:_room.roomId
                                                                                      completion:^(EaseLiveRoom *room, BOOL success) {
-                                                                                         if (success) {
-                                                                                             _room = room;
-                                                                                             NSString *path = _room.session.mobilepullstream;
-                                                                                             [weakSelf.playerManager buildMediaPlayer:path];
-                                                                                         } else {
-                                                                                             NSString *path = _room.session.mobilepullstream;
-                                                                                             [weakSelf.playerManager buildMediaPlayer:path];
-                                                                                         }
-                                                                                         [weakSelf.view bringSubviewToFront:weakSelf.liveView];
-                                                                                         [weakSelf.view layoutSubviews];
                                                                                      }];
                                     } else {
                                         [weakSelf showHint:@"加入聊天室失败"];
@@ -307,7 +286,7 @@
     int index = [[giftid substringFromIndex:5] intValue];
     NSDictionary *dict = EaseLiveGiftHelper.sharedInstance.giftArray[index-1];
     cellModel.icon = [UIImage imageNamed:(NSString *)[dict allKeys][0]];
-    cellModel.name = EaseLiveGiftHelper.sharedInstance.giftArray[index-1];
+    cellModel.name = NSLocalizedString((NSString *)[dict allKeys][0], @"");
     cellModel.username = msg.from;
     cellModel.count = &(count);
     [self sendGiftAction:cellModel];
@@ -330,8 +309,10 @@
     __weak typeof(self) weakself = self;
     [confirmView setDoneCompletion:^(BOOL aConfirm,JPGiftCellModel *giftModel) {
         if (aConfirm) {
+            //发送礼物消息
             [weakself.chatview sendGiftAction:giftModel.id num:*(giftModel.count) completion:^(BOOL success) {
                 if (success) {
+                    //显示礼物UI
                     [weakself sendGiftAction:giftModel];
                 }
             }];
@@ -495,14 +476,6 @@
 
 - (void)closeButtonAction
 {
-    [self.playerManager.mediaPlayer.player.view removeFromSuperview];
-    [self.playerManager.controlVC.view removeFromSuperview];
-    [self.playerManager.mediaPlayer.player shutdown];
-    self.playerManager.mediaPlayer = nil;
-    self.playerManager = nil;
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UCloudPlayerPlaybackDidFinishNotification object:nil];
-    
     __weak typeof(self) weakSelf =  self;
     NSString *chatroomId = [_room.chatroomId copy];
     [weakSelf.chatview leaveChatroomWithIsCount:YES
@@ -515,23 +488,6 @@
     
     [_burstTimer invalidate];
     _burstTimer = nil;
-}
-
-- (void)noti:(NSNotification *)noti
-{
-    if ([noti.name isEqualToString:UCloudPlayerPlaybackDidFinishNotification]) {
-        MPMovieFinishReason reson = [[noti.userInfo objectForKey:MPMoviePlayerPlaybackDidFinishReasonUserInfoKey] integerValue];
-        if (reson == MPMovieFinishReasonPlaybackEnded) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"直播中断" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alert show];
-        }
-        else if (reson == MPMovieFinishReasonPlaybackError) {
-            if ([self.playerManager respondsToSelector:@selector(restartPlayer)]) {
-                [self.playerManager performSelector:@selector(restartPlayer) withObject:nil afterDelay:15.f];
-            }
-            [MBProgressHUD showError:@"视频播放错误，请稍候再试" toView:self.view];
-        }
-    }
 }
 
 - (void)keyboardWillChangeFrame:(NSNotification *)notification

@@ -25,7 +25,7 @@
 - (UIView*)userInfo
 {
     if (_userInfo == nil) {
-        _userInfo = [[UIView alloc]initWithFrame:CGRectMake(self.width-220, (65-20)/2, 120, 20)];
+        _userInfo = [[UIView alloc]initWithFrame:CGRectMake(self.width-280, (65-20)/2, 120, 20)];
         _userInfo.backgroundColor = [UIColor clearColor];
         UIImageView *avatar = [[UIImageView alloc]initWithFrame:CGRectMake(self.width-220, 1, 18, 18)];
         avatar.image = [UIImage imageNamed:@"default_anchor_avatar"];
@@ -168,7 +168,7 @@
         [_giftListBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_giftListBtn setTitle:@"礼物记录" forState:UIControlStateNormal];
         _giftListBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
-        [_giftListBtn.titleLabel setFont:[UIFont fontWithName:@"阿里巴巴普惠体-R" size:14.f]];
+        [_giftListBtn.titleLabel setFont:[UIFont fontWithName:@"Alibaba-PuHuiTi" size:14.f]];
         _giftListBtn.tag = 100;
         [_giftListBtn addSubview:self.giftImg];
     }
@@ -205,7 +205,7 @@
         if (cell == nil) {
             cell = [[EaseGiftlistCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierMember];
         }
-        cell.textLabel.text = [NSString stringWithFormat:@"X %@",tempArray[2]];
+        cell.textLabel.text = [NSString stringWithFormat:@"x%@",tempArray[2]];
         NSString *giftid = (NSString*)tempArray[0];
         int index = [[giftid substringFromIndex:5] intValue];
         NSDictionary *dict = EaseLiveGiftHelper.sharedInstance.giftArray[index-1];

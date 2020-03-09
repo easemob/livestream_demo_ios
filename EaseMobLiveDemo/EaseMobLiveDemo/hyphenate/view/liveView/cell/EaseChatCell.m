@@ -11,6 +11,7 @@
 #import "Masonry.h"
 #import "EaseEmojiHelper.h"
 #import "EaseLiveGiftHelper.h"
+#import "EaseDefaultDataHelper.h"
 
 @interface EaseChatCell ()
 @property (nonatomic,strong)UIView *blankView;
@@ -55,6 +56,7 @@
     return text;
 }
 
+extern NSArray<NSString*> *nickNameArray;
 + (NSMutableAttributedString *)latestMessageTitleForConversationModel:(EMMessage*)lastMessage;
 {
     NSString *latestMessageTitle = @"";
@@ -86,7 +88,7 @@
                 if ([customBody.event isEqualToString:@"chatroom_barrage"]) {
                     latestMessageTitle = (NSString*)[customBody.ext objectForKey:@"txt"];
                 } else if ([customBody.event isEqualToString:@"chatroom_like"]) {
-                    latestMessageTitle = @"给主播点了一个赞";
+                    latestMessageTitle = [NSString stringWithFormat:@"给主播点了%ld个赞",(long)[(NSString*)[customBody.ext objectForKey:@"num"] integerValue]];
                 } else if ([customBody.event isEqualToString:@"chatroom_gift"]) {
                     NSString *giftid = [customBody.ext objectForKey:@"id"];
                     int index = [[giftid substringFromIndex:5] intValue];
@@ -99,22 +101,27 @@
         }
     }
     
+    int random = (arc4random() % 100);
+    NSString *randomNickname = nickNameArray[random];
+    if ([lastMessage.from isEqualToString:EMClient.sharedClient.currentUsername]) {
+        randomNickname = EaseDefaultDataHelper.shared.defaultNickname;
+    }
     NSMutableAttributedString *attributedStr = [[NSMutableAttributedString alloc] initWithString:@""];
     if (lastMessage.ext) {
         if ([lastMessage.ext objectForKey:@"em_leave"] || [lastMessage.ext objectForKey:@"em_join"]) {
-            latestMessageTitle = [NSString stringWithFormat:@"%@ %@",lastMessage.from,latestMessageTitle];
+            latestMessageTitle = [NSString stringWithFormat:@"%@ %@",randomNickname,latestMessageTitle];
             attributedStr = [[NSMutableAttributedString alloc] initWithString:latestMessageTitle];
-            [attributedStr setAttributes:@{NSForegroundColorAttributeName : [[UIColor whiteColor] colorWithAlphaComponent:0.6]} range:NSMakeRange(lastMessage.from.length + 1, latestMessageTitle.length - lastMessage.from.length - 1)];
+            [attributedStr setAttributes:@{NSForegroundColorAttributeName : [[UIColor whiteColor] colorWithAlphaComponent:0.6]} range:NSMakeRange(randomNickname.length + 1, latestMessageTitle.length - randomNickname.length - 1)];
         } else {
-            latestMessageTitle = [NSString stringWithFormat:@"%@: %@",lastMessage.from,latestMessageTitle];
+            latestMessageTitle = [NSString stringWithFormat:@"%@: %@",randomNickname,latestMessageTitle];
             attributedStr = [[NSMutableAttributedString alloc] initWithString:latestMessageTitle];
-            NSRange range = [[attributedStr string] rangeOfString:[NSString stringWithFormat:@"%@: " ,lastMessage.from] options:NSCaseInsensitiveSearch];
+            NSRange range = [[attributedStr string] rangeOfString:[NSString stringWithFormat:@"%@: " ,randomNickname] options:NSCaseInsensitiveSearch];
             [attributedStr addAttribute:NSForegroundColorAttributeName value:RGBACOLOR(255, 199, 0, 1) range:NSMakeRange(range.length + range.location, attributedStr.length - (range.length + range.location))];
         }
     } else {
-        latestMessageTitle = [NSString stringWithFormat:@"%@: %@",lastMessage.from,latestMessageTitle];
+        latestMessageTitle = [NSString stringWithFormat:@"%@: %@",randomNickname,latestMessageTitle];
         attributedStr = [[NSMutableAttributedString alloc] initWithString:latestMessageTitle];
-        NSRange range = [[attributedStr string] rangeOfString:[NSString stringWithFormat:@"%@: " ,lastMessage.from] options:NSCaseInsensitiveSearch];
+        NSRange range = [[attributedStr string] rangeOfString:[NSString stringWithFormat:@"%@: " ,randomNickname] options:NSCaseInsensitiveSearch];
         [attributedStr addAttribute:NSForegroundColorAttributeName value:RGBACOLOR(255, 199, 0, 1) range:NSMakeRange(range.length + range.location, attributedStr.length - (range.length + range.location))];
         if (lastMessage.body.type == EMMessageBodyTypeCustom) {
             EMCustomMessageBody *customBody = (EMCustomMessageBody*)lastMessage.body;
