@@ -50,6 +50,7 @@ static const NSInteger animationTime = 5;
     self.bgView = [[UIView alloc] initWithFrame:CGRectMake(5, 0, self.frame.size.width, showGiftView_GiftIcon_H)];
     self.bgView.backgroundColor = [UIColor blackColor];
     self.bgView.layer.cornerRadius = showGiftView_GiftIcon_H*0.5;
+    [self.bgView setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
     [self addSubview:self.bgView];
     
     self.userIconView = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMinX(self.bgView.frame)+showGiftView_UserIcon_LT, showGiftView_UserIcon_LT, showGiftView_UserIcon_WH, showGiftView_UserIcon_WH)];

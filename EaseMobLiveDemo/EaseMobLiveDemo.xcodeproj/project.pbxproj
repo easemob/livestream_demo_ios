@@ -99,8 +99,6 @@
 		3C88C88D241625CA00A34021 /* ic_praised@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C88C88B241625CA00A34021 /* ic_praised@3x.png */; };
 		3C88C890241625EA00A34021 /* ic_praised@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C88C88E241625E900A34021 /* ic_praised@2x.png */; };
 		3C88C891241625EA00A34021 /* ic_praise@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C88C88F241625EA00A34021 /* ic_praise@2x.png */; };
-		3C8AD50A24125BBC002B6464 /* Hyphenate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C8AD50824125BB0002B6464 /* Hyphenate.framework */; };
-		3C8AD50B24125BBC002B6464 /* Hyphenate.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3C8AD50824125BB0002B6464 /* Hyphenate.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3C8AD50E24127AE3002B6464 /* EaseGiftListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8AD50D24127AE2002B6464 /* EaseGiftListView.m */; };
 		3C8AD51024128726002B6464 /* giftrecord@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C8AD50F24128726002B6464 /* giftrecord@2x.png */; };
 		3C8AD51224128730002B6464 /* giftrecord@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C8AD51124128730002B6464 /* giftrecord@3x.png */; };
@@ -245,7 +243,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				3C8AD50B24125BBC002B6464 /* Hyphenate.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -364,7 +361,6 @@
 		3C88C88B241625CA00A34021 /* ic_praised@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_praised@3x.png"; sourceTree = "<group>"; };
 		3C88C88E241625E900A34021 /* ic_praised@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_praised@2x.png"; sourceTree = "<group>"; };
 		3C88C88F241625EA00A34021 /* ic_praise@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_praise@2x.png"; sourceTree = "<group>"; };
-		3C8AD50824125BB0002B6464 /* Hyphenate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Hyphenate.framework; sourceTree = "<group>"; };
 		3C8AD50C24127AE2002B6464 /* EaseGiftListView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseGiftListView.h; sourceTree = "<group>"; };
 		3C8AD50D24127AE2002B6464 /* EaseGiftListView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseGiftListView.m; sourceTree = "<group>"; };
 		3C8AD50F24128726002B6464 /* giftrecord@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "giftrecord@2x.png"; sourceTree = "<group>"; };
@@ -753,7 +749,6 @@
 				D23E25321CE0380A007506CB /* MobileCoreServices.framework in Frameworks */,
 				D23E252E1CE0379E007506CB /* ImageIO.framework in Frameworks */,
 				D23E252C1CE03775007506CB /* libsqlite3.tbd in Frameworks */,
-				3C8AD50A24125BBC002B6464 /* Hyphenate.framework in Frameworks */,
 				E9271D451C3CC752000DBADF /* QuartzCore.framework in Frameworks */,
 				E9271D431C3CC749000DBADF /* OpenGLES.framework in Frameworks */,
 				E9271D411C3CC735000DBADF /* CoreVideo.framework in Frameworks */,
@@ -1476,7 +1471,6 @@
 		E93E8F451CC9D16B0076EC23 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3C8AD50824125BB0002B6464 /* Hyphenate.framework */,
 				D2FD8DC71E5C6A3B0097B20D /* libstdc++.tbd */,
 				D293607E1D192EB8003F14C6 /* libiconv.tbd */,
 				3C72AD69240F9559007BC99F /* CoreServices.framework */,
@@ -1984,6 +1978,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2.0;
 				DEVELOPMENT_TEAM = 499WYUV8Q2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2007,6 +2002,7 @@
 					"$(PROJECT_DIR)/EaseMobLiveDemo/lib/Player",
 					"$(PROJECT_DIR)/EaseMobLiveDemo/lib/Recorder",
 				);
+				MARKETING_VERSION = 1.0.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -2029,6 +2025,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2.0;
 				DEVELOPMENT_TEAM = 499WYUV8Q2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2051,6 +2048,7 @@
 					"$(PROJECT_DIR)/EaseMobLiveDemo/lib/Player",
 					"$(PROJECT_DIR)/EaseMobLiveDemo/lib/Recorder",
 				);
+				MARKETING_VERSION = 1.0.0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
