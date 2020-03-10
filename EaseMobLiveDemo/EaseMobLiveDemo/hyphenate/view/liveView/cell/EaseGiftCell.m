@@ -20,7 +20,7 @@
     if (self) {
         [self addSubview:self.giftImageView];
         [self addSubview:self.nameLabel];
-        [self addSubview:self.priceLabel];
+        //[self addSubview:self.priceLabel];
         self.layer.cornerRadius = 2;
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapAction:)];
         [self.contentView addGestureRecognizer:tap];
