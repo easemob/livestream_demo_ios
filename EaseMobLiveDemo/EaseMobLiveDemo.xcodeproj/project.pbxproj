@@ -370,7 +370,6 @@
 		3C9F89E9240E3C3C00653B2F /* EaseAudienceBehaviorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseAudienceBehaviorView.h; sourceTree = "<group>"; };
 		3C9F89EA240E3C3C00653B2F /* EaseAudienceBehaviorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseAudienceBehaviorView.m; sourceTree = "<group>"; };
 		3EF28DDAEBA5A9451CF1F4AF /* Pods-EaseMobLiveDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EaseMobLiveDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo.debug.xcconfig"; sourceTree = "<group>"; };
-		9A41D9499C63F9EC6616B282 /* libPods-UCloudMediaRecorderDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-UCloudMediaRecorderDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D21C545F1E658F8B0019A341 /* EaseAdminView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EaseAdminView.h; sourceTree = "<group>"; };
 		D21C54601E658F8B0019A341 /* EaseAdminView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EaseAdminView.m; sourceTree = "<group>"; };
 		D23C12951E6FEED4007C5012 /* EaseLiveRoom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EaseLiveRoom.h; sourceTree = "<group>"; };
@@ -1487,7 +1486,6 @@
 				E96627791BE75E5000FA5B03 /* AVFoundation.framework */,
 				E96627771BE75E4900FA5B03 /* VideoToolbox.framework */,
 				E96627751BE75E4000FA5B03 /* AudioToolbox.framework */,
-				9A41D9499C63F9EC6616B282 /* libPods-UCloudMediaRecorderDemo.a */,
 				DF86793993FB1D45A5254772 /* libPods-EaseMobLiveDemo.a */,
 			);
 			name = Frameworks;
