@@ -41,8 +41,8 @@ NSString *defaultPwd = @"000000";//默认密码
     [self.view addSubview:welcomeLabel];
     [welcomeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(self.view).offset(-120);
-        make.left.equalTo(self.view).offset(50);
-        make.right.equalTo(self.view).offset(-50);
+        make.left.equalTo(self.view).offset(40);
+        make.right.equalTo(self.view).offset(-40);
     }];
     welcomeLabel.textAlignment = NSTextAlignmentCenter;
     NSMutableDictionary *textDict = [NSMutableDictionary dictionary];
@@ -57,7 +57,7 @@ NSString *defaultPwd = @"000000";//默认密码
 
 //游客自动注册账户
 - (void)autoRegistAccount
-{
+{ 
     MBProgressHUD *hud = [MBProgressHUD showMessag:@"" toView:nil];
     __weak MBProgressHUD *weakHud = hud;
     NSString *uuidAccount = [UIDevice currentDevice].identifierForVendor.UUIDString;//默认账户id
@@ -65,6 +65,7 @@ NSString *defaultPwd = @"000000";//默认密码
      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
          [[EMClient sharedClient] registerWithUsername:uuidAccount password:defaultPwd completion:^(NSString *aUsername, EMError *aError) {
              [[EMClient sharedClient] loginWithUsername:(NSString *)uuidAccount password:defaultPwd completion:^(NSString *aUsername, EMError *aError) {
+                 //通知 接收所在的线程 是基于 发送通知 所在的线程。单由于接收通知在appdelegate主线程里，所以发送通知必须切换到主线程。
                  dispatch_async(dispatch_get_main_queue(), ^{
                      [weakHud hideAnimated:YES];
                       if (!aError) {
