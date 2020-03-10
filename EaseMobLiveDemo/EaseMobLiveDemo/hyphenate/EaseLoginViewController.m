@@ -10,10 +10,12 @@
 
 #import "UIViewController+DismissKeyboard.h"
 #import "EaseSignUpViewController.h"
+#import "EaseDefaultDataHelper.h"
 
 #define kDefaultHeight 45.f
 #define kDefaultTextHeight 50.f
 #define kDefaultWidth (KScreenWidth - 75.f)
+NSString *defaultPwd = @"000000";//默认密码
 
 @interface EaseLoginViewController ()<UITextFieldDelegate>
 
@@ -35,6 +37,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    if (!EaseDefaultDataHelper.shared.isInitiativeLogin) {
+        [self autoRegistAccount];
+        return;
+    }
     
     self.title = NSLocalizedString(@"title.login", @"Log in");
     
@@ -126,6 +133,24 @@
         _loginButton.layer.cornerRadius = 4.f;
     }
     return _loginButton;
+}
+
+//游客自动注册账户
+- (void)autoRegistAccount
+{
+    NSString *uuidAccount = [UIDevice currentDevice].identifierForVendor.UUIDString;//默认账户id
+    uuidAccount = [[uuidAccount stringByReplacingOccurrencesOfString:@"-" withString:@""] lowercaseString];
+     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+         [[EMClient sharedClient] registerWithUsername:uuidAccount password:defaultPwd];
+         EMError *error = [[EMClient sharedClient] loginWithUsername:uuidAccount password:defaultPwd];
+          if (!error) {
+              NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+              [ud setObject:[EMClient sharedClient].currentUsername forKey:kLiveLastLoginUsername];
+              [ud synchronize];
+              [[EMClient sharedClient].options setIsAutoLogin:YES];
+              [[NSNotificationCenter defaultCenter] postNotificationName:@"loginStateChange" object:@YES];
+         }
+     });
 }
 
 - (void)registAction

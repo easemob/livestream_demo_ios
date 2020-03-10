@@ -33,7 +33,7 @@
     if (_backButton == nil) {
         _backButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _backButton.frame = CGRectMake(0, 0, 44.f, 44.f);
-        [_backButton setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+        [_backButton setImage:[UIImage imageNamed:@"icon-backAction"] forState:UIControlStateNormal];
         [_backButton addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _backButton;

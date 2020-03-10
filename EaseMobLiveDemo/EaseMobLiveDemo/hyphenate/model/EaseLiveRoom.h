@@ -10,6 +10,11 @@
 
 #import "EaseLiveSession.h"
 
+typedef enum {
+    offline,
+    ongoing
+} EaseLiveStatus;
+
 @interface EaseLiveRoom : NSObject
 
 /*
@@ -66,6 +71,21 @@
  *  直播场次
  */
 @property (nonatomic, strong) EaseLiveSession *session;
+
+/*
+ *  直播间状态
+ */
+@property (nonatomic) EaseLiveStatus status;
+
+/*
+ *  直播间主播
+ */
+@property (nonatomic, copy) NSString *anchor;
+
+/*
+ *  直播间观众人数
+ */
+@property (nonatomic, assign) NSInteger currentUserCount;
 
 - (instancetype)initWithParameter:(NSDictionary*)parameter;
 

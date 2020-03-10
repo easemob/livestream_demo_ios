@@ -9,7 +9,6 @@
 #import "EaseCreateLiveViewController.h"
 #import "EasePublishViewController.h"
 #import "UIViewController+DismissKeyboard.h"
-#import "EaseLiveRoom.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 
 #define kDefaultHeight 45.f
@@ -56,6 +55,15 @@
     return self;
 }
 
+- (instancetype)initWithLiveroom:(EaseLiveRoom *)liveroom
+{
+    self = [super init];
+    if (self) {
+        _liveRoom = liveroom;
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -66,7 +74,7 @@
     self.view.backgroundColor = RGBACOLOR(251, 251, 251, 1);
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.backBtn];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.relevanceBtn];
+    //self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.relevanceBtn];
     
     [self.view addSubview:self.mainView];
     [self.mainView addSubview:self.coverImageView];
@@ -134,12 +142,12 @@
     if (_backBtn == nil) {
         _backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _backBtn.frame = CGRectMake(0, 0, 70.f, 30.f);
-        [_backBtn setTitle:NSLocalizedString(@"publish.home", @"Home") forState:UIControlStateNormal];
+        //[_backBtn setTitle:NSLocalizedString(@"publish.home", @"Home") forState:UIControlStateNormal];
         [_backBtn setImageEdgeInsets:UIEdgeInsetsMake(0, -20, -5, 0)];
         [_backBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -50, -5, 0)];
         [_backBtn.titleLabel setFont:[UIFont systemFontOfSize:17.f]];
         [_backBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [_backBtn setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+        [_backBtn setImage:[UIImage imageNamed:@"icon-backAction"] forState:UIControlStateNormal];
         [_backBtn addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _backBtn;
@@ -468,32 +476,10 @@
 
 - (void)createAction
 {
-    EaseLiveRoom *liveRoom = [[EaseLiveRoom alloc] init];
-    if (_liveNameTextField.text.length != 0) {
-        liveRoom.title = _liveNameTextField.text;
-    } else {
-        return;
-    }
-    
-    if (_liveDescTextField.text.length != 0) {
-        liveRoom.desc = _liveDescTextField.text;
-    } else {
-        return;
-    }
-    
-    if (_anchorDescTextField.text.length != 0) {
-        liveRoom.custom = _anchorDescTextField.text;
-    }
-    
-    liveRoom.session.anchor = [EMClient sharedClient].currentUsername;
-    
-    if (_coverpictureurl.length != 0){
-        liveRoom.coverPictureUrl = _coverpictureurl;
-    }
-    
     __weak typeof(self) weakSelf = self;
-    MBProgressHUD *hud = [MBProgressHUD showMessag:@"创建中..." toView:self.view];
+    MBProgressHUD *hud = [MBProgressHUD showMessag:@"开始直播..." toView:self.view];
     __weak MBProgressHUD *weakHud = hud;
+    /*
     [[EaseHttpManager sharedInstance] createLiveRoomWithRoom:liveRoom
                                                   completion:^(EaseLiveRoom *room, BOOL success) {
                                                       [weakHud hide:YES];
@@ -507,7 +493,46 @@
                                                       } else {
                                                           [self showHint:@"创建失败"];
                                                       }
-                                                  }];
+                                                  }];*/
+    _liveRoom.anchor = [EMClient sharedClient].currentUsername;
+    [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOffline:_liveRoom completion:^(EaseLiveRoom *room, BOOL success) {
+        [weakHud hide:YES];
+        if (success) {
+            _liveRoom = room;
+            EaseLiveRoom *liveRoom = _liveRoom;
+            if (_liveNameTextField.text.length != 0) {
+                liveRoom.title = _liveNameTextField.text;
+            } else {
+                return;
+            }
+            
+            if (_liveDescTextField.text.length != 0) {
+                liveRoom.desc = _liveDescTextField.text;
+            } else {
+                return;
+            }
+            
+            if (_anchorDescTextField.text.length != 0) {
+                liveRoom.custom = _anchorDescTextField.text;
+            }
+            
+            if (_coverpictureurl.length != 0){
+                liveRoom.coverPictureUrl = _coverpictureurl;
+            }
+            [[EaseHttpManager sharedInstance] modifyLiveRoomWithRoom:liveRoom completion:^(EaseLiveRoom *aRoom, BOOL success) {
+                _liveRoom = aRoom;
+                EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:_liveRoom];
+                [weakSelf presentViewController:publishView
+                                       animated:YES
+                                     completion:^{
+                    [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+                                     }];
+            }];
+        } else {
+            [self showHint:@"开始直播失败"];
+        }
+    }];
+    [EaseHttpManager sharedInstance];
 }
 
 - (void)modifyAction
@@ -563,6 +588,15 @@
     if (_liveRoom.session.status == EaseLiveSessionOngoing) {
         modifyBlock();
     } else if (_liveRoom.session.status == EaseLiveSessionNotStart) {
+        [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOngoing:_liveRoom completion:^(EaseLiveRoom *room, BOOL success) {
+            [weakHud hide:YES];
+            if (success) {
+                modifyBlock();
+            } else {
+                [self showHint:@"开始直播失败"];
+            }
+        }];
+        /*
         [[EaseHttpManager sharedInstance] modifyLiveRoomStatusWithRoomId:_liveRoom.roomId
                                                                   status:EaseLiveSessionOngoing
                                                               completion:^(BOOL success) {
@@ -572,7 +606,7 @@
                                                                       [weakHud hide:YES];
                                                                       [weakSelf showHint:@"创建失败"];
                                                                   }
-                                                              }];
+                                                              }];*/
     } else {
         [[EaseHttpManager sharedInstance] createLiveSessionWithRoom:_liveRoom
                                                          completion:^(EaseLiveRoom *room, BOOL success) {

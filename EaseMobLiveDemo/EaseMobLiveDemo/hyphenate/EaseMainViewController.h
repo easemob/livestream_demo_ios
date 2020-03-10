@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface EaseMainViewController : UITabBarController
+@interface EaseMainViewController : UIViewController
 
 @end

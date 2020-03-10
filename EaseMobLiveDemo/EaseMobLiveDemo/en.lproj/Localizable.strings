@@ -115,3 +115,14 @@
 
 //search
 "search.placeholder" = "Input Room ID";
+
+//gift
+"gift.balloons" = "balloons";
+"gift.bouquet" = "bouquet";
+"gift.box" = "box";
+"gift.cake" = "cake";
+"gift.dog" = "dog";
+"gift.rings" = "rings";
+"gift.rose" = "rose";
+"gift.wishs_come_true" = "wishs_come_true";
+

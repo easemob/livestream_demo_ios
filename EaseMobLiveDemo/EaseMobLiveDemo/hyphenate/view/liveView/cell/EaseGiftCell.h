@@ -8,10 +8,24 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol EaseGiftCellDelegate;
 @interface EaseGiftCell : UICollectionViewCell
+
+@property (nonatomic, strong) UIImageView *giftImageView;
+@property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UILabel *priceLabel;
+
+@property (nonatomic, weak) id<EaseGiftCellDelegate> delegate;
 
 - (void)setGiftWithImageName:(NSString*)imageName
                         name:(NSString*)name
                        price:(NSString*)price;
+
+@end
+
+@protocol EaseGiftCellDelegate <NSObject>
+
+@required
+- (void)giftCellDidSelected:(EaseGiftCell *)aCell;
 
 @end

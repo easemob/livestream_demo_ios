@@ -42,21 +42,16 @@
 
 + (NSMutableAttributedString*)_attributedStringWithMessage:(EMMessage*)message
 {
-    
-    NSString *text = [EaseChatCell latestMessageTitleForConversationModel:message];
-    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
+    NSMutableAttributedString *text = [EaseChatCell latestMessageTitleForConversationModel:message];
+    //NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
     NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
     paraStyle.lineBreakMode = NSLineBreakByWordWrapping;
     NSDictionary *attributes = @{NSParagraphStyleAttributeName: paraStyle,NSFontAttributeName :[UIFont systemFontOfSize:15.0f]};
-    [string addAttributes:attributes range:NSMakeRange(0, string.length)];
-    if ([message.from isEqualToString:[EMClient sharedClient].currentUsername]) {
-        NSRange range = [text rangeOfString:[NSString stringWithFormat:@"%@: " ,[EMClient sharedClient].currentUsername] options:NSCaseInsensitiveSearch];
-        [string addAttribute:NSForegroundColorAttributeName value:RGBACOLOR(25, 163, 255, 1) range:NSMakeRange(range.length + range.location, text.length - (range.length + range.location))];
-    }
-    return string;
+    [text addAttributes:attributes range:NSMakeRange(0, text.length)];
+    return text;
 }
 
-+ (NSString *)latestMessageTitleForConversationModel:(EMMessage*)lastMessage;
++ (NSMutableAttributedString *)latestMessageTitleForConversationModel:(EMMessage*)lastMessage;
 {
     NSString *latestMessageTitle = @"";
     if (lastMessage) {
@@ -87,16 +82,25 @@
         }
     }
     
+    NSMutableAttributedString *attributedStr = [[NSMutableAttributedString alloc] initWithString:@""];
     if (lastMessage.ext) {
         if ([lastMessage.ext objectForKey:@"em_leave"] || [lastMessage.ext objectForKey:@"em_join"]) {
-            latestMessageTitle = [NSString stringWithFormat:@" %@ %@",lastMessage.from,latestMessageTitle];
+            latestMessageTitle = [NSString stringWithFormat:@"%@ %@",lastMessage.from,latestMessageTitle];
+            attributedStr = [[NSMutableAttributedString alloc] initWithString:latestMessageTitle];
+            [attributedStr setAttributes:@{NSForegroundColorAttributeName : [[UIColor whiteColor] colorWithAlphaComponent:0.6]} range:NSMakeRange(lastMessage.from.length + 1, latestMessageTitle.length - lastMessage.from.length - 1)];
         } else {
-            latestMessageTitle = [NSString stringWithFormat:@" %@: %@",lastMessage.from,latestMessageTitle];
+            latestMessageTitle = [NSString stringWithFormat:@"%@: %@",lastMessage.from,latestMessageTitle];
+            attributedStr = [[NSMutableAttributedString alloc] initWithString:latestMessageTitle];
+            NSRange range = [[attributedStr string] rangeOfString:[NSString stringWithFormat:@"%@: " ,lastMessage.from] options:NSCaseInsensitiveSearch];
+            [attributedStr addAttribute:NSForegroundColorAttributeName value:RGBACOLOR(255, 199, 0, 1) range:NSMakeRange(range.length + range.location, attributedStr.length - (range.length + range.location))];
         }
     } else {
-        latestMessageTitle = [NSString stringWithFormat:@" %@: %@",lastMessage.from,latestMessageTitle];
+        latestMessageTitle = [NSString stringWithFormat:@"%@: %@",lastMessage.from,latestMessageTitle];
+        attributedStr = [[NSMutableAttributedString alloc] initWithString:latestMessageTitle];
+        NSRange range = [[attributedStr string] rangeOfString:[NSString stringWithFormat:@"%@: " ,lastMessage.from] options:NSCaseInsensitiveSearch];
+        [attributedStr addAttribute:NSForegroundColorAttributeName value:RGBACOLOR(255, 199, 0, 1) range:NSMakeRange(range.length + range.location, attributedStr.length - (range.length + range.location))];
     }
-    return latestMessageTitle;
+    return attributedStr;
 }
 
 @end

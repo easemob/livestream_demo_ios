@@ -35,15 +35,29 @@
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIButton *liveButton;
+@property (nonatomic) kTabbarItemBehavior tabBarBehavior; //tabbar行为：看直播/开播/设置
 
 @end
 
 @implementation EaseLiveTVListViewController
 
+- (instancetype)initWithBehavior:(kTabbarItemBehavior)tabBarBehavior
+{
+    self = [super init];
+       if (self) {
+           _tabBarBehavior = tabBarBehavior;
+           if (_tabBarBehavior == kTabbarItemTag_Broadcast) {
+               self.title = @"选择直播间开始直播";
+           } else {
+               self.title = nil;
+           }
+       }
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = NSLocalizedString(@"title.live", @"Easemob Live");
     if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
         [self setEdgesForExtendedLayout:UIRectEdgeNone];
     }
@@ -62,6 +76,13 @@
     }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshList:) name:kNotificationRefreshList object:nil];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    if ([[EMClient sharedClient] isConnected]) {
+        [self loadData:YES];
+    }
 }
 
 - (void)dealloc
@@ -88,40 +109,68 @@
     }
     _isLoading = YES;
     __weak EaseLiveTVListViewController *weakSelf = self;
-    [[EaseHttpManager sharedInstance] fetchLiveRoomsOngoingWithCursor:_cursor
-                                                                limit:kDefaultPageSize
-                                                           completion:^(EMCursorResult *result, BOOL success) {
-                                                               if (success) {
-                                                                   if (isHeader) {
-                                                                       [weakSelf.dataArray removeAllObjects];
-                                                                       [weakSelf.dataArray addObjectsFromArray:result.list];
-                                                                       [weakSelf.collectionView reloadData];
-                                                                   } else {
-                                                                       [weakSelf.dataArray addObjectsFromArray:result.list];
-                                                                       [weakSelf.collectionView reloadData];
-                                                                   }
-                                                                   _cursor = result.cursor;
-                                                                   
-                                                                   if ([result.list count] < kDefaultPageSize) {
-                                                                       _noMore = YES;
-                                                                   }
-                                                                   if (_noMore) {
-                                                                       weakSelf.collectionView.mj_footer = nil;
-                                                                   } else {
-                                                                       weakSelf.collectionView.mj_footer = _refreshFooter;
-                                                                   }
-                                                               }
-                                                               
-                                                               [weakSelf _collectionViewDidFinishTriggerHeader:isHeader reload:YES];
-                                                               _isLoading = NO;
-                                                           }];
+    if (self.tabBarBehavior == kTabbarItemTag_Live) {
+        [[EaseHttpManager sharedInstance] fetchLiveRoomsOngoingWithCursor:_cursor
+                                                                       limit:8
+                                                                  completion:^(EMCursorResult *result, BOOL success) {
+                                                                      if (success) {
+                                                                          if (isHeader) {
+                                                                              [weakSelf.dataArray removeAllObjects];
+                                                                              [weakSelf.dataArray addObjectsFromArray:result.list];
+                                                                              [weakSelf.collectionView reloadData];
+                                                                          } else {
+                                                                              [weakSelf.dataArray addObjectsFromArray:result.list];
+                                                                              [weakSelf.collectionView reloadData];
+                                                                          }
+                                                                          _cursor = result.cursor;
+                                                                          
+                                                                          if ([result.list count] < kDefaultPageSize) {
+                                                                              _noMore = YES;
+                                                                          }
+                                                                          if (_noMore) {
+                                                                              weakSelf.collectionView.mj_footer = nil;
+                                                                          } else {
+                                                                              weakSelf.collectionView.mj_footer = _refreshFooter;
+                                                                          }
+                                                                      }
+                                                                      
+                                                                      [weakSelf _collectionViewDidFinishTriggerHeader:isHeader reload:YES];
+                                                                      _isLoading = NO;
+                                                                  }];
+    } else if (self.tabBarBehavior == kTabbarItemTag_Broadcast) {
+        [[EaseHttpManager sharedInstance] fetchLiveRoomsWithCursor:_cursor limit:8 completion:^(EMCursorResult *result, BOOL success) {
+            if (success) {
+                if (isHeader) {
+                    [weakSelf.dataArray removeAllObjects];
+                    [weakSelf.dataArray addObjectsFromArray:result.list];
+                    [weakSelf.collectionView reloadData];
+                } else {
+                    [weakSelf.dataArray addObjectsFromArray:result.list];
+                    [weakSelf.collectionView reloadData];
+                }
+                _cursor = result.cursor;
+                
+                if ([result.list count] < kDefaultPageSize) {
+                    _noMore = YES;
+                }
+                if (_noMore) {
+                    weakSelf.collectionView.mj_footer = nil;
+                } else {
+                    weakSelf.collectionView.mj_footer = _refreshFooter;
+                }
+            }
+            
+            [weakSelf _collectionViewDidFinishTriggerHeader:isHeader reload:YES];
+            _isLoading = NO;
+        }];
+    }
 }
 
 - (void)setupCollectionView
 {
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:self.collectionView];
-    [self.view addSubview:self.liveButton];
+    //[self.view addSubview:self.liveButton];
     
     __weak EaseLiveTVListViewController *weakSelf = self;
     _refreshHeader =  [MJRefreshNormalHeader headerWithRefreshingBlock:^{
@@ -249,7 +298,7 @@
 {
     EaseLiveCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCollectionIdentifier forIndexPath:indexPath];
     EaseLiveRoom *room = [self.dataArray objectAtIndex:indexPath.row];
-    [cell setLiveRoom:room];
+    [cell setLiveRoom:room liveBehavior:self.tabBarBehavior];
     UIImage *image = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:room.coverPictureUrl];
     if (!image) {
         __weak typeof(self) weakSelf = self;
@@ -298,7 +347,7 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(CGRectGetWidth(self.view.frame)/2 - 0.5f, CGRectGetWidth(self.view.frame)/2 - 0.5f);
+    return CGSizeMake(CGRectGetWidth(self.view.frame)/2 - 1.5f, CGRectGetWidth(self.view.frame)/2 - 1.5f);
 }
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
@@ -308,12 +357,12 @@
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
 {
-    return 1.0f;
+    return 3.0f;
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
 {
-    return 0.0f;
+    return 3.0f;
 }
 
 #pragma mark - UICollectionViewDelegate
@@ -321,8 +370,15 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     EaseLiveRoom *room = [self.dataArray objectAtIndex:indexPath.row];
-    EaseLiveViewController *view = [[EaseLiveViewController alloc] initWithLiveRoom:room];
-    [self.navigationController presentViewController:view animated:YES completion:NULL];
+    UIViewController *view;
+    if (self.tabBarBehavior == kTabbarItemTag_Live) {
+        view = [[EaseLiveViewController alloc] initWithLiveRoom:room];
+        view.modalPresentationStyle = UIModalPresentationFullScreen;
+        [self.navigationController presentViewController:view animated:YES completion:NULL];
+    } else if (self.tabBarBehavior == kTabbarItemTag_Broadcast) {
+        view = [[EaseCreateLiveViewController alloc]initWithLiveroom:room];
+        [self.navigationController pushViewController:view animated:NO];
+    }
 }
 
 -(BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath

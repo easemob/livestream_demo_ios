@@ -7,10 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EaseBaseViewController.h"
 
 @interface EaseSearchDisplayController : UICollectionViewController
 
 @property (strong, nonatomic) NSMutableArray *resultsSource;
 @property (strong, nonatomic) NSMutableArray *searchSource;
+
+- (instancetype)initWithCollectionViewLayout:(UICollectionViewLayout *)layout liveBehavior:(kTabbarItemBehavior)liveBehavior;
 
 @end

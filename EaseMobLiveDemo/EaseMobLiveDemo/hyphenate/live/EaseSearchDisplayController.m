@@ -15,15 +15,17 @@
 @interface EaseSearchDisplayController () <UICollectionViewDelegate,UICollectionViewDataSource,UISearchBarDelegate>
 
 @property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic) kTabbarItemBehavior tabBarBehavior; //tabbar行为：看直播/开播/设置
 
 @end
 
 @implementation EaseSearchDisplayController
 
-- (instancetype)initWithCollectionViewLayout:(UICollectionViewLayout *)layout
+- (instancetype)initWithCollectionViewLayout:(UICollectionViewLayout *)layout liveBehavior:(kTabbarItemBehavior)liveBehavior
 {
     self = [super initWithCollectionViewLayout:layout];
     if (self) {
+        _tabBarBehavior = liveBehavior;
         _resultsSource = [[NSMutableArray alloc] init];
         _searchSource = [[NSMutableArray alloc] init];
         self.collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -83,7 +85,7 @@
 {
     EaseLiveCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"collectionCell" forIndexPath:indexPath];
     EaseLiveRoom *room = [self.resultsSource objectAtIndex:indexPath.row];
-    [cell setLiveRoom:room];
+    [cell setLiveRoom:room liveBehavior:self.tabBarBehavior];
     UIImage *image = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:room.coverPictureUrl];
     if (!image) {
         __weak typeof(self) weakSelf = self;

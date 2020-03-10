@@ -11,5 +11,4 @@
 @interface AppDelegate (Hyphenate)
 
 - (void)initHyphenateSDK;
-
 @end

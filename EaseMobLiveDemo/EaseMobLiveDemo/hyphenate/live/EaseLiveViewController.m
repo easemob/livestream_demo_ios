@@ -23,6 +23,21 @@
 #import "EaseLiveGiftView.h"
 #import "EaseLiveRoom.h"
 #import "EaseAdminView.h"
+#import "EaseAnchorCardView.h"
+#import "EaseLiveGiftView.h"
+#import "EaseGiftConfirmView.h"
+#import "EaseGiftCell.h"
+#import "EaseCustomKeyBoardView.h"
+
+#import "JPGiftCellModel.h"
+#import "JPGiftModel.h"
+#import "JPGiftShowManager.h"
+#import "UIImageView+WebCache.h"
+#import "JPGiftCellModel.h"
+#import "JPGiftModel.h"
+#import "JPGiftShowManager.h"
+
+#import "EaseBarrageFlyView.h"
 
 #define kDefaultTop 30.f
 #define kDefaultLeft 10.f
@@ -37,7 +52,6 @@
 
 @property (nonatomic, strong) PlayerManager *playerManager;
 
-@property (nonatomic, strong) UIButton *closeButton;
 @property (nonatomic, strong) UIButton *sendButton;
 @property (nonatomic, strong) EaseChatView *chatview;
 @property (nonatomic, strong) EaseLiveHeaderListView *headerListView;
@@ -48,6 +62,9 @@
 @property (nonatomic, strong) UILabel *roomNameLabel;
 
 @property (nonatomic, strong) UITapGestureRecognizer *singleTapGR;
+
+/** gifimage */
+@property(nonatomic,strong) UIImageView *gifImageView;
 
 @end
 
@@ -64,13 +81,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.view.backgroundColor = [UIColor colorWithRed:90/255.0 green:93/255.0 blue:208/255.0 alpha:1.0];
     
     [self.view addSubview:self.liveView];
     
     [self.liveView addSubview:self.chatview];
-    [self.liveView addSubview:self.closeButton];
     [self.liveView addSubview:self.headerListView];
-    [self.liveView addSubview:self.roomNameLabel];
+    //[self.liveView addSubview:self.roomNameLabel];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noti:) name:UCloudPlayerPlaybackDidFinishNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
     
@@ -150,8 +167,9 @@
 - (EaseLiveHeaderListView*)headerListView
 {
     if (_headerListView == nil) {
-        _headerListView = [[EaseLiveHeaderListView alloc] initWithFrame:CGRectMake(0, kDefaultTop, CGRectGetMinX(self.closeButton.frame), 30.f) room:_room];
+        _headerListView = [[EaseLiveHeaderListView alloc] initWithFrame:CGRectMake(0, kDefaultTop, CGRectGetWidth(self.view.frame), 40.f) room:_room];
         _headerListView.delegate = self;
+        [_headerListView setLiveCastDelegate];
     }
     return _headerListView;
 }
@@ -177,15 +195,19 @@
     return _chatview;
 }
 
-- (UIButton*)closeButton
+- (void)didSelectedExitButton
 {
-    if (_closeButton == nil) {
-        _closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _closeButton.frame = CGRectMake(KScreenWidth - 40.f, kDefaultTop, 30.f, 30.f);
-        [_closeButton setImage:[UIImage imageNamed:@"close"] forState:UIControlStateNormal];
-        [_closeButton addTarget:self action:@selector(closeButtonAction) forControlEvents:UIControlEventTouchUpInside];
+    [self closeButtonAction];
+}
+
+- (UIImageView *)gifImageView{
+    
+    if (!_gifImageView) {
+        
+        _gifImageView = [[UIImageView alloc] initWithFrame:CGRectMake(7.5, 0, 360, 225)];
+        _gifImageView.hidden = YES;
     }
-    return _closeButton;
+    return _gifImageView;
 }
 
 #pragma mark - EaseLiveHeaderListViewDelegate
@@ -210,6 +232,24 @@
         profileLiveView.delegate = self;
         [profileLiveView showFromParentView:self.view];
     }
+}
+
+//主播信息卡片
+- (void)didClickAnchorCard:(EaseLiveRoom *)room
+{
+    [self.view endEditing:YES];
+    EaseAnchorCardView *anchorCardView = [[EaseAnchorCardView alloc]initWithLiveRoom:room];
+    anchorCardView.delegate = self;
+    [anchorCardView showFromParentView:self.view];
+}
+
+//成员列表
+- (void)didSelectMemberListButton:(BOOL)isOwner
+{
+    EaseAdminView *adminView = [[EaseAdminView alloc] initWithChatroomId:_room.chatroomId
+                                                                 isOwner:isOwner];
+    adminView.delegate = self;
+    [adminView showFromParentView:self.view];
 }
 
 #pragma  mark - TapBackgroundViewDelegate
@@ -261,21 +301,46 @@
     }
 }
 
-- (void)didSelectAdminButton:(BOOL)isOwner
+- (void)didSelectGiftButton
 {
-    EaseAdminView *adminView = [[EaseAdminView alloc] initWithChatroomId:_room.chatroomId
-                                                                 isOwner:isOwner];
-    adminView.delegate = self;
-    [adminView showFromParentView:self.view];
+    EaseLiveGiftView *giftView = [[EaseLiveGiftView alloc]init];
+    giftView.giftDelegate = self;
+    giftView.delegate = self;
+    [giftView showFromParentView:self.view];
+}
+
+- (void)didSelectedBarrageSwitch:(EMMessage*)msg
+{
+    EaseBarrageFlyView *barrageView = [[EaseBarrageFlyView alloc]initWithMessage:msg];
+    [self.view addSubview:barrageView];
+    [barrageView animateInView:self.view];
 }
 
 #pragma mark - EaseLiveGiftViewDelegate
 
-- (void)didSelectGiftWithGiftId:(NSString *)giftId
+- (void)didConfirmGift:(EaseGiftCell *)giftCell giftNum:(long)num
 {
+    EaseGiftConfirmView *confirmView = [[EaseGiftConfirmView alloc]initWithGiftInfo:giftCell giftNum:num titleText:@"确定赠送"];
+    confirmView.delegate = self;
+    [confirmView showFromParentView:self.view];
+    __weak typeof(self) weakself = self;
+    [confirmView setDoneCompletion:^(BOOL aConfirm,JPGiftCellModel *giftModel) {
+        if (aConfirm) {
+            [weakself sendGiftAction:giftModel];
+        }
+    }];
     if (_chatview) {
-        [_chatview sendGiftWithId:giftId];
+        [_chatview sendGiftWithId:@"1"];
     }
+}
+
+//自定义礼物数量
+- (void)giftNumCustom:(EaseLiveGiftView *)liveGiftView
+{
+    EaseCustomKeyBoardView *keyBoardView = [[EaseCustomKeyBoardView alloc]init];
+    keyBoardView.customGiftNumDelegate = liveGiftView;
+    keyBoardView.delegate = self;
+    [keyBoardView showFromParentView:self.view];
 }
 
 #pragma mark - EaseProfileLiveViewDelegate
@@ -391,6 +456,38 @@
         self.window.hidden = YES;
         [self.view.window makeKeyAndVisible];
     }];
+}
+
+- (void)sendGiftAction:(JPGiftCellModel*)cellModel
+{
+    JPGiftModel *giftModel = [[JPGiftModel alloc]init];
+    giftModel.userIcon = cellModel.user_icon;
+    giftModel.userName = cellModel.username;
+    giftModel.giftName = cellModel.name;
+    giftModel.giftImage = cellModel.icon;
+    giftModel.giftGifImage = cellModel.icon_gif;
+    giftModel.defaultCount = 0;
+    giftModel.sendCount = *(cellModel.count);
+    [[JPGiftShowManager sharedManager] showGiftViewWithBackView:self.view info:giftModel completeBlock:^(BOOL finished) {
+               //结束
+           } completeShowGifImageBlock:^(JPGiftModel *giftModel) {
+               //展示gifimage
+               dispatch_async(dispatch_get_main_queue(), ^{
+                   
+                   UIWindow *window = [UIApplication sharedApplication].keyWindow;
+                   [window addSubview:self.gifImageView];
+                   //[self.gifImageView sd_setImageWithURL:[NSURL URLWithString:giftModel.giftGifImage]];
+                   self.gifImageView.image = giftModel.giftImage;
+                   self.gifImageView.hidden = NO;
+                   
+                   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                       self.gifImageView.hidden = YES;
+                       //[self.gifImageView sd_setImageWithURL:[NSURL URLWithString:@""]];
+                       //self.gifImageView.image = giftModel.giftGifImage;
+                       [self.gifImageView removeFromSuperview];
+                   });
+               });
+           }];
 }
 
 -(void)showTheLoveAction

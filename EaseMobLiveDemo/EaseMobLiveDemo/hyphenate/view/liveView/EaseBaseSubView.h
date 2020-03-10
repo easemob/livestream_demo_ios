@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Masonry.h"
 
 @class EaseBaseSubView;
 @protocol TapBackgroundViewDelegate <NSObject>

@@ -8,7 +8,8 @@
 
 #import "EaseBarrageFlyView.h"
 
-#define kLabelDefaultWidth 125.f
+#define kLabelDefaultMinWidth 50.f
+#define kLabelDefaultMaxWidth ([UIScreen mainScreen].bounds.size.width)
 #define kLabelDefaultHeight 25.f
 
 @interface EaseBarrageFlyView ()
@@ -29,14 +30,15 @@
 {
     self = [super init];
     if (self) {
-        int flag = arc4random()%140;
-        [self setFrame:CGRectMake(0, flag, 200, 80)];
+        int flag = arc4random()%140 + 80;
+        [self setFrame:CGRectMake(0, flag, kLabelDefaultMaxWidth, 80)];
         
         _message = messge;
-        [self addSubview:self.bgView];
-        [self.bgView addSubview:self.headImageView];
-        [self.bgView addSubview:self.nameLabel];
-        [self.bgView addSubview:self.giftLabel];
+        //[self addSubview:self.bgView];
+        //[self.bgView addSubview:self.headImageView];
+        //[self.bgView addSubview:self.nameLabel];
+        //[self.bgView addSubview:self.giftLabel];
+        [self addSubview:self.giftLabel];
     }
     return self;
 }
@@ -44,7 +46,7 @@
 - (UILabel*)nameLabel
 {
     if (_nameLabel == nil) {
-        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.headImageView.frame) + 5, 0, kLabelDefaultWidth, kLabelDefaultHeight)];
+        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.headImageView.frame) + 5, 0, kLabelDefaultMinWidth, kLabelDefaultHeight)];
         if (_message) {
             NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:_message.from attributes:nil];
             NSDictionary *attributes = @{NSFontAttributeName :[UIFont systemFontOfSize:12.0f]};
@@ -59,13 +61,23 @@
 - (UILabel*)giftLabel
 {
     if (_giftLabel == nil) {
-        _giftLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.headImageView.frame) + 5, CGRectGetMaxY(self.nameLabel.frame), kLabelDefaultWidth, kLabelDefaultHeight)];
-        _giftLabel.textColor = [UIColor whiteColor];
-        
+        CGFloat width = kLabelDefaultMinWidth;
         EMTextMessageBody *body = (EMTextMessageBody*)_message.body;
+        NSDictionary *attributes = @{NSFontAttributeName:[UIFont systemFontOfSize:16.0f],};
+        CGSize textSize = [body.text boundingRectWithSize:CGSizeMake(kLabelDefaultMaxWidth, kLabelDefaultHeight) options:NSStringDrawingTruncatesLastVisibleLine attributes:attributes context:nil].size;
+        if (textSize.width >= kLabelDefaultMaxWidth) {
+            width = kLabelDefaultMaxWidth;
+        } else if (textSize.width < kLabelDefaultMinWidth){
+            width = kLabelDefaultMinWidth;
+        } else {
+            width = textSize.width;
+        }
+        _giftLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, width, kLabelDefaultHeight)];
+        _giftLabel.textColor = [UIColor whiteColor];
+        _giftLabel.layer.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.2].CGColor;
         _giftLabel.text = body.text;
         NSLog(@"%@",_message.ext);
-        _giftLabel.font = [UIFont systemFontOfSize:12.0f];
+        _giftLabel.font = [UIFont systemFontOfSize:16.0f];
     }
     return _giftLabel;
 }
@@ -76,7 +88,7 @@
         _bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 30, 200, 50)];
         _bgView.layer.masksToBounds = YES;
         _bgView.layer.cornerRadius = CGRectGetHeight(_bgView.frame)/2;
-        _bgView.backgroundColor = RGBACOLOR(0, 0, 0, 0.5);
+        _bgView.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.2];
     }
     return _bgView;
 }
@@ -113,13 +125,13 @@
         CGRect frame = weakSelf.frame;
         frame.origin.x = -CGRectGetWidth(frame);
         weakSelf.frame = frame;
-        weakSelf.alpha = 0;
+        weakSelf.alpha = 1;
     };
     
-    [UIView animateWithDuration:2.0 delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
+    [UIView animateWithDuration:3.0 delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
         animateStepOneBlock();
     } completion:^(BOOL finished) {
-        [UIView animateWithDuration:2.0 delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
+        [UIView animateWithDuration:3.0 delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
             animateStepTowBlock();
         } completion:^(BOOL finished) {
             [weakSelf removeFromSuperview];

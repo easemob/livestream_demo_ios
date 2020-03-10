@@ -29,16 +29,23 @@
         if (_roomId.length == 0) {
             _roomId = [parameter safeObjectForKey:@"liveroom_id"];
         }
-        _chatroomId = [parameter safeStringValueForKey:@"chatroom_id"];
-        _title = [parameter safeStringValueForKey:@"title"];
-        _desc = [parameter safeStringValueForKey:@"desc"];
-        _custom = [parameter safeStringValueForKey:@"custom"];
+        //_chatroomId = [parameter safeStringValueForKey:@"chatroom_id"];
+        _chatroomId = [parameter safeStringValueForKey:@"id"];
+        //_title = [parameter safeStringValueForKey:@"title"];
+        _title = [parameter safeStringValueForKey:@"name"];
+        _desc = [parameter safeStringValueForKey:@"description"];
+        _custom = [parameter safeStringValueForKey:@"ext"];
         _created = [[parameter safeObjectForKey:@"created"] doubleValue];
-        _showId = [parameter safeStringValueForKey:@"show_id"];
+        _showId = [parameter safeStringValueForKey:@"showid"];
         _needPassword = [[parameter safeObjectForKey:@"need_password"] boolValue];
         _password = [parameter safeStringValueForKey:@"password"];
-        _coverPictureUrl = [parameter safeStringValueForKey:@"cover_picture_url"];
+        //_coverPictureUrl = [parameter safeStringValueForKey:@"cover_picture_url"];
+        _coverPictureUrl = [parameter safeStringValueForKey:@"cover"];
         _session = [[EaseLiveSession alloc] initWithParameter:parameter];
+        
+        _status = [[parameter safeStringValueForKey:@"status"] isEqualToString:@"offline"] ? offline : ongoing;
+        _anchor = [parameter safeStringValueForKey:@"owner"];
+        _currentUserCount = [parameter safeIntegerValueForKey:@"affiliations_count"];
     }
     return self;
 }

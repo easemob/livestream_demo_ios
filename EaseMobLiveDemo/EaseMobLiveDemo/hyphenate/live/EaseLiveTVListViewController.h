@@ -7,10 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EaseBaseViewController.h"
 
-@interface EaseLiveTVListViewController : UIViewController
+@interface EaseLiveTVListViewController : EaseBaseViewController
 
 @property (nonatomic, strong) UIBarButtonItem *searchBarItem;
 @property (nonatomic, strong) UIBarButtonItem *logoutItem;
+
+- (instancetype)initWithBehavior:(kTabbarItemBehavior)tabBarBehavior;
 
 @end
