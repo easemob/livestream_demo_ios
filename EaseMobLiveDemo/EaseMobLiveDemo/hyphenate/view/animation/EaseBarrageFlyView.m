@@ -62,9 +62,9 @@
 {
     if (_giftLabel == nil) {
         CGFloat width = kLabelDefaultMinWidth;
-        EMTextMessageBody *body = (EMTextMessageBody*)_message.body;
+        EMCustomMessageBody *body = (EMCustomMessageBody*)_message.body;
         NSDictionary *attributes = @{NSFontAttributeName:[UIFont systemFontOfSize:16.0f],};
-        CGSize textSize = [body.text boundingRectWithSize:CGSizeMake(kLabelDefaultMaxWidth, kLabelDefaultHeight) options:NSStringDrawingTruncatesLastVisibleLine attributes:attributes context:nil].size;
+        CGSize textSize = [[body.ext objectForKey:@"txt"] boundingRectWithSize:CGSizeMake(kLabelDefaultMaxWidth, kLabelDefaultHeight) options:NSStringDrawingTruncatesLastVisibleLine attributes:attributes context:nil].size;
         if (textSize.width >= kLabelDefaultMaxWidth) {
             width = kLabelDefaultMaxWidth;
         } else if (textSize.width < kLabelDefaultMinWidth){
@@ -75,8 +75,7 @@
         _giftLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, width, kLabelDefaultHeight)];
         _giftLabel.textColor = [UIColor whiteColor];
         _giftLabel.layer.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.2].CGColor;
-        _giftLabel.text = body.text;
-        NSLog(@"%@",_message.ext);
+        _giftLabel.text = [body.ext objectForKey:@"txt"];
         _giftLabel.font = [UIFont systemFontOfSize:16.0f];
     }
     return _giftLabel;

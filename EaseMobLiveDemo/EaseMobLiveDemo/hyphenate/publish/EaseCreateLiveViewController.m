@@ -8,8 +8,8 @@
 
 #import "EaseCreateLiveViewController.h"
 #import "EasePublishViewController.h"
-#import "UIViewController+DismissKeyboard.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <CoreServices/CoreServices.h>
 
 #define kDefaultHeight 45.f
 #define kDefaultTextHeight 50.f
@@ -92,8 +92,6 @@
     [self.mainView addSubview:self.liveDescTextField];
 //    [self.mainView addSubview:self.anchorDescTextField];
     [self.mainView addSubview:self.createLiveBtn];
-    
-    [self setupForDismissKeyboard];
     
     if (_isRelevance) {
         MBProgressHUD *hud = [MBProgressHUD showMessag:@"获取关联直播间" toView:self.view];
@@ -234,7 +232,7 @@
         _liveNameTextField.delegate = self;
         _liveNameTextField.placeholder = NSLocalizedString(@"publish.liveName", @"Live Name");
         _liveNameTextField.backgroundColor = [UIColor clearColor];
-        _liveNameTextField.returnKeyType = UIReturnKeyNext;
+        _liveNameTextField.returnKeyType = UIReturnKeyDone;
         _liveNameTextField.font = [UIFont systemFontOfSize:15.f];
         
         UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, _liveNameTextField.height - 1, _liveNameTextField.width, 1)];
@@ -255,7 +253,7 @@
         _liveDescTextField.delegate = self;
         _liveDescTextField.placeholder = NSLocalizedString(@"publish.liveDesc", @"Live Description");
         _liveDescTextField.backgroundColor = [UIColor clearColor];
-        _liveDescTextField.returnKeyType = UIReturnKeyNext;
+        _liveDescTextField.returnKeyType = UIReturnKeyDone;
         _liveDescTextField.font = [UIFont systemFontOfSize:15.f];
         
         UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, _liveDescTextField.height - 1, _liveDescTextField.width, 1)];
@@ -476,27 +474,28 @@
 
 - (void)createAction
 {
+    
+    if (_liveNameTextField.text.length == 0) {
+        [self showHint:@"填入房间名"];
+        return;
+    }
+       
+    if (_liveDescTextField.text.length == 0) {
+        [self showHint:@"填入房间介绍"];
+        return;
+    }
+       
+    if (_coverpictureurl.length == 0){
+        [self showHint:@"选择封面图"];
+        return;
+    }
     __weak typeof(self) weakSelf = self;
     MBProgressHUD *hud = [MBProgressHUD showMessag:@"开始直播..." toView:self.view];
     __weak MBProgressHUD *weakHud = hud;
-    /*
-    [[EaseHttpManager sharedInstance] createLiveRoomWithRoom:liveRoom
-                                                  completion:^(EaseLiveRoom *room, BOOL success) {
-                                                      [weakHud hide:YES];
-                                                      if (success) {
-                                                          EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:room];
-                                                          [weakSelf presentViewController:publishView
-                                                                                 animated:YES
-                                                                               completion:^{
-                                                              [weakSelf.navigationController popToRootViewControllerAnimated:NO];
-                                                                               }];
-                                                      } else {
-                                                          [self showHint:@"创建失败"];
-                                                      }
-                                                  }];*/
+
     _liveRoom.anchor = [EMClient sharedClient].currentUsername;
-    [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOffline:_liveRoom completion:^(EaseLiveRoom *room, BOOL success) {
-        [weakHud hide:YES];
+    [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOngoing:_liveRoom completion:^(EaseLiveRoom *room, BOOL success) {
+        [weakHud hideAnimated:YES];
         if (success) {
             _liveRoom = room;
             EaseLiveRoom *liveRoom = _liveRoom;
@@ -518,7 +517,10 @@
             
             if (_coverpictureurl.length != 0){
                 liveRoom.coverPictureUrl = _coverpictureurl;
+            } else {
+                return;
             }
+            
             [[EaseHttpManager sharedInstance] modifyLiveRoomWithRoom:liveRoom completion:^(EaseLiveRoom *aRoom, BOOL success) {
                 _liveRoom = aRoom;
                 EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:_liveRoom];
@@ -753,5 +755,8 @@
         _mainView.contentOffset = point;
     }];
 }
-
+- (BOOL)textFieldShouldReturn:(UITextField *)aTextfield {
+     [aTextfield resignFirstResponder];//关闭键盘
+    return YES;
+}
 @end

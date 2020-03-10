@@ -10,8 +10,6 @@
 
 #import "UCloudMediaPlayer.h"
 #import "CameraServer.h"
-#import "UCloudMediaViewController.h"
-#import "PlayerManager.h"
 #import "EaseChatView.h"
 #import "AppDelegate.h"
 #import "EaseHeartFlyView.h"
@@ -36,8 +34,7 @@
 #import "JPGiftCellModel.h"
 #import "JPGiftModel.h"
 #import "JPGiftShowManager.h"
-
-#import "EaseBarrageFlyView.h"
+#import "EaseLiveGiftHelper.h"
 
 #define kDefaultTop 30.f
 #define kDefaultLeft 10.f
@@ -49,8 +46,6 @@
     EMChatroom *_chatroom;
     BOOL _enableAdmin;
 }
-
-@property (nonatomic, strong) PlayerManager *playerManager;
 
 @property (nonatomic, strong) UIButton *sendButton;
 @property (nonatomic, strong) EaseChatView *chatview;
@@ -88,16 +83,9 @@
     [self.liveView addSubview:self.chatview];
     [self.liveView addSubview:self.headerListView];
     //[self.liveView addSubview:self.roomNameLabel];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noti:) name:UCloudPlayerPlaybackDidFinishNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
     
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
-    self.playerManager = [[PlayerManager alloc] init];
-    self.playerManager.retryConnectNumber = 0;
-    self.playerManager.view = self.view;
-    self.playerManager.viewContorller = self;
-    float height = self.view.frame.size.height;
-    [self.playerManager setPortraitViewHeight:height];
 
     __weak EaseLiveViewController *weakSelf = self;
     [self.chatview joinChatroomWithIsCount:YES
@@ -107,16 +95,6 @@
                                         _chatroom = [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:_room.chatroomId error:nil];
                                         [[EaseHttpManager sharedInstance] getLiveRoomWithRoomId:_room.roomId
                                                                                      completion:^(EaseLiveRoom *room, BOOL success) {
-                                                                                         if (success) {
-                                                                                             _room = room;
-                                                                                             NSString *path = _room.session.mobilepullstream;
-                                                                                             [weakSelf.playerManager buildMediaPlayer:path];
-                                                                                         } else {
-                                                                                             NSString *path = _room.session.mobilepullstream;
-                                                                                             [weakSelf.playerManager buildMediaPlayer:path];
-                                                                                         }
-                                                                                         [weakSelf.view bringSubviewToFront:weakSelf.liveView];
-                                                                                         [weakSelf.view layoutSubviews];
                                                                                      }];
                                     } else {
                                         [weakSelf showHint:@"加入聊天室失败"];
@@ -282,31 +260,36 @@
     }
 }
 
-- (void)didReceivePraiseWithCMDMessage:(EMMessage *)message
+- (void)didReceivePraiseMessage:(EMMessage *)message
 {
     [self showTheLoveAction];
 }
 
-- (void)didSelectUserWithMessage:(EMMessage *)message
+- (void)didSelectGiftButton:(BOOL)isOwner
 {
-    [self.view endEditing:YES];
-    BOOL isOwner = _chatroom.permissionType == EMChatroomPermissionTypeOwner;
-    BOOL ret = _chatroom.permissionType == EMChatroomPermissionTypeAdmin || isOwner;
-    if (ret || _enableAdmin) {
-        EaseProfileLiveView *profileLiveView = [[EaseProfileLiveView alloc] initWithUsername:message.from
-                                                                                  chatroomId:_room.chatroomId
-                                                                                     isOwner:isOwner];
-        profileLiveView.delegate = self;
-        [profileLiveView showFromParentView:self.view];
+    if (!isOwner) {
+        EaseLiveGiftView *giftView = [[EaseLiveGiftView alloc]init];
+        giftView.giftDelegate = self;
+        giftView.delegate = self;
+        [giftView showFromParentView:self.view];
     }
 }
 
-- (void)didSelectGiftButton
+//有观众送礼物
+- (void)userSendGifts:(EMMessage*)msg count:(NSInteger)count
 {
-    EaseLiveGiftView *giftView = [[EaseLiveGiftView alloc]init];
-    giftView.giftDelegate = self;
-    giftView.delegate = self;
-    [giftView showFromParentView:self.view];
+    EMCustomMessageBody *msgBody = (EMCustomMessageBody*)msg.body;
+    JPGiftCellModel *cellModel = [[JPGiftCellModel alloc]init];
+    cellModel.id = [msgBody.ext objectForKey:@"id"];
+    cellModel.user_icon = [UIImage imageNamed:@"default_anchor_avatar"];
+    NSString *giftid = [msgBody.ext objectForKey:@"id"];
+    int index = [[giftid substringFromIndex:5] intValue];
+    NSDictionary *dict = EaseLiveGiftHelper.sharedInstance.giftArray[index-1];
+    cellModel.icon = [UIImage imageNamed:(NSString *)[dict allKeys][0]];
+    cellModel.name = NSLocalizedString((NSString *)[dict allKeys][0], @"");
+    cellModel.username = msg.from;
+    cellModel.count = &(count);
+    [self sendGiftAction:cellModel];
 }
 
 - (void)didSelectedBarrageSwitch:(EMMessage*)msg
@@ -320,18 +303,21 @@
 
 - (void)didConfirmGift:(EaseGiftCell *)giftCell giftNum:(long)num
 {
-    EaseGiftConfirmView *confirmView = [[EaseGiftConfirmView alloc]initWithGiftInfo:giftCell giftNum:num titleText:@"确定赠送"];
+    EaseGiftConfirmView *confirmView = [[EaseGiftConfirmView alloc]initWithGiftInfo:giftCell giftNum:num titleText:@"确定赠送" giftId:giftCell.giftId];
     confirmView.delegate = self;
     [confirmView showFromParentView:self.view];
     __weak typeof(self) weakself = self;
     [confirmView setDoneCompletion:^(BOOL aConfirm,JPGiftCellModel *giftModel) {
         if (aConfirm) {
-            [weakself sendGiftAction:giftModel];
+            //发送礼物消息
+            [weakself.chatview sendGiftAction:giftModel.id num:*(giftModel.count) completion:^(BOOL success) {
+                if (success) {
+                    //显示礼物UI
+                    [weakself sendGiftAction:giftModel];
+                }
+            }];
         }
     }];
-    if (_chatview) {
-        [_chatview sendGiftWithId:@"1"];
-    }
 }
 
 //自定义礼物数量
@@ -347,6 +333,11 @@
 
 
 #pragma mark - EMChatroomManagerDelegate
+
+- (void)chatroomAllMemberMuteChanged:(EMChatroom *)aChatroom isAllMemberMuted:(BOOL)aMuted
+{
+    NSLog(@"观众");
+}
 
 - (void)userDidJoinChatroom:(EMChatroom *)aChatroom
                        user:(NSString *)aUsername
@@ -465,28 +456,12 @@
     giftModel.userName = cellModel.username;
     giftModel.giftName = cellModel.name;
     giftModel.giftImage = cellModel.icon;
-    giftModel.giftGifImage = cellModel.icon_gif;
+    //giftModel.giftGifImage = cellModel.icon_gif;
     giftModel.defaultCount = 0;
     giftModel.sendCount = *(cellModel.count);
     [[JPGiftShowManager sharedManager] showGiftViewWithBackView:self.view info:giftModel completeBlock:^(BOOL finished) {
                //结束
            } completeShowGifImageBlock:^(JPGiftModel *giftModel) {
-               //展示gifimage
-               dispatch_async(dispatch_get_main_queue(), ^{
-                   
-                   UIWindow *window = [UIApplication sharedApplication].keyWindow;
-                   [window addSubview:self.gifImageView];
-                   //[self.gifImageView sd_setImageWithURL:[NSURL URLWithString:giftModel.giftGifImage]];
-                   self.gifImageView.image = giftModel.giftImage;
-                   self.gifImageView.hidden = NO;
-                   
-                   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                       self.gifImageView.hidden = YES;
-                       //[self.gifImageView sd_setImageWithURL:[NSURL URLWithString:@""]];
-                       //self.gifImageView.image = giftModel.giftGifImage;
-                       [self.gifImageView removeFromSuperview];
-                   });
-               });
            }];
 }
 
@@ -501,14 +476,6 @@
 
 - (void)closeButtonAction
 {
-    [self.playerManager.mediaPlayer.player.view removeFromSuperview];
-    [self.playerManager.controlVC.view removeFromSuperview];
-    [self.playerManager.mediaPlayer.player shutdown];
-    self.playerManager.mediaPlayer = nil;
-    self.playerManager = nil;
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UCloudPlayerPlaybackDidFinishNotification object:nil];
-    
     __weak typeof(self) weakSelf =  self;
     NSString *chatroomId = [_room.chatroomId copy];
     [weakSelf.chatview leaveChatroomWithIsCount:YES
@@ -521,23 +488,6 @@
     
     [_burstTimer invalidate];
     _burstTimer = nil;
-}
-
-- (void)noti:(NSNotification *)noti
-{
-    if ([noti.name isEqualToString:UCloudPlayerPlaybackDidFinishNotification]) {
-        MPMovieFinishReason reson = [[noti.userInfo objectForKey:MPMoviePlayerPlaybackDidFinishReasonUserInfoKey] integerValue];
-        if (reson == MPMovieFinishReasonPlaybackEnded) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"直播中断" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alert show];
-        }
-        else if (reson == MPMovieFinishReasonPlaybackError) {
-            if ([self.playerManager respondsToSelector:@selector(restartPlayer)]) {
-                [self.playerManager performSelector:@selector(restartPlayer) withObject:nil afterDelay:15.f];
-            }
-            [MBProgressHUD showError:@"视频播放错误，请稍候再试" toView:self.view];
-        }
-    }
 }
 
 - (void)keyboardWillChangeFrame:(NSNotification *)notification

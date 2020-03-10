@@ -11,6 +11,7 @@
 #import "AppDelegate+Hyphenate.h"
 #import "EaseLoginViewController.h"
 #import "EaseMainViewController.h"
+#import "EaseTransitionViewController.h"
 
 @interface AppDelegate ()
 
@@ -22,6 +23,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(loginStateChange:)
                                                  name:@"loginStateChange"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(autoRegistAccount)
+                                                 name:@"autoRegistAccount"
                                                object:nil];
     
     if ([UIDevice currentDevice].systemVersion.floatValue >= 7.0) {
@@ -53,6 +59,16 @@
         self.window.rootViewController = navigationController;
     }
     [self.window makeKeyAndVisible];
+}
+
+//游客自动注册账户
+- (void)autoRegistAccount
+{
+    EaseTransitionViewController *transtionController = [[EaseTransitionViewController alloc]init];
+    _mainVC = nil;
+    UINavigationController *navigationController = nil;
+    navigationController = [[UINavigationController alloc] initWithRootViewController:transtionController];
+    self.window.rootViewController = navigationController;
 }
 
 #pragma makr - EMClientDelegate

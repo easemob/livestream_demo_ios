@@ -19,6 +19,8 @@
 #import "EaseHttpManager.h"
 #import "EaseLiveRoom.h"
 #import "EaseSearchDisplayController.h"
+#import "SDImageCache.h"
+#import "SDWebImageDownloader.h"
 
 @interface EaseLiveTVListViewController () <UIScrollViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource,SRRefreshDelegate,EMClientDelegate>
 {
@@ -110,7 +112,7 @@
     _isLoading = YES;
     __weak EaseLiveTVListViewController *weakSelf = self;
     if (self.tabBarBehavior == kTabbarItemTag_Live) {
-        [[EaseHttpManager sharedInstance] fetchLiveRoomsOngoingWithCursor:_cursor
+        [[EaseHttpManager sharedInstance] fetchLiveRoomsOngoingWithCursor:nil
                                                                        limit:8
                                                                   completion:^(EMCursorResult *result, BOOL success) {
                                                                       if (success) {
@@ -122,7 +124,7 @@
                                                                               [weakSelf.dataArray addObjectsFromArray:result.list];
                                                                               [weakSelf.collectionView reloadData];
                                                                           }
-                                                                          _cursor = result.cursor;
+                                                                          //_cursor = result.cursor;
                                                                           
                                                                           if ([result.list count] < kDefaultPageSize) {
                                                                               _noMore = YES;
@@ -138,7 +140,7 @@
                                                                       _isLoading = NO;
                                                                   }];
     } else if (self.tabBarBehavior == kTabbarItemTag_Broadcast) {
-        [[EaseHttpManager sharedInstance] fetchLiveRoomsWithCursor:_cursor limit:8 completion:^(EMCursorResult *result, BOOL success) {
+        [[EaseHttpManager sharedInstance] fetchLiveRoomsWithCursor:nil limit:8 completion:^(EMCursorResult *result, BOOL success) {
             if (success) {
                 if (isHeader) {
                     [weakSelf.dataArray removeAllObjects];
@@ -307,10 +309,11 @@
                                                              progress:NULL
                                                             completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
                                                                 if (image) {
-                                                                    [[SDImageCache sharedImageCache] storeImage:image forKey:room.coverPictureUrl toDisk:NO];
-                                                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                                                        [weakSelf.collectionView reloadData];
-                                                                    });
+                                                                    [[SDImageCache sharedImageCache] storeImage:image forKey:room.coverPictureUrl toDisk:NO completion:^{
+                                                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                                                            [weakSelf.collectionView reloadData];
+                                                                        });
+                                                                    }];
                                                                 }
                                                             }];
     }
@@ -432,7 +435,7 @@
 {
     MBProgressHUD *hud = [MBProgressHUD showMessag:@"退出中..." toView:nil];
     [[EMClient sharedClient] logout:NO];
-    [hud hide:YES];
+    [hud hideAnimated:YES];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"loginStateChange" object:@NO];
 }
 

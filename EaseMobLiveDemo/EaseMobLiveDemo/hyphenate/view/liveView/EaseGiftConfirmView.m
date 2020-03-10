@@ -17,17 +17,20 @@
 
 @property (nonatomic, strong) NSString *titleText;
 
+@property (nonatomic, strong) NSString *giftId;
+
 @end
 
 @implementation EaseGiftConfirmView
 
-- (instancetype)initWithGiftInfo:(EaseGiftCell *)giftCell giftNum:(long)num titleText:(NSString *)titleText
+- (instancetype)initWithGiftInfo:(EaseGiftCell *)giftCell giftNum:(long)num titleText:(NSString *)titleText giftId:(NSString *)giftId
 {
     self = [super init];
        if (self) {
            _giftCell = giftCell;
            _titleText = titleText;
            _giftNum = num;
+           _giftId = giftId;
            [self _setupSuviews];
        }
     return self;
@@ -78,7 +81,7 @@
         make.width.equalTo(@46);
     }];
     UILabel *nameLabel = [[UILabel alloc]init];
-    nameLabel.text = [NSString stringWithFormat:@"%lu个 %@",_giftNum,self.giftCell.nameLabel.text];
+    nameLabel.text = [NSString stringWithFormat:@"%ld个 %@",(long)_giftNum,self.giftCell.nameLabel.text];
     nameLabel.textColor = [UIColor blackColor];
     nameLabel.font = [UIFont systemFontOfSize:18.0];
     [memberView addSubview:nameLabel];
@@ -133,9 +136,9 @@
     }
     if (_doneCompletion) {
         JPGiftCellModel *cellModel = [[JPGiftCellModel alloc]init];
+        cellModel.id = _giftId;
         cellModel.user_icon = [UIImage imageNamed:@"default_anchor_avatar"];
         cellModel.icon = _giftCell.giftImageView.image;
-        cellModel.icon_gif = _giftCell.giftImageView.image;
         cellModel.name = _giftCell.nameLabel.text;
         cellModel.username = EMClient.sharedClient.currentUsername;
         cellModel.count = &(_giftNum);

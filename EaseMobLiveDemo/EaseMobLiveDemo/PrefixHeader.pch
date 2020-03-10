@@ -35,10 +35,10 @@
 
 #ifdef __OBJC__
 
-    #import <HyphenateLite/HyphenateLite.h>
-    #import <EaseUILite/EaseUI.h>
+    #import <Hyphenate/Hyphenate.h>
     #import "MBProgressHUD+Add.h"
     #import "UIView+Position.h"
+    #import "UIViewController+HUD.h"
     #import "EaseHttpManager.h"
 
 #endif

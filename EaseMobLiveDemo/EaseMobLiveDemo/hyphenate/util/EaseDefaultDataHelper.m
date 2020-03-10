@@ -11,9 +11,14 @@
 static NSString *eDefaultData_Nickname = @"nickName";
 static NSString *eDefaultData_CurrentRoomId = @"currentRoomId";
 static NSString *eDefaultData_isInitiativeLogin = @"isInitiativeLogin";
+static NSString *eDefaultData_praiseStatisticst = @"praiseStatisticst";
+static NSString *eDefaultData_giftStatistics = @"giftStatistics";
+static NSString *eDefaultData_rewardCount = @"rewardCount";
+static NSString *eDefaultData_giftNumbers = @"giftNumbers";
 
 static EaseDefaultDataHelper *shared = nil;
 
+extern NSArray<NSString*> *nickNameArray;
 @implementation EaseDefaultDataHelper
 
 + (instancetype)shared
@@ -30,9 +35,14 @@ static EaseDefaultDataHelper *shared = nil;
 {
     self = [super init];
     if (self) {
-        self.defaultNickname = @"";
+        int random = (arc4random() % 100);
+        self.defaultNickname = nickNameArray[random];
         self.currentRoomId = @"";
         self.isInitiativeLogin = NO;
+        self.praiseStatisticstCount = @"";
+        self.giftStatisticsCount = [self emptyGiftStatisticsCount];
+        self.rewardCount = [[NSMutableArray alloc]init];
+        self.giftNumbers = @"";
     }
     
     return self;
@@ -51,6 +61,20 @@ static EaseDefaultDataHelper *shared = nil;
         }
         self.currentRoomId = [aDecoder decodeObjectForKey:eDefaultData_CurrentRoomId];
         self.isInitiativeLogin = [aDecoder decodeBoolForKey:eDefaultData_isInitiativeLogin];
+        self.praiseStatisticstCount = [aDecoder decodeObjectForKey:eDefaultData_praiseStatisticst];
+        NSMutableDictionary *tempDic = [aDecoder decodeObjectForKey:eDefaultData_giftStatistics];
+        if ([tempDic allKeys].count == 0) {
+            self.giftStatisticsCount = [self emptyGiftStatisticsCount];
+        } else {
+            self.giftStatisticsCount = tempDic;
+        }
+        NSMutableArray *tempArray = [aDecoder decodeObjectForKey:eDefaultData_rewardCount];
+        if (tempArray == nil) {
+            self.rewardCount = [[NSMutableArray alloc]init];
+        } else {
+            self.rewardCount = tempArray;
+        }
+        self.giftNumbers = [aDecoder decodeObjectForKey:eDefaultData_giftNumbers];
         [self archive];
     }
     return self;
@@ -61,9 +85,23 @@ static EaseDefaultDataHelper *shared = nil;
     [aCoder encodeObject:self.defaultNickname forKey:eDefaultData_Nickname];
     [aCoder encodeObject:self.currentRoomId forKey:eDefaultData_CurrentRoomId];
     [aCoder encodeBool:self.isInitiativeLogin forKey:eDefaultData_isInitiativeLogin];
+    [aCoder encodeObject:self.praiseStatisticstCount forKey:eDefaultData_praiseStatisticst];
+    [aCoder encodeObject:self.giftStatisticsCount forKey:eDefaultData_giftStatistics];
+    [aCoder encodeObject:self.rewardCount forKey:eDefaultData_rewardCount];
+    [aCoder encodeObject:self.giftNumbers forKey:eDefaultData_giftNumbers];
 }
 
 #pragma mark - Private
+
+- (NSMutableDictionary*)emptyGiftStatisticsCount
+{
+    NSMutableDictionary *dic = [[NSMutableDictionary alloc]init];
+    for (int i=1; i<9; i++) {
+        NSMutableDictionary *tempDic = [[NSMutableDictionary alloc]init];
+        [dic setObject:tempDic forKey:[NSString stringWithFormat:@"gift_%d",i]];
+    }
+    return dic;
+}
 
 + (EaseDefaultDataHelper *)getDefaultDataFromLocal
 {
