@@ -450,6 +450,7 @@
             }
             self.imagePicker.editing = YES;
             self.imagePicker.mediaTypes = @[(NSString *)kUTTypeImage];
+            self.imagePicker.modalPresentationStyle = 0;
             [self presentViewController:self.imagePicker animated:YES completion:NULL];
         }
 #endif
@@ -459,6 +460,7 @@
         self.imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         self.imagePicker.mediaTypes = @[(NSString *)kUTTypeImage];
         self.imagePicker.editing = YES;
+        self.imagePicker.modalPresentationStyle = 0;
         [self presentViewController:self.imagePicker animated:YES completion:NULL];
     }];
     
@@ -469,6 +471,7 @@
     [alertController addAction:cameraAction];
     [alertController addAction:cancelAction];
     
+    alertController.modalPresentationStyle = 0;
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
@@ -524,6 +527,7 @@
             [[EaseHttpManager sharedInstance] modifyLiveRoomWithRoom:liveRoom completion:^(EaseLiveRoom *aRoom, BOOL success) {
                 _liveRoom = aRoom;
                 EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:_liveRoom];
+                publishView.modalPresentationStyle = 0;
                 [weakSelf presentViewController:publishView
                                        animated:YES
                                      completion:^{
@@ -576,9 +580,10 @@
     dispatch_block_t modifyBlock = ^{
         [[EaseHttpManager sharedInstance] modifyLiveRoomWithRoom:_liveRoom
                                                       completion:^(EaseLiveRoom *room, BOOL success) {
-                                                          [weakHud hide:YES];
+                                                          [weakHud hideAnimated:YES];
                                                           if (success) {
                                                               EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:_liveRoom];
+                                                              publishView.modalPresentationStyle = 0;
                                                               [weakSelf presentViewController:publishView animated:YES completion:^{
                                                                   [weakSelf.navigationController popToRootViewControllerAnimated:NO];
                                                               }];
@@ -591,7 +596,7 @@
         modifyBlock();
     } else if (_liveRoom.session.status == EaseLiveSessionNotStart) {
         [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOngoing:_liveRoom completion:^(EaseLiveRoom *room, BOOL success) {
-            [weakHud hide:YES];
+            [weakHud hideAnimated:YES];
             if (success) {
                 modifyBlock();
             } else {
@@ -616,6 +621,7 @@
                                                              if (success) {
                                                                  modifyBlock();
                                                                  EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:room];
+                                                                 publishView.modalPresentationStyle = 0;
                                                                  [weakSelf presentViewController:publishView animated:YES completion:^{
                                                                      [weakSelf.navigationController popToRootViewControllerAnimated:NO];
                                                                  }];

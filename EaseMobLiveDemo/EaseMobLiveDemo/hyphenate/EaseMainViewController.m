@@ -65,6 +65,7 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
         if (success) {
             if (room.status == ongoing && [room.anchor isEqualToString:EMClient.sharedClient.currentUsername]) {
                 EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:room];
+                publishView.modalPresentationStyle = 0;
                 [self presentViewController:publishView animated:YES completion:^{
                     [self.navigationController popToRootViewControllerAnimated:NO];
                 }];
