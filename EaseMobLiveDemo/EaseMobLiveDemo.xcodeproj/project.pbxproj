@@ -89,6 +89,7 @@
 		3C44F44F240CF0C100445129 /* EaseCustomSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C44F44E240CF0C100445129 /* EaseCustomSwitch.m */; };
 		3C44F451240D010A00445129 /* auidence@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C44F450240D010A00445129 /* auidence@3x.png */; };
 		3C44F453240D011400445129 /* auidence@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C44F452240D011400445129 /* auidence@2x.png */; };
+		3C70A160241A654E00A5185F /* EaseCustomMessageHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C70A15F241A654E00A5185F /* EaseCustomMessageHelper.m */; };
 		3C72AD65240F8E2C007BC99F /* UIViewController+HUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C72AD64240F8E2C007BC99F /* UIViewController+HUD.m */; };
 		3C72AD68240F9431007BC99F /* EaseEmojiHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C72AD67240F9431007BC99F /* EaseEmojiHelper.m */; };
 		3C72AD6C240F97CA007BC99F /* EaseEmoticonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C72AD6B240F97CA007BC99F /* EaseEmoticonView.m */; };
@@ -346,6 +347,8 @@
 		3C44F44E240CF0C100445129 /* EaseCustomSwitch.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseCustomSwitch.m; sourceTree = "<group>"; };
 		3C44F450240D010A00445129 /* auidence@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "auidence@3x.png"; sourceTree = "<group>"; };
 		3C44F452240D011400445129 /* auidence@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "auidence@2x.png"; sourceTree = "<group>"; };
+		3C70A15E241A654E00A5185F /* EaseCustomMessageHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseCustomMessageHelper.h; sourceTree = "<group>"; };
+		3C70A15F241A654E00A5185F /* EaseCustomMessageHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseCustomMessageHelper.m; sourceTree = "<group>"; };
 		3C72AD63240F8E2C007BC99F /* UIViewController+HUD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+HUD.h"; sourceTree = "<group>"; };
 		3C72AD64240F8E2C007BC99F /* UIViewController+HUD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+HUD.m"; sourceTree = "<group>"; };
 		3C72AD66240F9429007BC99F /* EaseEmojiHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseEmojiHelper.h; sourceTree = "<group>"; };
@@ -1432,6 +1435,8 @@
 				D27B203F1E51AAA800318031 /* EaseHttpManager.m */,
 				3C1238872406839700C4135B /* EaseDefaultDataHelper.h */,
 				3C1238882406839700C4135B /* EaseDefaultDataHelper.m */,
+				3C70A15E241A654E00A5185F /* EaseCustomMessageHelper.h */,
+				3C70A15F241A654E00A5185F /* EaseCustomMessageHelper.m */,
 			);
 			path = util;
 			sourceTree = "<group>";
@@ -1820,6 +1825,7 @@
 				D2F4E24F1D12C8AB00BB7E1A /* EasePublishViewController.m in Sources */,
 				D27B201A1E4D770F00318031 /* UIWindow+YzdHUD.m in Sources */,
 				D2D9EFEB1E6427DC001E4BFC /* EaseCreateLiveViewController.m in Sources */,
+				3C70A160241A654E00A5185F /* EaseCustomMessageHelper.m in Sources */,
 				D2F4E23E1D12C8AB00BB7E1A /* AppDelegate.m in Sources */,
 				3C12381123FD2EED00C4135B /* EaseKeyBoardView.m in Sources */,
 				D2E36B441D41CF7600B1C90C /* RealtimeSearchUtil.m in Sources */,

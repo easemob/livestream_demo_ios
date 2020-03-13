@@ -24,13 +24,9 @@
 #import "EaseCreateLiveViewController.h"
 #import "EaseDefaultDataHelper.h"
 #import "EaseAudienceBehaviorView.h"
-#import "EaseBarrageFlyView.h"
-#import "JPGiftCellModel.h"
-#import "JPGiftModel.h"
-#import "JPGiftShowManager.h"
-#import "EaseLiveGiftHelper.h"
 #import "EaseLiveCastView.h"
 #import "EaseGiftListView.h"
+#import "EaseCustomMessageHelper.h"
 
 #define kDefaultTop 30.f
 #define kDefaultLeft 10.f
@@ -189,11 +185,7 @@
 //点击屏幕点赞特效
 -(void)showTheLoveAction
 {
-    EaseHeartFlyView* heart = [[EaseHeartFlyView alloc]initWithFrame:CGRectMake(0, 0, 55, 50)];
-    [_chatview addSubview:heart];
-    CGPoint fountainSource = CGPointMake(KScreenWidth - (20 + 50/2.0), _chatview.height);
-    heart.center = fountainSource;
-    [heart animateInView:_chatview];
+    [[EaseCustomMessageHelper sharedInstance] praiseAction:_chatview];
 }
 
 - (void)closeLiveAction
@@ -279,17 +271,10 @@
 //有观众送礼物
 - (void)userSendGifts:(EMMessage*)msg count:(NSInteger)count
 {
+    [[EaseCustomMessageHelper sharedInstance] userSendGifts:msg count:count backView:self.view];
+    
     EMCustomMessageBody *msgBody = (EMCustomMessageBody*)msg.body;
-    JPGiftCellModel *cellModel = [[JPGiftCellModel alloc]init];
-    cellModel.user_icon = [UIImage imageNamed:@"default_anchor_avatar"];
     NSString *giftid = [msgBody.ext objectForKey:@"id"];
-    int index = [[giftid substringFromIndex:5] intValue];
-    NSDictionary *dict = EaseLiveGiftHelper.sharedInstance.giftArray[index-1];
-    cellModel.icon = [UIImage imageNamed:(NSString *)[dict allKeys][0]];
-    cellModel.name = NSLocalizedString((NSString *)[dict allKeys][0], @"");
-    cellModel.username = msg.from;
-    cellModel.count = &(count);
-    [self sendGiftAction:cellModel];
     
     ++_giftsNum;
     [self.headerListView.liveCastView setNumberOfGift:_giftsNum];
@@ -307,27 +292,10 @@
     [EaseDefaultDataHelper.shared archive];
 }
 
-- (void)sendGiftAction:(JPGiftCellModel*)cellModel
-{
-    JPGiftModel *giftModel = [[JPGiftModel alloc]init];
-    giftModel.userIcon = cellModel.user_icon;
-    giftModel.userName = cellModel.username;
-    giftModel.giftName = cellModel.name;
-    giftModel.giftImage = cellModel.icon;
-    //giftModel.giftGifImage = cellModel.icon_gif;
-    giftModel.defaultCount = 0;
-    giftModel.sendCount = *(cellModel.count);
-    [[JPGiftShowManager sharedManager] showGiftViewWithBackView:self.view info:giftModel completeBlock:^(BOOL finished) {
-               //结束
-    }];
-}
-
 //弹幕
 - (void)didSelectedBarrageSwitch:(EMMessage*)msg
 {
-    EaseBarrageFlyView *barrageView = [[EaseBarrageFlyView alloc]initWithMessage:msg];
-    [self.view addSubview:barrageView];
-    [barrageView animateInView:self.view];
+    [[EaseCustomMessageHelper sharedInstance] barrageAction:msg backView:self.view];
 }
 
 - (void)easeChatViewDidChangeFrameToHeight:(CGFloat)toHeight

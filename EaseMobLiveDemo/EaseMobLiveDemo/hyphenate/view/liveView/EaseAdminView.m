@@ -242,7 +242,7 @@ extern BOOL isAllTheSilence;
 - (UIImageView*)auidenceImg
 {
     if (_auidenceImg == nil) {
-        _auidenceImg = [[UIImageView alloc]initWithFrame:CGRectMake(5, 16, 18, 18)];
+        _auidenceImg = [[UIImageView alloc]initWithFrame:CGRectMake(2, 16, 18, 18)];
         _auidenceImg.image = [UIImage imageNamed:@"auidence"];
     }
     return _auidenceImg;
@@ -321,7 +321,8 @@ extern BOOL isAllTheSilence;
         _mainScrollView.delegate = self;
         _mainScrollView.showsHorizontalScrollIndicator = NO;
         if (!_isOwner) {
-            _mainScrollView.userInteractionEnabled = NO;
+            CGSize scollableSize = CGSizeMake(KScreenWidth, _mainScrollView.height);
+            [_mainScrollView setContentSize:scollableSize];
         }
     }
     return _mainScrollView;
