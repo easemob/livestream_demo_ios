@@ -213,8 +213,8 @@
         }
     }
     self.occupantsCount--;
-    if (self.occupantsCount < 1) {
-        self.occupantsCount = 1;
+    if (self.occupantsCount < 0) {
+        self.occupantsCount = 0;
     }
     [_numberBtn setTitle:[NSString stringWithFormat:@"%ld人",(long)self.occupantsCount] forState:UIControlStateNormal];
     [self.collectionView reloadData];

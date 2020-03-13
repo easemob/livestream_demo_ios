@@ -13,6 +13,7 @@
 #import "EaseCustomSwitch.h"
 #import "EaseEmoticonView.h"
 #import "Masonry.h"
+#import "EaseCustomMessageHelper.h"
 
 #define kGiftAction @"cmd_gift"
 #define kPraiseAction @"cmd_live_praise"
@@ -25,11 +26,6 @@
 
 #define kDefaultSpace 5.f
 #define kDefaulfLeftSpace 10.f
-
-typedef enum : NSInteger{
-    customMessageType_praise,//点赞
-    customMessageType_gift,//礼物
-}customMessageType;
 
 @interface EaseChatView () <EMChatManagerDelegate,EMChatroomManagerDelegate,UITableViewDelegate,UITableViewDataSource,UITextViewDelegate,EaseEmoticonViewDelegate>
 {
@@ -226,7 +222,7 @@ BOOL isAllTheSilence;//全体禁言
         _likeButton.layer.cornerRadius = kButtonWitdh / 2;
         [_likeButton setImage:[UIImage imageNamed:@"ic_praise"] forState:UIControlStateNormal];
         [_likeButton setImage:[UIImage imageNamed:@"ic_praised"] forState:UIControlStateHighlighted];
-        [_likeButton addTarget:self action:@selector(praiseAction:) forControlEvents:UIControlEventTouchUpInside];
+        [_likeButton addTarget:self action:@selector(praiseAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _likeButton;
 }
@@ -500,7 +496,11 @@ BOOL isAllTheSilence;//全体禁言
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
     if (text.length > 0 && [text isEqualToString:@"\n"]) {
-        [self sendText];
+        if (_isBarrageInfo) {
+            [self sendBarrageMsg:self.textView.text];
+        } else {
+            [self sendText];
+        }
         [self textViewDidChange:self.textView];
         return NO;
     }
@@ -557,7 +557,11 @@ BOOL isAllTheSilence;//全体禁言
 {
     NSString *chatText = self.textView.text;
     if (chatText.length > 0) {
-        [self sendText];
+        if (_isBarrageInfo) {
+            [self sendBarrageMsg:self.textView.text];
+        } else {
+            [self sendText];
+        }
         self.textView.text = @"";
         [self textChangedExt];
     }
@@ -648,55 +652,16 @@ BOOL isAllTheSilence;//全体禁言
     return latestMessageTitle;
 }
 
-#pragma mark - private
-//自定义消息：礼物/赞 消息
-- (EMMessage *)_sendCustomMessage:(NSString *)text
-                           num:(NSInteger)num
-                             to:(NSString *)toUser
-                    messageType:(EMChatType)messageType
-                   customMsgType:(customMessageType)msgType
-{
-    EMMessageBody *body;
-    NSMutableDictionary *extDic = [[NSMutableDictionary alloc]init];
-    if (msgType == customMessageType_praise) {
-        [extDic setObject:@"1" forKey:@"num"];
-        body = [[EMCustomMessageBody alloc]initWithEvent:@"chatroom_like" ext:extDic];
-    } else if (msgType == customMessageType_gift){
-        [extDic setObject:text forKey:@"id"];
-        [extDic setObject:[NSString stringWithFormat:@"%ld",(long)num] forKey:@"num"];
-        body = [[EMCustomMessageBody alloc]initWithEvent:@"chatroom_gift" ext:extDic];
-    }
-    NSString *from = [[EMClient sharedClient] currentUsername];
-    EMMessage *message = [[EMMessage alloc] initWithConversationID:toUser from:from to:toUser body:body ext:nil];
-    message.chatType = messageType;
-    
-    return message;
-}
-
 - (EMMessage *)_sendTextMessage:(NSString *)text
                              to:(NSString *)toUser
                     messageType:(EMChatType)messageType
                      messageExt:(NSDictionary *)messageExt
 
 {
-    EMMessageBody *body;
-    //弹幕消息
-    if (_isBarrageInfo) {
-        NSMutableDictionary *extDic = [[NSMutableDictionary alloc]init];
-        [extDic setObject:text forKey:@"txt"];
-        body = [[EMCustomMessageBody alloc]initWithEvent:@"chatroom_barrage" ext:extDic];
-    } else {
-        //文本消息
-        body = [[EMTextMessageBody alloc] initWithText:text];
-    }
+    EMMessageBody *body = [[EMTextMessageBody alloc] initWithText:text];
     NSString *from = [[EMClient sharedClient] currentUsername];
     EMMessage *message = [[EMMessage alloc] initWithConversationID:toUser from:from to:toUser body:body ext:messageExt];
     message.chatType = messageType;
-    if (_isBarrageInfo) {
-        if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectedBarrageSwitch:)]) {
-            [self.delegate didSelectedBarrageSwitch:message];
-        }
-    }
     return message;
 }
 
@@ -806,7 +771,11 @@ BOOL isAllTheSilence;//全体禁言
 - (void)sendMsgAction
 {
     if (self.sendButton.tag == 1) {
-        [self sendText];
+        if (_isBarrageInfo) {
+            [self sendBarrageMsg:self.textView.text];
+        } else {
+            [self sendText];
+        }
     }
 }
 
@@ -823,12 +792,7 @@ BOOL isAllTheSilence;//全体禁言
         __weak EaseChatView *weakSelf = self;
         [[EMClient sharedClient].chatManager sendMessage:message progress:NULL completion:^(EMMessage *message, EMError *error) {
             if (!error) {
-                if ([weakSelf.datasource count] >= 200) {
-                    [weakSelf.datasource removeObjectsInRange:NSMakeRange(0, 190)];
-                }
-                [weakSelf.datasource addObject:message];
-                [weakSelf.tableView reloadData];
-                [weakSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:[weakSelf.datasource count] - 1] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+                [weakSelf currentViewDataFill:message];
             } else {
                 [MBProgressHUD showError:@"消息发送失败" toView:weakSelf];
             }
@@ -836,6 +800,24 @@ BOOL isAllTheSilence;//全体禁言
         self.textView.text = @"";
         [self textChangedExt];
     }
+}
+
+//发送弹幕消息
+- (void)sendBarrageMsg:(NSString*)text
+{
+    __weak EaseChatView *weakSelf = self;
+    [EaseCustomMessageHelper.sharedInstance sendCustomMessage:text num:0 to:_chatroomId messageType:EMChatTypeChatRoom customMsgType:customMessageType_barrage completion:^(EMMessage * _Nonnull message, EMError * _Nonnull error) {
+        if (!error) {
+            if (weakSelf.delegate && [self.delegate respondsToSelector:@selector(didSelectedBarrageSwitch:)]) {
+                [weakSelf.delegate didSelectedBarrageSwitch:message];
+            }
+            [weakSelf currentViewDataFill:message];
+        } else {
+            [MBProgressHUD showError:@"弹幕消息发送失败" toView:weakSelf];
+        }
+    }];
+    self.textView.text = @"";
+    [self textChangedExt];
 }
 
 - (void)faceAction
@@ -863,17 +845,11 @@ BOOL isAllTheSilence;//全体禁言
                     completion:(void (^)(BOOL success))aCompletion
 
 {
-    EMMessage *message = [self _sendCustomMessage:giftId num:num to:_chatroomId messageType:EMChatTypeChatRoom customMsgType:customMessageType_gift];
-    __weak EaseChatView *weakSelf = self;
-    [[EMClient sharedClient].chatManager sendMessage:message progress:NULL completion:^(EMMessage *message, EMError *error) {
+     __weak EaseChatView *weakSelf = self;
+    [[EaseCustomMessageHelper sharedInstance] sendCustomMessage:giftId num:num to:_chatroomId messageType:EMChatTypeChatRoom customMsgType:customMessageType_gift completion:^(EMMessage * _Nonnull message, EMError * _Nonnull error) {
         bool ret = false;
         if (!error) {
-            if ([weakSelf.datasource count] >= 200) {
-                [weakSelf.datasource removeObjectsInRange:NSMakeRange(0, 190)];
-            }
-            [weakSelf.datasource addObject:message];
-            [weakSelf.tableView reloadData];
-            [weakSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:[weakSelf.datasource count] - 1] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+            [weakSelf currentViewDataFill:message];
             ret = true;
         } else {
             ret = false;
@@ -883,25 +859,19 @@ BOOL isAllTheSilence;//全体禁言
     }];
 }
 //赞
-- (void)praiseAction:(UIButton *)sender
+- (void)praiseAction
 {
     if (_praiseInterval != 3) {
         return;
     }
     [self startTimer];
-    EMMessage *message = [self _sendCustomMessage:nil num:0 to:_chatroomId messageType:EMChatTypeChatRoom customMsgType:customMessageType_praise];
     __weak EaseChatView *weakSelf = self;
-    [[EMClient sharedClient].chatManager sendMessage:message progress:NULL completion:^(EMMessage *message, EMError *error) {
+    [[EaseCustomMessageHelper sharedInstance] sendCustomMessage:@"" num:0 to:_chatroomId messageType:EMChatTypeChatRoom customMsgType:customMessageType_praise completion:^(EMMessage * _Nonnull message, EMError * _Nonnull error) {
         if (!error) {
             if (weakSelf.delegate && [weakSelf.delegate respondsToSelector:@selector(didReceivePraiseMessage:)]) {
                 [weakSelf.delegate didReceivePraiseMessage:message];
             }
-            if ([weakSelf.datasource count] >= 200) {
-                [weakSelf.datasource removeObjectsInRange:NSMakeRange(0, 190)];
-            }
-            [weakSelf.datasource addObject:message];
-            [weakSelf.tableView reloadData];
-            [weakSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:[weakSelf.datasource count] - 1] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+            [weakSelf currentViewDataFill:message];
         } else {
             [MBProgressHUD showError:@"点赞失败" toView:weakSelf];
         }
@@ -951,6 +921,19 @@ BOOL isAllTheSilence;//全体禁言
             [_delegate didSelectGiftButton:NO];
         }
     }
+}
+
+#pragma mark - private
+
+//当前视图数据填充
+- (void)currentViewDataFill:(EMMessage*)message
+{
+    if ([self.datasource count] >= 200) {
+        [self.datasource removeObjectsInRange:NSMakeRange(0, 190)];
+    }
+    [self.datasource addObject:message];
+    [self.tableView reloadData];
+    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:[self.datasource count] - 1] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 }
 
 #pragma mark - public

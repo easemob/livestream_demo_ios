@@ -215,9 +215,9 @@ extern BOOL isAllTheSilence;
         if (_isOwner) {
             [self.adminView addSubview:self.whitelistBtn];
             [self.adminView addSubview:self.muteListBtn];
+            [self.adminView addSubview:self.selectLine];
+            [self.adminView addSubview:self.line];
         }
-        [self.adminView addSubview:self.selectLine];
-        [self.adminView addSubview:self.line];
         [self.adminView addSubview:self.mainScrollView];
         [self.mainScrollView addSubview:self.adminTableView];
         if (_isOwner) {
@@ -242,7 +242,7 @@ extern BOOL isAllTheSilence;
 - (UIImageView*)auidenceImg
 {
     if (_auidenceImg == nil) {
-        _auidenceImg = [[UIImageView alloc]initWithFrame:CGRectMake(5, 16, 18, 18)];
+        _auidenceImg = [[UIImageView alloc]initWithFrame:CGRectMake(2, 16, 18, 18)];
         _auidenceImg.image = [UIImage imageNamed:@"auidence"];
     }
     return _auidenceImg;
@@ -314,12 +314,16 @@ extern BOOL isAllTheSilence;
 - (UIScrollView*)mainScrollView
 {
     if (_mainScrollView == nil) {
-        _mainScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_selectLine.frame), _adminView.width, _adminView.height - CGRectGetMaxY(_selectLine.frame))];
+        _mainScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_adminListBtn.frame) + 2, _adminView.width, _adminView.height - CGRectGetMaxY(_adminListBtn.frame) - 2)];
         _mainScrollView.contentSize = CGSizeMake(_mainScrollView.width*3, _mainScrollView.height);
         _mainScrollView.tag = 1000;
         _mainScrollView.pagingEnabled = YES;
         _mainScrollView.delegate = self;
         _mainScrollView.showsHorizontalScrollIndicator = NO;
+        if (!_isOwner) {
+            CGSize scollableSize = CGSizeMake(KScreenWidth, _mainScrollView.height);
+            [_mainScrollView setContentSize:scollableSize];
+        }
     }
     return _mainScrollView;
 }

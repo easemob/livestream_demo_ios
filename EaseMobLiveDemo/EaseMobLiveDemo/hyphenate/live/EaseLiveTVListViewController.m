@@ -377,6 +377,7 @@
     if (self.tabBarBehavior == kTabbarItemTag_Live) {
         view = [[EaseLiveViewController alloc] initWithLiveRoom:room];
         view.modalPresentationStyle = UIModalPresentationFullScreen;
+        view.modalPresentationStyle = 0;
         [self.navigationController presentViewController:view animated:YES completion:NULL];
     } else if (self.tabBarBehavior == kTabbarItemTag_Broadcast) {
         view = [[EaseCreateLiveViewController alloc]initWithLiveroom:room];

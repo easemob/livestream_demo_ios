@@ -116,7 +116,7 @@
 #define kHttpRequestMaxOperation 5
 
 //#define kDefaultDomain @"http://a1.easemob.com"
-#define kDefaultDomain @"http://a1-hsb.easemob.com/appserver"
+#define kDefaultDomain @"http://a1.easemob.com/appserver"
 
 static EaseHttpManager *sharedInstance = nil;
 

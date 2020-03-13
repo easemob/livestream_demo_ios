@@ -162,6 +162,7 @@
     [self.searchBar resignFirstResponder];
     EaseLiveRoom *room = [self.resultsSource objectAtIndex:indexPath.row];
     EaseLiveViewController *view = [[EaseLiveViewController alloc] initWithLiveRoom:room];
+    view.modalPresentationStyle = 0;
     [self.navigationController presentViewController:view animated:YES completion:NULL];
 }
 

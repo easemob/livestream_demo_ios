@@ -284,6 +284,7 @@
     if (self.selectedGiftCell) {
         if (self.giftDelegate && [self.giftDelegate respondsToSelector:@selector(didConfirmGift:giftNum:)]) {
             [self.giftDelegate didConfirmGift:self.selectedGiftCell giftNum:_giftNum];
+            self.selectedGiftCell = nil;
         }
     }
 }
