@@ -98,7 +98,7 @@
         [_versionView addSubview:version];
         UILabel *versionNum = [[UILabel alloc]initWithFrame:CGRectMake(self.view.width - 56, 20, 40, 20)];
         versionNum.textAlignment = NSTextAlignmentRight;
-        versionNum.text = [EMClient sharedClient].version;
+        versionNum.text = kLiveDemoVersion;
         [_versionView addSubview:versionNum];
     }
     return _versionView;

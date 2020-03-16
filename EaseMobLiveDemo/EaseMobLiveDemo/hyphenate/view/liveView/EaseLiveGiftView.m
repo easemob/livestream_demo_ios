@@ -138,6 +138,7 @@
         subtractBtn.layer.cornerRadius = 15.f;
         subtractBtn.backgroundColor = [UIColor blackColor];
         subtractBtn.titleLabel.font = [UIFont systemFontOfSize:26.f];
+        subtractBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 0, 3, 0);
         [subtractBtn addTarget:self action:@selector(subtractGiftNumAction) forControlEvents:UIControlEventTouchUpInside];
         [_selectedGiftNumView addSubview:subtractBtn];
         [subtractBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -165,6 +166,7 @@
         addtBtn.layer.cornerRadius = 15.f;
         addtBtn.backgroundColor = [UIColor blackColor];
         addtBtn.titleLabel.font = [UIFont systemFontOfSize:26.f];
+        addtBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 0, 3, 0);
         [addtBtn addTarget:self action:@selector(addGiftNumAction) forControlEvents:UIControlEventTouchUpInside];
         [_selectedGiftNumView addSubview:addtBtn];
         [addtBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -264,6 +266,8 @@
     self.selectedGiftNumView.hidden = NO;
     self.selectedGiftDesc.text = aCell.nameLabel.text;
     self.selectedGiftCell = aCell;
+    _giftNum = 1;
+    [self.giftNumBtn setTitle:[NSString stringWithFormat:@"%lu",_giftNum] forState:UIControlStateNormal];
 }
 
 #pragma mark - EaseCustomKeyBoardDelegate
@@ -285,6 +289,8 @@
         if (self.giftDelegate && [self.giftDelegate respondsToSelector:@selector(didConfirmGift:giftNum:)]) {
             [self.giftDelegate didConfirmGift:self.selectedGiftCell giftNum:_giftNum];
             self.selectedGiftCell = nil;
+            _giftNum = 1;
+            [self.giftNumBtn setTitle:[NSString stringWithFormat:@"%lu",_giftNum] forState:UIControlStateNormal];
         }
     }
 }

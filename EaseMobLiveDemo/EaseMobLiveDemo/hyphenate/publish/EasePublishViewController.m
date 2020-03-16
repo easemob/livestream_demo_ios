@@ -1,6 +1,5 @@
 //
 //  EasePublishViewController.m
-//  UCloudMediaRecorderDemo
 //
 //  Created by EaseMob on 16/6/3.
 //  Copyright © 2016年 zmw. All rights reserved.
@@ -8,13 +7,11 @@
 
 #import "EasePublishViewController.h"
 
-#import "UCloudMediaPlayer.h"
-#import "CameraServer.h"
-#import "FilterManager.h"
+#import "SDImageCache.h"
+#import "SDWebImageDownloader.h"
 #import "EaseChatView.h"
 #import "EaseHeartFlyView.h"
 #import "EaseLiveHeaderListView.h"
-#import "EaseEndLiveView.h"
 #import "UIImage+Color.h"
 #import "EaseProfileLiveView.h"
 #import "EaseLiveCastView.h"
@@ -27,11 +24,12 @@
 #import "EaseLiveCastView.h"
 #import "EaseGiftListView.h"
 #import "EaseCustomMessageHelper.h"
+#import "EaseFinishLiveView.h"
 
 #define kDefaultTop 30.f
 #define kDefaultLeft 10.f
 
-@interface EasePublishViewController () <EaseChatViewDelegate,UITextViewDelegate,EMChatroomManagerDelegate,EaseEndLiveViewDelegate,TapBackgroundViewDelegate,EaseLiveHeaderListViewDelegate,EaseProfileLiveViewDelegate,UIAlertViewDelegate,EMClientDelegate>
+@interface EasePublishViewController () <EaseChatViewDelegate,UITextViewDelegate,EMChatroomManagerDelegate,TapBackgroundViewDelegate,EaseLiveHeaderListViewDelegate,EaseProfileLiveViewDelegate,UIAlertViewDelegate,EMClientDelegate>
 {
     BOOL _isload;
     BOOL _isShutDown;
@@ -49,7 +47,6 @@
 }
 
 @property (nonatomic, strong) EaseLiveHeaderListView *headerListView;
-@property (nonatomic, strong) EaseEndLiveView *endLiveView;
 @property (nonatomic, strong) UILabel *roomNameLabel;
 @property (nonatomic, strong) UIWindow *subWindow;
 
@@ -57,6 +54,7 @@
 
 //聊天室
 @property (strong, nonatomic) EaseChatView *chatview;
+@property(nonatomic,strong) UIImageView *backImageView;
 
 @end
 
@@ -77,8 +75,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.view.backgroundColor = [UIColor colorWithRed:90/255.0 green:93/255.0 blue:208/255.0 alpha:1.0];
+    [self.view insertSubview:self.backImageView atIndex:0];
     
     [[EMClient sharedClient].roomManager addDelegate:self delegateQueue:nil];
     [[EMClient sharedClient] addDelegate:self delegateQueue:nil];
@@ -120,13 +117,30 @@
     return _subWindow;
 }
 
-- (EaseEndLiveView*)endLiveView
+- (UIImageView*)backImageView
 {
-    if (_endLiveView == nil) {
-        _endLiveView = [[EaseEndLiveView alloc] initWithUsername:_room.title audience:@""];
-        _endLiveView.delegate = self;
+    if (_backImageView == nil) {
+        _backImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight)];
+        _backImageView.contentMode = UIViewContentModeScaleToFill;
+        UIImage *image = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:_room.coverPictureUrl];
+        __weak typeof(self) weakSelf = self;
+        if (!image) {
+            [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:_room.coverPictureUrl]
+                                                                     options:SDWebImageDownloaderUseNSURLCache
+                                                                    progress:NULL
+                                                                   completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+                                                                       if (image) {
+                                                                           [[SDImageCache sharedImageCache] storeImage:image forKey:_room.coverPictureUrl toDisk:NO completion:^{
+                                                                               weakSelf.backImageView.image = image;
+                                                                           }];
+                                                                       } else {
+                                                                           weakSelf.backImageView.image = [UIImage imageNamed:@"default_back_image"];
+                                                                       }
+                                                                   }];
+           }
+        _backImageView.image = image;
     }
-    return _endLiveView;
+    return _backImageView;
 }
 
 - (EaseLiveHeaderListView*)headerListView
@@ -166,7 +180,21 @@
 
 - (void)didSelectedExitButton
 {
-    [self closeLiveAction];
+    EaseFinishLiveView *finishView = [[EaseFinishLiveView alloc]initWithTitleInfo:@"确定结束直播?"];
+    [self.view addSubview:finishView];
+    [finishView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.view).offset(16);
+        make.right.equalTo(self.view).offset(-16);
+        make.height.equalTo(@220);
+        make.center.equalTo(self.view);
+    }];
+     __weak EaseFinishLiveView *weakFinishView = finishView;
+    [finishView setDoneCompletion:^(BOOL isFinish) {
+        if (isFinish) {
+            [self didClickFinishButton];
+        }
+        [weakFinishView removeFromSuperview];
+    }];
 }
 
 #pragma mark - Action
@@ -186,14 +214,6 @@
 -(void)showTheLoveAction
 {
     [[EaseCustomMessageHelper sharedInstance] praiseAction:_chatview];
-}
-
-- (void)closeLiveAction
-{
-    [self.endLiveView setAudience:@"2000人正在观看"];
-    [self.view addSubview:self.endLiveView];
-    [self.view bringSubviewToFront:self.endLiveView];
-    //[self stopCameraAction];
 }
 
 #pragma mark - EaseLiveHeaderListViewDelegate
@@ -218,9 +238,7 @@
     [profileView removeFromParentView];
 }
 
-#pragma mark - EaseEndLiveViewDelegate
-
-- (void)didClickEndButton
+- (void)didClickFinishButton
 {
     __weak EasePublishViewController *weakSelf = self;
     
@@ -341,11 +359,6 @@
     }
 }
 
-- (void)didSelectChangeCameraButton
-{
-    [[CameraServer server] changeCamera];
-}
-
 //主播信息卡片
 - (void)didClickAnchorCard:(EaseLiveRoom *)room
 {
@@ -443,7 +456,7 @@ extern bool isAllTheSilence;
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:[NSString stringWithFormat:@"聊天室创建者有更新:%@",aChatroom.chatroomId] preferredStyle:UIAlertControllerStyleAlert];
         
         UIAlertAction *ok = [UIAlertAction actionWithTitle:NSLocalizedString(@"publish.ok", @"Ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self didClickEndButton];
+            [self didClickFinishButton];
         }];
         
         [alert addAction:ok];
@@ -456,7 +469,7 @@ extern bool isAllTheSilence;
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"被踢出直播聊天室" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
     [alert show];
     //[self _shutDownLive];
-    [self didClickEndButton];
+    [self didClickFinishButton];
 }
 
 - (void)setBtnStateInSel:(NSInteger)num

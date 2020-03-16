@@ -1,6 +1,5 @@
 //
 //  EaseLiveTVListViewController.m
-//  UCloudMediaRecorderDemo
 //
 //  Created by EaseMob on 16/5/30.
 //  Copyright © 2016年 zmw. All rights reserved.
@@ -308,13 +307,17 @@
                                                               options:SDWebImageDownloaderUseNSURLCache
                                                              progress:NULL
                                                             completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+                                                                UIImage *backimage = nil;
                                                                 if (image) {
-                                                                    [[SDImageCache sharedImageCache] storeImage:image forKey:room.coverPictureUrl toDisk:NO completion:^{
-                                                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                                                            [weakSelf.collectionView reloadData];
-                                                                        });
-                                                                    }];
+                                                                    backimage = image;
+                                                                } else {
+                                                                    backimage = [UIImage imageNamed:@"default_back_image"];
                                                                 }
+                                                                [[SDImageCache sharedImageCache] storeImage:backimage forKey:room.coverPictureUrl toDisk:NO completion:^{
+                                                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                                                        [weakSelf.collectionView reloadData];
+                                                                    });
+                                                                }];
                                                             }];
     }
     return cell;

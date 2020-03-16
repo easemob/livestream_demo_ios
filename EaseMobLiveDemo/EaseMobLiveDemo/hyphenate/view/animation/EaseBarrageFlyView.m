@@ -1,6 +1,5 @@
 //
 //  EaseBarrageFlyView.m
-//  UCloudMediaRecorderDemo
 //
 //  Created by EaseMob on 16/6/13.
 //  Copyright © 2016年 zmw. All rights reserved.
@@ -8,9 +7,9 @@
 
 #import "EaseBarrageFlyView.h"
 
-#define kLabelDefaultMinWidth 50.f
-#define kLabelDefaultMaxWidth ([UIScreen mainScreen].bounds.size.width)
-#define kLabelDefaultHeight 25.f
+#define kLabelDefaultMinWidth 60.5f
+#define kLabelDefaultMaxWidth [[UIScreen mainScreen] bounds].size.width
+#define kLabelDefaultHeight 21.f
 
 @interface EaseBarrageFlyView ()
 {
@@ -63,7 +62,7 @@
     if (_giftLabel == nil) {
         CGFloat width = kLabelDefaultMinWidth;
         EMCustomMessageBody *body = (EMCustomMessageBody*)_message.body;
-        NSDictionary *attributes = @{NSFontAttributeName:[UIFont systemFontOfSize:16.0f],};
+        NSDictionary *attributes = @{NSFontAttributeName:[UIFont systemFontOfSize:15.0f],};
         CGSize textSize = [[body.ext objectForKey:@"txt"] boundingRectWithSize:CGSizeMake(kLabelDefaultMaxWidth, kLabelDefaultHeight) options:NSStringDrawingTruncatesLastVisibleLine attributes:attributes context:nil].size;
         if (textSize.width >= kLabelDefaultMaxWidth) {
             width = kLabelDefaultMaxWidth;
@@ -75,6 +74,7 @@
         _giftLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, width, kLabelDefaultHeight)];
         _giftLabel.textColor = [UIColor whiteColor];
         _giftLabel.layer.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.2].CGColor;
+        _giftLabel.layer.cornerRadius = 10.5;
         _giftLabel.text = [body.ext objectForKey:@"txt"];
         _giftLabel.font = [UIFont systemFontOfSize:16.0f];
     }
@@ -107,36 +107,24 @@
 - (void)animateInView:(UIView *)view
 {
     CGRect frame = self.frame;
-    frame.origin.x = CGRectGetMaxX(view.frame) + CGRectGetWidth(frame);
+    frame.origin.x = CGRectGetMaxX(view.frame) + CGRectGetWidth(_giftLabel.frame);
     self.frame = frame;
     
-    self.alpha = 0;
+    self.alpha = 1;
     __weak typeof(self) weakSelf = self;
     
     dispatch_block_t animateStepOneBlock = ^{
         CGRect frame = weakSelf.frame;
-        frame.origin.x = CGRectGetMaxX(view.frame)/2;
+        frame.origin.x = -CGRectGetWidth(_giftLabel.frame);
         weakSelf.frame = frame;
         weakSelf.alpha = 1;
     };
     
-    dispatch_block_t animateStepTowBlock = ^{
-        CGRect frame = weakSelf.frame;
-        frame.origin.x = -CGRectGetWidth(frame);
-        weakSelf.frame = frame;
-        weakSelf.alpha = 1;
-    };
-    
-    [UIView animateWithDuration:3.0 delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
+    [UIView animateWithDuration:5 delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
         animateStepOneBlock();
     } completion:^(BOOL finished) {
-        [UIView animateWithDuration:3.0 delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
-            animateStepTowBlock();
-        } completion:^(BOOL finished) {
-            [weakSelf removeFromSuperview];
-        }];
+        [weakSelf removeFromSuperview];
     }];
 }
-
 
 @end

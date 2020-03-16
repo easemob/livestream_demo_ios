@@ -23,7 +23,7 @@
 /** type */
 @property(nonatomic,copy)NSString *type;
 /** 数量 */
-@property(nonatomic,assign)NSInteger *count;
+@property(nonatomic,assign)NSInteger count;
 /** 是否选中 */
 @property(nonatomic,assign)BOOL isSelected;
 /** username */
