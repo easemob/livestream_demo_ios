@@ -25,10 +25,11 @@
 - (UIView*)userInfo
 {
     if (_userInfo == nil) {
-        _userInfo = [[UIView alloc]initWithFrame:CGRectMake(self.width-280, (65-20)/2, 120, 20)];
+        _userInfo = [[UIView alloc]initWithFrame:CGRectMake(self.width-280, (54-20)/2, 120, 20)];
         _userInfo.backgroundColor = [UIColor clearColor];
         UIImageView *avatar = [[UIImageView alloc]initWithFrame:CGRectMake(self.width-220, 1, 18, 18)];
         avatar.image = [UIImage imageNamed:@"default_anchor_avatar"];
+        avatar.layer.cornerRadius = 9;
         [_userInfo addSubview:avatar];
         [_userInfo addSubview:self.userLabel];
         [_userLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -39,7 +40,7 @@
         }];
         UILabel *constMsgLabel = [[UILabel alloc]init];
         constMsgLabel.text = @"送出";
-        constMsgLabel.font = [UIFont systemFontOfSize:12.f];
+        constMsgLabel.font = [UIFont systemFontOfSize:13.f];
         constMsgLabel.backgroundColor = [UIColor clearColor];
         constMsgLabel.textAlignment = NSTextAlignmentCenter;
         constMsgLabel.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.6];
@@ -59,7 +60,7 @@
     if (_userLabel == nil) {
         _userLabel = [[UILabel alloc]init];
         _userLabel.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.6];
-        _userLabel.font = [UIFont systemFontOfSize:12.f];
+        _userLabel.font = [UIFont systemFontOfSize:13.f];
         _userLabel.backgroundColor = [UIColor clearColor];
         _userLabel.textAlignment = NSTextAlignmentCenter;
     }
@@ -70,7 +71,7 @@
 {
     [super layoutSubviews];
     [self.contentView addSubview:self.userInfo];
-    self.contentView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6];
+    self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6];
     /*
     CGRect textLabelFrame = self.textLabel.frame;
     textLabelFrame.size.width=60.0f;
@@ -124,10 +125,10 @@
 {
     if (_exceptionalGift == nil) {
         _exceptionalGift = [[UILabel alloc]initWithFrame:CGRectMake(self.width - 160, 15, 144, 20)];
-        _exceptionalGift.font = [UIFont systemFontOfSize:12.f];
+        _exceptionalGift.font = [UIFont systemFontOfSize:13.f];
         _exceptionalGift.textColor = [UIColor whiteColor];
         _exceptionalGift.backgroundColor = [UIColor clearColor];
-        _exceptionalGift.textAlignment = NSTextAlignmentCenter;
+        _exceptionalGift.textAlignment = NSTextAlignmentRight;
         _exceptionalGift.text = [NSString stringWithFormat:@"共%d份  打赏人数%lu人",[EaseDefaultDataHelper.shared.giftNumbers intValue],(unsigned long)[EaseDefaultDataHelper.shared.rewardCount count]];
     }
     return _exceptionalGift;
@@ -181,7 +182,7 @@
         _giftTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_giftListBtn.frame), _giftView.width, _giftView.height - CGRectGetMaxY(_giftListBtn.frame)) style:UITableViewStylePlain];
         _giftTableView.dataSource = self;
         _giftTableView.delegate = self;
-        _giftTableView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
+        _giftTableView.backgroundColor = [UIColor clearColor];
         _giftTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _giftTableView.tableFooterView = [[UIView alloc] init];
     }
@@ -218,7 +219,7 @@
     [cellImageLayer setCornerRadius:15];
     [cellImageLayer setMasksToBounds:YES];*/
     
-    CGSize itemSize = CGSizeMake(40, 40);
+    CGSize itemSize = CGSizeMake(38, 38);
     UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
     CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
     [cell.imageView.image drawInRect:imageRect];
@@ -238,7 +239,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 65.f;
+    return 54.f;
 }
 
 @end

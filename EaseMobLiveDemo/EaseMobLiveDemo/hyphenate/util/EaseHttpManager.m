@@ -99,7 +99,7 @@
 /*
  POST request   上传文件
  */
-#define kPostRequestUploadFileUrl [NSString stringWithFormat:@"%@/%@/chatfiles", @"http://a1-hsb.easemob.com", kAppKeyForDomain]
+#define kPostRequestUploadFileUrl [NSString stringWithFormat:@"%@/%@/chatfiles", @"http://a1.easemob.com", kAppKeyForDomain]
 
 /*
  GET/PUT request    统计数量

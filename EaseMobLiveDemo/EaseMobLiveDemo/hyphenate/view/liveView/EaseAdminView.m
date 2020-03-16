@@ -36,7 +36,7 @@ extern BOOL isAllTheSilence;
 {
     if (_clickButton == nil) {
         _clickButton = [[UIButton alloc] init];
-        _clickButton.frame = CGRectMake(self.width - 120, (65 - 30)/2, 60, 30);
+        _clickButton.frame = CGRectMake(self.width - 120, (54 - 30)/2, 60, 30);
         [_clickButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_clickButton.titleLabel setFont:[UIFont systemFontOfSize:12]];
     }
@@ -46,7 +46,7 @@ extern BOOL isAllTheSilence;
 - (UILabel*)mutingLabel
 {
     if (_mutingLabel == nil) {
-        _mutingLabel = [[UILabel alloc]initWithFrame:CGRectMake(self.width - 200, (65 - 15)/2, 40.f, 15.f)];
+        _mutingLabel = [[UILabel alloc]initWithFrame:CGRectMake(self.width - 200, (54 - 15)/2, 40.f, 15.f)];
         _mutingLabel.text = @"禁言中";
         _mutingLabel.textAlignment = NSTextAlignmentCenter;
         _mutingLabel.textColor = [UIColor whiteColor];
@@ -60,7 +60,7 @@ extern BOOL isAllTheSilence;
 - (EaseCustomSwitch*)muteSwitch
 {
     if (_muteSwitch == nil) {
-        _muteSwitch = [[EaseCustomSwitch alloc]initWithTextFont:[UIFont systemFontOfSize:12.f] OnText:@"" offText:@"" onBackGroundColor:RGBACOLOR(4, 174, 240, 1) offBackGroundColor:RGBACOLOR(191, 191, 191, 1) onButtonColor:RGBACOLOR(255, 255, 255, 1) offButtonColor:RGBACOLOR(255, 255, 255, 1) onTextColor:RGBACOLOR(4, 174, 240, 1) andOffTextColor:RGBACOLOR(191, 191, 191, 1) isOn:isAllTheSilence frame:CGRectMake(self.width - 60, (65 - 24) / 2, 44.f, 24.f)];
+        _muteSwitch = [[EaseCustomSwitch alloc]initWithTextFont:[UIFont systemFontOfSize:12.f] OnText:@"" offText:@"" onBackGroundColor:RGBACOLOR(4, 174, 240, 1) offBackGroundColor:RGBACOLOR(191, 191, 191, 1) onButtonColor:RGBACOLOR(255, 255, 255, 1) offButtonColor:RGBACOLOR(255, 255, 255, 1) onTextColor:RGBACOLOR(4, 174, 240, 1) andOffTextColor:RGBACOLOR(191, 191, 191, 1) isOn:isAllTheSilence frame:CGRectMake(self.width - 60, (54 - 24) / 2, 44.f, 24.f)];
     }
     return _muteSwitch;
 }
@@ -68,7 +68,7 @@ extern BOOL isAllTheSilence;
 - (UIView*)anchorIdentity
 {
     if (_anchorIdentity == nil) {
-        _anchorIdentity = [[UIView alloc] initWithFrame:CGRectMake(self.width - 200, (65 - 15)/2, 45.f, 15.f)];
+        _anchorIdentity = [[UIView alloc] initWithFrame:CGRectMake(self.width - 200, (54 - 15)/2, 45.f, 15.f)];
         _anchorIdentity.backgroundColor = [UIColor clearColor];
         _anchorIdentity.layer.cornerRadius = 7.5;
         [_anchorIdentity.layer addSublayer:self.livingGl];
@@ -147,7 +147,7 @@ extern BOOL isAllTheSilence;
     [self.contentView addSubview:self.clickButton];
     [self.contentView addSubview:self.anchorIdentity];
     [self.contentView addSubview:self.mutingLabel];
-    self.contentView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6];
+    self.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.6];
     
     CGRect textLabelFrame = self.textLabel.frame;
     textLabelFrame.size.width=60.0f;
@@ -234,7 +234,7 @@ extern BOOL isAllTheSilence;
 {
     if (_adminView == nil) {
          _adminView = [[UIView alloc] initWithFrame:CGRectMake(0, self.height - 320.f, self.width, 320.f)];
-        _adminView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
+        _adminView.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.5];
     }
     return _adminView;
 }
@@ -253,6 +253,7 @@ extern BOOL isAllTheSilence;
     if (_adminListBtn == nil) {
         _adminListBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _adminListBtn.frame = CGRectMake(0, 0, KScreenWidth/3, kButtonDefaultHeight);
+        _adminListBtn.backgroundColor = [UIColor clearColor];
         [_adminListBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_adminListBtn setTitle:@"观众" forState:UIControlStateNormal];
         [_adminListBtn.titleLabel setFont:[UIFont fontWithName:@"Alibaba-PuHuiTi" size:15.f]];
@@ -269,6 +270,7 @@ extern BOOL isAllTheSilence;
         _whitelistBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _whitelistBtn.frame = CGRectMake(CGRectGetMaxX(_adminListBtn.frame), 0, KScreenWidth/3, kButtonDefaultHeight);
         //[_whitelistBtn setTitle:NSLocalizedString(@"profile.block", @"Block") forState:UIControlStateNormal];
+        _whitelistBtn.backgroundColor = [UIColor clearColor];
         [_whitelistBtn setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.59] forState:UIControlStateNormal];
         [_whitelistBtn setTitle:@"白名单" forState:UIControlStateNormal];
         [_whitelistBtn.titleLabel setFont:[UIFont fontWithName:@"Alibaba-PuHuiTi" size:15.f]];
@@ -284,6 +286,7 @@ extern BOOL isAllTheSilence;
         _muteListBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _muteListBtn.frame = CGRectMake(CGRectGetMaxX(_whitelistBtn.frame), 0, KScreenWidth/3, kButtonDefaultHeight);
         //[_muteListBtn setTitle:NSLocalizedString(@"profile.mute", @"Mute") forState:UIControlStateNormal];
+        _muteListBtn.backgroundColor = [UIColor clearColor];
         [_muteListBtn setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.59] forState:UIControlStateNormal];
         [_muteListBtn setTitle:@"观众禁言" forState:UIControlStateNormal];
         [_muteListBtn.titleLabel setFont:[UIFont fontWithName:@"Alibaba-PuHuiTi" size:15.f]];
@@ -320,6 +323,7 @@ extern BOOL isAllTheSilence;
         _mainScrollView.pagingEnabled = YES;
         _mainScrollView.delegate = self;
         _mainScrollView.showsHorizontalScrollIndicator = NO;
+        _mainScrollView.backgroundColor = [UIColor clearColor];
         if (!_isOwner) {
             CGSize scollableSize = CGSizeMake(KScreenWidth, _mainScrollView.height);
             [_mainScrollView setContentSize:scollableSize];
@@ -334,7 +338,7 @@ extern BOOL isAllTheSilence;
         _adminTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.mainScrollView.width, self.mainScrollView.height) style:UITableViewStylePlain];
         _adminTableView.dataSource = self;
         _adminTableView.delegate = self;
-        _adminTableView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
+        _adminTableView.backgroundColor = [UIColor clearColor];
         _adminTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _adminTableView.tableFooterView = [[UIView alloc] init];
         
@@ -365,7 +369,7 @@ extern BOOL isAllTheSilence;
         _muteTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.mainScrollView.width*2, 0, self.mainScrollView.width, self.mainScrollView.height) style:UITableViewStylePlain];
         _muteTableView.dataSource = self;
         _muteTableView.delegate = self;
-        _muteTableView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
+        _muteTableView.backgroundColor = [UIColor clearColor];
         _muteTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _muteTableView.tableFooterView = [[UIView alloc] init];
         
@@ -395,7 +399,7 @@ extern BOOL isAllTheSilence;
         _whitelistTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.mainScrollView.width, 0, self.mainScrollView.width, self.mainScrollView.height) style:UITableViewStylePlain];
         _whitelistTableView.dataSource = self;
         _whitelistTableView.delegate = self;
-        _whitelistTableView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
+        _whitelistTableView.backgroundColor = [UIColor clearColor];
         _whitelistTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _whitelistTableView.tableFooterView = [[UIView alloc] init];
         
@@ -542,17 +546,17 @@ extern NSArray<NSString*> *nickNameArray;
                 cell.imageView.image = [UIImage imageNamed:@"default_anchor_avatar"];
             }
         }
-        cell.clickButton.frame = CGRectMake(self.width - 120, (65 - 30)/2, 60, 30);
+        cell.clickButton.frame = CGRectMake(self.width - 120, (54 - 30)/2, 60, 30);
         [cell.clickButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     } else {
-        cell.clickButton.frame = CGRectMake(self.width - 66, (65 - 20)/2, 30, 20);
+        cell.clickButton.frame = CGRectMake(self.width - 66, (54 - 20)/2, 30, 20);
         [cell.clickButton setTitleColor:RGBACOLOR(255, 199, 0, 1) forState:UIControlStateNormal];
     }
     CALayer *cellImageLayer = cell.imageView.layer;
     [cellImageLayer setCornerRadius:15];
     [cellImageLayer setMasksToBounds:YES];
     
-    CGSize itemSize = CGSizeMake(30, 30);
+    CGSize itemSize = CGSizeMake(28, 28);
     UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
     CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
     [cell.imageView.image drawInRect:imageRect];
@@ -572,7 +576,7 @@ extern NSArray<NSString*> *nickNameArray;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 65.f;
+    return 54.f;
 }
 
 #pragma mark - UIScrollViewDelegate

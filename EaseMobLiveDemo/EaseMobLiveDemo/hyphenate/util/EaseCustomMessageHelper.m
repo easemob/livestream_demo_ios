@@ -86,7 +86,7 @@ static EaseCustomMessageHelper *sharedInstance;
     giftModel.giftImage = cellModel.icon;
     //giftModel.giftGifImage = cellModel.icon_gif;
     giftModel.defaultCount = 0;
-    giftModel.sendCount = *(cellModel.count);
+    giftModel.sendCount = cellModel.count;
     [[JPGiftShowManager sharedManager] showGiftViewWithBackView:backView info:giftModel completeBlock:^(BOOL finished) {
                //结束
         } completeShowGifImageBlock:^(JPGiftModel *giftModel) {

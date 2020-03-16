@@ -1,6 +1,5 @@
 //
 //  EaseChatView.h
-//  UCloudMediaRecorderDemo
 //
 //  Created by EaseMob on 16/5/9.
 //  Copyright © 2016年 zilong.li All rights reserved.
@@ -23,8 +22,6 @@
 - (void)didReceivePraiseMessage:(EMMessage *)message;
 
 - (void)didSelectUserWithMessage:(EMMessage*)message;
-
-- (void)didSelectChangeCameraButton;
 
 //- (void)didSelectAdminButton:(BOOL)isOwner;
 

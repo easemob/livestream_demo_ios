@@ -1,6 +1,5 @@
 //
 //  EaseChatView.m
-//  UCloudMediaRecorderDemo
 //
 //  Created by EaseMob on 16/5/9.
 //  Copyright © 2016年 zilong.li All rights reserved.
@@ -105,10 +104,10 @@ BOOL isAllTheSilence;//全体禁言
         [self.bottomView addSubview:self.sendTextButton];
         //[self.bottomView addSubview:self.adminButton];
         [self.bottomView addSubview:self.exitButton];
-        if (isPublish) {
-            [self.bottomView addSubview:self.changeCameraButton];
-        } else {
+        if (!isPublish) {
             [self.bottomView addSubview:self.likeButton];
+        } else {
+            self.exitButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*2 - 2*kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
         }
         [self.bottomView addSubview:self.giftButton];
         self.bottomSendMsgView.hidden = YES;
@@ -151,6 +150,7 @@ BOOL isAllTheSilence;//全体禁言
     [[EMClient sharedClient].chatManager removeDelegate:self];
     [[EMClient sharedClient].roomManager removeDelegate:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self stopTimer];
 }
 
 - (UITableView*)tableView
@@ -184,19 +184,6 @@ BOOL isAllTheSilence;//全体禁言
         [_sendTextButton addTarget:self action:@selector(sendTextAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _sendTextButton;
-}
-
-- (UIButton*)changeCameraButton
-{
-    if (_changeCameraButton == nil) {
-        _changeCameraButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _changeCameraButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*2 - 2*kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
-        _changeCameraButton.backgroundColor = [UIColor brownColor];
-        _changeCameraButton.layer.cornerRadius = kButtonWitdh / 2;
-        [_changeCameraButton setImage:[UIImage imageNamed:@"reversal_camera"] forState:UIControlStateNormal];
-        [_changeCameraButton addTarget:self action:@selector(changeCameraAction) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _changeCameraButton;
 }
 
 - (UIButton*)exitButton
@@ -832,13 +819,6 @@ BOOL isAllTheSilence;//全体禁言
     }
 }
 
-- (void)changeCameraAction
-{
-    if (_delegate && [_delegate respondsToSelector:@selector(didSelectChangeCameraButton)]) {
-        [_delegate didSelectChangeCameraButton];
-        _changeCameraButton.selected = !_changeCameraButton.selected;
-    }
-}
 //发送礼物
 - (void)sendGiftAction:(NSString *)giftId
                    num:(NSInteger)num

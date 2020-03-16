@@ -1,6 +1,5 @@
 //
 //  EaseLiveViewController.m
-//  UCloudMediaRecorderDemo
 //
 //  Created by EaseMob on 16/6/4.
 //  Copyright © 2016年 zmw. All rights reserved.
@@ -8,8 +7,6 @@
 
 #import "EaseLiveViewController.h"
 
-#import "UCloudMediaPlayer.h"
-#import "CameraServer.h"
 #import "EaseChatView.h"
 #import "AppDelegate.h"
 #import "EaseHeartFlyView.h"
@@ -54,6 +51,7 @@
 
 /** gifimage */
 @property(nonatomic,strong) UIImageView *gifImageView;
+@property(nonatomic,strong) UIImageView *backImageView;
 
 @end
 
@@ -70,7 +68,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor colorWithRed:90/255.0 green:93/255.0 blue:208/255.0 alpha:1.0];
+    [self.view insertSubview:self.backImageView atIndex:0];
     
     [self.view addSubview:self.liveView];
     
@@ -125,6 +123,32 @@
         _window = [[UIWindow alloc] initWithFrame:CGRectMake(0, KScreenHeight, KScreenWidth, 290.f)];
     }
     return _window;
+}
+
+- (UIImageView*)backImageView
+{
+    if (_backImageView == nil) {
+        _backImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight)];
+        _backImageView.contentMode = UIViewContentModeScaleToFill;
+        UIImage *image = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:_room.coverPictureUrl];
+        __weak typeof(self) weakSelf = self;
+        if (!image) {
+            [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:_room.coverPictureUrl]
+                                                                     options:SDWebImageDownloaderUseNSURLCache
+                                                                    progress:NULL
+                                                                   completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+                                                                       if (image) {
+                                                                           [[SDImageCache sharedImageCache] storeImage:image forKey:_room.coverPictureUrl toDisk:NO completion:^{
+                                                                               weakSelf.backImageView.image = image;
+                                                                           }];
+                                                                       } else {
+                                                                           weakSelf.backImageView.image = [UIImage imageNamed:@"default_back_image"];
+                                                                       }
+                                                                   }];
+           }
+        _backImageView.image = image;
+    }
+    return _backImageView;
 }
 
 - (UIView*)liveView
@@ -284,14 +308,14 @@
 
 - (void)didConfirmGift:(EaseGiftCell *)giftCell giftNum:(long)num
 {
-    EaseGiftConfirmView *confirmView = [[EaseGiftConfirmView alloc]initWithGiftInfo:giftCell giftNum:num titleText:@"确定赠送" giftId:giftCell.giftId];
+    EaseGiftConfirmView *confirmView = [[EaseGiftConfirmView alloc]initWithGiftInfo:giftCell giftNum:num titleText:@"是否赠送" giftId:giftCell.giftId];
     confirmView.delegate = self;
     [confirmView showFromParentView:self.view];
     __weak typeof(self) weakself = self;
     [confirmView setDoneCompletion:^(BOOL aConfirm,JPGiftCellModel *giftModel) {
         if (aConfirm) {
             //发送礼物消息
-            [weakself.chatview sendGiftAction:giftModel.id num:*(giftModel.count) completion:^(BOOL success) {
+            [weakself.chatview sendGiftAction:giftModel.id num:giftModel.count completion:^(BOOL success) {
                 if (success) {
                     //显示礼物UI
                     [[EaseCustomMessageHelper sharedInstance] sendGiftAction:giftModel backView:self.view];
