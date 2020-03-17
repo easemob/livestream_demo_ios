@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E94670CE1BD78B9B00374D7A"
-               BuildableName = "EaseMobLiveDemo.app"
+               BuildableName = "EasemobLive.app"
                BlueprintName = "EaseMobLiveDemo"
                ReferencedContainer = "container:EaseMobLiveDemo.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E94670CE1BD78B9B00374D7A"
-            BuildableName = "EaseMobLiveDemo.app"
+            BuildableName = "EasemobLive.app"
             BlueprintName = "EaseMobLiveDemo"
             ReferencedContainer = "container:EaseMobLiveDemo.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E94670CE1BD78B9B00374D7A"
-            BuildableName = "EaseMobLiveDemo.app"
+            BuildableName = "EasemobLive.app"
             BlueprintName = "EaseMobLiveDemo"
             ReferencedContainer = "container:EaseMobLiveDemo.xcodeproj">
          </BuildableReference>
