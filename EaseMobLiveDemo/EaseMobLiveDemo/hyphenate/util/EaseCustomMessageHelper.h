@@ -33,8 +33,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EaseCustomMessageHelper : NSObject
 
-@property (nonatomic, weak) id<EaseCustomMessageHelperDelegate> delegate;
-
 - (instancetype)initWithCustomMsgImp:(id<EaseCustomMessageHelperDelegate>)customMsgImp roomId:(NSString*)chatroomId;
 
 //解析消息内容

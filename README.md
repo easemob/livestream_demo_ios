@@ -10,7 +10,6 @@
 ## 功能实现 ##
 
 
-
 ### 我要直播
 **具体演示代码见EaseLiveTVListViewController,EaseCreateLiveViewController,EasePublishViewController,EaseHttpManager**
 
@@ -39,7 +38,6 @@
 - (void)modifyLiveroomStatusWithOngoing:(EaseLiveRoom *)room
                              completion:(void (^)(EaseLiveRoom *room, BOOL success))aCompletion;
 ```
-
 3、自定义直播聊天室封面信息，包括封面，主题，描述信息，并修改直播聊天室详情为自定义详情信息，该场直播结束后，任何用户也可在原有直播聊天室开始一场新的直播
 
 ```
@@ -52,7 +50,6 @@
 - (void)modifyLiveRoomWithRoom:(EaseLiveRoom*)aRoom
                     completion:(void (^)(EaseLiveRoom *room, BOOL success))aCompletion;
 ```
-
 4、加入聊天室
 
 ```
@@ -69,8 +66,8 @@
                        isCount:(BOOL)aIsCount
                        completion:(void (^)(BOOL success))aCompletion;
 ```
-
 5、设置消息监听
+
 ```
 	 [[EMClient sharedClient].chatManager addDelegate:self delegateQueue:nil];
 	 
@@ -198,6 +195,7 @@ message.chatType = EMChatTypeChatRoom;
                   error:(EMError **)pError;
 ```
 - 直播聊天室全体禁言与观众禁言列表没有直接关系，互不影响
+
 14、离开聊天室并设置当前直播聊天室为“Offline”未直播状态，结束直播
 
 ```
@@ -242,7 +240,33 @@ message.chatType = EMChatTypeChatRoom;
                                   limit:(NSInteger)aLimit
                                   completion:(void (^)(EMCursorResult *result, BOOL success))aCompletion;
 ```
-进入某个直播间加入聊天室并且设置消息监听接收消息通知，观看直播
+- 进入某个直播间加入聊天室并且设置消息监听接收消息通知，观看直播
 
+## 新特性：自定义消息体 ##
+
+- 本demo所实现的‘礼物’，‘弹幕’，‘点赞’等功能均通过“自定义消息体”构建传输消息
+
+**具体功能演示代码请参见 EaseCustomMessageHelper**
+
+1、
+
+```
+```
+2、
+
+```
+```
+3、
+
+```
+```
+4、
+
+```
+```
+5、
+
+```
+```
 
 > 环信文档地址：[环信文档](http://docs.easemob.com/im/300iosclientintegration/40emmsg)，

@@ -46,8 +46,8 @@ static const NSInteger animationTime = 5;
 
 #pragma mark -设置UI
 - (void)p_SetUI {
-    
-    self.bgView = [[UIView alloc] initWithFrame:CGRectMake(5, 0, self.frame.size.width, showGiftView_GiftIcon_H)];
+    self.layer.cornerRadius = self.frame.size.height / 2;
+    self.bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, showGiftView_GiftIcon_H)];
     self.bgView.backgroundColor = [UIColor blackColor];
     self.bgView.layer.cornerRadius = showGiftView_GiftIcon_H*0.5;
     [self.bgView setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
@@ -81,7 +81,7 @@ static const NSInteger animationTime = 5;
     self.countLabel = [[JPGiftCountLabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.giftImageView.frame)+showGiftView_XNum_L+13, (showGiftView_GiftIcon_H-showGiftView_XNum_H)*0.5, showGiftView_XNum_W, self.frame.size.height)];
     self.countLabel.textColor = [UIColor whiteColor];
     self.countLabel.backgroundColor = [UIColor clearColor];
-    //self.countLabel.layer.cornerRadius = self.frame.size.height / 2;
+    self.countLabel.layer.cornerRadius = self.frame.size.height / 2;
     self.countLabel.font = [UIFont fontWithName:@"Zapfino" size:20.f];
     self.countLabel.textAlignment = NSTextAlignmentCenter;
     [self.countLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];

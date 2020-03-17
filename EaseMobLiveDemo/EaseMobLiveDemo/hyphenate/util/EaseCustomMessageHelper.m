@@ -21,6 +21,8 @@
     long long _curtime;//过滤历史记录
 }
 
+@property (nonatomic, weak) id<EaseCustomMessageHelperDelegate> delegate;
+
 @end
 
 @implementation EaseCustomMessageHelper

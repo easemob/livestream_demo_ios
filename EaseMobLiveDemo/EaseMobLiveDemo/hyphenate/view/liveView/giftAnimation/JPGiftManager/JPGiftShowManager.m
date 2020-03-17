@@ -153,6 +153,7 @@ static const NSInteger giftMaxNum = 99;
     
     if (self.curentGiftKeys.count && [self.curentGiftKeys containsObject:giftModel.giftKey]) {
         //有当前的礼物信息
+        /*
         if ([self.operationCache objectForKey:giftModel.giftKey]) {
             //当前存在操作
             JPGiftOperation *op = [self.operationCache objectForKey:giftModel.giftKey];
@@ -166,33 +167,32 @@ static const NSInteger giftMaxNum = 99;
                 [self.curentGiftKeys removeObject:giftModel.giftKey];
             }
 
+        }else {*/
+        NSOperationQueue *queue;
+        JPGiftShowView *showView;
+        if (self.giftQueue1.operations.count <= self.giftQueue2.operations.count) {
+            queue = self.giftQueue1;
+            showView = self.giftShowView1;
         }else {
-            NSOperationQueue *queue;
-            JPGiftShowView *showView;
-            if (self.giftQueue1.operations.count <= self.giftQueue2.operations.count) {
-                queue = self.giftQueue1;
-                showView = self.giftShowView1;
-            }else {
-                queue = self.giftQueue2;
-                showView = self.giftShowView2;
-            }
-
-            //当前操作已结束 重新创建
-            JPGiftOperation *operation = [JPGiftOperation addOperationWithView:showView OnView:backView Info:giftModel completeBlock:^(BOOL finished,NSString *giftKey) {
-                if (self.finishedBlock) {
-                    self.finishedBlock(finished);
-                }
-                //移除操作
-                [self.operationCache removeObjectForKey:giftKey];
-                //清空唯一key
-                [self.curentGiftKeys removeObject:giftKey];
-            }];
-            operation.model.defaultCount += giftModel.sendCount;
-            //存储操作信息
-            [self.operationCache setObject:operation forKey:giftModel.giftKey];
-            //操作加入队列
-            [queue addOperation:operation];
+            queue = self.giftQueue2;
+            showView = self.giftShowView2;
         }
+
+        //当前操作已结束 重新创建
+        JPGiftOperation *operation = [JPGiftOperation addOperationWithView:showView OnView:backView Info:giftModel completeBlock:^(BOOL finished,NSString *giftKey) {
+            if (self.finishedBlock) {
+                self.finishedBlock(finished);
+            }
+            //移除操作
+            [self.operationCache removeObjectForKey:giftKey];
+            //清空唯一key
+            [self.curentGiftKeys removeObject:giftKey];
+        }];
+        operation.model.defaultCount += giftModel.sendCount;
+        //存储操作信息
+        [self.operationCache setObject:operation forKey:giftModel.giftKey];
+        //操作加入队列
+        [queue addOperation:operation];
 
     }else {
         //没有礼物的信息
