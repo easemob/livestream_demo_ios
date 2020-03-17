@@ -11,6 +11,7 @@
 #import "EaseEmojiHelper.h"
 #import "EaseLiveGiftHelper.h"
 #import "EaseDefaultDataHelper.h"
+#import "EaseCustomMessageHelper.h"
 
 @interface EaseChatCell ()
 @property (nonatomic,strong)UIView *blankView;
@@ -83,17 +84,7 @@ extern NSArray<NSString*> *nickNameArray;
                 latestMessageTitle = @"[文件]";
             } break;
             case EMMessageBodyTypeCustom: {
-                EMCustomMessageBody *customBody = (EMCustomMessageBody*)messageBody;
-                if ([customBody.event isEqualToString:@"chatroom_barrage"]) {
-                    latestMessageTitle = (NSString*)[customBody.ext objectForKey:@"txt"];
-                } else if ([customBody.event isEqualToString:@"chatroom_like"]) {
-                    latestMessageTitle = [NSString stringWithFormat:@"给主播点了%ld个赞",(long)[(NSString*)[customBody.ext objectForKey:@"num"] integerValue]];
-                } else if ([customBody.event isEqualToString:@"chatroom_gift"]) {
-                    NSString *giftid = [customBody.ext objectForKey:@"id"];
-                    int index = [[giftid substringFromIndex:5] intValue];
-                    NSDictionary *dict = EaseLiveGiftHelper.sharedInstance.giftArray[index-1];
-                    latestMessageTitle = [NSString stringWithFormat:@" 赠送了 %@x%@",NSLocalizedString((NSString *)[dict allKeys][0],@""),(NSString*)[customBody.ext objectForKey:@"num"]];
-                }
+                latestMessageTitle = [EaseCustomMessageHelper getMsgContent:messageBody];
             } break;
             default: {
             } break;
@@ -124,7 +115,7 @@ extern NSArray<NSString*> *nickNameArray;
         [attributedStr addAttribute:NSForegroundColorAttributeName value:RGBACOLOR(255, 199, 0, 1) range:NSMakeRange(range.length + range.location, attributedStr.length - (range.length + range.location))];
         if (lastMessage.body.type == EMMessageBodyTypeCustom) {
             EMCustomMessageBody *customBody = (EMCustomMessageBody*)lastMessage.body;
-            if ([customBody.event isEqualToString:@"chatroom_like"] || [customBody.event isEqualToString:@"chatroom_gift"]) {
+            if ([customBody.event isEqualToString:kCustomMsgChatroomPraise] || [customBody.event isEqualToString:kCustomMsgChatroomGift]) {
                 [attributedStr addAttribute:NSForegroundColorAttributeName value:RGBACOLOR(104, 255, 149, 1) range:NSMakeRange(range.length + range.location, attributedStr.length - (range.length + range.location))];
             }
         }

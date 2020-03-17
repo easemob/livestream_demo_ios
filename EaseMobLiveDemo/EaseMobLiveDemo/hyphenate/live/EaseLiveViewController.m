@@ -30,12 +30,13 @@
 #define kDefaultTop 30.f
 #define kDefaultLeft 10.f
 
-@interface EaseLiveViewController () <EaseChatViewDelegate,EaseLiveHeaderListViewDelegate,TapBackgroundViewDelegate,EaseLiveGiftViewDelegate,EMChatroomManagerDelegate,EaseProfileLiveViewDelegate,EMClientDelegate>
+@interface EaseLiveViewController () <EaseChatViewDelegate,EaseLiveHeaderListViewDelegate,TapBackgroundViewDelegate,EaseLiveGiftViewDelegate,EMChatroomManagerDelegate,EaseProfileLiveViewDelegate,EMClientDelegate,EaseCustomMessageHelperDelegate>
 {
     NSTimer *_burstTimer;
     EaseLiveRoom *_room;
     EMChatroom *_chatroom;
     BOOL _enableAdmin;
+    EaseCustomMessageHelper *_customMsgHelper;
 }
 
 @property (nonatomic, strong) UIButton *sendButton;
@@ -62,6 +63,7 @@
     self = [super init];
     if (self) {
         _room = room;
+        _customMsgHelper = [[EaseCustomMessageHelper alloc]initWithCustomMsgImp:self roomId:_room.chatroomId];
     }
     return self;
 }
@@ -99,6 +101,11 @@
     [[EMClient sharedClient] addDelegate:self delegateQueue:nil];
     
     [self setupForDismissKeyboard];
+}
+
+- (void)viewWillLayoutSubviews
+{
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -185,7 +192,7 @@
 - (EaseChatView*)chatview
 {
     if (_chatview == nil) {
-        _chatview = [[EaseChatView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.frame) - 200, CGRectGetWidth(self.view.frame), 200) room:_room isPublish:NO];
+        _chatview = [[EaseChatView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.frame) - 200, CGRectGetWidth(self.view.frame), 200) room:_room isPublish:NO customMsgHelper:_customMsgHelper];
         _chatview.delegate = self;
     }
     return _chatview;
@@ -278,11 +285,6 @@
     }
 }
 
-- (void)didReceivePraiseMessage:(EMMessage *)message
-{
-    [self showTheLoveAction];
-}
-
 - (void)didSelectGiftButton:(BOOL)isOwner
 {
     if (!isOwner) {
@@ -293,15 +295,23 @@
     }
 }
 
+#pragma mark - EaseCustomMessageHelperDelegate
+
 //有观众送礼物
 - (void)userSendGifts:(EMMessage*)msg count:(NSInteger)count
 {
-    [[EaseCustomMessageHelper sharedInstance] userSendGifts:msg count:count backView:self.view];
+    [_customMsgHelper userSendGifts:msg count:count backView:self.view];
 }
-
+//弹幕
 - (void)didSelectedBarrageSwitch:(EMMessage*)msg
 {
-    [[EaseCustomMessageHelper sharedInstance] barrageAction:msg backView:self.view];
+    [_customMsgHelper barrageAction:msg backView:self.view];
+}
+
+//点赞
+- (void)didReceivePraiseMessage:(EMMessage *)message
+{
+    [_customMsgHelper praiseAction:_chatview];
 }
 
 #pragma mark - EaseLiveGiftViewDelegate
@@ -318,7 +328,7 @@
             [weakself.chatview sendGiftAction:giftModel.id num:giftModel.count completion:^(BOOL success) {
                 if (success) {
                     //显示礼物UI
-                    [[EaseCustomMessageHelper sharedInstance] sendGiftAction:giftModel backView:self.view];
+                    [_customMsgHelper sendGiftAction:giftModel backView:self.view];
                 }
             }];
         }
@@ -452,12 +462,6 @@
         self.window.hidden = YES;
         [self.view.window makeKeyAndVisible];
     }];
-}
-
-//点赞
--(void)showTheLoveAction
-{
-    [[EaseCustomMessageHelper sharedInstance] praiseAction:_chatview];
 }
 
 - (void)closeButtonAction

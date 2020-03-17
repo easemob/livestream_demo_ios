@@ -6,6 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EaseCustomMessageHelper.h"
 
 @class EMMessage;
 @class EaseLiveRoom;
@@ -19,8 +20,6 @@
 
 - (void)didReceiveBarrageWithCMDMessage:(EMMessage*)message;
 
-- (void)didReceivePraiseMessage:(EMMessage *)message;
-
 - (void)didSelectUserWithMessage:(EMMessage*)message;
 
 //- (void)didSelectAdminButton:(BOOL)isOwner;
@@ -28,10 +27,6 @@
 - (void)didSelectGiftButton:(BOOL)isOwner;//礼物
 
 - (void)didSelectedExitButton;
-
-- (void)didSelectedBarrageSwitch:(EMMessage*)msg;
-
-- (void)userSendGifts:(EMMessage*)msg count:(NSInteger)count;//观众送礼物
 
 @end
 
@@ -46,7 +41,8 @@
 
 - (instancetype)initWithFrame:(CGRect)frame
                          room:(EaseLiveRoom*)room
-                    isPublish:(BOOL)isPublish;
+                    isPublish:(BOOL)isPublish
+              customMsgHelper:(EaseCustomMessageHelper*)customMsgHelper;
 
 @property (nonatomic, weak) id<EaseChatViewDelegate> delegate;
 

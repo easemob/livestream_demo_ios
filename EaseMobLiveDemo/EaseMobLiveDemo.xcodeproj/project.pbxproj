@@ -472,7 +472,7 @@
 		E9271D401C3CC735000DBADF /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		E9271D421C3CC749000DBADF /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		E9271D441C3CC752000DBADF /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		E94670CF1BD78B9B00374D7A /* EaseMobLiveDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EaseMobLiveDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E94670CF1BD78B9B00374D7A /* EasemobLive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasemobLive.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E96627751BE75E4000FA5B03 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		E96627771BE75E4900FA5B03 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		E96627791BE75E5000FA5B03 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -971,7 +971,7 @@
 		E94670D01BD78B9B00374D7A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E94670CF1BD78B9B00374D7A /* EaseMobLiveDemo.app */,
+				E94670CF1BD78B9B00374D7A /* EasemobLive.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -996,7 +996,7 @@
 			);
 			name = EaseMobLiveDemo;
 			productName = UCloudMediaRecorderDemo;
-			productReference = E94670CF1BD78B9B00374D7A /* EaseMobLiveDemo.app */;
+			productReference = E94670CF1BD78B9B00374D7A /* EasemobLive.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1441,7 +1441,7 @@
 					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.easemob.enterprise.demo.live;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = EasemobLive;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1487,7 +1487,7 @@
 					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.easemob.enterprise.demo.live;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = EasemobLive;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;

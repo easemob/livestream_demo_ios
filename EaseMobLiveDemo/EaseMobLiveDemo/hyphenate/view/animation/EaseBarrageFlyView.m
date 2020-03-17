@@ -66,12 +66,13 @@
         CGSize textSize = [[body.ext objectForKey:@"txt"] boundingRectWithSize:CGSizeMake(kLabelDefaultMaxWidth, kLabelDefaultHeight) options:NSStringDrawingTruncatesLastVisibleLine attributes:attributes context:nil].size;
         if (textSize.width >= kLabelDefaultMaxWidth) {
             width = kLabelDefaultMaxWidth;
-        } else if (textSize.width < kLabelDefaultMinWidth){
+        } else if (textSize.width < 50.f){
             width = kLabelDefaultMinWidth;
         } else {
-            width = textSize.width;
+            width = textSize.width + 10.5;
         }
         _giftLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, width, kLabelDefaultHeight)];
+        _giftLabel.textAlignment = NSTextAlignmentCenter;
         _giftLabel.textColor = [UIColor whiteColor];
         _giftLabel.layer.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.2].CGColor;
         _giftLabel.layer.cornerRadius = 10.5;
