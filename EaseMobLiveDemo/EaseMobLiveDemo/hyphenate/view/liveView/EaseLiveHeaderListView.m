@@ -174,8 +174,6 @@
                                                                        completion:^(EMChatroom *aChatroom, EMError *aError) {
                                                                            if (!aError) {
                                                                                _chatroom = aChatroom;
-                                                                               weakself.occupantsCount = aChatroom.occupantsCount;
-                                                                               [weakself.numberBtn setTitle:[NSString stringWithFormat:@"%ld%@",(long)weakself.occupantsCount ,NSLocalizedString(@"profile.people", @"")] forState:UIControlStateNormal];
                                                                            }
                                                                        }];
     
@@ -184,6 +182,8 @@
                                                                       pageSize:10
                                                                     completion:^(EMCursorResult *aResult, EMError *aError) {
                                                                         if (!aError) {
+                                                                            weakself.occupantsCount = [aResult.list count];
+                                                                            [weakself.numberBtn setTitle:[NSString stringWithFormat:@"%ld%@",(long)weakself.occupantsCount ,NSLocalizedString(@"profile.people", @"")] forState:UIControlStateNormal];
                                                                             [weakself.dataArray addObjectsFromArray:aResult.list];
                                                                             [weakself.collectionView reloadData];
                                                                         }

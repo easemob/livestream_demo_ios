@@ -14,46 +14,152 @@
 #import "EaseBarrageFlyView.h"
 #import "EaseHeartFlyView.h"
 
-static EaseCustomMessageHelper *sharedInstance;
-
-@interface EaseCustomMessageHelper ()
+@interface EaseCustomMessageHelper ()<EMChatManagerDelegate>
+{
+    NSString* _chatroomId;
+    
+    long long _curtime;//过滤历史记录
+}
 
 @end
 
 @implementation EaseCustomMessageHelper
 
-+ (instancetype)sharedInstance
+- (instancetype)initWithCustomMsgImp:(id<EaseCustomMessageHelperDelegate>)customMsgImp roomId:(NSString*)chatroomId
 {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [[EaseCustomMessageHelper alloc]init];
-    });
-    
-    return sharedInstance;
+    self = [super init];
+    if (self) {
+        _delegate = customMsgImp;
+        _chatroomId = chatroomId;
+        _curtime = (long long)([[NSDate date] timeIntervalSince1970]*1000);
+        [[EMClient sharedClient].chatManager addDelegate:self delegateQueue:dispatch_get_main_queue()];
+    }
+    return self;
 }
 
+- (void)dealloc
+{
+    [[EMClient sharedClient].chatManager removeDelegate:self];
+}
+
+#pragma mark - EMChatManagerDelegate
+
+- (void)messagesDidReceive:(NSArray *)aMessages
+{
+    for (EMMessage *message in aMessages) {
+        if ([message.conversationId isEqualToString:_chatroomId]) {
+            if (message.body.type == EMMessageBodyTypeCustom) {
+                if (message.timestamp < _curtime) {
+                    continue;
+                }
+                EMCustomMessageBody* body = (EMCustomMessageBody*)message.body;
+                if ([body.event isEqualToString:kCustomMsgChatroomBarrage]) {
+                    //弹幕消息
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectedBarrageSwitch:)]) {
+                        [self.delegate didSelectedBarrageSwitch:message];
+                    }
+                } else if ([body.event isEqualToString:kCustomMsgChatroomPraise]) {
+                    //点赞消息
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(didReceivePraiseMessage:)]) {
+                        [self.delegate didReceivePraiseMessage:message];
+                    }
+                } else if ([body.event isEqualToString:kCustomMsgChatroomGift]) {
+                    //礼物消息
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(userSendGifts:count:)]) {
+                        [self.delegate userSendGifts:message count:[(NSString*)[body.ext objectForKey:@"num"] intValue]];
+                    }
+                }
+            }
+        }
+    }
+}
+
+//解析消息内容
++ (NSString*)getMsgContent:(EMMessageBody*)messageBody
+{
+    NSString *msgContent = nil;
+    EMCustomMessageBody *customBody = (EMCustomMessageBody*)messageBody;
+    if ([customBody.event isEqualToString:kCustomMsgChatroomBarrage]) {
+        msgContent = (NSString*)[customBody.ext objectForKey:@"txt"];
+    } else if ([customBody.event isEqualToString:kCustomMsgChatroomPraise]) {
+        msgContent = [NSString stringWithFormat:@"给主播点了%ld个赞",(long)[(NSString*)[customBody.ext objectForKey:@"num"] integerValue]];
+    } else if ([customBody.event isEqualToString:kCustomMsgChatroomGift]) {
+        NSString *giftid = [customBody.ext objectForKey:@"id"];
+        int index = [[giftid substringFromIndex:5] intValue];
+        NSDictionary *dict = EaseLiveGiftHelper.sharedInstance.giftArray[index-1];
+        msgContent = [NSString stringWithFormat:@"赠送了 %@x%@",NSLocalizedString((NSString *)[dict allKeys][0],@""),(NSString*)[customBody.ext objectForKey:@"num"]];
+    }
+    return msgContent;
+}
+
+/*
+发送自定义消息
+@param text                 消息内容
+@param num                  消息内容数量
+@param messageType          聊天类型
+@param customMsgType        自定义消息类型
+@param aCompletionBlock     发送完成回调block
+*/
 - (void)sendCustomMessage:(NSString*)text
                               num:(NSInteger)num
                                to:(NSString*)toUser
                       messageType:(EMChatType)messageType
-                    customMsgType:(customMessageType)msgType
+                    customMsgType:(customMessageType)customMsgType
                        completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock;
 {
     EMMessageBody *body;
     NSMutableDictionary *extDic = [[NSMutableDictionary alloc]init];
-    if (msgType == customMessageType_praise) {
+    if (customMsgType == customMessageType_praise) {
         [extDic setObject:@"1" forKey:@"num"];
-        body = [[EMCustomMessageBody alloc]initWithEvent:@"chatroom_like" ext:extDic];
-    } else if (msgType == customMessageType_gift){
+        body = [[EMCustomMessageBody alloc]initWithEvent:kCustomMsgChatroomPraise ext:extDic];
+    } else if (customMsgType == customMessageType_gift){
         [extDic setObject:text forKey:@"id"];
         [extDic setObject:[NSString stringWithFormat:@"%ld",(long)num] forKey:@"num"];
-        body = [[EMCustomMessageBody alloc]initWithEvent:@"chatroom_gift" ext:extDic];
-    } else if (msgType == customMessageType_barrage) {
+        body = [[EMCustomMessageBody alloc]initWithEvent:kCustomMsgChatroomGift ext:extDic];
+    } else if (customMsgType == customMessageType_barrage) {
         [extDic setObject:text forKey:@"txt"];
-        body = [[EMCustomMessageBody alloc]initWithEvent:@"chatroom_barrage" ext:extDic];
+        body = [[EMCustomMessageBody alloc]initWithEvent:kCustomMsgChatroomBarrage ext:extDic];
     }
     NSString *from = [[EMClient sharedClient] currentUsername];
     EMMessage *message = [[EMMessage alloc] initWithConversationID:toUser from:from to:toUser body:body ext:nil];
+    message.chatType = messageType;
+    [[EMClient sharedClient].chatManager sendMessage:message progress:NULL completion:^(EMMessage *message, EMError *error) {
+        aCompletionBlock(message,error);
+    }];
+}
+
+/*
+发送自定义消息（有扩展参数）
+@param text             消息内容
+@param num              消息内容数量
+@param messageType      聊天类型
+@param customMsgType    自定义消息类型
+@param ext              消息扩展
+@param aCompletionBlock 发送完成回调block
+*/
+- (void)sendCustomMessage:(NSString*)text
+                              num:(NSInteger)num
+                               to:(NSString*)toUser
+                      messageType:(EMChatType)messageType
+                    customMsgType:(customMessageType)customMsgType
+                            ext:(NSDictionary*)ext
+                       completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock;
+{
+    EMMessageBody *body;
+    NSMutableDictionary *extDic = [[NSMutableDictionary alloc]init];
+    if (customMsgType == customMessageType_praise) {
+        [extDic setObject:@"1" forKey:@"num"];
+        body = [[EMCustomMessageBody alloc]initWithEvent:kCustomMsgChatroomPraise ext:extDic];
+    } else if (customMsgType == customMessageType_gift){
+        [extDic setObject:text forKey:@"id"];
+        [extDic setObject:[NSString stringWithFormat:@"%ld",(long)num] forKey:@"num"];
+        body = [[EMCustomMessageBody alloc]initWithEvent:kCustomMsgChatroomGift ext:extDic];
+    } else if (customMsgType == customMessageType_barrage) {
+        [extDic setObject:text forKey:@"txt"];
+        body = [[EMCustomMessageBody alloc]initWithEvent:kCustomMsgChatroomBarrage ext:extDic];
+    }
+    NSString *from = [[EMClient sharedClient] currentUsername];
+    EMMessage *message = [[EMMessage alloc] initWithConversationID:toUser from:from to:toUser body:body ext:ext];
     message.chatType = messageType;
     [[EMClient sharedClient].chatManager sendMessage:message progress:NULL completion:^(EMMessage *message, EMError *error) {
         aCompletionBlock(message,error);
@@ -72,7 +178,7 @@ static EaseCustomMessageHelper *sharedInstance;
     cellModel.icon = [UIImage imageNamed:(NSString *)[dict allKeys][0]];
     cellModel.name = NSLocalizedString((NSString *)[dict allKeys][0], @"");
     cellModel.username = msg.from;
-    cellModel.count = &(count);
+    cellModel.count = count;
     [self sendGiftAction:cellModel backView:backView];
 }
 

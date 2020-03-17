@@ -12,7 +12,6 @@
 #import "EaseCustomSwitch.h"
 #import "EaseEmoticonView.h"
 #import "Masonry.h"
-#import "EaseCustomMessageHelper.h"
 
 #define kGiftAction @"cmd_gift"
 #define kPraiseAction @"cmd_live_praise"
@@ -41,6 +40,8 @@
     
     NSTimer *_timer;
     NSInteger _praiseInterval;//点赞间隔
+    
+    EaseCustomMessageHelper* _customMsgHelper;
 }
 
 @property (strong, nonatomic) NSMutableArray *datasource;
@@ -74,6 +75,7 @@ BOOL isAllTheSilence;//全体禁言
 - (instancetype)initWithFrame:(CGRect)frame
                    chatroomId:(NSString*)chatroomId
                     isPublish:(BOOL)isPublish
+              
 {
     self = [super initWithFrame:frame];
     if (self) {
@@ -126,10 +128,12 @@ BOOL isAllTheSilence;//全体禁言
 - (instancetype)initWithFrame:(CGRect)frame
                          room:(EaseLiveRoom*)room
                     isPublish:(BOOL)isPublish
+                customMsgHelper:(EaseCustomMessageHelper*)customMsgHelper
 {
     self = [self initWithFrame:frame chatroomId:room.chatroomId isPublish:isPublish];
     if (self) {
         _room = room;
+        _customMsgHelper = customMsgHelper;
     }
     return self;
 }
@@ -323,28 +327,6 @@ BOOL isAllTheSilence;//全体禁言
 {
     for (EMMessage *message in aMessages) {
         if ([message.conversationId isEqualToString:_chatroomId]) {
-            if (message.body.type == EMMessageBodyTypeCustom) {
-                if (message.timestamp < _curtime) {
-                    continue;
-                }
-                EMCustomMessageBody* body = (EMCustomMessageBody*)message.body;
-                if ([body.event isEqualToString:@"chatroom_barrage"]) {
-                    //弹幕消息
-                    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectedBarrageSwitch:)]) {
-                        [self.delegate didSelectedBarrageSwitch:message];
-                    }
-                } else if ([body.event isEqualToString:@"chatroom_like"]) {
-                    //点赞消息
-                    if (self.delegate && [self.delegate respondsToSelector:@selector(didReceivePraiseMessage:)]) {
-                        [self.delegate didReceivePraiseMessage:message];
-                    }
-                } else if ([body.event isEqualToString:@"chatroom_gift"]) {
-                    //礼物消息
-                    if (self.delegate && [self.delegate respondsToSelector:@selector(userSendGifts:count:)]) {
-                        [self.delegate userSendGifts:message count:[(NSString*)[body.ext objectForKey:@"num"] intValue]];
-                    }
-                }
-            }
             if ([self.datasource count] >= 200) {
                 [self.datasource removeObjectsInRange:NSMakeRange(0, 190)];
             }
@@ -793,11 +775,9 @@ BOOL isAllTheSilence;//全体禁言
 - (void)sendBarrageMsg:(NSString*)text
 {
     __weak EaseChatView *weakSelf = self;
-    [EaseCustomMessageHelper.sharedInstance sendCustomMessage:text num:0 to:_chatroomId messageType:EMChatTypeChatRoom customMsgType:customMessageType_barrage completion:^(EMMessage * _Nonnull message, EMError * _Nonnull error) {
+    [_customMsgHelper sendCustomMessage:text num:0 to:_chatroomId messageType:EMChatTypeChatRoom customMsgType:customMessageType_barrage completion:^(EMMessage * _Nonnull message, EMError * _Nonnull error) {
         if (!error) {
-            if (weakSelf.delegate && [self.delegate respondsToSelector:@selector(didSelectedBarrageSwitch:)]) {
-                [weakSelf.delegate didSelectedBarrageSwitch:message];
-            }
+            [_customMsgHelper barrageAction:message backView:self.superview];
             [weakSelf currentViewDataFill:message];
         } else {
             [MBProgressHUD showError:@"弹幕消息发送失败" toView:weakSelf];
@@ -826,7 +806,7 @@ BOOL isAllTheSilence;//全体禁言
 
 {
      __weak EaseChatView *weakSelf = self;
-    [[EaseCustomMessageHelper sharedInstance] sendCustomMessage:giftId num:num to:_chatroomId messageType:EMChatTypeChatRoom customMsgType:customMessageType_gift completion:^(EMMessage * _Nonnull message, EMError * _Nonnull error) {
+    [_customMsgHelper sendCustomMessage:giftId num:num to:_chatroomId messageType:EMChatTypeChatRoom customMsgType:customMessageType_gift completion:^(EMMessage * _Nonnull message, EMError * _Nonnull error) {
         bool ret = false;
         if (!error) {
             [weakSelf currentViewDataFill:message];
@@ -846,11 +826,9 @@ BOOL isAllTheSilence;//全体禁言
     }
     [self startTimer];
     __weak EaseChatView *weakSelf = self;
-    [[EaseCustomMessageHelper sharedInstance] sendCustomMessage:@"" num:0 to:_chatroomId messageType:EMChatTypeChatRoom customMsgType:customMessageType_praise completion:^(EMMessage * _Nonnull message, EMError * _Nonnull error) {
+    [_customMsgHelper sendCustomMessage:@"" num:0 to:_chatroomId messageType:EMChatTypeChatRoom customMsgType:customMessageType_praise completion:^(EMMessage * _Nonnull message, EMError * _Nonnull error) {
         if (!error) {
-            if (weakSelf.delegate && [weakSelf.delegate respondsToSelector:@selector(didReceivePraiseMessage:)]) {
-                [weakSelf.delegate didReceivePraiseMessage:message];
-            }
+            [_customMsgHelper praiseAction:self];
             [weakSelf currentViewDataFill:message];
         } else {
             [MBProgressHUD showError:@"点赞失败" toView:weakSelf];

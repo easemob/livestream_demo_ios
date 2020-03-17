@@ -68,9 +68,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.title = NSLocalizedString(@"publish.title", @"Create Live");
-    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
-        [self setEdgesForExtendedLayout:UIRectEdgeNone];
-    }
     self.view.backgroundColor = RGBACOLOR(251, 251, 251, 1);
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.backBtn];
@@ -112,6 +109,12 @@
     if (KScreenHeight <= 675.f) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
     }
+}
+
+- (void)viewWillLayoutSubviews
+{
+    [self setEdgesForExtendedLayout:UIRectEdgeAll];
+    [self setAutomaticallyAdjustsScrollViewInsets:YES];
 }
 
 - (void)didReceiveMemoryWarning {

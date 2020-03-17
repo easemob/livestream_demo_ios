@@ -17,17 +17,60 @@ typedef enum : NSInteger{
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class EMMessage;
+@protocol EaseCustomMessageHelperDelegate <NSObject>
+
+@optional
+
+//观众点赞消息
+- (void)didReceivePraiseMessage:(EMMessage *)message;
+//弹幕消息
+- (void)didSelectedBarrageSwitch:(EMMessage*)msg;
+//观众刷礼物
+- (void)userSendGifts:(EMMessage*)msg count:(NSInteger)count;//观众送礼物
+
+@end
+
 @interface EaseCustomMessageHelper : NSObject
 
-+ (instancetype)sharedInstance;
+@property (nonatomic, weak) id<EaseCustomMessageHelperDelegate> delegate;
 
-//发送自定义消息
+- (instancetype)initWithCustomMsgImp:(id<EaseCustomMessageHelperDelegate>)customMsgImp roomId:(NSString*)chatroomId;
+
+//解析消息内容
++ (NSString*)getMsgContent:(EMMessageBody*)messageBody;
+
+/*
+发送自定义消息
+@param text                 消息内容
+@param num                  消息内容数量
+@param messageType          聊天类型
+@param customMsgType        自定义消息类型
+@param aCompletionBlock     发送完成回调block
+*/
 - (void)sendCustomMessage:(NSString*)text
                       num:(NSInteger)num
                        to:(NSString*)toUser
               messageType:(EMChatType)messageType
-            customMsgType:(customMessageType)msgType
+            customMsgType:(customMessageType)customMsgType
                completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock;
+
+/*
+发送自定义消息（有扩展参数）
+@param text             消息内容
+@param num              消息内容数量
+@param messageType      聊天类型
+@param customMsgType    自定义消息类型
+@param ext              消息扩展
+@param aCompletionBlock 发送完成回调block
+*/
+- (void)sendCustomMessage:(NSString*)text
+                              num:(NSInteger)num
+                               to:(NSString*)toUser
+                      messageType:(EMChatType)messageType
+                    customMsgType:(customMessageType)customMsgType
+                            ext:(NSDictionary*)ext
+                       completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock;
 
 //有观众送礼物
 - (void)userSendGifts:(EMMessage*)msg count:(NSInteger)count backView:(UIView*)backView;

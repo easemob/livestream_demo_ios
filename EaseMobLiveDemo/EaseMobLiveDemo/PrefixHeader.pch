@@ -27,6 +27,10 @@
 
 #define kLiveLastLoginUsername @"em_last_username"
 
+#define kCustomMsgChatroomGift @"chatroom_gift"
+#define kCustomMsgChatroomPraise @"chatroom_praise"
+#define kCustomMsgChatroomBarrage @"chatroom_barrage"
+
 #ifdef __OBJC__
 
     #import <Hyphenate/Hyphenate.h>

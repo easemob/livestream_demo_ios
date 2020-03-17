@@ -25,11 +25,12 @@
 #import "EaseGiftListView.h"
 #import "EaseCustomMessageHelper.h"
 #import "EaseFinishLiveView.h"
+#import "EaseCustomMessageHelper.h"
 
 #define kDefaultTop 30.f
 #define kDefaultLeft 10.f
 
-@interface EasePublishViewController () <EaseChatViewDelegate,UITextViewDelegate,EMChatroomManagerDelegate,TapBackgroundViewDelegate,EaseLiveHeaderListViewDelegate,EaseProfileLiveViewDelegate,UIAlertViewDelegate,EMClientDelegate>
+@interface EasePublishViewController () <EaseChatViewDelegate,UITextViewDelegate,EMChatroomManagerDelegate,TapBackgroundViewDelegate,EaseLiveHeaderListViewDelegate,EaseProfileLiveViewDelegate,UIAlertViewDelegate,EMClientDelegate,EaseCustomMessageHelperDelegate>
 {
     BOOL _isload;
     BOOL _isShutDown;
@@ -44,6 +45,8 @@
     
     NSInteger _praiseNum;//赞
     NSInteger _giftsNum;//礼物
+    
+    EaseCustomMessageHelper *_customMsgHelper;//自定义消息帮助
 }
 
 @property (nonatomic, strong) EaseLiveHeaderListView *headerListView;
@@ -65,6 +68,7 @@
     self = [super init];
     if (self) {
         _room = room;
+        _customMsgHelper = [[EaseCustomMessageHelper alloc]initWithCustomMsgImp:self roomId:_room.chatroomId];
         _praiseNum = [EaseDefaultDataHelper.shared.praiseStatisticstCount intValue];
         _giftsNum = [EaseDefaultDataHelper.shared.giftNumbers intValue];
         EaseDefaultDataHelper.shared.currentRoomId = _room.roomId;
@@ -168,7 +172,7 @@
 - (EaseChatView*)chatview
 {
     if (_chatview == nil) {
-        _chatview = [[EaseChatView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds) - 200, CGRectGetWidth(self.view.bounds), 200) room:_room isPublish:YES];
+        _chatview = [[EaseChatView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds) - 200, CGRectGetWidth(self.view.bounds), 200) room:_room isPublish:YES customMsgHelper:_customMsgHelper];
         _chatview.delegate = self;
     }
     return _chatview;
@@ -208,12 +212,6 @@
         self.subWindow.hidden = YES;
         [self.view.window makeKeyAndVisible];
     }];
-}
-
-//点击屏幕点赞特效
--(void)showTheLoveAction
-{
-    [[EaseCustomMessageHelper sharedInstance] praiseAction:_chatview];
 }
 
 #pragma mark - EaseLiveHeaderListViewDelegate
@@ -289,7 +287,7 @@
 //有观众送礼物
 - (void)userSendGifts:(EMMessage*)msg count:(NSInteger)count
 {
-    [[EaseCustomMessageHelper sharedInstance] userSendGifts:msg count:count backView:self.view];
+    [_customMsgHelper userSendGifts:msg count:count backView:self.view];
     
     EMCustomMessageBody *msgBody = (EMCustomMessageBody*)msg.body;
     NSString *giftid = [msgBody.ext objectForKey:@"id"];
@@ -313,7 +311,7 @@
 //弹幕
 - (void)didSelectedBarrageSwitch:(EMMessage*)msg
 {
-    [[EaseCustomMessageHelper sharedInstance] barrageAction:msg backView:self.view];
+    [_customMsgHelper barrageAction:msg backView:self.view];
 }
 
 - (void)easeChatViewDidChangeFrameToHeight:(CGFloat)toHeight
@@ -340,7 +338,7 @@
 //收到点赞
 - (void)didReceivePraiseMessage:(EMMessage *)message
 {
-    [self showTheLoveAction];
+    [_customMsgHelper praiseAction:_chatview];
     EMCustomMessageBody *customBody = (EMCustomMessageBody*)message.body;
     _praiseNum += [(NSString*)[customBody.ext objectForKey:@"num"] integerValue];
     [self.headerListView.liveCastView setNumberOfPraise:_praiseNum];

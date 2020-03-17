@@ -59,11 +59,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
-        [self setEdgesForExtendedLayout:UIRectEdgeNone];
-    }
-    [self setAutomaticallyAdjustsScrollViewInsets:YES];
-    [self setExtendedLayoutIncludesOpaqueBars:YES];
     
     [self setupCollectionView];
     
@@ -77,6 +72,12 @@
     }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshList:) name:kNotificationRefreshList object:nil];
+}
+
+- (void)viewWillLayoutSubviews
+{
+    [self setEdgesForExtendedLayout:UIRectEdgeAll];
+    [self setAutomaticallyAdjustsScrollViewInsets:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -379,7 +380,6 @@
     UIViewController *view;
     if (self.tabBarBehavior == kTabbarItemTag_Live) {
         view = [[EaseLiveViewController alloc] initWithLiveRoom:room];
-        view.modalPresentationStyle = UIModalPresentationFullScreen;
         view.modalPresentationStyle = 0;
         [self.navigationController presentViewController:view animated:YES completion:NULL];
     } else if (self.tabBarBehavior == kTabbarItemTag_Broadcast) {
