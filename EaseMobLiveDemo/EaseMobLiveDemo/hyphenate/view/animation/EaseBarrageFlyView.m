@@ -8,7 +8,7 @@
 #import "EaseBarrageFlyView.h"
 
 #define kLabelDefaultMinWidth 60.5f
-#define kLabelDefaultMaxWidth [[UIScreen mainScreen] bounds].size.width
+#define kLabelDefaultMaxWidth [[UIScreen mainScreen] bounds].size.width - 10.5
 #define kLabelDefaultHeight 21.f
 
 @interface EaseBarrageFlyView ()
@@ -66,7 +66,7 @@
         CGSize textSize = [[body.ext objectForKey:@"txt"] boundingRectWithSize:CGSizeMake(kLabelDefaultMaxWidth, kLabelDefaultHeight) options:NSStringDrawingTruncatesLastVisibleLine attributes:attributes context:nil].size;
         if (textSize.width >= kLabelDefaultMaxWidth) {
             width = kLabelDefaultMaxWidth;
-        } else if (textSize.width < 50.f){
+        } else if (textSize.width < 50.0){
             width = kLabelDefaultMinWidth;
         } else {
             width = textSize.width + 10.5;

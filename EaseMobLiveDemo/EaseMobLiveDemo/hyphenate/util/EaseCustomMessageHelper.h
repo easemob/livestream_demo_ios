@@ -33,20 +33,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EaseCustomMessageHelper : NSObject
 
-@property (nonatomic, weak) id<EaseCustomMessageHelperDelegate> delegate;
-
-- (instancetype)initWithCustomMsgImp:(id<EaseCustomMessageHelperDelegate>)customMsgImp roomId:(NSString*)chatroomId;
+- (instancetype)initWithCustomMsgImp:(id<EaseCustomMessageHelperDelegate>)customMsgImp chatId:(NSString*)chatId;
 
 //解析消息内容
 + (NSString*)getMsgContent:(EMMessageBody*)messageBody;
 
 /*
-发送自定义消息
-@param text                 消息内容
-@param num                  消息内容数量
-@param messageType          聊天类型
-@param customMsgType        自定义消息类型
-@param aCompletionBlock     发送完成回调block
+ 发送自定义消息 （礼物，点赞，弹幕）
+ @param text                 消息内容
+ @param num                  消息内容数量
+ @param messageType          聊天类型
+ @param customMsgType        自定义消息类型
+ @param aCompletionBlock     发送完成回调block
 */
 - (void)sendCustomMessage:(NSString*)text
                       num:(NSInteger)num
@@ -56,13 +54,13 @@ NS_ASSUME_NONNULL_BEGIN
                completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock;
 
 /*
-发送自定义消息（有扩展参数）
-@param text             消息内容
-@param num              消息内容数量
-@param messageType      聊天类型
-@param customMsgType    自定义消息类型
-@param ext              消息扩展
-@param aCompletionBlock 发送完成回调block
+ 发送自定义消息（礼物，点赞，弹幕）（有扩展参数）
+ @param text             消息内容
+ @param num              消息内容数量
+ @param messageType      聊天类型
+ @param customMsgType    自定义消息类型
+ @param ext              消息扩展
+ @param aCompletionBlock 发送完成回调block
 */
 - (void)sendCustomMessage:(NSString*)text
                               num:(NSInteger)num
@@ -72,18 +70,61 @@ NS_ASSUME_NONNULL_BEGIN
                             ext:(NSDictionary*)ext
                        completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock;
 
+/*
+发送用户自定义消息体事件（其他自定义消息体事件）
+@param event                自定义消息体事件
+@param customMsgBodyExt     自定义消息体事件参数
+@param to                   消息发送对象
+@param messageType          聊天类型
+@param aCompletionBlock     发送完成回调block
+*/
+- (void)sendUserCustomMessage:(NSString*)event
+                customMsgBodyExt:(NSDictionary*)customMsgBodyExt
+                            to:(NSString*)toUser
+                        messageType:(EMChatType)messageType
+                   completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock;
+
+/*
+发送用户自定义消息体事件（其他自定义消息体事件）（有消息扩展参数）
+@param event                自定义消息体事件
+@param customMsgBodyExt     自定义消息体事件参数
+@param to                   消息发送对象
+@param messageType          聊天类型
+@param ext                  消息扩展
+@param aCompletionBlock     发送完成回调block
+*/
+- (void)sendUserCustomMessage:(NSString*)event
+                customMsgBodyExt:(NSDictionary*)customMsgBodyExt
+                            to:(NSString*)toUser
+                        messageType:(EMChatType)messageType
+                               ext:(NSDictionary*)ext
+                   completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock;
+
+/*
+ @param msg             接收的消息
+ @param count           礼物数量
+ @param backView        展示在哪个页面
+ */
 //有观众送礼物
 - (void)userSendGifts:(EMMessage*)msg count:(NSInteger)count backView:(UIView*)backView;
 
 //礼物动画
 - (void)sendGiftAction:(JPGiftCellModel*)cellModel backView:(UIView*)backView;
 
+/*
+ @param msg             接收的消息
+ @param backView        展示在哪个页面
+ */
 //弹幕动画
 - (void)barrageAction:(EMMessage*)msg backView:(UIView*)backView;
 
+/*
+ @param backView        展示在哪个页面
+ */
 //点赞动画
 - (void)praiseAction:(UIView*)backView;
 
 @end
 
 NS_ASSUME_NONNULL_END
+

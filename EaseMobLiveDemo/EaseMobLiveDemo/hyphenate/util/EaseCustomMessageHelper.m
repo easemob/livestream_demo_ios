@@ -16,21 +16,23 @@
 
 @interface EaseCustomMessageHelper ()<EMChatManagerDelegate>
 {
-    NSString* _chatroomId;
+    NSString* _chatId;
     
     long long _curtime;//过滤历史记录
 }
+
+@property (nonatomic, weak) id<EaseCustomMessageHelperDelegate> delegate;
 
 @end
 
 @implementation EaseCustomMessageHelper
 
-- (instancetype)initWithCustomMsgImp:(id<EaseCustomMessageHelperDelegate>)customMsgImp roomId:(NSString*)chatroomId
+- (instancetype)initWithCustomMsgImp:(id<EaseCustomMessageHelperDelegate>)customMsgImp chatId:(NSString*)chatId
 {
     self = [super init];
     if (self) {
         _delegate = customMsgImp;
-        _chatroomId = chatroomId;
+        _chatId = chatId;
         _curtime = (long long)([[NSDate date] timeIntervalSince1970]*1000);
         [[EMClient sharedClient].chatManager addDelegate:self delegateQueue:dispatch_get_main_queue()];
     }
@@ -47,7 +49,7 @@
 - (void)messagesDidReceive:(NSArray *)aMessages
 {
     for (EMMessage *message in aMessages) {
-        if ([message.conversationId isEqualToString:_chatroomId]) {
+        if ([message.conversationId isEqualToString:_chatId]) {
             if (message.body.type == EMMessageBodyTypeCustom) {
                 if (message.timestamp < _curtime) {
                     continue;
@@ -93,9 +95,10 @@
 }
 
 /*
-发送自定义消息
+发送自定义消息（礼物，点赞，弹幕）
 @param text                 消息内容
 @param num                  消息内容数量
+@param to                   消息发送对象
 @param messageType          聊天类型
 @param customMsgType        自定义消息类型
 @param aCompletionBlock     发送完成回调block
@@ -110,7 +113,7 @@
     EMMessageBody *body;
     NSMutableDictionary *extDic = [[NSMutableDictionary alloc]init];
     if (customMsgType == customMessageType_praise) {
-        [extDic setObject:@"1" forKey:@"num"];
+        [extDic setObject:[NSString stringWithFormat:@"%ld",(long)num] forKey:@"num"];
         body = [[EMCustomMessageBody alloc]initWithEvent:kCustomMsgChatroomPraise ext:extDic];
     } else if (customMsgType == customMessageType_gift){
         [extDic setObject:text forKey:@"id"];
@@ -129,9 +132,10 @@
 }
 
 /*
-发送自定义消息（有扩展参数）
+发送自定义消息（礼物，点赞，弹幕）（有消息扩展参数）
 @param text             消息内容
 @param num              消息内容数量
+@param to               消息发送对象
 @param messageType      聊天类型
 @param customMsgType    自定义消息类型
 @param ext              消息扩展
@@ -148,7 +152,7 @@
     EMMessageBody *body;
     NSMutableDictionary *extDic = [[NSMutableDictionary alloc]init];
     if (customMsgType == customMessageType_praise) {
-        [extDic setObject:@"1" forKey:@"num"];
+        [extDic setObject:[NSString stringWithFormat:@"%ld",(long)num] forKey:@"num"];
         body = [[EMCustomMessageBody alloc]initWithEvent:kCustomMsgChatroomPraise ext:extDic];
     } else if (customMsgType == customMessageType_gift){
         [extDic setObject:text forKey:@"id"];
@@ -160,6 +164,54 @@
     }
     NSString *from = [[EMClient sharedClient] currentUsername];
     EMMessage *message = [[EMMessage alloc] initWithConversationID:toUser from:from to:toUser body:body ext:ext];
+    message.chatType = messageType;
+    [[EMClient sharedClient].chatManager sendMessage:message progress:NULL completion:^(EMMessage *message, EMError *error) {
+        aCompletionBlock(message,error);
+    }];
+}
+
+/*
+发送用户自定义消息体事件（其他自定义消息体事件）
+@param event                自定义消息体事件
+@param customMsgBodyExt     自定义消息体事件参数
+@param to                   消息发送对象
+@param messageType          聊天类型
+@param aCompletionBlock     发送完成回调block
+*/
+- (void)sendUserCustomMessage:(NSString*)event
+                customMsgBodyExt:(NSDictionary*)customMsgBodyExt
+                            to:(NSString*)toUser
+                        messageType:(EMChatType)messageType
+                        completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock
+{
+    EMMessageBody *customMsgBody = [[EMCustomMessageBody alloc]initWithEvent:event ext:customMsgBodyExt];
+    NSString *from = [[EMClient sharedClient] currentUsername];
+    EMMessage *message = [[EMMessage alloc] initWithConversationID:toUser from:from to:toUser body:customMsgBody ext:nil];
+    message.chatType = messageType;
+    [[EMClient sharedClient].chatManager sendMessage:message progress:NULL completion:^(EMMessage *message, EMError *error) {
+        aCompletionBlock(message,error);
+    }];
+}
+
+/*
+发送用户自定义消息体事件（其他自定义消息体事件）（有消息扩展参数）
+@param event                自定义消息体事件
+@param customMsgBodyExt     自定义消息体事件参数
+@param to                   消息发送对象
+@param messageType          聊天类型
+@param ext                  消息扩展
+@param aCompletionBlock     发送完成回调block
+*/
+- (void)sendUserCustomMessage:(NSString*)event
+                customMsgBodyExt:(NSDictionary*)customMsgBodyExt
+                            to:(NSString*)toUser
+                        messageType:(EMChatType)messageType
+                               ext:(NSDictionary*)ext
+                         completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock
+{
+    EMMessageBody *customMsgBody = [[EMCustomMessageBody alloc]initWithEvent:event ext:customMsgBodyExt];
+    NSString *from = [[EMClient sharedClient] currentUsername];
+    EMMessage *message = [[EMMessage alloc] initWithConversationID:toUser from:from to:toUser body:customMsgBody ext:ext];
     message.chatType = messageType;
     [[EMClient sharedClient].chatManager sendMessage:message progress:NULL completion:^(EMMessage *message, EMError *error) {
         aCompletionBlock(message,error);

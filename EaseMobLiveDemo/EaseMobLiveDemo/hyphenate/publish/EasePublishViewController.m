@@ -68,7 +68,7 @@
     self = [super init];
     if (self) {
         _room = room;
-        _customMsgHelper = [[EaseCustomMessageHelper alloc]initWithCustomMsgImp:self roomId:_room.chatroomId];
+        _customMsgHelper = [[EaseCustomMessageHelper alloc]initWithCustomMsgImp:self chatId:_room.chatroomId];
         _praiseNum = [EaseDefaultDataHelper.shared.praiseStatisticstCount intValue];
         _giftsNum = [EaseDefaultDataHelper.shared.giftNumbers intValue];
         EaseDefaultDataHelper.shared.currentRoomId = _room.roomId;

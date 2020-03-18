@@ -10,7 +10,6 @@
 ## 功能实现 ##
 
 
-
 ### 我要直播
 **具体演示代码见EaseLiveTVListViewController,EaseCreateLiveViewController,EasePublishViewController,EaseHttpManager**
 
@@ -39,7 +38,6 @@
 - (void)modifyLiveroomStatusWithOngoing:(EaseLiveRoom *)room
                              completion:(void (^)(EaseLiveRoom *room, BOOL success))aCompletion;
 ```
-
 3、自定义直播聊天室封面信息，包括封面，主题，描述信息，并修改直播聊天室详情为自定义详情信息，该场直播结束后，任何用户也可在原有直播聊天室开始一场新的直播
 
 ```
@@ -52,7 +50,6 @@
 - (void)modifyLiveRoomWithRoom:(EaseLiveRoom*)aRoom
                     completion:(void (^)(EaseLiveRoom *room, BOOL success))aCompletion;
 ```
-
 4、加入聊天室
 
 ```
@@ -69,8 +66,8 @@
                        isCount:(BOOL)aIsCount
                        completion:(void (^)(BOOL success))aCompletion;
 ```
-
 5、设置消息监听
+
 ```
 	 [[EMClient sharedClient].chatManager addDelegate:self delegateQueue:nil];
 	 
@@ -198,6 +195,7 @@ message.chatType = EMChatTypeChatRoom;
                   error:(EMError **)pError;
 ```
 - 直播聊天室全体禁言与观众禁言列表没有直接关系，互不影响
+
 14、离开聊天室并设置当前直播聊天室为“Offline”未直播状态，结束直播
 
 ```
@@ -242,7 +240,137 @@ message.chatType = EMChatTypeChatRoom;
                                   limit:(NSInteger)aLimit
                                   completion:(void (^)(EMCursorResult *result, BOOL success))aCompletion;
 ```
-进入某个直播间加入聊天室并且设置消息监听接收消息通知，观看直播
+- 进入某个直播间加入聊天室并且设置消息监听接收消息通知，观看直播
 
+## 新特性：自定义消息体 ##
 
-> 环信文档地址：[环信文档](http://docs.easemob.com/im/300iosclientintegration/40emmsg)，
+- 本demo所实现的‘礼物’，‘弹幕’，‘点赞’等功能均通过“自定义消息体”构建传输消息
+
+**具体功能演示代码请参见 EaseCustomMessageHelper**
+
+1、实现自定义消息帮助类接口协议再创建该类实例
+
+```
+- 实现该接口并重写如下方法
+@protocol EaseCustomMessageHelperDelegate <NSObject>
+
+@optional
+
+//观众点赞消息
+- (void)didReceivePraiseMessage:(EMMessage *)message;
+//弹幕消息
+- (void)didSelectedBarrageSwitch:(EMMessage*)msg;
+//观众刷礼物
+- (void)userSendGifts:(EMMessage*)msg count:(NSInteger)count;//观众送礼物
+
+@end
+
+- 创建实例
+- (instancetype)initWithCustomMsgImp:(id<EaseCustomMessageHelperDelegate>)customMsgImp chatId:(NSString*)chatId;
+```
+2、发送包含自定义消息体的消息
+
+```
+/*
+ 发送自定义消息 （礼物，点赞，弹幕）
+ @param text                 消息内容
+ @param num                  消息内容数量
+ @param messageType          聊天类型
+ @param customMsgType        自定义消息类型
+ @param aCompletionBlock     发送完成回调block
+*/
+
+- (void)sendCustomMessage:(NSString*)text
+                      num:(NSInteger)num
+                       to:(NSString*)toUser
+              messageType:(EMChatType)messageType
+            customMsgType:(customMessageType)customMsgType
+               completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock;
+
+/*
+ 发送自定义消息（礼物，点赞，弹幕）（有扩展参数）
+ @param text             消息内容
+ @param num              消息内容数量
+ @param messageType      聊天类型
+ @param customMsgType    自定义消息类型
+ @param ext              消息扩展
+ @param aCompletionBlock 发送完成回调block
+*/
+
+- (void)sendCustomMessage:(NSString*)text
+                              num:(NSInteger)num
+                               to:(NSString*)toUser
+                      messageType:(EMChatType)messageType
+                    customMsgType:(customMessageType)customMsgType
+                            ext:(NSDictionary*)ext
+                       completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock;
+```
+3、发送用户自定义消息体事件（其他自定义消息体事件）
+```
+/*
+发送用户自定义消息体事件（其他自定义消息体事件）
+@param event                自定义消息体事件
+@param customMsgBodyExt     自定义消息体事件参数
+@param to                   消息发送对象
+@param messageType          聊天类型
+@param aCompletionBlock     发送完成回调block
+*/
+- (void)sendUserCustomMessage:(NSString*)event
+                customMsgBodyExt:(NSDictionary*)customMsgBodyExt
+                            to:(NSString*)toUser
+                        messageType:(EMChatType)messageType
+                   completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock;
+                   
+/*
+发送用户自定义消息体事件（其他自定义消息体事件）
+@param event                自定义消息体事件
+@param customMsgBodyExt     自定义消息体事件参数
+@param to                   消息发送对象
+@param messageType          聊天类型
+@param aCompletionBlock     发送完成回调block
+*/
+- (void)sendUserCustomMessage:(NSString*)event
+               customMsgBodyExt:(NSDictionary*)customMsgBodyExt
+                           to:(NSString*)toUser
+                       messageType:(EMChatType)messageType
+                  completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock;
+```
+
+3、解析消息内容
+
+```
+//解析消息内容
++ (NSString*)getMsgContent:(EMMessageBody*)messageBody;
+```
+4、直播聊天室礼物消息展示
+
+```
+/*
+ @param msg             接收的消息
+ @param count           礼物数量
+ @param backView        展示在哪个页面
+ */
+ 
+- (void)userSendGifts:(EMMessage*)msg count:(NSInteger)count backView:(UIView*)backView;
+```
+5、弹幕消息展示
+
+```
+/*
+ @param msg             接收的消息
+ @param backView        展示在哪个页面
+ */
+ 
+- (void)barrageAction:(EMMessage*)msg backView:(UIView*)backView;
+```
+6、点赞消息展示
+
+```
+/*
+ @param backView        展示在哪个页面
+ */
+
+- (void)praiseAction:(UIView*)backView;
+```
+
+> 环信文档地址：[环信文档](http://docs-im.easemob.com/im/extensions/live/intro)

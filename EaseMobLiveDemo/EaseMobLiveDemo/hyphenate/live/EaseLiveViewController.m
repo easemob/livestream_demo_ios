@@ -63,7 +63,7 @@
     self = [super init];
     if (self) {
         _room = room;
-        _customMsgHelper = [[EaseCustomMessageHelper alloc]initWithCustomMsgImp:self roomId:_room.chatroomId];
+        _customMsgHelper = [[EaseCustomMessageHelper alloc]initWithCustomMsgImp:self chatId:_room.chatroomId];
     }
     return self;
 }
