@@ -8,6 +8,7 @@
 
 #import "EaseSettingsViewController.h"
 #import "Masonry.h"
+#import "EaseAboutHuanxinViewController.h"
 
 @interface EaseSettingsViewController ()
 
@@ -123,7 +124,8 @@
 //关于环信
 - (void)reagrdHuanxin
 {
-    
+    EaseAboutHuanxinViewController *aboutHuanxinController = [[EaseAboutHuanxinViewController alloc]init];
+    [self.navigationController pushViewController:aboutHuanxinController animated:YES];
 }
 
 @end

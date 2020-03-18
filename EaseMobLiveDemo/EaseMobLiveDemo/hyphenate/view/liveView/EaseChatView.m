@@ -30,7 +30,6 @@
     NSString *_chatroomId;
     EaseLiveRoom *_room;
     EMChatroom *_chatroom;
-    NSInteger _praiseCount;
     
     long long _curtime;
     CGFloat _previousTextViewContentHeight;
@@ -40,6 +39,7 @@
     
     NSTimer *_timer;
     NSInteger _praiseInterval;//点赞间隔
+    NSInteger _praiseCount;//点赞计数
     
     EaseCustomMessageHelper* _customMsgHelper;
 }
@@ -81,7 +81,8 @@ BOOL isAllTheSilence;//全体禁言
     if (self) {
         _chatroomId = chatroomId;
         _isBarrageInfo = false;
-        _praiseInterval = 3;
+        _praiseInterval = 0;
+        _praiseCount = 0;
         [[EMClient sharedClient].chatManager addDelegate:self delegateQueue:dispatch_get_main_queue()];
         [[EMClient sharedClient].roomManager addDelegate:self delegateQueue:nil];
         self.datasource = [NSMutableArray array];
@@ -753,7 +754,7 @@ BOOL isAllTheSilence;//全体禁言
     [self _setSendState:YES];
     [self _willShowInputTextViewToHeight:[self _getTextViewContentH:self.textView] refresh:YES];
 }
-//文本/弹幕消息
+//普通文本消息
 - (void)sendText
 {
     if (self.textView.text.length > 0) {
@@ -821,13 +822,19 @@ BOOL isAllTheSilence;//全体禁言
 //赞
 - (void)praiseAction
 {
-    if (_praiseInterval != 3) {
+    ++_praiseCount;
+    if (_praiseInterval != 0) {
         return;
     }
     [self startTimer];
+}
+
+- (void)_praiseOperate
+{
     __weak EaseChatView *weakSelf = self;
-    [_customMsgHelper sendCustomMessage:@"" num:0 to:_chatroomId messageType:EMChatTypeChatRoom customMsgType:customMessageType_praise completion:^(EMMessage * _Nonnull message, EMError * _Nonnull error) {
+    [_customMsgHelper sendCustomMessage:@"" num:_praiseCount to:_chatroomId messageType:EMChatTypeChatRoom customMsgType:customMessageType_praise completion:^(EMMessage * _Nonnull message, EMError * _Nonnull error) {
         if (!error) {
+            _praiseCount = 0;
             [_customMsgHelper praiseAction:self];
             [weakSelf currentViewDataFill:message];
         } else {
@@ -838,7 +845,7 @@ BOOL isAllTheSilence;//全体禁言
 
 - (void)startTimer {
     [self stopTimer];
-    _praiseInterval = 3;
+    _praiseInterval = 4 + (arc4random() % 3);
     _timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(setupPraiseInterval) userInfo:nil repeats:YES];
     [_timer fire];
 }
@@ -852,8 +859,8 @@ BOOL isAllTheSilence;//全体禁言
 
 - (void)setupPraiseInterval{
     if(_praiseInterval < 1){
+        [self _praiseOperate];
         [self stopTimer];
-        _praiseInterval = 3;
         return;
     }
     _praiseInterval -= 1;

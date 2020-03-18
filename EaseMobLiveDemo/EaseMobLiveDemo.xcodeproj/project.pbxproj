@@ -109,6 +109,9 @@
 		3CCF87862420EDA7007570EB /* icon-broadcast@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87852420EDA7007570EB /* icon-broadcast@3x.png */; };
 		3CCF87882420EE3C007570EB /* Icons-Plus-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87872420EE3C007570EB /* Icons-Plus-white@2x.png */; };
 		3CCF878C2420EE8B007570EB /* Icons-Plus-white@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF878B2420EE8A007570EB /* Icons-Plus-white@3x.png */; };
+		3CCF87952421FD21007570EB /* EaseAboutHuanxinViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CCF87942421FD21007570EB /* EaseAboutHuanxinViewController.m */; };
+		3CCF879724220457007570EB /* webRefreshButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF879624220456007570EB /* webRefreshButton@2x.png */; };
+		3CCF87992422045F007570EB /* webRefreshButton@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87982422045E007570EB /* webRefreshButton@3x.png */; };
 		C68D8F3A512EBB7D55D835D0 /* libPods-EaseMobLiveDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF86793993FB1D45A5254772 /* libPods-EaseMobLiveDemo.a */; };
 		D21C54611E658F8B0019A341 /* EaseAdminView.m in Sources */ = {isa = PBXBuildFile; fileRef = D21C54601E658F8B0019A341 /* EaseAdminView.m */; };
 		D23C12971E6FEED4007C5012 /* EaseLiveRoom.m in Sources */ = {isa = PBXBuildFile; fileRef = D23C12961E6FEED4007C5012 /* EaseLiveRoom.m */; };
@@ -342,6 +345,10 @@
 		3CCF87852420EDA7007570EB /* icon-broadcast@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-broadcast@3x.png"; sourceTree = "<group>"; };
 		3CCF87872420EE3C007570EB /* Icons-Plus-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icons-Plus-white@2x.png"; sourceTree = "<group>"; };
 		3CCF878B2420EE8A007570EB /* Icons-Plus-white@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icons-Plus-white@3x.png"; sourceTree = "<group>"; };
+		3CCF87932421FD21007570EB /* EaseAboutHuanxinViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseAboutHuanxinViewController.h; sourceTree = "<group>"; };
+		3CCF87942421FD21007570EB /* EaseAboutHuanxinViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseAboutHuanxinViewController.m; sourceTree = "<group>"; };
+		3CCF879624220456007570EB /* webRefreshButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "webRefreshButton@2x.png"; sourceTree = "<group>"; };
+		3CCF87982422045E007570EB /* webRefreshButton@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "webRefreshButton@3x.png"; sourceTree = "<group>"; };
 		3EF28DDAEBA5A9451CF1F4AF /* Pods-EaseMobLiveDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EaseMobLiveDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		D21C545F1E658F8B0019A341 /* EaseAdminView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EaseAdminView.h; sourceTree = "<group>"; };
 		D21C54601E658F8B0019A341 /* EaseAdminView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EaseAdminView.m; sourceTree = "<group>"; };
@@ -549,6 +556,7 @@
 		D275D7C41E666C44001BBA61 /* @2x */ = {
 			isa = PBXGroup;
 			children = (
+				3CCF879624220456007570EB /* webRefreshButton@2x.png */,
 				D275D7C51E666C44001BBA61 /* admin@2x.png */,
 				3CCF87142420DF2D007570EB /* attention@2x.png */,
 				3CCF877B2420ED3A007570EB /* auidence@2x.png */,
@@ -606,6 +614,7 @@
 		D275D7D11E666C44001BBA61 /* @3x */ = {
 			isa = PBXGroup;
 			children = (
+				3CCF87982422045E007570EB /* webRefreshButton@3x.png */,
 				D275D7D21E666C44001BBA61 /* admin@3x.png */,
 				3CCF86DC2420DE92007570EB /* attention@3x.png */,
 				3CCF877D2420ED45007570EB /* auidence@3x.png */,
@@ -820,6 +829,8 @@
 				D2E36B401D41CD2900B1C90C /* EaseSearchDisplayController.m */,
 				3C27576223F293A4004DF2C3 /* EaseSettingsViewController.h */,
 				3C27576323F293A4004DF2C3 /* EaseSettingsViewController.m */,
+				3CCF87932421FD21007570EB /* EaseAboutHuanxinViewController.h */,
+				3CCF87942421FD21007570EB /* EaseAboutHuanxinViewController.m */,
 			);
 			path = live;
 			sourceTree = "<group>";
@@ -1098,6 +1109,7 @@
 				3CCF87372420DF34007570EB /* avatat_5@2x.png in Resources */,
 				3CCF877A2420ED0B007570EB /* ic_praise@2x.png in Resources */,
 				3CCF876B2420E613007570EB /* gift.dog@2x.png in Resources */,
+				3CCF879724220457007570EB /* webRefreshButton@2x.png in Resources */,
 				3CCF86F02420DE98007570EB /* ic_exit@3x.png in Resources */,
 				3CCF87802420ED7E007570EB /* giftrecord@3x.png in Resources */,
 				3CCF87792420ED0B007570EB /* ic_praised@2x.png in Resources */,
@@ -1144,6 +1156,7 @@
 				D275D7EE1E666C44001BBA61 /* kick@3x.png in Resources */,
 				3CCF87552420DF76007570EB /* icon-liveList-selected@3x.png in Resources */,
 				D2F4E2551D12C8AB00BB7E1A /* iconfont.ttf in Resources */,
+				3CCF87992422045F007570EB /* webRefreshButton@3x.png in Resources */,
 				3CCF86FB2420DE98007570EB /* avatat_7@3x.png in Resources */,
 				3CCF87572420DF76007570EB /* Logo@3x.png in Resources */,
 				3CCF87582420DF76007570EB /* icon-liveList-unSelected@3x.png in Resources */,
@@ -1233,6 +1246,7 @@
 				D2E3699D1D40AFC600B1C90C /* EaseGiftCell.m in Sources */,
 				3C12380E23FD1CA500C4135B /* EaseGiftConfirmView.m in Sources */,
 				D2F4E2651D12C8AB00BB7E1A /* EaseGiftFlyView.m in Sources */,
+				3CCF87952421FD21007570EB /* EaseAboutHuanxinViewController.m in Sources */,
 				3C8AD5152412AD41002B6464 /* EaseTransitionViewController.m in Sources */,
 				D2F52C481D478EFC0094BB4A /* EaseLiveCastView.m in Sources */,
 				3C44F439240BE51600445129 /* JPGiftCountLabel.m in Sources */,

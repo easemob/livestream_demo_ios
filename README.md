@@ -266,13 +266,13 @@ message.chatType = EMChatTypeChatRoom;
 @end
 
 - 创建实例
-- (instancetype)initWithCustomMsgImp:(id<EaseCustomMessageHelperDelegate>)customMsgImp       roomId:(NSString*)chatroomId;
+- (instancetype)initWithCustomMsgImp:(id<EaseCustomMessageHelperDelegate>)customMsgImp chatId:(NSString*)chatId;
 ```
 2、发送包含自定义消息体的消息
 
 ```
 /*
- 发送自定义消息
+ 发送自定义消息 （礼物，点赞，弹幕）
  @param text                 消息内容
  @param num                  消息内容数量
  @param messageType          聊天类型
@@ -288,7 +288,7 @@ message.chatType = EMChatTypeChatRoom;
                completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock;
 
 /*
- 发送自定义消息（有扩展参数）
+ 发送自定义消息（礼物，点赞，弹幕）（有扩展参数）
  @param text             消息内容
  @param num              消息内容数量
  @param messageType      聊天类型
@@ -305,7 +305,44 @@ message.chatType = EMChatTypeChatRoom;
                             ext:(NSDictionary*)ext
                        completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock;
 ```
-3、直播聊天室礼物消息展示
+3、发送用户自定义消息体事件（其他自定义消息体事件）
+```
+/*
+发送用户自定义消息体事件（其他自定义消息体事件）
+@param event                自定义消息体事件
+@param customMsgBodyExt     自定义消息体事件参数
+@param to                   消息发送对象
+@param messageType          聊天类型
+@param aCompletionBlock     发送完成回调block
+*/
+- (void)sendUserCustomMessage:(NSString*)event
+                customMsgBodyExt:(NSDictionary*)customMsgBodyExt
+                            to:(NSString*)toUser
+                        messageType:(EMChatType)messageType
+                   completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock;
+                   
+/*
+发送用户自定义消息体事件（其他自定义消息体事件）
+@param event                自定义消息体事件
+@param customMsgBodyExt     自定义消息体事件参数
+@param to                   消息发送对象
+@param messageType          聊天类型
+@param aCompletionBlock     发送完成回调block
+*/
+- (void)sendUserCustomMessage:(NSString*)event
+               customMsgBodyExt:(NSDictionary*)customMsgBodyExt
+                           to:(NSString*)toUser
+                       messageType:(EMChatType)messageType
+                  completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock;
+```
+
+3、解析消息内容
+
+```
+//解析消息内容
++ (NSString*)getMsgContent:(EMMessageBody*)messageBody;
+```
+4、直播聊天室礼物消息展示
 
 ```
 /*
@@ -316,7 +353,7 @@ message.chatType = EMChatTypeChatRoom;
  
 - (void)userSendGifts:(EMMessage*)msg count:(NSInteger)count backView:(UIView*)backView;
 ```
-4、弹幕消息展示
+5、弹幕消息展示
 
 ```
 /*
@@ -326,7 +363,7 @@ message.chatType = EMChatTypeChatRoom;
  
 - (void)barrageAction:(EMMessage*)msg backView:(UIView*)backView;
 ```
-5、点赞消息展示
+6、点赞消息展示
 
 ```
 /*
@@ -336,4 +373,4 @@ message.chatType = EMChatTypeChatRoom;
 - (void)praiseAction:(UIView*)backView;
 ```
 
-> 环信文档地址：[环信文档](http://docs.easemob.com/im/300iosclientintegration/40emmsg)
+> 环信文档地址：[环信文档](http://docs-im.easemob.com/im/extensions/live/intro)
