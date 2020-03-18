@@ -248,25 +248,92 @@ message.chatType = EMChatTypeChatRoom;
 
 **具体功能演示代码请参见 EaseCustomMessageHelper**
 
-1、
+1、实现自定义消息帮助类接口协议再创建该类实例
 
 ```
+- 实现该接口并重写如下方法
+@protocol EaseCustomMessageHelperDelegate <NSObject>
+
+@optional
+
+//观众点赞消息
+- (void)didReceivePraiseMessage:(EMMessage *)message;
+//弹幕消息
+- (void)didSelectedBarrageSwitch:(EMMessage*)msg;
+//观众刷礼物
+- (void)userSendGifts:(EMMessage*)msg count:(NSInteger)count;//观众送礼物
+
+@end
+
+- 创建实例
+- (instancetype)initWithCustomMsgImp:(id<EaseCustomMessageHelperDelegate>)customMsgImp       roomId:(NSString*)chatroomId;
 ```
-2、
+2、发送包含自定义消息体的消息
 
 ```
+/*
+ 发送自定义消息
+ @param text                 消息内容
+ @param num                  消息内容数量
+ @param messageType          聊天类型
+ @param customMsgType        自定义消息类型
+ @param aCompletionBlock     发送完成回调block
+*/
+
+- (void)sendCustomMessage:(NSString*)text
+                      num:(NSInteger)num
+                       to:(NSString*)toUser
+              messageType:(EMChatType)messageType
+            customMsgType:(customMessageType)customMsgType
+               completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock;
+
+/*
+ 发送自定义消息（有扩展参数）
+ @param text             消息内容
+ @param num              消息内容数量
+ @param messageType      聊天类型
+ @param customMsgType    自定义消息类型
+ @param ext              消息扩展
+ @param aCompletionBlock 发送完成回调block
+*/
+
+- (void)sendCustomMessage:(NSString*)text
+                              num:(NSInteger)num
+                               to:(NSString*)toUser
+                      messageType:(EMChatType)messageType
+                    customMsgType:(customMessageType)customMsgType
+                            ext:(NSDictionary*)ext
+                       completion:(void (^)(EMMessage *message, EMError *error))aCompletionBlock;
 ```
-3、
+3、直播聊天室礼物消息展示
 
 ```
+/*
+ @param msg             接收的消息
+ @param count           礼物数量
+ @param backView        展示在哪个页面
+ */
+ 
+- (void)userSendGifts:(EMMessage*)msg count:(NSInteger)count backView:(UIView*)backView;
 ```
-4、
+4、弹幕消息展示
 
 ```
+/*
+ @param msg             接收的消息
+ @param backView        展示在哪个页面
+ */
+ 
+- (void)barrageAction:(EMMessage*)msg backView:(UIView*)backView;
 ```
-5、
+5、点赞消息展示
 
 ```
+/*
+ @param backView        展示在哪个页面
+ */
+
+- (void)praiseAction:(UIView*)backView;
 ```
 
-> 环信文档地址：[环信文档](http://docs.easemob.com/im/300iosclientintegration/40emmsg)，
+> 环信文档地址：[环信文档](http://docs.easemob.com/im/300iosclientintegration/40emmsg)
