@@ -67,7 +67,7 @@
     if (_logoView == nil) {
         _logoView = [[UIView alloc]init];
         _logoView.backgroundColor = [UIColor whiteColor];
-        UIImageView *logoImg = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Logo"]];
+        UIImageView *logoImg = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"huanxin-logo"]];
         [_logoView addSubview:logoImg];
         [logoImg mas_makeConstraints:^(MASConstraintMaker *make) {
             make.width.height.equalTo(@60);
@@ -124,8 +124,10 @@
 //关于环信
 - (void)reagrdHuanxin
 {
-    EaseAboutHuanxinViewController *aboutHuanxinController = [[EaseAboutHuanxinViewController alloc]init];
-    [self.navigationController pushViewController:aboutHuanxinController animated:YES];
+    
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.easemob.com/about"]];
+    //EaseAboutHuanxinViewController *aboutHuanxinController = [[EaseAboutHuanxinViewController alloc]init];
+    //[self.navigationController pushViewController:aboutHuanxinController animated:YES];
 }
 
 @end

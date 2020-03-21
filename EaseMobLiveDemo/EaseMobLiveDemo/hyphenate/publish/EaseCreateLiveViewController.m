@@ -390,6 +390,8 @@
                                                   completion:^(NSString *url, BOOL success) {
                                                       if (success) {
                                                           _coverpictureurl = url;
+                                                      } else {
+                                                          [self showHint:@"选择封面图失败"];
                                                       }
                                                   }];
     } else {
@@ -490,7 +492,7 @@
         [self showHint:@"填入房间介绍"];
         return;
     }
-       
+    
     if (_coverpictureurl.length == 0){
         [self showHint:@"选择封面图"];
         return;
