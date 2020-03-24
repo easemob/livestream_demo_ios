@@ -267,7 +267,12 @@
     } else {
         _liveImageView.image = [UIImage imageNamed:@"default_image"];
     }
-    _numLabel.text = [NSString stringWithFormat:@"%ld",(long)room.currentUserCount];
+    if (room.currentUserCount > 0) {
+        _numLabel.text = [NSString stringWithFormat:@"%ld",(long)(room.currentUserCount-1)];
+    } else {
+        _numLabel.text = [NSString stringWithFormat:@"%ld",(long)room.currentUserCount];
+    }
+    
     //判断房间状态
     if (liveBehavior == kTabbarItemTag_Live) {
         self.studioOccupancy.hidden = YES;

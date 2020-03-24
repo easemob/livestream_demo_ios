@@ -31,6 +31,8 @@
 		3C72AD68240F9431007BC99F /* EaseEmojiHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C72AD67240F9431007BC99F /* EaseEmojiHelper.m */; };
 		3C72AD6C240F97CA007BC99F /* EaseEmoticonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C72AD6B240F97CA007BC99F /* EaseEmoticonView.m */; };
 		3C72AD6F240F9804007BC99F /* EMEmoticonGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C72AD6E240F9804007BC99F /* EMEmoticonGroup.m */; };
+		3C89B0D124289E1400E335BC /* Hyphenate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C89B0CF24289E0F00E335BC /* Hyphenate.framework */; };
+		3C89B0D224289E1400E335BC /* Hyphenate.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3C89B0CF24289E0F00E335BC /* Hyphenate.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3C8AD50E24127AE3002B6464 /* EaseGiftListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8AD50D24127AE2002B6464 /* EaseGiftListView.m */; };
 		3C8AD5152412AD41002B6464 /* EaseTransitionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8AD5142412AD41002B6464 /* EaseTransitionViewController.m */; };
 		3C9F89EB240E3C3C00653B2F /* EaseAudienceBehaviorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C9F89EA240E3C3C00653B2F /* EaseAudienceBehaviorView.m */; };
@@ -215,6 +217,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				3C89B0D224289E1400E335BC /* Hyphenate.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -265,6 +268,7 @@
 		3C72AD6B240F97CA007BC99F /* EaseEmoticonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EaseEmoticonView.m; sourceTree = "<group>"; };
 		3C72AD6D240F9804007BC99F /* EMEmoticonGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMEmoticonGroup.h; sourceTree = "<group>"; };
 		3C72AD6E240F9804007BC99F /* EMEmoticonGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMEmoticonGroup.m; sourceTree = "<group>"; };
+		3C89B0CF24289E0F00E335BC /* Hyphenate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Hyphenate.framework; sourceTree = "<group>"; };
 		3C8AD50C24127AE2002B6464 /* EaseGiftListView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseGiftListView.h; sourceTree = "<group>"; };
 		3C8AD50D24127AE2002B6464 /* EaseGiftListView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseGiftListView.m; sourceTree = "<group>"; };
 		3C8AD5132412AD41002B6464 /* EaseTransitionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseTransitionViewController.h; sourceTree = "<group>"; };
@@ -508,6 +512,7 @@
 				3C70A163241B2C4E00A5185F /* ImageIO.framework in Frameworks */,
 				E9ED2EE11C0C551900BA59A6 /* libz.tbd in Frameworks */,
 				E966277C1BE75E5D00FA5B03 /* CoreMedia.framework in Frameworks */,
+				3C89B0D124289E1400E335BC /* Hyphenate.framework in Frameworks */,
 				E966277A1BE75E5000FA5B03 /* AVFoundation.framework in Frameworks */,
 				E96627781BE75E4900FA5B03 /* VideoToolbox.framework in Frameworks */,
 				E96627761BE75E4000FA5B03 /* AudioToolbox.framework in Frameworks */,
@@ -703,10 +708,10 @@
 				3C1237E223FA445F00C4135B /* EaseAnchorCardView.h */,
 				3C1237E323FA445F00C4135B /* EaseAnchorCardView.m */,
 				3C12380C23FD1CA500C4135B /* EaseGiftConfirmView.h */,
-				3C12380D23FD1CA500C4135B /* EaseGiftConfirmView.m */,
 				3C12380F23FD2EED00C4135B /* EaseKeyBoardView.h */,
 				3C12381023FD2EED00C4135B /* EaseKeyBoardView.m */,
 				3C12381223FD30E000C4135B /* EaseCustomKeyBoardView.h */,
+				3C12380D23FD1CA500C4135B /* EaseGiftConfirmView.m */,
 				3C12381323FD30E000C4135B /* EaseCustomKeyBoardView.m */,
 				3C44F44D240CF0C100445129 /* EaseCustomSwitch.h */,
 				3C44F44E240CF0C100445129 /* EaseCustomSwitch.m */,
@@ -952,6 +957,7 @@
 		E93E8F451CC9D16B0076EC23 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3C89B0CF24289E0F00E335BC /* Hyphenate.framework */,
 				D2FD8DC71E5C6A3B0097B20D /* libstdc++.tbd */,
 				D293607E1D192EB8003F14C6 /* libiconv.tbd */,
 				3C72AD69240F9559007BC99F /* CoreServices.framework */,
@@ -1456,7 +1462,7 @@
 					"$(PROJECT_DIR)/EaseMobLiveDemo/lib/Player",
 					"$(PROJECT_DIR)/EaseMobLiveDemo/lib/Recorder",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.3;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1502,7 +1508,7 @@
 					"$(PROJECT_DIR)/EaseMobLiveDemo/lib/Player",
 					"$(PROJECT_DIR)/EaseMobLiveDemo/lib/Recorder",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.3;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",

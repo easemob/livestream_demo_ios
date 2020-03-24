@@ -67,17 +67,9 @@
     
     [self setup];
     
-    if ([[EMClient sharedClient] isConnected]) {
-        [self loadData:YES];
-    }
+
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshList:) name:kNotificationRefreshList object:nil];
-}
-
-- (void)viewWillLayoutSubviews
-{
-    [self setEdgesForExtendedLayout:UIRectEdgeAll];
-    [self setAutomaticallyAdjustsScrollViewInsets:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated
