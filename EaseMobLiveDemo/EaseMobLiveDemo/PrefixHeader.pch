@@ -21,7 +21,7 @@
 #define kDefaultSystemLightGrayColor RGBACOLOR(197, 197, 197, 1)
 #define kDefaultLoginButtonColor RGBACOLOR(25, 163, 255, 1)
 
-#define kLiveDemoVersion @"1.0.0"
+#define kLiveDemoVersion @"1.0.5"
 
 #define kNotificationRefreshList @"em_nofity_LiveListRefresh"
 
