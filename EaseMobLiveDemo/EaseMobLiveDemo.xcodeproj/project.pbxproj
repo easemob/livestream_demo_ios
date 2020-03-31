@@ -1006,6 +1006,7 @@
 				E94670CD1BD78B9B00374D7A /* Resources */,
 				3C9F89F4240E598100653B2F /* Embed Frameworks */,
 				462FB34BC02A1DBC04A319ED /* [CP] Copy Pods Resources */,
+				4D4531831C2BB107ED7A2AF9 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1209,6 +1210,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4D4531831C2BB107ED7A2AF9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo-frameworks.sh",
+				"${PODS_ROOT}/Hyphenate/Hyphenate.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Hyphenate.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		5D08929F9378D07F85846DE9 /* [CP] Check Pods Manifest.lock */ = {
