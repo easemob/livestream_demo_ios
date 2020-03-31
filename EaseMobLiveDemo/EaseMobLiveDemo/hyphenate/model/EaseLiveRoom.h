@@ -40,7 +40,7 @@ typedef enum {
 /*
  *  用户自定义字段
  */
-@property (nonatomic, copy) NSString *custom;
+@property (nonatomic, copy) NSDictionary *custom;
 
 /*
  *  直播聊天室创建Unix时间戳

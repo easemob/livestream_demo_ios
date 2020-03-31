@@ -178,7 +178,7 @@ static EaseHttpManager *sharedInstance = nil;
             [parameters setObject:aRoom.coverPictureUrl forKey:@"cover_picture_url"];
         }
         
-        if (aRoom.custom.length > 0) {
+        if (aRoom.custom != nil) {
             [parameters setObject:aRoom.custom forKey:@"custom"];
         }
         
@@ -224,7 +224,7 @@ static EaseHttpManager *sharedInstance = nil;
             [parameters setObject:aRoom.desc forKey:@"description"];
         }
         
-        if (aRoom.custom.length > 0) {
+        if (aRoom.custom != nil) {
             [parameters setObject:aRoom.custom forKey:@"ext"];
         }
         
@@ -516,7 +516,7 @@ static EaseHttpManager *sharedInstance = nil;
             [parameters setObject:aRoom.desc forKey:@"desc"];
         }
         
-        if (aRoom.custom.length > 0) {
+        if (aRoom.custom != nil) {
             [parameters setObject:aRoom.custom forKey:@"custom"];
         }
         

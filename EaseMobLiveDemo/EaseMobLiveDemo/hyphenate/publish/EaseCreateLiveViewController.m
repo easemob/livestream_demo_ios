@@ -519,10 +519,6 @@
                 return;
             }
             
-            if (_anchorDescTextField.text.length != 0) {
-                liveRoom.custom = _anchorDescTextField.text;
-            }
-            
             if (_coverpictureurl.length != 0){
                 liveRoom.coverPictureUrl = _coverpictureurl;
             } else {
@@ -558,10 +554,6 @@
     
     if (_liveDescTextField.text.length != 0) {
         _liveRoom.desc = _liveDescTextField.text;
-    }
-    
-    if (_anchorDescTextField.text.length != 0) {
-        _liveRoom.custom = _anchorDescTextField.text;
     }
     
     if (_coverpictureurl.length != 0){
@@ -622,7 +614,7 @@
     } else {
         [[EaseHttpManager sharedInstance] createLiveSessionWithRoom:_liveRoom
                                                          completion:^(EaseLiveRoom *room, BOOL success) {
-                                                             [weakHud hide:YES];
+                                                             [weakHud hideAnimated:YES];
                                                              if (success) {
                                                                  modifyBlock();
                                                                  EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:room];
@@ -704,10 +696,8 @@
                                                                  weakSelf.liveDescTextField.text = @"";
                                                              }
                                                              
-                                                             if (_liveRoom.custom.length > 0) {
-                                                                 weakSelf.anchorDescTextField.text = _liveRoom.custom;
-                                                             } else {
-                                                                 weakSelf.anchorDescTextField.text = @"";
+                                                             if (_liveRoom.custom != nil) {
+                                                                 
                                                              }
                                                              
                                                              if (_liveRoom.coverPictureUrl.length > 0) {

@@ -34,7 +34,7 @@
         //_title = [parameter safeStringValueForKey:@"title"];
         _title = [parameter safeStringValueForKey:@"name"];
         _desc = [parameter safeStringValueForKey:@"description"];
-        _custom = [parameter safeStringValueForKey:@"ext"];
+        _custom = [parameter safeObjectForKey:@"ext"];
         _created = [[parameter safeObjectForKey:@"created"] doubleValue];
         _showId = [parameter safeStringValueForKey:@"showid"];
         _needPassword = [[parameter safeObjectForKey:@"need_password"] boolValue];

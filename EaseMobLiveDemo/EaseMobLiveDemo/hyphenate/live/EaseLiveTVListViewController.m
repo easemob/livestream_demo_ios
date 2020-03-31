@@ -20,6 +20,7 @@
 #import "EaseSearchDisplayController.h"
 #import "SDImageCache.h"
 #import "SDWebImageDownloader.h"
+#import "EasePublishViewController.h"
 
 @interface EaseLiveTVListViewController () <UIScrollViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource,SRRefreshDelegate,EMClientDelegate>
 {
@@ -375,8 +376,21 @@
         view.modalPresentationStyle = 0;
         [self.navigationController presentViewController:view animated:YES completion:NULL];
     } else if (self.tabBarBehavior == kTabbarItemTag_Broadcast) {
-        view = [[EaseCreateLiveViewController alloc]initWithLiveroom:room];
-        [self.navigationController pushViewController:view animated:NO];
+        //view = [[EaseCreateLiveViewController alloc]initWithLiveroom:room];
+        __weak typeof(self) weakSelf = self;
+        room.anchor = [EMClient sharedClient].currentUsername;
+        [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOngoing:room completion:^(EaseLiveRoom *room, BOOL success) {
+            if (success) {
+                EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:room];
+                publishView.modalPresentationStyle = 0;
+                [weakSelf presentViewController:publishView
+                                       animated:YES
+                                     completion:^{
+                    [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+                                     }];
+            }
+        }];
+        //[self.navigationController pushViewController:view animated:NO];
     }
 }
 
