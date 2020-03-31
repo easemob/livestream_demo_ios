@@ -27,7 +27,7 @@
 #import "UIImageView+WebCache.h"
 #import "EaseCustomMessageHelper.h"
 
-#define kDefaultTop 30.f
+#define kDefaultTop 35.f
 #define kDefaultLeft 10.f
 
 @interface EaseLiveViewController () <EaseChatViewDelegate,EaseLiveHeaderListViewDelegate,TapBackgroundViewDelegate,EaseLiveGiftViewDelegate,EMChatroomManagerDelegate,EaseProfileLiveViewDelegate,EMClientDelegate,EaseCustomMessageHelperDelegate>
@@ -136,7 +136,7 @@
 {
     if (_backImageView == nil) {
         _backImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight)];
-        _backImageView.contentMode = UIViewContentModeScaleToFill;
+        _backImageView.contentMode = UIViewContentModeScaleAspectFill;
         UIImage *image = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:_room.coverPictureUrl];
         __weak typeof(self) weakSelf = self;
         if (!image) {
@@ -192,7 +192,7 @@
 - (EaseChatView*)chatview
 {
     if (_chatview == nil) {
-        _chatview = [[EaseChatView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.frame) - 200, CGRectGetWidth(self.view.frame), 200) room:_room isPublish:NO customMsgHelper:_customMsgHelper];
+        _chatview = [[EaseChatView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.frame) - 208, CGRectGetWidth(self.view.frame), 200) room:_room isPublish:NO customMsgHelper:_customMsgHelper];
         _chatview.delegate = self;
     }
     return _chatview;

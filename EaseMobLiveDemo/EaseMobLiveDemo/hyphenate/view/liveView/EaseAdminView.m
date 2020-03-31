@@ -522,8 +522,12 @@ extern NSArray<NSString*> *nickNameArray;
         if (cell == nil) {
             cell = [[EaseAdminCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         }
-        //username = [_whitelist objectAtIndex:indexPath.row];
-        cell.textLabel.text = username;
+        NSString *realUsername = [_whitelist objectAtIndex:indexPath.row];
+        if ([realUsername isEqualToString:EMClient.sharedClient.currentUsername]) {
+            cell.textLabel.text = EaseDefaultDataHelper.shared.defaultNickname;
+        } else {
+            cell.textLabel.text = username;
+        }
         [cell.clickButton setTitle:@"删除" forState:UIControlStateNormal];
         [cell.clickButton addTarget:self action:@selector(removeWhitelistAction:) forControlEvents:UIControlEventTouchUpInside];
         cell.muteSwitch.hidden = YES;

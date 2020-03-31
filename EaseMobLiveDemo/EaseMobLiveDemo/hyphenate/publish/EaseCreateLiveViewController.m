@@ -390,6 +390,8 @@
                                                   completion:^(NSString *url, BOOL success) {
                                                       if (success) {
                                                           _coverpictureurl = url;
+                                                      } else {
+                                                          [self showHint:@"选择封面图失败"];
                                                       }
                                                   }];
     } else {
@@ -490,7 +492,7 @@
         [self showHint:@"填入房间介绍"];
         return;
     }
-       
+    
     if (_coverpictureurl.length == 0){
         [self showHint:@"选择封面图"];
         return;
@@ -515,10 +517,6 @@
                 liveRoom.desc = _liveDescTextField.text;
             } else {
                 return;
-            }
-            
-            if (_anchorDescTextField.text.length != 0) {
-                liveRoom.custom = _anchorDescTextField.text;
             }
             
             if (_coverpictureurl.length != 0){
@@ -556,10 +554,6 @@
     
     if (_liveDescTextField.text.length != 0) {
         _liveRoom.desc = _liveDescTextField.text;
-    }
-    
-    if (_anchorDescTextField.text.length != 0) {
-        _liveRoom.custom = _anchorDescTextField.text;
     }
     
     if (_coverpictureurl.length != 0){
@@ -620,7 +614,7 @@
     } else {
         [[EaseHttpManager sharedInstance] createLiveSessionWithRoom:_liveRoom
                                                          completion:^(EaseLiveRoom *room, BOOL success) {
-                                                             [weakHud hide:YES];
+                                                             [weakHud hideAnimated:YES];
                                                              if (success) {
                                                                  modifyBlock();
                                                                  EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:room];
@@ -702,10 +696,8 @@
                                                                  weakSelf.liveDescTextField.text = @"";
                                                              }
                                                              
-                                                             if (_liveRoom.custom.length > 0) {
-                                                                 weakSelf.anchorDescTextField.text = _liveRoom.custom;
-                                                             } else {
-                                                                 weakSelf.anchorDescTextField.text = @"";
+                                                             if (_liveRoom.custom != nil) {
+                                                                 
                                                              }
                                                              
                                                              if (_liveRoom.coverPictureUrl.length > 0) {

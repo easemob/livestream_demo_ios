@@ -42,6 +42,9 @@ extern NSMutableDictionary *anchorInfoDic;
             [self addSubview:self.giftLabel];
         }
         [self _setviewData];
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectHeadImage)];
+        self.userInteractionEnabled = YES;
+        [self addGestureRecognizer:tap];
         //[self addSubview:self.numberLabel];
     }
     return self;
@@ -56,10 +59,6 @@ extern NSMutableDictionary *anchorInfoDic;
         _headImageView.layer.masksToBounds = YES;
         _headImageView.layer.cornerRadius = (self.height - 4)/2;
         _headImageView.contentMode = UIViewContentModeScaleAspectFill;
-        
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectHeadImage)];
-        _headImageView.userInteractionEnabled = YES;
-        [_headImageView addGestureRecognizer:tap];
     }
     return _headImageView;
 }
