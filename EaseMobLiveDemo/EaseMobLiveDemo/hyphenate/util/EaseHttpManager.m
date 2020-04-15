@@ -824,19 +824,17 @@ static EaseHttpManager *sharedInstance = nil;
                    completion:(void (^)(id responseObject, NSError *error))completion
 {
     [self _setHeaderToken];
-    [_sessionManager GET:path
-              parameters:parameters
-                progress:^(NSProgress * _Nonnull downloadProgress) {
-                  
-              } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                  if (completion) {
-                      completion(responseObject, nil);
-                  }
-              } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                  if (completion) {
-                      completion(nil, error);
-                  }
-              }];
+    
+    [_sessionManager GET:path parameters:parameters headers:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (completion) {
+            completion(responseObject, nil);
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if (completion) {
+            completion(nil, error);
+        }
+    }];
 }
 
 - (void)_doPutRequestWithPath:(NSString*)path
@@ -844,17 +842,16 @@ static EaseHttpManager *sharedInstance = nil;
                    completion:(void (^)(id responseObject, NSError *error))completion
 {
     [self _setHeaderToken];
-    [_sessionManager PUT:path
-              parameters:parameters
-                 success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                     if (completion) {
-                         completion(responseObject, nil);
-                     }
-                 } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                     if (completion) {
-                         completion(nil, error);
-                     }
-                 }];
+    
+    [_sessionManager PUT:path parameters:parameters headers:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (completion) {
+            completion(responseObject, nil);
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if (completion) {
+            completion(nil, error);
+        }
+    }];
 }
 
 - (void)_doPostRequestWithPath:(NSString*)path
@@ -862,18 +859,16 @@ static EaseHttpManager *sharedInstance = nil;
                     completion:(void (^)(id responseObject, NSError *error))completion
 {
     [self _setHeaderToken];
-    [_sessionManager POST:path
-               parameters:parameters
-                 progress:nil
-                  success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                     if (completion) {
-                         completion(responseObject, nil);
-                     }
-                 } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                     if (completion) {
-                         completion(nil, error);
-                     }
-                 }];
+    
+    [_sessionManager POST:path parameters:parameters headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (completion) {
+            completion(responseObject, nil);
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if (completion) {
+            completion(nil, error);
+        }
+    }];
 }
 
 - (void)_doDeleteRequestWithPath:(NSString*)path
@@ -881,17 +876,16 @@ static EaseHttpManager *sharedInstance = nil;
                       completion:(void (^)(id responseObject, NSError *error))completion
 {
     [self _setHeaderToken];
-    [_sessionManager DELETE:path
-                 parameters:parameters
-                    success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                        if (completion) {
-                            completion(responseObject, nil);
-                        }
-                    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                        if (completion) {
-                            completion(nil, error);
-                        }
-                    }];
+    
+    [_sessionManager DELETE:path parameters:parameters headers:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (completion) {
+            completion(responseObject, nil);
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if (completion) {
+            completion(nil, error);
+        }
+    }];
 }
 
 - (void)_doUploadRequestWithPath:(NSString*)path
@@ -900,21 +894,20 @@ static EaseHttpManager *sharedInstance = nil;
                       completion:(void (^)(id responseObject, NSError *error))completion
 {
     [self _setHeaderToken];
-    [_sessionManager POST:path
-               parameters:parameters
-constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-    [formData appendPartWithFileData:data name:@"file" fileName:[NSString stringWithFormat:@"%d.jpeg", (int)([[NSDate date] timeIntervalSince1970]*1000)] mimeType:@"image/jpeg"];
-} progress:^(NSProgress * _Nonnull uploadProgress) {
     
-} success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-    if (completion) {
-        completion(responseObject, nil);
-    }
-} failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-    if (completion) {
-        completion(nil, error);
-    }
-}];
+    [_sessionManager POST:path parameters:parameters headers:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        [formData appendPartWithFileData:data name:@"file" fileName:[NSString stringWithFormat:@"%d.jpeg", (int)([[NSDate date] timeIntervalSince1970]*1000)] mimeType:@"image/jpeg"];
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (completion) {
+            completion(responseObject, nil);
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if (completion) {
+            completion(nil, error);
+        }
+    }];
     
 }
 
