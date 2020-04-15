@@ -1,12 +1,12 @@
 //
 //  EaseChatView.h
-//  UCloudMediaRecorderDemo
 //
 //  Created by EaseMob on 16/5/9.
 //  Copyright © 2016年 zilong.li All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
+#import "EaseCustomMessageHelper.h"
 
 @class EMMessage;
 @class EaseLiveRoom;
@@ -20,13 +20,13 @@
 
 - (void)didReceiveBarrageWithCMDMessage:(EMMessage*)message;
 
-- (void)didReceivePraiseWithCMDMessage:(EMMessage *)message;
-
 - (void)didSelectUserWithMessage:(EMMessage*)message;
 
-- (void)didSelectChangeCameraButton;
+//- (void)didSelectAdminButton:(BOOL)isOwner;
 
-- (void)didSelectAdminButton:(BOOL)isOwner;
+- (void)didSelectGiftButton:(BOOL)isOwner;//礼物
+
+- (void)didSelectedExitButton;
 
 @end
 
@@ -41,7 +41,8 @@
 
 - (instancetype)initWithFrame:(CGRect)frame
                          room:(EaseLiveRoom*)room
-                    isPublish:(BOOL)isPublish;
+                    isPublish:(BOOL)isPublish
+              customMsgHelper:(EaseCustomMessageHelper*)customMsgHelper;
 
 @property (nonatomic, weak) id<EaseChatViewDelegate> delegate;
 
@@ -51,8 +52,9 @@
 - (void)leaveChatroomWithIsCount:(BOOL)aIsCount
                       completion:(void (^)(BOOL success))aCompletion;
 
-- (void)sendGiftWithId:(NSString*)giftId;
 
 - (void)sendMessageAtWithUsername:(NSString*)username;
+
+- (void)sendGiftAction:(NSString *)giftId num:(NSInteger)num completion:(void (^)(BOOL success))aCompletion;
 
 @end

@@ -1,15 +1,20 @@
 //
 //  EaseChatCell.m
-//  UCloudMediaRecorderDemo
 //
 //  Created by EaseMob on 16/6/12.
 //  Copyright © 2016年 zmw. All rights reserved.
 //
 
+#define KCustomerWidth [[UIScreen mainScreen] bounds].size.width - 32
 #import "EaseChatCell.h"
+#import "Masonry.h"
+#import "EaseEmojiHelper.h"
+#import "EaseLiveGiftHelper.h"
+#import "EaseDefaultDataHelper.h"
+#import "EaseCustomMessageHelper.h"
 
 @interface EaseChatCell ()
-
+@property (nonatomic,strong)UIView *blankView;
 @end
 
 @implementation EaseChatCell
@@ -18,19 +23,19 @@
 - (void)setMesssage:(EMMessage*)message
 {
     self.textLabel.textColor = [UIColor whiteColor];
-    self.textLabel.shadowColor = [UIColor blackColor];
-    self.textLabel.shadowOffset = CGSizeMake(1, 1);
+    self.textLabel.layer.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.2].CGColor;
+    self.textLabel.layer.cornerRadius = 2;
     self.backgroundColor = [UIColor clearColor];
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     self.textLabel.attributedText = [EaseChatCell _attributedStringWithMessage:message];
-    
     self.textLabel.numberOfLines = (int)([EaseChatCell heightForMessage:message]/15.f) + 1;
+
 }
 
 + (CGFloat)heightForMessage:(EMMessage *)message
 {
     if (message) {
-        CGRect rect = [[EaseChatCell _attributedStringWithMessage:message] boundingRectWithSize:CGSizeMake(KScreenWidth, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+        CGRect rect = [[EaseChatCell _attributedStringWithMessage:message] boundingRectWithSize:CGSizeMake(KCustomerWidth, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin context:nil];
         
         if (rect.size.height < 25.f) {
             return 25.f;
@@ -42,21 +47,17 @@
 
 + (NSMutableAttributedString*)_attributedStringWithMessage:(EMMessage*)message
 {
-    
-    NSString *text = [EaseChatCell latestMessageTitleForConversationModel:message];
-    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
+    NSMutableAttributedString *text = [EaseChatCell latestMessageTitleForConversationModel:message];
+    //NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
     NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
     paraStyle.lineBreakMode = NSLineBreakByWordWrapping;
     NSDictionary *attributes = @{NSParagraphStyleAttributeName: paraStyle,NSFontAttributeName :[UIFont systemFontOfSize:15.0f]};
-    [string addAttributes:attributes range:NSMakeRange(0, string.length)];
-    if ([message.from isEqualToString:[EMClient sharedClient].currentUsername]) {
-        NSRange range = [text rangeOfString:[NSString stringWithFormat:@"%@: " ,[EMClient sharedClient].currentUsername] options:NSCaseInsensitiveSearch];
-        [string addAttribute:NSForegroundColorAttributeName value:RGBACOLOR(25, 163, 255, 1) range:NSMakeRange(range.length + range.location, text.length - (range.length + range.location))];
-    }
-    return string;
+    [text addAttributes:attributes range:NSMakeRange(0, text.length)];
+    return text;
 }
 
-+ (NSString *)latestMessageTitleForConversationModel:(EMMessage*)lastMessage;
+extern NSArray<NSString*> *nickNameArray;
++ (NSMutableAttributedString *)latestMessageTitleForConversationModel:(EMMessage*)lastMessage;
 {
     NSString *latestMessageTitle = @"";
     if (lastMessage) {
@@ -66,8 +67,8 @@
                 latestMessageTitle = @"[图片]";
             } break;
             case EMMessageBodyTypeText:{
-                NSString *didReceiveText = [EaseConvertToCommonEmoticonsHelper
-                                            convertToSystemEmoticons:((EMTextMessageBody *)messageBody).text];
+                NSString *didReceiveText = [EaseEmojiHelper
+                                            convertEmoji:((EMTextMessageBody *)messageBody).text];
                 latestMessageTitle = didReceiveText;
             } break;
             case EMMessageBodyTypeVoice:{
@@ -82,21 +83,44 @@
             case EMMessageBodyTypeFile: {
                 latestMessageTitle = @"[文件]";
             } break;
+            case EMMessageBodyTypeCustom: {
+                latestMessageTitle = [EaseCustomMessageHelper getMsgContent:messageBody];
+            } break;
             default: {
             } break;
         }
     }
     
+    int random = (arc4random() % 100);
+    NSString *randomNickname = nickNameArray[random];
+    if ([lastMessage.from isEqualToString:EMClient.sharedClient.currentUsername]) {
+        randomNickname = EaseDefaultDataHelper.shared.defaultNickname;
+    }
+    NSMutableAttributedString *attributedStr = [[NSMutableAttributedString alloc] initWithString:@""];
     if (lastMessage.ext) {
         if ([lastMessage.ext objectForKey:@"em_leave"] || [lastMessage.ext objectForKey:@"em_join"]) {
-            latestMessageTitle = [NSString stringWithFormat:@" %@ %@",lastMessage.from,latestMessageTitle];
+            latestMessageTitle = [NSString stringWithFormat:@"%@ %@",randomNickname,latestMessageTitle];
+            attributedStr = [[NSMutableAttributedString alloc] initWithString:latestMessageTitle];
+            [attributedStr setAttributes:@{NSForegroundColorAttributeName : [[UIColor whiteColor] colorWithAlphaComponent:0.6]} range:NSMakeRange(randomNickname.length + 1, latestMessageTitle.length - randomNickname.length - 1)];
         } else {
-            latestMessageTitle = [NSString stringWithFormat:@" %@: %@",lastMessage.from,latestMessageTitle];
+            latestMessageTitle = [NSString stringWithFormat:@"%@: %@",randomNickname,latestMessageTitle];
+            attributedStr = [[NSMutableAttributedString alloc] initWithString:latestMessageTitle];
+            NSRange range = [[attributedStr string] rangeOfString:[NSString stringWithFormat:@"%@: " ,randomNickname] options:NSCaseInsensitiveSearch];
+            [attributedStr addAttribute:NSForegroundColorAttributeName value:RGBACOLOR(255, 199, 0, 1) range:NSMakeRange(range.length + range.location, attributedStr.length - (range.length + range.location))];
         }
     } else {
-        latestMessageTitle = [NSString stringWithFormat:@" %@: %@",lastMessage.from,latestMessageTitle];
+        latestMessageTitle = [NSString stringWithFormat:@"%@: %@",randomNickname,latestMessageTitle];
+        attributedStr = [[NSMutableAttributedString alloc] initWithString:latestMessageTitle];
+        NSRange range = [[attributedStr string] rangeOfString:[NSString stringWithFormat:@"%@: " ,randomNickname] options:NSCaseInsensitiveSearch];
+        [attributedStr addAttribute:NSForegroundColorAttributeName value:RGBACOLOR(255, 199, 0, 1) range:NSMakeRange(range.length + range.location, attributedStr.length - (range.length + range.location))];
+        if (lastMessage.body.type == EMMessageBodyTypeCustom) {
+            EMCustomMessageBody *customBody = (EMCustomMessageBody*)lastMessage.body;
+            if ([customBody.event isEqualToString:kCustomMsgChatroomPraise] || [customBody.event isEqualToString:kCustomMsgChatroomGift]) {
+                [attributedStr addAttribute:NSForegroundColorAttributeName value:RGBACOLOR(104, 255, 149, 1) range:NSMakeRange(range.length + range.location, attributedStr.length - (range.length + range.location))];
+            }
+        }
     }
-    return latestMessageTitle;
+    return attributedStr;
 }
 
 @end

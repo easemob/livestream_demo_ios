@@ -20,6 +20,8 @@
 @property (strong, nonatomic) UIButton *registerButton;
 @property (strong, nonatomic) UIView *registerView;
 
+@property (strong, nonatomic) UITapGestureRecognizer *singleTapGR;
+
 @end
 
 @implementation EaseSignUpViewController
@@ -237,6 +239,14 @@
         [_passwordConfirmTextField becomeFirstResponder];
     }
     return YES;
+}
+
+#pragma mark - override
+
+- (void)setupForDismissKeyboard
+{
+    _singleTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                           action:@selector(tapAnywhereToDismissKeyboard:)];
 }
 
 @end

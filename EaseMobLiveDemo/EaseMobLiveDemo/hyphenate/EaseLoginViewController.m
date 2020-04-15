@@ -1,6 +1,5 @@
 //
 //  EaseLoginViewController.m
-//  UCloudMediaRecorderDemo
 //
 //  Created by EaseMob on 16/5/9.
 //  Copyright © 2016年 zilong.li All rights reserved.
@@ -8,8 +7,8 @@
 
 #import "EaseLoginViewController.h"
 
-#import "UIViewController+DismissKeyboard.h"
 #import "EaseSignUpViewController.h"
+#import "EaseDefaultDataHelper.h"
 
 #define kDefaultHeight 45.f
 #define kDefaultTextHeight 50.f
@@ -37,8 +36,6 @@
     [super viewDidLoad];
     
     self.title = NSLocalizedString(@"title.login", @"Log in");
-    
-    [self setupForDismissKeyboard];
     
     self.loginView = [[UIView alloc] initWithFrame:CGRectMake(0, 216.f, KScreenWidth, kDefaultTextHeight * 2 + 1.f)];
     self.loginView.backgroundColor = [UIColor whiteColor];
@@ -155,7 +152,7 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         EMError *error = [[EMClient sharedClient] loginWithUsername:_usernameTextField.text password:_passwordTextField.text];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [weakHud hide:YES];
+            [weakHud hideAnimated:YES];
             if (!error) {
                 NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
                 [ud setObject:[EMClient sharedClient].currentUsername forKey:kLiveLastLoginUsername];

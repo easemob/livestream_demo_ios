@@ -1,6 +1,5 @@
 //
 //  EaseLiveTVListViewController.m
-//  UCloudMediaRecorderDemo
 //
 //  Created by EaseMob on 16/5/30.
 //  Copyright © 2016年 zmw. All rights reserved.
@@ -19,6 +18,9 @@
 #import "EaseHttpManager.h"
 #import "EaseLiveRoom.h"
 #import "EaseSearchDisplayController.h"
+#import "SDImageCache.h"
+#import "SDWebImageDownloader.h"
+#import "EasePublishViewController.h"
 
 @interface EaseLiveTVListViewController () <UIScrollViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource,SRRefreshDelegate,EMClientDelegate>
 {
@@ -35,20 +37,29 @@
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIButton *liveButton;
+@property (nonatomic) kTabbarItemBehavior tabBarBehavior; //tabbar行为：看直播/开播/设置
 
 @end
 
 @implementation EaseLiveTVListViewController
 
+- (instancetype)initWithBehavior:(kTabbarItemBehavior)tabBarBehavior
+{
+    self = [super init];
+       if (self) {
+           _tabBarBehavior = tabBarBehavior;
+           if (_tabBarBehavior == kTabbarItemTag_Broadcast) {
+               self.title = @"选择直播间开始直播";
+           } else {
+               self.title = nil;
+           }
+       }
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = NSLocalizedString(@"title.live", @"Easemob Live");
-    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
-        [self setEdgesForExtendedLayout:UIRectEdgeNone];
-    }
-    [self setAutomaticallyAdjustsScrollViewInsets:YES];
-    [self setExtendedLayoutIncludesOpaqueBars:YES];
     
     [self setupCollectionView];
     
@@ -57,11 +68,16 @@
     
     [self setup];
     
+
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshList:) name:kNotificationRefreshList object:nil];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
     if ([[EMClient sharedClient] isConnected]) {
         [self loadData:YES];
     }
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshList:) name:kNotificationRefreshList object:nil];
 }
 
 - (void)dealloc
@@ -88,40 +104,68 @@
     }
     _isLoading = YES;
     __weak EaseLiveTVListViewController *weakSelf = self;
-    [[EaseHttpManager sharedInstance] fetchLiveRoomsOngoingWithCursor:_cursor
-                                                                limit:kDefaultPageSize
-                                                           completion:^(EMCursorResult *result, BOOL success) {
-                                                               if (success) {
-                                                                   if (isHeader) {
-                                                                       [weakSelf.dataArray removeAllObjects];
-                                                                       [weakSelf.dataArray addObjectsFromArray:result.list];
-                                                                       [weakSelf.collectionView reloadData];
-                                                                   } else {
-                                                                       [weakSelf.dataArray addObjectsFromArray:result.list];
-                                                                       [weakSelf.collectionView reloadData];
-                                                                   }
-                                                                   _cursor = result.cursor;
-                                                                   
-                                                                   if ([result.list count] < kDefaultPageSize) {
-                                                                       _noMore = YES;
-                                                                   }
-                                                                   if (_noMore) {
-                                                                       weakSelf.collectionView.mj_footer = nil;
-                                                                   } else {
-                                                                       weakSelf.collectionView.mj_footer = _refreshFooter;
-                                                                   }
-                                                               }
-                                                               
-                                                               [weakSelf _collectionViewDidFinishTriggerHeader:isHeader reload:YES];
-                                                               _isLoading = NO;
-                                                           }];
+    if (self.tabBarBehavior == kTabbarItemTag_Live) {
+        [[EaseHttpManager sharedInstance] fetchLiveRoomsOngoingWithCursor:nil
+                                                                       limit:8
+                                                                  completion:^(EMCursorResult *result, BOOL success) {
+                                                                      if (success) {
+                                                                          if (isHeader) {
+                                                                              [weakSelf.dataArray removeAllObjects];
+                                                                              [weakSelf.dataArray addObjectsFromArray:result.list];
+                                                                              [weakSelf.collectionView reloadData];
+                                                                          } else {
+                                                                              [weakSelf.dataArray addObjectsFromArray:result.list];
+                                                                              [weakSelf.collectionView reloadData];
+                                                                          }
+                                                                          //_cursor = result.cursor;
+                                                                          
+                                                                          if ([result.list count] < kDefaultPageSize) {
+                                                                              _noMore = YES;
+                                                                          }
+                                                                          if (_noMore) {
+                                                                              weakSelf.collectionView.mj_footer = nil;
+                                                                          } else {
+                                                                              weakSelf.collectionView.mj_footer = _refreshFooter;
+                                                                          }
+                                                                      }
+                                                                      
+                                                                      [weakSelf _collectionViewDidFinishTriggerHeader:isHeader reload:YES];
+                                                                      _isLoading = NO;
+                                                                  }];
+    } else if (self.tabBarBehavior == kTabbarItemTag_Broadcast) {
+        [[EaseHttpManager sharedInstance] fetchLiveRoomsWithCursor:nil limit:8 completion:^(EMCursorResult *result, BOOL success) {
+            if (success) {
+                if (isHeader) {
+                    [weakSelf.dataArray removeAllObjects];
+                    [weakSelf.dataArray addObjectsFromArray:result.list];
+                    [weakSelf.collectionView reloadData];
+                } else {
+                    [weakSelf.dataArray addObjectsFromArray:result.list];
+                    [weakSelf.collectionView reloadData];
+                }
+                _cursor = result.cursor;
+                
+                if ([result.list count] < kDefaultPageSize) {
+                    _noMore = YES;
+                }
+                if (_noMore) {
+                    weakSelf.collectionView.mj_footer = nil;
+                } else {
+                    weakSelf.collectionView.mj_footer = _refreshFooter;
+                }
+            }
+            
+            [weakSelf _collectionViewDidFinishTriggerHeader:isHeader reload:YES];
+            _isLoading = NO;
+        }];
+    }
 }
 
 - (void)setupCollectionView
 {
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:self.collectionView];
-    [self.view addSubview:self.liveButton];
+    //[self.view addSubview:self.liveButton];
     
     __weak EaseLiveTVListViewController *weakSelf = self;
     _refreshHeader =  [MJRefreshNormalHeader headerWithRefreshingBlock:^{
@@ -249,7 +293,7 @@
 {
     EaseLiveCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCollectionIdentifier forIndexPath:indexPath];
     EaseLiveRoom *room = [self.dataArray objectAtIndex:indexPath.row];
-    [cell setLiveRoom:room];
+    [cell setLiveRoom:room liveBehavior:self.tabBarBehavior];
     UIImage *image = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:room.coverPictureUrl];
     if (!image) {
         __weak typeof(self) weakSelf = self;
@@ -257,12 +301,17 @@
                                                               options:SDWebImageDownloaderUseNSURLCache
                                                              progress:NULL
                                                             completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+                                                                UIImage *backimage = nil;
                                                                 if (image) {
-                                                                    [[SDImageCache sharedImageCache] storeImage:image forKey:room.coverPictureUrl toDisk:NO];
+                                                                    backimage = image;
+                                                                } else {
+                                                                    backimage = [UIImage imageNamed:@"default_back_image"];
+                                                                }
+                                                                [[SDImageCache sharedImageCache] storeImage:backimage forKey:room.coverPictureUrl toDisk:NO completion:^{
                                                                     dispatch_async(dispatch_get_main_queue(), ^{
                                                                         [weakSelf.collectionView reloadData];
                                                                     });
-                                                                }
+                                                                }];
                                                             }];
     }
     return cell;
@@ -298,7 +347,7 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(CGRectGetWidth(self.view.frame)/2 - 0.5f, CGRectGetWidth(self.view.frame)/2 - 0.5f);
+    return CGSizeMake(CGRectGetWidth(self.view.frame)/2 - 1.5f, CGRectGetWidth(self.view.frame)/2 - 1.5f);
 }
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
@@ -308,12 +357,12 @@
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
 {
-    return 1.0f;
+    return 3.0f;
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
 {
-    return 0.0f;
+    return 3.0f;
 }
 
 #pragma mark - UICollectionViewDelegate
@@ -321,8 +370,28 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     EaseLiveRoom *room = [self.dataArray objectAtIndex:indexPath.row];
-    EaseLiveViewController *view = [[EaseLiveViewController alloc] initWithLiveRoom:room];
-    [self.navigationController presentViewController:view animated:YES completion:NULL];
+    UIViewController *view;
+    if (self.tabBarBehavior == kTabbarItemTag_Live) {
+        view = [[EaseLiveViewController alloc] initWithLiveRoom:room];
+        view.modalPresentationStyle = 0;
+        [self.navigationController presentViewController:view animated:YES completion:NULL];
+    } else if (self.tabBarBehavior == kTabbarItemTag_Broadcast) {
+        //view = [[EaseCreateLiveViewController alloc]initWithLiveroom:room];
+        __weak typeof(self) weakSelf = self;
+        room.anchor = [EMClient sharedClient].currentUsername;
+        [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOngoing:room completion:^(EaseLiveRoom *room, BOOL success) {
+            if (success) {
+                EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:room];
+                publishView.modalPresentationStyle = 0;
+                [weakSelf presentViewController:publishView
+                                       animated:YES
+                                     completion:^{
+                    [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+                                     }];
+            }
+        }];
+        //[self.navigationController pushViewController:view animated:NO];
+    }
 }
 
 -(BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
@@ -376,7 +445,7 @@
 {
     MBProgressHUD *hud = [MBProgressHUD showMessag:@"退出中..." toView:nil];
     [[EMClient sharedClient] logout:NO];
-    [hud hide:YES];
+    [hud hideAnimated:YES];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"loginStateChange" object:@NO];
 }
 

@@ -12,11 +12,18 @@
 
 - (void)didSelectHeaderWithUsername:(NSString*)username;
 
+- (void)didClickAnchorCard:(EaseLiveRoom*)room;
+
+- (void)didSelectMemberListButton:(BOOL)isOwner;
+
 @end
 
 @class EasePublishModel;
 @class EaseLiveRoom;
+@class EaseLiveCastView;
 @interface EaseLiveHeaderListView : UIView
+
+@property (nonatomic, strong) EaseLiveCastView *liveCastView;
 
 - (instancetype)initWithFrame:(CGRect)frame model:(EasePublishModel*)model;
 
@@ -29,5 +36,7 @@
 - (void)joinChatroomWithUsername:(NSString*)username;
 
 - (void)leaveChatroomWithUsername:(NSString*)username;
+
+- (void)setLiveCastDelegate;
 
 @end

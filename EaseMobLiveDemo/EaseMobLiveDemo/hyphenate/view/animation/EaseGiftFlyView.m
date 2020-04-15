@@ -1,6 +1,5 @@
 //
 //  EaseGiftFlyView.m
-//  UCloudMediaRecorderDemo
 //
 //  Created by EaseMob on 16/6/13.
 //  Copyright © 2016年 zmw. All rights reserved.
@@ -30,7 +29,7 @@
 {
     self = [super init];
     if (self) {
-        [self setFrame:CGRectMake(-200, 80, 200, 80)];
+        [self setFrame:CGRectMake(50, 80, 200, 80)];
         
         CGRect frame = self.frame;
         int flag = arc4random()%2;
@@ -56,8 +55,8 @@
 {
     if (_nameLabel == nil) {
         _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.headImageView.frame) + 5, 0, kLabelDefaultWidth, kLabelDefaultHeight)];
-        if (_message) {
-            NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:_message.from attributes:nil];
+        if (!_message) {
+            NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:@"chong" attributes:nil];
             NSDictionary *attributes = @{NSFontAttributeName :[UIFont systemFontOfSize:12.0f]};
             [string addAttributes:attributes range:NSMakeRange(0, string.length)];
             _nameLabel.attributedText = string;

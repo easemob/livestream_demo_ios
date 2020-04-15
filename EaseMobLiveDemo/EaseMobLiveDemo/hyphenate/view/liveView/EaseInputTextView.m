@@ -21,7 +21,7 @@
         return;
     }
     
-    NSUInteger maxChars = [EaseTextView maxCharactersPerLine];
+    NSUInteger maxChars = [EaseInputTextView maxCharactersPerLine];
     if([placeHolder length] > maxChars) {
         placeHolder = [placeHolder substringToIndex:maxChars - 8];
         placeHolder = [[placeHolder stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] stringByAppendingFormat:@"..."];
@@ -44,7 +44,7 @@
 
 - (NSUInteger)numberOfLinesOfText
 {
-    return [EaseTextView numberOfLinesForMessage:self.text];
+    return [EaseInputTextView numberOfLinesForMessage:self.text];
 }
 
 + (NSUInteger)maxCharactersPerLine {
@@ -52,7 +52,7 @@
 }
 
 + (NSUInteger)numberOfLinesForMessage:(NSString *)text {
-    return (text.length / [EaseTextView maxCharactersPerLine]) + 1;
+    return (text.length / [EaseInputTextView maxCharactersPerLine]) + 1;
 }
 
 #pragma mark - Text view overrides

@@ -8,9 +8,8 @@
 
 #import "EaseCreateLiveViewController.h"
 #import "EasePublishViewController.h"
-#import "UIViewController+DismissKeyboard.h"
-#import "EaseLiveRoom.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <CoreServices/CoreServices.h>
 
 #define kDefaultHeight 45.f
 #define kDefaultTextHeight 50.f
@@ -56,17 +55,23 @@
     return self;
 }
 
+- (instancetype)initWithLiveroom:(EaseLiveRoom *)liveroom
+{
+    self = [super init];
+    if (self) {
+        _liveRoom = liveroom;
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.title = NSLocalizedString(@"publish.title", @"Create Live");
-    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
-        [self setEdgesForExtendedLayout:UIRectEdgeNone];
-    }
     self.view.backgroundColor = RGBACOLOR(251, 251, 251, 1);
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.backBtn];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.relevanceBtn];
+    //self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.relevanceBtn];
     
     [self.view addSubview:self.mainView];
     [self.mainView addSubview:self.coverImageView];
@@ -84,8 +89,6 @@
     [self.mainView addSubview:self.liveDescTextField];
 //    [self.mainView addSubview:self.anchorDescTextField];
     [self.mainView addSubview:self.createLiveBtn];
-    
-    [self setupForDismissKeyboard];
     
     if (_isRelevance) {
         MBProgressHUD *hud = [MBProgressHUD showMessag:@"获取关联直播间" toView:self.view];
@@ -106,6 +109,12 @@
     if (KScreenHeight <= 675.f) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
     }
+}
+
+- (void)viewWillLayoutSubviews
+{
+    [self setEdgesForExtendedLayout:UIRectEdgeAll];
+    [self setAutomaticallyAdjustsScrollViewInsets:YES];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -134,12 +143,12 @@
     if (_backBtn == nil) {
         _backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _backBtn.frame = CGRectMake(0, 0, 70.f, 30.f);
-        [_backBtn setTitle:NSLocalizedString(@"publish.home", @"Home") forState:UIControlStateNormal];
+        //[_backBtn setTitle:NSLocalizedString(@"publish.home", @"Home") forState:UIControlStateNormal];
         [_backBtn setImageEdgeInsets:UIEdgeInsetsMake(0, -20, -5, 0)];
         [_backBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -50, -5, 0)];
         [_backBtn.titleLabel setFont:[UIFont systemFontOfSize:17.f]];
         [_backBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [_backBtn setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+        [_backBtn setImage:[UIImage imageNamed:@"icon-backAction"] forState:UIControlStateNormal];
         [_backBtn addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _backBtn;
@@ -226,7 +235,7 @@
         _liveNameTextField.delegate = self;
         _liveNameTextField.placeholder = NSLocalizedString(@"publish.liveName", @"Live Name");
         _liveNameTextField.backgroundColor = [UIColor clearColor];
-        _liveNameTextField.returnKeyType = UIReturnKeyNext;
+        _liveNameTextField.returnKeyType = UIReturnKeyDone;
         _liveNameTextField.font = [UIFont systemFontOfSize:15.f];
         
         UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, _liveNameTextField.height - 1, _liveNameTextField.width, 1)];
@@ -247,7 +256,7 @@
         _liveDescTextField.delegate = self;
         _liveDescTextField.placeholder = NSLocalizedString(@"publish.liveDesc", @"Live Description");
         _liveDescTextField.backgroundColor = [UIColor clearColor];
-        _liveDescTextField.returnKeyType = UIReturnKeyNext;
+        _liveDescTextField.returnKeyType = UIReturnKeyDone;
         _liveDescTextField.font = [UIFont systemFontOfSize:15.f];
         
         UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, _liveDescTextField.height - 1, _liveDescTextField.width, 1)];
@@ -381,6 +390,8 @@
                                                   completion:^(NSString *url, BOOL success) {
                                                       if (success) {
                                                           _coverpictureurl = url;
+                                                      } else {
+                                                          [self showHint:@"选择封面图失败"];
                                                       }
                                                   }];
     } else {
@@ -444,6 +455,7 @@
             }
             self.imagePicker.editing = YES;
             self.imagePicker.mediaTypes = @[(NSString *)kUTTypeImage];
+            self.imagePicker.modalPresentationStyle = 0;
             [self presentViewController:self.imagePicker animated:YES completion:NULL];
         }
 #endif
@@ -453,6 +465,7 @@
         self.imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         self.imagePicker.mediaTypes = @[(NSString *)kUTTypeImage];
         self.imagePicker.editing = YES;
+        self.imagePicker.modalPresentationStyle = 0;
         [self presentViewController:self.imagePicker animated:YES completion:NULL];
     }];
     
@@ -463,51 +476,70 @@
     [alertController addAction:cameraAction];
     [alertController addAction:cancelAction];
     
+    alertController.modalPresentationStyle = 0;
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)createAction
 {
-    EaseLiveRoom *liveRoom = [[EaseLiveRoom alloc] init];
-    if (_liveNameTextField.text.length != 0) {
-        liveRoom.title = _liveNameTextField.text;
-    } else {
+    
+    if (_liveNameTextField.text.length == 0) {
+        [self showHint:@"填入房间名"];
+        return;
+    }
+       
+    if (_liveDescTextField.text.length == 0) {
+        [self showHint:@"填入房间介绍"];
         return;
     }
     
-    if (_liveDescTextField.text.length != 0) {
-        liveRoom.desc = _liveDescTextField.text;
-    } else {
+    if (_coverpictureurl.length == 0){
+        [self showHint:@"选择封面图"];
         return;
     }
-    
-    if (_anchorDescTextField.text.length != 0) {
-        liveRoom.custom = _anchorDescTextField.text;
-    }
-    
-    liveRoom.session.anchor = [EMClient sharedClient].currentUsername;
-    
-    if (_coverpictureurl.length != 0){
-        liveRoom.coverPictureUrl = _coverpictureurl;
-    }
-    
     __weak typeof(self) weakSelf = self;
-    MBProgressHUD *hud = [MBProgressHUD showMessag:@"创建中..." toView:self.view];
+    MBProgressHUD *hud = [MBProgressHUD showMessag:@"开始直播..." toView:self.view];
     __weak MBProgressHUD *weakHud = hud;
-    [[EaseHttpManager sharedInstance] createLiveRoomWithRoom:liveRoom
-                                                  completion:^(EaseLiveRoom *room, BOOL success) {
-                                                      [weakHud hide:YES];
-                                                      if (success) {
-                                                          EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:room];
-                                                          [weakSelf presentViewController:publishView
-                                                                                 animated:YES
-                                                                               completion:^{
-                                                              [weakSelf.navigationController popToRootViewControllerAnimated:NO];
-                                                                               }];
-                                                      } else {
-                                                          [self showHint:@"创建失败"];
-                                                      }
-                                                  }];
+
+    _liveRoom.anchor = [EMClient sharedClient].currentUsername;
+    [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOngoing:_liveRoom completion:^(EaseLiveRoom *room, BOOL success) {
+        [weakHud hideAnimated:YES];
+        if (success) {
+            _liveRoom = room;
+            EaseLiveRoom *liveRoom = _liveRoom;
+            if (_liveNameTextField.text.length != 0) {
+                liveRoom.title = _liveNameTextField.text;
+            } else {
+                return;
+            }
+            
+            if (_liveDescTextField.text.length != 0) {
+                liveRoom.desc = _liveDescTextField.text;
+            } else {
+                return;
+            }
+            
+            if (_coverpictureurl.length != 0){
+                liveRoom.coverPictureUrl = _coverpictureurl;
+            } else {
+                return;
+            }
+            
+            [[EaseHttpManager sharedInstance] modifyLiveRoomWithRoom:liveRoom completion:^(EaseLiveRoom *aRoom, BOOL success) {
+                _liveRoom = aRoom;
+                EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:_liveRoom];
+                publishView.modalPresentationStyle = 0;
+                [weakSelf presentViewController:publishView
+                                       animated:YES
+                                     completion:^{
+                    [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+                                     }];
+            }];
+        } else {
+            [self showHint:@"开始直播失败"];
+        }
+    }];
+    [EaseHttpManager sharedInstance];
 }
 
 - (void)modifyAction
@@ -522,10 +554,6 @@
     
     if (_liveDescTextField.text.length != 0) {
         _liveRoom.desc = _liveDescTextField.text;
-    }
-    
-    if (_anchorDescTextField.text.length != 0) {
-        _liveRoom.custom = _anchorDescTextField.text;
     }
     
     if (_coverpictureurl.length != 0){
@@ -549,9 +577,10 @@
     dispatch_block_t modifyBlock = ^{
         [[EaseHttpManager sharedInstance] modifyLiveRoomWithRoom:_liveRoom
                                                       completion:^(EaseLiveRoom *room, BOOL success) {
-                                                          [weakHud hide:YES];
+                                                          [weakHud hideAnimated:YES];
                                                           if (success) {
                                                               EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:_liveRoom];
+                                                              publishView.modalPresentationStyle = 0;
                                                               [weakSelf presentViewController:publishView animated:YES completion:^{
                                                                   [weakSelf.navigationController popToRootViewControllerAnimated:NO];
                                                               }];
@@ -563,6 +592,15 @@
     if (_liveRoom.session.status == EaseLiveSessionOngoing) {
         modifyBlock();
     } else if (_liveRoom.session.status == EaseLiveSessionNotStart) {
+        [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOngoing:_liveRoom completion:^(EaseLiveRoom *room, BOOL success) {
+            [weakHud hideAnimated:YES];
+            if (success) {
+                modifyBlock();
+            } else {
+                [self showHint:@"开始直播失败"];
+            }
+        }];
+        /*
         [[EaseHttpManager sharedInstance] modifyLiveRoomStatusWithRoomId:_liveRoom.roomId
                                                                   status:EaseLiveSessionOngoing
                                                               completion:^(BOOL success) {
@@ -572,14 +610,15 @@
                                                                       [weakHud hide:YES];
                                                                       [weakSelf showHint:@"创建失败"];
                                                                   }
-                                                              }];
+                                                              }];*/
     } else {
         [[EaseHttpManager sharedInstance] createLiveSessionWithRoom:_liveRoom
                                                          completion:^(EaseLiveRoom *room, BOOL success) {
-                                                             [weakHud hide:YES];
+                                                             [weakHud hideAnimated:YES];
                                                              if (success) {
                                                                  modifyBlock();
                                                                  EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:room];
+                                                                 publishView.modalPresentationStyle = 0;
                                                                  [weakSelf presentViewController:publishView animated:YES completion:^{
                                                                      [weakSelf.navigationController popToRootViewControllerAnimated:NO];
                                                                  }];
@@ -657,10 +696,8 @@
                                                                  weakSelf.liveDescTextField.text = @"";
                                                              }
                                                              
-                                                             if (_liveRoom.custom.length > 0) {
-                                                                 weakSelf.anchorDescTextField.text = _liveRoom.custom;
-                                                             } else {
-                                                                 weakSelf.anchorDescTextField.text = @"";
+                                                             if (_liveRoom.custom != nil) {
+                                                                 
                                                              }
                                                              
                                                              if (_liveRoom.coverPictureUrl.length > 0) {
@@ -719,5 +756,8 @@
         _mainView.contentOffset = point;
     }];
 }
-
+- (BOOL)textFieldShouldReturn:(UITextField *)aTextfield {
+     [aTextfield resignFirstResponder];//关闭键盘
+    return YES;
+}
 @end

@@ -45,6 +45,26 @@
 #define kRequestLiveroomsUrl(id) [NSString stringWithFormat:@"%@/%@/liverooms/%@", kDefaultDomain, kAppKeyForDomain, id]
 
 /*
+ Post request 更新直播间状态/直播中
+ */
+#define kRequestLiveroomsStatusOngoingUrl(liveroomid,username) [NSString stringWithFormat:@"%@/liverooms/%@/users/%@/ongoing", kDefaultDomain, liveroomid, username]
+
+/*
+ Post request 更新直播间状态/未直播
+ */
+#define kRequestLiveroomsStatusOfflineUrl(liveroomid,username) [NSString stringWithFormat:@"%@/liverooms/%@/users/%@/offline", kDefaultDomain, liveroomid, username]
+
+/*
+ Get request 获取直播间详情
+ */
+#define kRequestFetchLiveroomsDetailUrl(liveroomid) [NSString stringWithFormat:@"%@/liverooms/%@", kDefaultDomain, liveroomid]
+
+/*
+ Put request 修改直播间详情
+ */
+#define kRequestUpdateLiveroomsDetailUrl(liveroomid) [NSString stringWithFormat:@"%@/liverooms/%@", kDefaultDomain, liveroomid]
+
+/*
  GET/PUT request   获取直播间状态
  */
 #define kRequestStatusLiveroomsUrl(id) [NSString stringWithFormat:@"%@/%@/liverooms/%@/status", kDefaultDomain, kAppKeyForDomain, id]
@@ -57,12 +77,14 @@
 /*
  GET request    (分页)获取当前appKey下的直播房间列表
  */
-#define kGetRequestGetLiveroomsPagingUrl(pageNum, pageSize) [NSString stringWithFormat:@"%@/%@/liverooms?pagenum=%ld&pagesize=%ld", kDefaultDomain, kAppKeyForDomain, pageNum, pageSize]
+//#define kGetRequestGetLiveroomsPagingUrl(pageNum, pageSize) [NSString stringWithFormat:@"%@/%@/liverooms?pagenum=%ld&pagesize=%ld", kDefaultDomain, kAppKeyForDomain, pageNum, pageSize]
+#define kGetRequestGetLiverooms(limit, cursor) [NSString stringWithFormat:@"%@/liverooms?limit=%ld&cursor=%@", kDefaultDomain, limit, cursor]
 
 /*
  GET request    获取appkey下的正在直播的直播聊天室列表
  */
-#define kGetRequestGetLiveroomsOngoingUrl(limit, cursor) [NSString stringWithFormat:@"%@/%@/liverooms?ongoing=true&limit=%ld&cursor=%@", kDefaultDomain, kAppKeyForDomain, limit, cursor]
+//#define kGetRequestGetLiveroomsOngoingUrl(limit, cursor) [NSString stringWithFormat:@"%@/%@/liverooms?ongoing=true&limit=%ld&cursor=%@", kDefaultDomain, kAppKeyForDomain, limit, cursor]
+#define kGetRequestGetLiveroomsOngoingUrl(limit, cursor) [NSString stringWithFormat:@"%@/liverooms/ongoing?limit=%ld&cursor=%@", kDefaultDomain, limit, cursor]
 
 /*
  GET request    获取某个具体直播房间的详情
@@ -77,7 +99,7 @@
 /*
  POST request   上传文件
  */
-#define kPostRequestUploadFileUrl [NSString stringWithFormat:@"%@/%@/chatfiles", kDefaultDomain, kAppKeyForDomain]
+#define kPostRequestUploadFileUrl [NSString stringWithFormat:@"%@/%@/chatfiles", @"http://a1.easemob.com", kAppKeyForDomain]
 
 /*
  GET/PUT request    统计数量
@@ -93,7 +115,8 @@
 #define kHttpRequestTimeout 60.f
 #define kHttpRequestMaxOperation 5
 
-#define kDefaultDomain @"http://a1.easemob.com"
+//#define kDefaultDomain @"http://a1.easemob.com"
+#define kDefaultDomain @"http://a1.easemob.com/appserver"
 
 static EaseHttpManager *sharedInstance = nil;
 
@@ -155,7 +178,7 @@ static EaseHttpManager *sharedInstance = nil;
             [parameters setObject:aRoom.coverPictureUrl forKey:@"cover_picture_url"];
         }
         
-        if (aRoom.custom.length > 0) {
+        if (aRoom.custom != nil) {
             [parameters setObject:aRoom.custom forKey:@"custom"];
         }
         
@@ -188,43 +211,96 @@ static EaseHttpManager *sharedInstance = nil;
 }
 
 - (void)modifyLiveRoomWithRoom:(EaseLiveRoom*)aRoom
-                    completion:(void (^)(EaseLiveRoom *room, BOOL success))aCompletion
+                    completion:(void (^)(EaseLiveRoom *aRoom, BOOL success))aCompletion
 {
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-    NSMutableDictionary *liveroom = [NSMutableDictionary dictionary];
+    //NSMutableDictionary *liveroom = [NSMutableDictionary dictionary];
     if (aRoom) {
         if (aRoom.title.length > 0) {
-            [liveroom setObject:aRoom.title forKey:@"title"];
+            [parameters setObject:aRoom.title forKey:@"name"];
         }
         
         if (aRoom.desc.length > 0) {
-            [liveroom setObject:aRoom.desc forKey:@"desc"];
+            [parameters setObject:aRoom.desc forKey:@"description"];
         }
         
-        if (aRoom.custom.length > 0) {
-            [liveroom setObject:aRoom.custom forKey:@"custom"];
+        if (aRoom.custom != nil) {
+            [parameters setObject:aRoom.custom forKey:@"ext"];
         }
         
         if (aRoom.coverPictureUrl.length > 0) {
-            [liveroom setObject:aRoom.coverPictureUrl forKey:@"cover_picture_url"];
+            [parameters setObject:aRoom.coverPictureUrl forKey:@"cover"];
         }
         
+        [parameters setObject:@5000 forKey:@"maxuseres"];
+        
         if (aRoom.needPassword) {
-            [liveroom setObject:@(YES) forKey:@"need_password"];
+            [parameters setObject:@(YES) forKey:@"need_password"];
             if (aRoom.password.length > 0) {
-                [liveroom setObject:aRoom.password forKey:@"password"];
+                [parameters setObject:aRoom.password forKey:@"password"];
             }
         }
     }
-    [parameters setObject:liveroom forKey:@"liveroom"];
+    //[parameters setObject:liveroom forKey:@"liveroom"];
     
-    [self _doPutRequestWithPath:kRequestLiveroomsUrl(aRoom.roomId) parameters:parameters completion:^(id responseObject, NSError *error) {
+    [self _doPutRequestWithPath:kRequestUpdateLiveroomsDetailUrl(aRoom.roomId) parameters:parameters completion:^(id responseObject, NSError *error) {
         if (aCompletion) {
             EaseLiveRoom *room = nil;
             BOOL ret = NO;
             if (!error) {
                 if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
-                    room = [[EaseLiveRoom alloc] initWithParameter:@{@"liveroom_id":aRoom.roomId,@"chatroom_id":aRoom.chatroomId}];
+                    room = [[EaseLiveRoom alloc] initWithParameter:responseObject];
+                    ret = YES;
+                }
+            }
+            aCompletion(room, ret);
+        }
+    }];
+}
+
+- (void)fetchLiveroomDetail:(NSString *)roomId completion:(void (^)(EaseLiveRoom *room, BOOL success))aCompletion
+{
+    [self _doGetRequestWithPath:kRequestFetchLiveroomsDetailUrl(roomId) parameters:nil completion:^(id responseObject, NSError *error) {
+        if (aCompletion) {
+            EaseLiveRoom *room = nil;
+            BOOL ret = NO;
+            if (!error) {
+                if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+                    room = [[EaseLiveRoom alloc] initWithParameter:responseObject];
+                    ret = YES;
+                }
+            }
+            aCompletion(room, ret);
+        }
+    }];
+}
+
+- (void)modifyLiveroomStatusWithOngoing:(EaseLiveRoom *)room completion:(void (^)(EaseLiveRoom *room, BOOL success))aCompletion
+{
+    [self _doPostRequestWithPath:kRequestLiveroomsStatusOngoingUrl(room.roomId,room.anchor) parameters:nil completion:^(id responseObject, NSError *error) {
+        if (aCompletion) {
+            EaseLiveRoom *room = nil;
+            BOOL ret = NO;
+            if (!error) {
+                if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+                    room = [[EaseLiveRoom alloc] initWithParameter:responseObject];
+                    ret = YES;
+                }
+            }
+            aCompletion(room, ret);
+        }
+    }];
+}
+
+- (void)modifyLiveroomStatusWithOffline:(EaseLiveRoom *)room completion:(void (^)(EaseLiveRoom *room, BOOL success))aCompletion
+{
+    [self _doPostRequestWithPath:kRequestLiveroomsStatusOfflineUrl(room.roomId,room.anchor) parameters:nil completion:^(id responseObject, NSError *error) {
+        if (aCompletion) {
+            EaseLiveRoom *room = nil;
+            BOOL ret = NO;
+            if (!error) {
+                if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+                    room = [[EaseLiveRoom alloc] initWithParameter:responseObject];
                     ret = YES;
                 }
             }
@@ -274,7 +350,7 @@ static EaseHttpManager *sharedInstance = nil;
         }
     }];
 }
-
+/*
 - (void)fetchLiveRoomsWithPage:(NSInteger)aPage
                       pagesize:(NSInteger)aPageSize
                     completion:(void (^)(NSArray *roomList, NSError *error))aCompletion
@@ -301,6 +377,44 @@ static EaseHttpManager *sharedInstance = nil;
             aCompletion(result, error);
         }
     }];
+}*/
+
+- (void)fetchLiveRoomsWithCursor:(NSString*)aCursor
+                                  limit:(NSInteger)aLimit
+                             completion:(void (^)(EMCursorResult *result, BOOL success))aCompletion
+{
+    NSString *cursor = @"";
+    if (aCursor.length > 0) {
+        cursor = [aCursor copy];
+    }
+    [self _doGetRequestWithPath:kGetRequestGetLiverooms((long)aLimit, cursor) parameters:nil completion:^(id responseObject, NSError *error) {
+        if (aCompletion) {
+            NSMutableArray *array = nil;
+            NSString *cursor = nil;
+            EMCursorResult *result = nil;
+            BOOL ret = NO;
+            if (!error) {
+                if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+                    if ([responseObject objectForKey:@"entities"]) {
+                        NSArray *data = [responseObject objectForKey:@"entities"];
+                        array = [[NSMutableArray alloc] init];
+                        if ([data count] > 0) {
+                            for (NSDictionary *dic in data) {
+                                if (dic && [dic isKindOfClass:[NSDictionary class]]) {
+                                    EaseLiveRoom *room = [[EaseLiveRoom alloc] initWithParameter:dic];
+                                    [array addObject:room];
+                                }
+                            }
+                        }
+                    }
+                    cursor = [responseObject objectForKey:@"cursor"];
+                    result = [EMCursorResult cursorResultWithList:array andCursor:cursor];
+                    ret = YES;
+                }
+            }
+            aCompletion(result, ret);
+        }
+    }];
 }
 
 - (void)fetchLiveRoomsOngoingWithCursor:(NSString*)aCursor
@@ -319,8 +433,8 @@ static EaseHttpManager *sharedInstance = nil;
             BOOL ret = NO;
             if (!error) {
                 if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
-                    if ([responseObject objectForKey:@"data"]) {
-                        NSArray *data = [responseObject objectForKey:@"data"];
+                    if ([responseObject objectForKey:@"entities"]) {
+                        NSArray *data = [responseObject objectForKey:@"entities"];
                         array = [[NSMutableArray alloc] init];
                         if ([data count] > 0) {
                             for (NSDictionary *dic in data) {
@@ -365,6 +479,7 @@ static EaseHttpManager *sharedInstance = nil;
     }];
 }
 
+/*
 - (void)modifyLiveRoomStatusWithRoomId:(NSString*)aRoomId
                                 status:(EaseLiveSessionStatus)aStatus
                             completion:(void (^)(BOOL success))aCompletion
@@ -382,7 +497,7 @@ static EaseHttpManager *sharedInstance = nil;
             aCompletion(ret);
         }
     }];
-}
+}*/
 
 - (void)createLiveSessionWithRoom:(EaseLiveRoom*)aRoom
                        completion:(void (^)(EaseLiveRoom *room, BOOL success))aCompletion
@@ -401,7 +516,7 @@ static EaseHttpManager *sharedInstance = nil;
             [parameters setObject:aRoom.desc forKey:@"desc"];
         }
         
-        if (aRoom.custom.length > 0) {
+        if (aRoom.custom != nil) {
             [parameters setObject:aRoom.custom forKey:@"custom"];
         }
         
@@ -709,19 +824,17 @@ static EaseHttpManager *sharedInstance = nil;
                    completion:(void (^)(id responseObject, NSError *error))completion
 {
     [self _setHeaderToken];
-    [_sessionManager GET:path
-              parameters:parameters
-                progress:^(NSProgress * _Nonnull downloadProgress) {
-                  
-              } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                  if (completion) {
-                      completion(responseObject, nil);
-                  }
-              } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                  if (completion) {
-                      completion(nil, error);
-                  }
-              }];
+    
+    [_sessionManager GET:path parameters:parameters headers:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (completion) {
+            completion(responseObject, nil);
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if (completion) {
+            completion(nil, error);
+        }
+    }];
 }
 
 - (void)_doPutRequestWithPath:(NSString*)path
@@ -729,17 +842,16 @@ static EaseHttpManager *sharedInstance = nil;
                    completion:(void (^)(id responseObject, NSError *error))completion
 {
     [self _setHeaderToken];
-    [_sessionManager PUT:path
-              parameters:parameters
-                 success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                     if (completion) {
-                         completion(responseObject, nil);
-                     }
-                 } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                     if (completion) {
-                         completion(nil, error);
-                     }
-                 }];
+    
+    [_sessionManager PUT:path parameters:parameters headers:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (completion) {
+            completion(responseObject, nil);
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if (completion) {
+            completion(nil, error);
+        }
+    }];
 }
 
 - (void)_doPostRequestWithPath:(NSString*)path
@@ -747,18 +859,16 @@ static EaseHttpManager *sharedInstance = nil;
                     completion:(void (^)(id responseObject, NSError *error))completion
 {
     [self _setHeaderToken];
-    [_sessionManager POST:path
-               parameters:parameters
-                 progress:nil
-                  success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                     if (completion) {
-                         completion(responseObject, nil);
-                     }
-                 } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                     if (completion) {
-                         completion(nil, error);
-                     }
-                 }];
+    
+    [_sessionManager POST:path parameters:parameters headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (completion) {
+            completion(responseObject, nil);
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if (completion) {
+            completion(nil, error);
+        }
+    }];
 }
 
 - (void)_doDeleteRequestWithPath:(NSString*)path
@@ -766,17 +876,16 @@ static EaseHttpManager *sharedInstance = nil;
                       completion:(void (^)(id responseObject, NSError *error))completion
 {
     [self _setHeaderToken];
-    [_sessionManager DELETE:path
-                 parameters:parameters
-                    success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                        if (completion) {
-                            completion(responseObject, nil);
-                        }
-                    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                        if (completion) {
-                            completion(nil, error);
-                        }
-                    }];
+    
+    [_sessionManager DELETE:path parameters:parameters headers:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (completion) {
+            completion(responseObject, nil);
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if (completion) {
+            completion(nil, error);
+        }
+    }];
 }
 
 - (void)_doUploadRequestWithPath:(NSString*)path
@@ -785,27 +894,26 @@ static EaseHttpManager *sharedInstance = nil;
                       completion:(void (^)(id responseObject, NSError *error))completion
 {
     [self _setHeaderToken];
-    [_sessionManager POST:path
-               parameters:parameters
-constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-    [formData appendPartWithFileData:data name:@"file" fileName:[NSString stringWithFormat:@"%d.jpeg", (int)([[NSDate date] timeIntervalSince1970]*1000)] mimeType:@"image/jpeg"];
-} progress:^(NSProgress * _Nonnull uploadProgress) {
     
-} success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-    if (completion) {
-        completion(responseObject, nil);
-    }
-} failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-    if (completion) {
-        completion(nil, error);
-    }
-}];
+    [_sessionManager POST:path parameters:parameters headers:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        [formData appendPartWithFileData:data name:@"file" fileName:[NSString stringWithFormat:@"%d.jpeg", (int)([[NSDate date] timeIntervalSince1970]*1000)] mimeType:@"image/jpeg"];
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (completion) {
+            completion(responseObject, nil);
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if (completion) {
+            completion(nil, error);
+        }
+    }];
     
 }
 
 - (void)_setHeaderToken
 {
-    [[_sessionManager requestSerializer] setValue:[NSString stringWithFormat:@"Bearer %@", [self _getUserToken]] forHTTPHeaderField:@"Authorization"];
+    [[_sessionManager requestSerializer] setValue:[NSString stringWithFormat:@"Bearer %@", [EMClient sharedClient].accessUserToken] forHTTPHeaderField:@"Authorization"];
 }
 
 - (NSString*)_getUserToken

@@ -1,6 +1,5 @@
 //
 //  EaseBarrageFlyView.m
-//  UCloudMediaRecorderDemo
 //
 //  Created by EaseMob on 16/6/13.
 //  Copyright © 2016年 zmw. All rights reserved.
@@ -8,8 +7,9 @@
 
 #import "EaseBarrageFlyView.h"
 
-#define kLabelDefaultWidth 125.f
-#define kLabelDefaultHeight 25.f
+#define kLabelDefaultMinWidth 60.5f
+#define kLabelDefaultMaxWidth [[UIScreen mainScreen] bounds].size.width - 10.5
+#define kLabelDefaultHeight 21.f
 
 @interface EaseBarrageFlyView ()
 {
@@ -29,14 +29,15 @@
 {
     self = [super init];
     if (self) {
-        int flag = arc4random()%140;
-        [self setFrame:CGRectMake(0, flag, 200, 80)];
+        int flag = arc4random()%140 + 80;
+        [self setFrame:CGRectMake(0, flag, kLabelDefaultMaxWidth, 80)];
         
         _message = messge;
-        [self addSubview:self.bgView];
-        [self.bgView addSubview:self.headImageView];
-        [self.bgView addSubview:self.nameLabel];
-        [self.bgView addSubview:self.giftLabel];
+        //[self addSubview:self.bgView];
+        //[self.bgView addSubview:self.headImageView];
+        //[self.bgView addSubview:self.nameLabel];
+        //[self.bgView addSubview:self.giftLabel];
+        [self addSubview:self.giftLabel];
     }
     return self;
 }
@@ -44,7 +45,7 @@
 - (UILabel*)nameLabel
 {
     if (_nameLabel == nil) {
-        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.headImageView.frame) + 5, 0, kLabelDefaultWidth, kLabelDefaultHeight)];
+        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.headImageView.frame) + 5, 0, kLabelDefaultMinWidth, kLabelDefaultHeight)];
         if (_message) {
             NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:_message.from attributes:nil];
             NSDictionary *attributes = @{NSFontAttributeName :[UIFont systemFontOfSize:12.0f]};
@@ -59,13 +60,24 @@
 - (UILabel*)giftLabel
 {
     if (_giftLabel == nil) {
-        _giftLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.headImageView.frame) + 5, CGRectGetMaxY(self.nameLabel.frame), kLabelDefaultWidth, kLabelDefaultHeight)];
+        CGFloat width = kLabelDefaultMinWidth;
+        EMCustomMessageBody *body = (EMCustomMessageBody*)_message.body;
+        NSDictionary *attributes = @{NSFontAttributeName:[UIFont systemFontOfSize:15.0f],};
+        CGSize textSize = [[body.ext objectForKey:@"txt"] boundingRectWithSize:CGSizeMake(kLabelDefaultMaxWidth, kLabelDefaultHeight) options:NSStringDrawingTruncatesLastVisibleLine attributes:attributes context:nil].size;
+        if (textSize.width >= kLabelDefaultMaxWidth) {
+            width = kLabelDefaultMaxWidth;
+        } else if (textSize.width < 50.0){
+            width = kLabelDefaultMinWidth;
+        } else {
+            width = textSize.width + 10.5;
+        }
+        _giftLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, width, kLabelDefaultHeight)];
+        _giftLabel.textAlignment = NSTextAlignmentCenter;
         _giftLabel.textColor = [UIColor whiteColor];
-        
-        EMTextMessageBody *body = (EMTextMessageBody*)_message.body;
-        _giftLabel.text = body.text;
-        NSLog(@"%@",_message.ext);
-        _giftLabel.font = [UIFont systemFontOfSize:12.0f];
+        _giftLabel.layer.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.2].CGColor;
+        _giftLabel.layer.cornerRadius = 10.5;
+        _giftLabel.text = [body.ext objectForKey:@"txt"];
+        _giftLabel.font = [UIFont systemFontOfSize:16.0f];
     }
     return _giftLabel;
 }
@@ -76,7 +88,7 @@
         _bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 30, 200, 50)];
         _bgView.layer.masksToBounds = YES;
         _bgView.layer.cornerRadius = CGRectGetHeight(_bgView.frame)/2;
-        _bgView.backgroundColor = RGBACOLOR(0, 0, 0, 0.5);
+        _bgView.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.2];
     }
     return _bgView;
 }
@@ -96,36 +108,24 @@
 - (void)animateInView:(UIView *)view
 {
     CGRect frame = self.frame;
-    frame.origin.x = CGRectGetMaxX(view.frame) + CGRectGetWidth(frame);
+    frame.origin.x = CGRectGetMaxX(view.frame) + CGRectGetWidth(_giftLabel.frame);
     self.frame = frame;
     
-    self.alpha = 0;
+    self.alpha = 1;
     __weak typeof(self) weakSelf = self;
     
     dispatch_block_t animateStepOneBlock = ^{
         CGRect frame = weakSelf.frame;
-        frame.origin.x = CGRectGetMaxX(view.frame)/2;
+        frame.origin.x = -CGRectGetWidth(_giftLabel.frame);
         weakSelf.frame = frame;
         weakSelf.alpha = 1;
     };
     
-    dispatch_block_t animateStepTowBlock = ^{
-        CGRect frame = weakSelf.frame;
-        frame.origin.x = -CGRectGetWidth(frame);
-        weakSelf.frame = frame;
-        weakSelf.alpha = 0;
-    };
-    
-    [UIView animateWithDuration:2.0 delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
+    [UIView animateWithDuration:5 delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
         animateStepOneBlock();
     } completion:^(BOOL finished) {
-        [UIView animateWithDuration:2.0 delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
-            animateStepTowBlock();
-        } completion:^(BOOL finished) {
-            [weakSelf removeFromSuperview];
-        }];
+        [weakSelf removeFromSuperview];
     }];
 }
-
 
 @end

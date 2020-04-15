@@ -29,7 +29,6 @@
     if (self) {
         self.backgroundColor = [UIColor clearColor];
         _headerImage = [[UIImageView alloc] init];
-        _headerImage.image = [UIImage imageNamed:@"live_default_user"];
         _headerImage.frame = CGRectMake(0, 0, CGRectGetHeight(self.frame), CGRectGetHeight(self.frame));
         _headerImage.layer.cornerRadius = CGRectGetHeight(self.frame)/2;
         _headerImage.layer.masksToBounds = YES;
@@ -52,14 +51,16 @@
 }
 
 @property (nonatomic, strong) UICollectionView *collectionView;
-@property (nonatomic, strong) EaseLiveCastView *liveCastView;
 @property (nonatomic, strong) NSMutableArray *dataArray;
-
 @property (nonatomic, assign) NSInteger occupantsCount;
+@property (nonatomic, strong) UIButton *numberBtn;
 
 @end
 
 @implementation EaseLiveHeaderListView
+{
+    EMChatroom *_chatroom;
+}
 
 - (instancetype)initWithFrame:(CGRect)frame model:(EasePublishModel*)model
 {
@@ -79,6 +80,7 @@
         _room = room;
         [self addSubview:self.collectionView];
         [self addSubview:self.liveCastView];
+        [self addSubview:self.numberBtn];
     }
     return self;
 }
@@ -102,7 +104,7 @@
         if (KScreenWidth > 320) {
             width = 170;
         }
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(self.width - width - 10.f, 0, width, CGRectGetHeight(self.frame)) collectionViewLayout:flowLayout];
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(width, 0, self.width - width - 65, CGRectGetHeight(self.frame)) collectionViewLayout:flowLayout];
         _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         
         [_collectionView registerClass:[EaseLiveHeaderCell class] forCellWithReuseIdentifier:kCollectionIdentifier];
@@ -121,12 +123,47 @@
     return _collectionView;
 }
 
+
 - (EaseLiveCastView*)liveCastView
 {
     if (_liveCastView == nil) {
-        _liveCastView = [[EaseLiveCastView alloc] initWithFrame:CGRectMake(10, 0, 120.f, 30.f) room:_room];
+        _liveCastView = [[EaseLiveCastView alloc] initWithFrame:CGRectMake(10, 0, 120.f, 40.f) room:_room];
     }
     return _liveCastView;
+}
+
+- (void)setLiveCastDelegate
+{
+    self.liveCastView.delegate = self.delegate;
+}
+
+- (UIButton*)numberBtn
+{
+    if (_numberBtn == nil) {
+        _numberBtn = [[UIButton alloc] init];
+        _numberBtn.frame = CGRectMake(self.frame.size.width - 60.f, 5.f, 50.f, 30.f);
+        _numberBtn.titleLabel.font = [UIFont systemFontOfSize:14.f];
+        _numberBtn.titleLabel.textColor = [UIColor whiteColor];
+        _numberBtn.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.6];
+        //[_numberBtn setTitle:[NSString stringWithFormat:@"%ld人",(long)_room.currentUserCount] forState:UIControlStateNormal];
+        _numberBtn.layer.cornerRadius = 15.f;
+        [_numberBtn addTarget:self action:@selector(memberListAction) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _numberBtn;
+}
+
+#pragma Action
+
+- (void)memberListAction
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectMemberListButton:)]) {
+        BOOL isOwner = NO;
+        if (_chatroom && _chatroom.permissionType == EMChatroomPermissionTypeOwner) {
+            isOwner = YES;
+        }
+        [self.delegate didSelectMemberListButton:isOwner];
+        _numberBtn.selected = !_numberBtn.selected;
+    }
 }
 
 #pragma mark - public
@@ -136,8 +173,7 @@
     [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:chatroomId
                                                                        completion:^(EMChatroom *aChatroom, EMError *aError) {
                                                                            if (!aError) {
-                                                                               weakself.occupantsCount = aChatroom.occupantsCount;
-                                                                               [weakself.liveCastView setNumberOfChatroom:weakself.occupantsCount];
+                                                                               _chatroom = aChatroom;
                                                                            }
                                                                        }];
     
@@ -146,6 +182,8 @@
                                                                       pageSize:10
                                                                     completion:^(EMCursorResult *aResult, EMError *aError) {
                                                                         if (!aError) {
+                                                                            weakself.occupantsCount = [aResult.list count];
+                                                                            [weakself.numberBtn setTitle:[NSString stringWithFormat:@"%ld%@",(long)weakself.occupantsCount ,NSLocalizedString(@"profile.people", @"")] forState:UIControlStateNormal];
                                                                             [weakself.dataArray addObjectsFromArray:aResult.list];
                                                                             [weakself.collectionView reloadData];
                                                                         }
@@ -162,7 +200,7 @@
     }
     [self.dataArray insertObject:[username copy] atIndex:0];
     self.occupantsCount++;
-    [self.liveCastView setNumberOfChatroom:self.occupantsCount];
+    [_numberBtn setTitle:[NSString stringWithFormat:@"%ld人",(long)self.occupantsCount] forState:UIControlStateNormal];
     [self.collectionView reloadData];
 }
 
@@ -175,7 +213,10 @@
         }
     }
     self.occupantsCount--;
-    [self.liveCastView setNumberOfChatroom:self.occupantsCount];
+    if (self.occupantsCount < 0) {
+        self.occupantsCount = 0;
+    }
+    [_numberBtn setTitle:[NSString stringWithFormat:@"%ld人",(long)self.occupantsCount] forState:UIControlStateNormal];
     [self.collectionView reloadData];
 }
 
@@ -194,7 +235,8 @@
 {
     EaseLiveHeaderCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCollectionIdentifier forIndexPath:indexPath];
     
-    [cell setHeadImage:[UIImage imageNamed:@"live_default_user"]];
+    int random = (arc4random() % 7) + 1;
+    [cell setHeadImage:[UIImage imageNamed:[NSString stringWithFormat:@"avatat_%d",random]]];
     return cell;
 }
 
@@ -250,10 +292,11 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    /*
     NSString *username = [self.dataArray objectAtIndex:indexPath.row];
     if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectHeaderWithUsername:)]) {
         [self.delegate didSelectHeaderWithUsername:username];
-    }
+    }*/
 }
 
 -(BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath

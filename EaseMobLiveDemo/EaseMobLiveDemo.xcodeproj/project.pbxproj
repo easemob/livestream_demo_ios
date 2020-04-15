@@ -7,13 +7,119 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C1237E423FA445F00C4135B /* EaseAnchorCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C1237E323FA445F00C4135B /* EaseAnchorCardView.m */; };
+		3C1237E723FB9B1200C4135B /* EaseLiveGiftHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C1237E623FB9B1200C4135B /* EaseLiveGiftHelper.m */; };
+		3C12380E23FD1CA500C4135B /* EaseGiftConfirmView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C12380D23FD1CA500C4135B /* EaseGiftConfirmView.m */; };
+		3C12381123FD2EED00C4135B /* EaseKeyBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C12381023FD2EED00C4135B /* EaseKeyBoardView.m */; };
+		3C12381423FD30E000C4135B /* EaseCustomKeyBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C12381323FD30E000C4135B /* EaseCustomKeyBoardView.m */; };
+		3C1238892406839700C4135B /* EaseDefaultDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C1238882406839700C4135B /* EaseDefaultDataHelper.m */; };
+		3C1238AA2408C97300C4135B /* Zapfino.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3C1238A92408C97300C4135B /* Zapfino.ttf */; };
+		3C27576423F293A4004DF2C3 /* EaseSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C27576323F293A4004DF2C3 /* EaseSettingsViewController.m */; };
+		3C44F438240BE51600445129 /* JPGiftModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C44F42B240BE51600445129 /* JPGiftModel.m */; };
+		3C44F439240BE51600445129 /* JPGiftCountLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C44F42C240BE51600445129 /* JPGiftCountLabel.m */; };
+		3C44F43C240BE51600445129 /* JPGiftShowManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C44F430240BE51600445129 /* JPGiftShowManager.m */; };
+		3C44F43D240BE51600445129 /* JPGiftShowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C44F431240BE51600445129 /* JPGiftShowView.m */; };
+		3C44F43F240BE51600445129 /* JPGiftCellModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C44F435240BE51600445129 /* JPGiftCellModel.m */; };
+		3C44F440240BE51600445129 /* JPGiftOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C44F436240BE51600445129 /* JPGiftOperation.m */; };
+		3C44F44A240CB0E700445129 /* X@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C44F447240CB0E600445129 /* X@3x.png */; };
+		3C44F44B240CB0E700445129 /* X.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C44F448240CB0E700445129 /* X.png */; };
+		3C44F44C240CB0E700445129 /* X@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C44F449240CB0E700445129 /* X@2x.png */; };
+		3C44F44F240CF0C100445129 /* EaseCustomSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C44F44E240CF0C100445129 /* EaseCustomSwitch.m */; };
+		3C70A160241A654E00A5185F /* EaseCustomMessageHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C70A15F241A654E00A5185F /* EaseCustomMessageHelper.m */; };
+		3C70A163241B2C4E00A5185F /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D23E252D1CE0379E007506CB /* ImageIO.framework */; };
+		3C72AD65240F8E2C007BC99F /* UIViewController+HUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C72AD64240F8E2C007BC99F /* UIViewController+HUD.m */; };
+		3C72AD68240F9431007BC99F /* EaseEmojiHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C72AD67240F9431007BC99F /* EaseEmojiHelper.m */; };
+		3C72AD6C240F97CA007BC99F /* EaseEmoticonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C72AD6B240F97CA007BC99F /* EaseEmoticonView.m */; };
+		3C72AD6F240F9804007BC99F /* EMEmoticonGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C72AD6E240F9804007BC99F /* EMEmoticonGroup.m */; };
+		3C8AD50E24127AE3002B6464 /* EaseGiftListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8AD50D24127AE2002B6464 /* EaseGiftListView.m */; };
+		3C8AD5152412AD41002B6464 /* EaseTransitionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8AD5142412AD41002B6464 /* EaseTransitionViewController.m */; };
+		3C9F89EB240E3C3C00653B2F /* EaseAudienceBehaviorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C9F89EA240E3C3C00653B2F /* EaseAudienceBehaviorView.m */; };
+		3CCF86C7241F2C7D007570EB /* default_back_image@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF86C6241F2C7D007570EB /* default_back_image@2x.png */; };
+		3CCF86C9241F2C8D007570EB /* default_back_image@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF86C8241F2C8D007570EB /* default_back_image@3x.png */; };
+		3CCF86CC241F3379007570EB /* EaseFinishLiveView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CCF86CB241F3379007570EB /* EaseFinishLiveView.m */; };
+		3CCF86EF2420DE98007570EB /* ic_chat@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF86D92420DE91007570EB /* ic_chat@3x.png */; };
+		3CCF86F02420DE98007570EB /* ic_exit@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF86DA2420DE92007570EB /* ic_exit@3x.png */; };
+		3CCF86F12420DE98007570EB /* avatat_5@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF86DB2420DE92007570EB /* avatat_5@3x.png */; };
+		3CCF86F22420DE98007570EB /* attention@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF86DC2420DE92007570EB /* attention@3x.png */; };
+		3CCF86F32420DE98007570EB /* avatat_4@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF86DD2420DE92007570EB /* avatat_4@3x.png */; };
+		3CCF86F62420DE98007570EB /* ic_Gift@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF86E02420DE94007570EB /* ic_Gift@3x.png */; };
+		3CCF86F72420DE98007570EB /* avatat_6@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF86E12420DE94007570EB /* avatat_6@3x.png */; };
+		3CCF86F82420DE98007570EB /* avatat_2@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF86E22420DE94007570EB /* avatat_2@3x.png */; };
+		3CCF86F92420DE98007570EB /* avatat_3@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF86E32420DE94007570EB /* avatat_3@3x.png */; };
+		3CCF86FA2420DE98007570EB /* backPic@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF86E42420DE95007570EB /* backPic@3x.png */; };
+		3CCF86FB2420DE98007570EB /* avatat_7@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF86E52420DE95007570EB /* avatat_7@3x.png */; };
+		3CCF86FD2420DE98007570EB /* barrage@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF86E72420DE96007570EB /* barrage@3x.png */; };
+		3CCF86FE2420DE98007570EB /* icon-enter@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF86E82420DE96007570EB /* icon-enter@3x.png */; };
+		3CCF87002420DE98007570EB /* icon-backAction@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF86EA2420DE97007570EB /* icon-backAction@3x.png */; };
+		3CCF87022420DE98007570EB /* default_anchor_avatar@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF86EC2420DE98007570EB /* default_anchor_avatar@3x.png */; };
+		3CCF870B2420DEE0007570EB /* gift.bouquet@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87032420DEDD007570EB /* gift.bouquet@3x.png */; };
+		3CCF870C2420DEE0007570EB /* gift.balloons@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87042420DEDE007570EB /* gift.balloons@3x.png */; };
+		3CCF870D2420DEE0007570EB /* gift.wishs_come_true@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87052420DEDE007570EB /* gift.wishs_come_true@3x.png */; };
+		3CCF870E2420DEE0007570EB /* gift.rose@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87062420DEDE007570EB /* gift.rose@3x.png */; };
+		3CCF870F2420DEE0007570EB /* gift.box@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87072420DEDF007570EB /* gift.box@3x.png */; };
+		3CCF87102420DEE0007570EB /* gift.cake@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87082420DEDF007570EB /* gift.cake@3x.png */; };
+		3CCF87112420DEE0007570EB /* gift.rings@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87092420DEDF007570EB /* gift.rings@3x.png */; };
+		3CCF87122420DEE0007570EB /* gift.dog@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF870A2420DEE0007570EB /* gift.dog@3x.png */; };
+		3CCF872A2420DF34007570EB /* avatat_7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87132420DF2C007570EB /* avatat_7@2x.png */; };
+		3CCF872B2420DF34007570EB /* attention@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87142420DF2D007570EB /* attention@2x.png */; };
+		3CCF872C2420DF34007570EB /* ic_exit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87152420DF2D007570EB /* ic_exit@2x.png */; };
+		3CCF872D2420DF34007570EB /* backPic@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87162420DF2D007570EB /* backPic@2x.png */; };
+		3CCF87312420DF34007570EB /* icon-enter@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF871A2420DF2E007570EB /* icon-enter@2x.png */; };
+		3CCF87322420DF34007570EB /* default_anchor_avatar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF871B2420DF2F007570EB /* default_anchor_avatar@2x.png */; };
+		3CCF87332420DF34007570EB /* avatat_2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF871C2420DF2F007570EB /* avatat_2@2x.png */; };
+		3CCF87342420DF34007570EB /* avatat_1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF871D2420DF2F007570EB /* avatat_1@2x.png */; };
+		3CCF87352420DF34007570EB /* avatat_3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF871E2420DF30007570EB /* avatat_3@2x.png */; };
+		3CCF87362420DF34007570EB /* ic_Gift@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF871F2420DF30007570EB /* ic_Gift@2x.png */; };
+		3CCF87372420DF34007570EB /* avatat_5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87202420DF31007570EB /* avatat_5@2x.png */; };
+		3CCF87382420DF34007570EB /* icon-backAction@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87212420DF31007570EB /* icon-backAction@2x.png */; };
+		3CCF873A2420DF34007570EB /* ic_chat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87232420DF32007570EB /* ic_chat@2x.png */; };
+		3CCF873B2420DF34007570EB /* avatat_4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87242420DF32007570EB /* avatat_4@2x.png */; };
+		3CCF873C2420DF34007570EB /* avatat_6@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87252420DF32007570EB /* avatat_6@2x.png */; };
+		3CCF873F2420DF34007570EB /* barrage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87282420DF33007570EB /* barrage@2x.png */; };
+		3CCF87472420DF56007570EB /* icon-liveList-unSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87412420DF54007570EB /* icon-liveList-unSelected@2x.png */; };
+		3CCF87482420DF56007570EB /* icon-setting-unSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87422420DF55007570EB /* icon-setting-unSelected@2x.png */; };
+		3CCF87492420DF56007570EB /* icon-setting-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87432420DF55007570EB /* icon-setting-selected@2x.png */; };
+		3CCF874A2420DF56007570EB /* icon-living@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87442420DF55007570EB /* icon-living@2x.png */; };
+		3CCF874B2420DF56007570EB /* Logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87452420DF56007570EB /* Logo@2x.png */; };
+		3CCF874C2420DF56007570EB /* icon-liveList-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87462420DF56007570EB /* icon-liveList-selected@2x.png */; };
+		3CCF87532420DF76007570EB /* icon-setting-unSelected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF874D2420DF73007570EB /* icon-setting-unSelected@3x.png */; };
+		3CCF87542420DF76007570EB /* icon-setting-selected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF874E2420DF73007570EB /* icon-setting-selected@3x.png */; };
+		3CCF87552420DF76007570EB /* icon-liveList-selected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF874F2420DF74007570EB /* icon-liveList-selected@3x.png */; };
+		3CCF87562420DF76007570EB /* icon-living@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87502420DF75007570EB /* icon-living@3x.png */; };
+		3CCF87572420DF76007570EB /* Logo@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87512420DF75007570EB /* Logo@3x.png */; };
+		3CCF87582420DF76007570EB /* icon-liveList-unSelected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87522420DF75007570EB /* icon-liveList-unSelected@3x.png */; };
+		3CCF875C2420E54F007570EB /* avatat_1@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF875B2420E54E007570EB /* avatat_1@3x.png */; };
+		3CCF87652420E613007570EB /* gift.rose@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF875D2420E610007570EB /* gift.rose@2x.png */; };
+		3CCF87662420E613007570EB /* gift.wishs_come_true@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF875E2420E610007570EB /* gift.wishs_come_true@2x.png */; };
+		3CCF87672420E613007570EB /* gift.box@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF875F2420E610007570EB /* gift.box@2x.png */; };
+		3CCF87682420E613007570EB /* gift.rings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87602420E611007570EB /* gift.rings@2x.png */; };
+		3CCF87692420E613007570EB /* gift.bouquet@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87612420E611007570EB /* gift.bouquet@2x.png */; };
+		3CCF876A2420E613007570EB /* gift.cake@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87622420E611007570EB /* gift.cake@2x.png */; };
+		3CCF876B2420E613007570EB /* gift.dog@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87632420E613007570EB /* gift.dog@2x.png */; };
+		3CCF876C2420E613007570EB /* gift.balloons@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87642420E613007570EB /* gift.balloons@2x.png */; };
+		3CCF87742420ECEF007570EB /* ic_praised@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87732420ECEF007570EB /* ic_praised@3x.png */; };
+		3CCF87762420ECFA007570EB /* ic_praise@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87752420ECF9007570EB /* ic_praise@3x.png */; };
+		3CCF87792420ED0B007570EB /* ic_praised@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87772420ED0A007570EB /* ic_praised@2x.png */; };
+		3CCF877A2420ED0B007570EB /* ic_praise@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87782420ED0A007570EB /* ic_praise@2x.png */; };
+		3CCF877C2420ED3A007570EB /* auidence@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF877B2420ED3A007570EB /* auidence@2x.png */; };
+		3CCF877E2420ED45007570EB /* auidence@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF877D2420ED45007570EB /* auidence@3x.png */; };
+		3CCF87802420ED7E007570EB /* giftrecord@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF877F2420ED7E007570EB /* giftrecord@3x.png */; };
+		3CCF87822420ED8F007570EB /* giftrecord@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87812420ED8F007570EB /* giftrecord@2x.png */; };
+		3CCF87842420ED9D007570EB /* icon-broadcast@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87832420ED9D007570EB /* icon-broadcast@2x.png */; };
+		3CCF87862420EDA7007570EB /* icon-broadcast@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87852420EDA7007570EB /* icon-broadcast@3x.png */; };
+		3CCF87882420EE3C007570EB /* Icons-Plus-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87872420EE3C007570EB /* Icons-Plus-white@2x.png */; };
+		3CCF878C2420EE8B007570EB /* Icons-Plus-white@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF878B2420EE8A007570EB /* Icons-Plus-white@3x.png */; };
+		3CCF87952421FD21007570EB /* EaseAboutHuanxinViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CCF87942421FD21007570EB /* EaseAboutHuanxinViewController.m */; };
+		3CCF879724220457007570EB /* webRefreshButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF879624220456007570EB /* webRefreshButton@2x.png */; };
+		3CCF87992422045F007570EB /* webRefreshButton@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87982422045E007570EB /* webRefreshButton@3x.png */; };
+		3CCF879F24238806007570EB /* huanxin-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF879E24238806007570EB /* huanxin-logo@2x.png */; };
+		3CCF87A124238811007570EB /* huanxin-logo@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CCF87A024238810007570EB /* huanxin-logo@3x.png */; };
 		C68D8F3A512EBB7D55D835D0 /* libPods-EaseMobLiveDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF86793993FB1D45A5254772 /* libPods-EaseMobLiveDemo.a */; };
 		D21C54611E658F8B0019A341 /* EaseAdminView.m in Sources */ = {isa = PBXBuildFile; fileRef = D21C54601E658F8B0019A341 /* EaseAdminView.m */; };
 		D23C12971E6FEED4007C5012 /* EaseLiveRoom.m in Sources */ = {isa = PBXBuildFile; fileRef = D23C12961E6FEED4007C5012 /* EaseLiveRoom.m */; };
 		D23C129A1E6FEF86007C5012 /* EaseLiveSession.m in Sources */ = {isa = PBXBuildFile; fileRef = D23C12991E6FEF86007C5012 /* EaseLiveSession.m */; };
 		D23C12A31E6FFCD6007C5012 /* NSDictionary+SafeValue.m in Sources */ = {isa = PBXBuildFile; fileRef = D23C12A21E6FFCD6007C5012 /* NSDictionary+SafeValue.m */; };
 		D23E252C1CE03775007506CB /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D23E24FF1CE0359C007506CB /* libsqlite3.tbd */; };
-		D23E252E1CE0379E007506CB /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D23E252D1CE0379E007506CB /* ImageIO.framework */; };
 		D23E25321CE0380A007506CB /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D23E25311CE0380A007506CB /* MobileCoreServices.framework */; };
 		D275D7DE1E666C44001BBA61 /* admin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D275D7C51E666C44001BBA61 /* admin@2x.png */; };
 		D275D7DF1E666C44001BBA61 /* back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D275D7C61E666C44001BBA61 /* back@2x.png */; };
@@ -39,43 +145,6 @@
 		D275D7F31E666C44001BBA61 /* open@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = D275D7DB1E666C44001BBA61 /* open@3x.png */; };
 		D275D7F41E666C44001BBA61 /* reversal_camera@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = D275D7DC1E666C44001BBA61 /* reversal_camera@3x.png */; };
 		D275D7F51E666C44001BBA61 /* search@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = D275D7DD1E666C44001BBA61 /* search@3x.png */; };
-		D27B1FE71E4D76BE00318031 /* libUCloudMediaPlayer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D27B1F2E1E4D76BD00318031 /* libUCloudMediaPlayer.a */; };
-		D27B1FE81E4D76BE00318031 /* FilterManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D27B1FE31E4D76BE00318031 /* FilterManager.m */; };
-		D27B1FE91E4D76BE00318031 /* libUCloudMediaRecorder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D27B1FE41E4D76BE00318031 /* libUCloudMediaRecorder.a */; };
-		D27B201A1E4D770F00318031 /* UIWindow+YzdHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = D27B1FED1E4D770F00318031 /* UIWindow+YzdHUD.m */; };
-		D27B201B1E4D770F00318031 /* YzdHUDBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = D27B1FEF1E4D770F00318031 /* YzdHUDBackgroundView.m */; };
-		D27B201C1E4D770F00318031 /* YzdHUDImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = D27B1FF11E4D770F00318031 /* YzdHUDImageView.m */; };
-		D27B201D1E4D770F00318031 /* YzdHUDIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = D27B1FF31E4D770F00318031 /* YzdHUDIndicator.m */; };
-		D27B201E1E4D770F00318031 /* YzdHUDLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = D27B1FF51E4D770F00318031 /* YzdHUDLabel.m */; };
-		D27B201F1E4D770F00318031 /* PlayerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D27B1FF71E4D770F00318031 /* PlayerManager.m */; };
-		D27B20201E4D770F00318031 /* bg_screen_shot_complete.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B1FF91E4D770F00318031 /* bg_screen_shot_complete.png */; };
-		D27B20211E4D770F00318031 /* bg_screen_shot_complete@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B1FFA1E4D770F00318031 /* bg_screen_shot_complete@2x.png */; };
-		D27B20221E4D770F00318031 /* bg_screen_shot_complete@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B1FFB1E4D770F00318031 /* bg_screen_shot_complete@3x.png */; };
-		D27B20231E4D770F00318031 /* bg_screen_shot_frame.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B1FFC1E4D770F00318031 /* bg_screen_shot_frame.png */; };
-		D27B20241E4D770F00318031 /* bright_point.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B1FFD1E4D770F00318031 /* bright_point.png */; };
-		D27B20251E4D770F00318031 /* brightness_bgiphone.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B1FFE1E4D770F00318031 /* brightness_bgiphone.png */; };
-		D27B20261E4D770F00318031 /* brightness_bg~iphone@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B1FFF1E4D770F00318031 /* brightness_bg~iphone@3x.png */; };
-		D27B20271E4D770F00318031 /* danmu.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B20001E4D770F00318031 /* danmu.png */; };
-		D27B20281E4D770F00318031 /* danmu_h.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B20011E4D770F00318031 /* danmu_h.png */; };
-		D27B20291E4D770F00318031 /* ic_screen_shot.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B20021E4D770F00318031 /* ic_screen_shot.png */; };
-		D27B202A1E4D770F00318031 /* icon_bottomview_brightness_button_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B20031E4D770F00318031 /* icon_bottomview_brightness_button_normal.png */; };
-		D27B202B1E4D770F00318031 /* icon_bottomview_brightness_button_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B20041E4D770F00318031 /* icon_bottomview_brightness_button_selected.png */; };
-		D27B202C1E4D770F00318031 /* icon_bottomview_pause_button_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B20051E4D770F00318031 /* icon_bottomview_pause_button_normal.png */; };
-		D27B202D1E4D770F00318031 /* icon_bottomview_play_button_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B20061E4D770F00318031 /* icon_bottomview_play_button_normal.png */; };
-		D27B202E1E4D770F00318031 /* icon_bottomview_volume_button_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B20071E4D770F00318031 /* icon_bottomview_volume_button_normal.png */; };
-		D27B202F1E4D770F00318031 /* icon_bottomview_volume_button_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B20081E4D770F00318031 /* icon_bottomview_volume_button_selected.png */; };
-		D27B20301E4D770F00318031 /* icon_play_status.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B20091E4D770F00318031 /* icon_play_status.png */; };
-		D27B20311E4D770F00318031 /* icon_screen_shot_action.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B200A1E4D770F00318031 /* icon_screen_shot_action.png */; };
-		D27B20321E4D770F00318031 /* icon_topview_left__button_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B200B1E4D770F00318031 /* icon_topview_left__button_selected.png */; };
-		D27B20331E4D770F00318031 /* icon_topview_left_button_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B200C1E4D770F00318031 /* icon_topview_left_button_normal.png */; };
-		D27B20341E4D770F00318031 /* icon_topview_right_button_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B200D1E4D770F00318031 /* icon_topview_right_button_normal.png */; };
-		D27B20351E4D770F00318031 /* icon_topview_right_button_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B200E1E4D770F00318031 /* icon_topview_right_button_selected.png */; };
-		D27B20361E4D770F00318031 /* loading.png in Resources */ = {isa = PBXBuildFile; fileRef = D27B200F1E4D770F00318031 /* loading.png */; };
-		D27B20371E4D770F00318031 /* UCloudBrightnessView.m in Sources */ = {isa = PBXBuildFile; fileRef = D27B20111E4D770F00318031 /* UCloudBrightnessView.m */; };
-		D27B20381E4D770F00318031 /* UCloudLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = D27B20141E4D770F00318031 /* UCloudLoadingView.m */; };
-		D27B20391E4D770F00318031 /* UCloudMediaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D27B20161E4D770F00318031 /* UCloudMediaViewController.m */; };
-		D27B203A1E4D770F00318031 /* UCloudMediaViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D27B20171E4D770F00318031 /* UCloudMediaViewController.xib */; };
-		D27B203B1E4D770F00318031 /* UCloudProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = D27B20191E4D770F00318031 /* UCloudProgressView.m */; };
 		D27B20401E51AAA800318031 /* EaseHttpManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D27B203F1E51AAA800318031 /* EaseHttpManager.m */; };
 		D2CC47191E7FFBED005459DF /* default_image@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D2CC47181E7FFBED005459DF /* default_image@2x.png */; };
 		D2CC471B1E7FFBF5005459DF /* default_image@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = D2CC471A1E7FFBF5005459DF /* default_image@3x.png */; };
@@ -139,9 +208,152 @@
 		E9ED2EE11C0C551900BA59A6 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E9ED2EE01C0C551900BA59A6 /* libz.tbd */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		3C9F89F4240E598100653B2F /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		3C1237E223FA445F00C4135B /* EaseAnchorCardView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseAnchorCardView.h; sourceTree = "<group>"; };
+		3C1237E323FA445F00C4135B /* EaseAnchorCardView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseAnchorCardView.m; sourceTree = "<group>"; };
+		3C1237E523FB9B1200C4135B /* EaseLiveGiftHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseLiveGiftHelper.h; sourceTree = "<group>"; };
+		3C1237E623FB9B1200C4135B /* EaseLiveGiftHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseLiveGiftHelper.m; sourceTree = "<group>"; };
+		3C12380C23FD1CA500C4135B /* EaseGiftConfirmView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseGiftConfirmView.h; sourceTree = "<group>"; };
+		3C12380D23FD1CA500C4135B /* EaseGiftConfirmView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseGiftConfirmView.m; sourceTree = "<group>"; };
+		3C12380F23FD2EED00C4135B /* EaseKeyBoardView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseKeyBoardView.h; sourceTree = "<group>"; };
+		3C12381023FD2EED00C4135B /* EaseKeyBoardView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseKeyBoardView.m; sourceTree = "<group>"; };
+		3C12381223FD30E000C4135B /* EaseCustomKeyBoardView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseCustomKeyBoardView.h; sourceTree = "<group>"; };
+		3C12381323FD30E000C4135B /* EaseCustomKeyBoardView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseCustomKeyBoardView.m; sourceTree = "<group>"; };
+		3C1238872406839700C4135B /* EaseDefaultDataHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseDefaultDataHelper.h; sourceTree = "<group>"; };
+		3C1238882406839700C4135B /* EaseDefaultDataHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseDefaultDataHelper.m; sourceTree = "<group>"; };
+		3C1238A92408C97300C4135B /* Zapfino.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zapfino.ttf; sourceTree = "<group>"; };
+		3C27576223F293A4004DF2C3 /* EaseSettingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseSettingsViewController.h; sourceTree = "<group>"; };
+		3C27576323F293A4004DF2C3 /* EaseSettingsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseSettingsViewController.m; sourceTree = "<group>"; };
+		3C44F427240BE51600445129 /* JPGiftShowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPGiftShowView.h; sourceTree = "<group>"; };
+		3C44F428240BE51600445129 /* JPGiftShowManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPGiftShowManager.h; sourceTree = "<group>"; };
+		3C44F429240BE51600445129 /* JPGiftCellModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPGiftCellModel.h; sourceTree = "<group>"; };
+		3C44F42B240BE51600445129 /* JPGiftModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPGiftModel.m; sourceTree = "<group>"; };
+		3C44F42C240BE51600445129 /* JPGiftCountLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPGiftCountLabel.m; sourceTree = "<group>"; };
+		3C44F42E240BE51600445129 /* JPGiftOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPGiftOperation.h; sourceTree = "<group>"; };
+		3C44F430240BE51600445129 /* JPGiftShowManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPGiftShowManager.m; sourceTree = "<group>"; };
+		3C44F431240BE51600445129 /* JPGiftShowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPGiftShowView.m; sourceTree = "<group>"; };
+		3C44F432240BE51600445129 /* JPGiftCountLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPGiftCountLabel.h; sourceTree = "<group>"; };
+		3C44F433240BE51600445129 /* JPGiftModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPGiftModel.h; sourceTree = "<group>"; };
+		3C44F435240BE51600445129 /* JPGiftCellModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPGiftCellModel.m; sourceTree = "<group>"; };
+		3C44F436240BE51600445129 /* JPGiftOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPGiftOperation.m; sourceTree = "<group>"; };
+		3C44F447240CB0E600445129 /* X@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "X@3x.png"; sourceTree = "<group>"; };
+		3C44F448240CB0E700445129 /* X.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = X.png; sourceTree = "<group>"; };
+		3C44F449240CB0E700445129 /* X@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "X@2x.png"; sourceTree = "<group>"; };
+		3C44F44D240CF0C100445129 /* EaseCustomSwitch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseCustomSwitch.h; sourceTree = "<group>"; };
+		3C44F44E240CF0C100445129 /* EaseCustomSwitch.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseCustomSwitch.m; sourceTree = "<group>"; };
+		3C70A15E241A654E00A5185F /* EaseCustomMessageHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseCustomMessageHelper.h; sourceTree = "<group>"; };
+		3C70A15F241A654E00A5185F /* EaseCustomMessageHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseCustomMessageHelper.m; sourceTree = "<group>"; };
+		3C72AD63240F8E2C007BC99F /* UIViewController+HUD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+HUD.h"; sourceTree = "<group>"; };
+		3C72AD64240F8E2C007BC99F /* UIViewController+HUD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+HUD.m"; sourceTree = "<group>"; };
+		3C72AD66240F9429007BC99F /* EaseEmojiHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseEmojiHelper.h; sourceTree = "<group>"; };
+		3C72AD67240F9431007BC99F /* EaseEmojiHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EaseEmojiHelper.m; sourceTree = "<group>"; };
+		3C72AD69240F9559007BC99F /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		3C72AD6A240F97C3007BC99F /* EaseEmoticonView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseEmoticonView.h; sourceTree = "<group>"; };
+		3C72AD6B240F97CA007BC99F /* EaseEmoticonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EaseEmoticonView.m; sourceTree = "<group>"; };
+		3C72AD6D240F9804007BC99F /* EMEmoticonGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMEmoticonGroup.h; sourceTree = "<group>"; };
+		3C72AD6E240F9804007BC99F /* EMEmoticonGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMEmoticonGroup.m; sourceTree = "<group>"; };
+		3C8AD50C24127AE2002B6464 /* EaseGiftListView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseGiftListView.h; sourceTree = "<group>"; };
+		3C8AD50D24127AE2002B6464 /* EaseGiftListView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseGiftListView.m; sourceTree = "<group>"; };
+		3C8AD5132412AD41002B6464 /* EaseTransitionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseTransitionViewController.h; sourceTree = "<group>"; };
+		3C8AD5142412AD41002B6464 /* EaseTransitionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseTransitionViewController.m; sourceTree = "<group>"; };
+		3C9F89E9240E3C3C00653B2F /* EaseAudienceBehaviorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseAudienceBehaviorView.h; sourceTree = "<group>"; };
+		3C9F89EA240E3C3C00653B2F /* EaseAudienceBehaviorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseAudienceBehaviorView.m; sourceTree = "<group>"; };
+		3CCF86C6241F2C7D007570EB /* default_back_image@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "default_back_image@2x.png"; sourceTree = "<group>"; };
+		3CCF86C8241F2C8D007570EB /* default_back_image@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "default_back_image@3x.png"; sourceTree = "<group>"; };
+		3CCF86CA241F3379007570EB /* EaseFinishLiveView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseFinishLiveView.h; sourceTree = "<group>"; };
+		3CCF86CB241F3379007570EB /* EaseFinishLiveView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseFinishLiveView.m; sourceTree = "<group>"; };
+		3CCF86D92420DE91007570EB /* ic_chat@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_chat@3x.png"; sourceTree = "<group>"; };
+		3CCF86DA2420DE92007570EB /* ic_exit@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_exit@3x.png"; sourceTree = "<group>"; };
+		3CCF86DB2420DE92007570EB /* avatat_5@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatat_5@3x.png"; sourceTree = "<group>"; };
+		3CCF86DC2420DE92007570EB /* attention@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "attention@3x.png"; sourceTree = "<group>"; };
+		3CCF86DD2420DE92007570EB /* avatat_4@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatat_4@3x.png"; sourceTree = "<group>"; };
+		3CCF86E02420DE94007570EB /* ic_Gift@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_Gift@3x.png"; sourceTree = "<group>"; };
+		3CCF86E12420DE94007570EB /* avatat_6@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatat_6@3x.png"; sourceTree = "<group>"; };
+		3CCF86E22420DE94007570EB /* avatat_2@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatat_2@3x.png"; sourceTree = "<group>"; };
+		3CCF86E32420DE94007570EB /* avatat_3@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatat_3@3x.png"; sourceTree = "<group>"; };
+		3CCF86E42420DE95007570EB /* backPic@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backPic@3x.png"; sourceTree = "<group>"; };
+		3CCF86E52420DE95007570EB /* avatat_7@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatat_7@3x.png"; sourceTree = "<group>"; };
+		3CCF86E72420DE96007570EB /* barrage@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "barrage@3x.png"; sourceTree = "<group>"; };
+		3CCF86E82420DE96007570EB /* icon-enter@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-enter@3x.png"; sourceTree = "<group>"; };
+		3CCF86EA2420DE97007570EB /* icon-backAction@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-backAction@3x.png"; sourceTree = "<group>"; };
+		3CCF86EC2420DE98007570EB /* default_anchor_avatar@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "default_anchor_avatar@3x.png"; sourceTree = "<group>"; };
+		3CCF87032420DEDD007570EB /* gift.bouquet@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gift.bouquet@3x.png"; sourceTree = "<group>"; };
+		3CCF87042420DEDE007570EB /* gift.balloons@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gift.balloons@3x.png"; sourceTree = "<group>"; };
+		3CCF87052420DEDE007570EB /* gift.wishs_come_true@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gift.wishs_come_true@3x.png"; sourceTree = "<group>"; };
+		3CCF87062420DEDE007570EB /* gift.rose@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gift.rose@3x.png"; sourceTree = "<group>"; };
+		3CCF87072420DEDF007570EB /* gift.box@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gift.box@3x.png"; sourceTree = "<group>"; };
+		3CCF87082420DEDF007570EB /* gift.cake@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gift.cake@3x.png"; sourceTree = "<group>"; };
+		3CCF87092420DEDF007570EB /* gift.rings@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gift.rings@3x.png"; sourceTree = "<group>"; };
+		3CCF870A2420DEE0007570EB /* gift.dog@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gift.dog@3x.png"; sourceTree = "<group>"; };
+		3CCF87132420DF2C007570EB /* avatat_7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatat_7@2x.png"; sourceTree = "<group>"; };
+		3CCF87142420DF2D007570EB /* attention@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "attention@2x.png"; sourceTree = "<group>"; };
+		3CCF87152420DF2D007570EB /* ic_exit@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_exit@2x.png"; sourceTree = "<group>"; };
+		3CCF87162420DF2D007570EB /* backPic@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backPic@2x.png"; sourceTree = "<group>"; };
+		3CCF871A2420DF2E007570EB /* icon-enter@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-enter@2x.png"; sourceTree = "<group>"; };
+		3CCF871B2420DF2F007570EB /* default_anchor_avatar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "default_anchor_avatar@2x.png"; sourceTree = "<group>"; };
+		3CCF871C2420DF2F007570EB /* avatat_2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatat_2@2x.png"; sourceTree = "<group>"; };
+		3CCF871D2420DF2F007570EB /* avatat_1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatat_1@2x.png"; sourceTree = "<group>"; };
+		3CCF871E2420DF30007570EB /* avatat_3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatat_3@2x.png"; sourceTree = "<group>"; };
+		3CCF871F2420DF30007570EB /* ic_Gift@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_Gift@2x.png"; sourceTree = "<group>"; };
+		3CCF87202420DF31007570EB /* avatat_5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatat_5@2x.png"; sourceTree = "<group>"; };
+		3CCF87212420DF31007570EB /* icon-backAction@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-backAction@2x.png"; sourceTree = "<group>"; };
+		3CCF87232420DF32007570EB /* ic_chat@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_chat@2x.png"; sourceTree = "<group>"; };
+		3CCF87242420DF32007570EB /* avatat_4@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatat_4@2x.png"; sourceTree = "<group>"; };
+		3CCF87252420DF32007570EB /* avatat_6@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatat_6@2x.png"; sourceTree = "<group>"; };
+		3CCF87282420DF33007570EB /* barrage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "barrage@2x.png"; sourceTree = "<group>"; };
+		3CCF87412420DF54007570EB /* icon-liveList-unSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-liveList-unSelected@2x.png"; sourceTree = "<group>"; };
+		3CCF87422420DF55007570EB /* icon-setting-unSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-setting-unSelected@2x.png"; sourceTree = "<group>"; };
+		3CCF87432420DF55007570EB /* icon-setting-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-setting-selected@2x.png"; sourceTree = "<group>"; };
+		3CCF87442420DF55007570EB /* icon-living@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-living@2x.png"; sourceTree = "<group>"; };
+		3CCF87452420DF56007570EB /* Logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Logo@2x.png"; sourceTree = "<group>"; };
+		3CCF87462420DF56007570EB /* icon-liveList-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-liveList-selected@2x.png"; sourceTree = "<group>"; };
+		3CCF874D2420DF73007570EB /* icon-setting-unSelected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-setting-unSelected@3x.png"; sourceTree = "<group>"; };
+		3CCF874E2420DF73007570EB /* icon-setting-selected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-setting-selected@3x.png"; sourceTree = "<group>"; };
+		3CCF874F2420DF74007570EB /* icon-liveList-selected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-liveList-selected@3x.png"; sourceTree = "<group>"; };
+		3CCF87502420DF75007570EB /* icon-living@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-living@3x.png"; sourceTree = "<group>"; };
+		3CCF87512420DF75007570EB /* Logo@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Logo@3x.png"; sourceTree = "<group>"; };
+		3CCF87522420DF75007570EB /* icon-liveList-unSelected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-liveList-unSelected@3x.png"; sourceTree = "<group>"; };
+		3CCF875B2420E54E007570EB /* avatat_1@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatat_1@3x.png"; sourceTree = "<group>"; };
+		3CCF875D2420E610007570EB /* gift.rose@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gift.rose@2x.png"; sourceTree = "<group>"; };
+		3CCF875E2420E610007570EB /* gift.wishs_come_true@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gift.wishs_come_true@2x.png"; sourceTree = "<group>"; };
+		3CCF875F2420E610007570EB /* gift.box@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gift.box@2x.png"; sourceTree = "<group>"; };
+		3CCF87602420E611007570EB /* gift.rings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gift.rings@2x.png"; sourceTree = "<group>"; };
+		3CCF87612420E611007570EB /* gift.bouquet@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gift.bouquet@2x.png"; sourceTree = "<group>"; };
+		3CCF87622420E611007570EB /* gift.cake@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gift.cake@2x.png"; sourceTree = "<group>"; };
+		3CCF87632420E613007570EB /* gift.dog@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gift.dog@2x.png"; sourceTree = "<group>"; };
+		3CCF87642420E613007570EB /* gift.balloons@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gift.balloons@2x.png"; sourceTree = "<group>"; };
+		3CCF87732420ECEF007570EB /* ic_praised@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_praised@3x.png"; sourceTree = "<group>"; };
+		3CCF87752420ECF9007570EB /* ic_praise@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_praise@3x.png"; sourceTree = "<group>"; };
+		3CCF87772420ED0A007570EB /* ic_praised@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_praised@2x.png"; sourceTree = "<group>"; };
+		3CCF87782420ED0A007570EB /* ic_praise@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_praise@2x.png"; sourceTree = "<group>"; };
+		3CCF877B2420ED3A007570EB /* auidence@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "auidence@2x.png"; sourceTree = "<group>"; };
+		3CCF877D2420ED45007570EB /* auidence@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "auidence@3x.png"; sourceTree = "<group>"; };
+		3CCF877F2420ED7E007570EB /* giftrecord@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "giftrecord@3x.png"; sourceTree = "<group>"; };
+		3CCF87812420ED8F007570EB /* giftrecord@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "giftrecord@2x.png"; sourceTree = "<group>"; };
+		3CCF87832420ED9D007570EB /* icon-broadcast@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-broadcast@2x.png"; sourceTree = "<group>"; };
+		3CCF87852420EDA7007570EB /* icon-broadcast@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-broadcast@3x.png"; sourceTree = "<group>"; };
+		3CCF87872420EE3C007570EB /* Icons-Plus-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icons-Plus-white@2x.png"; sourceTree = "<group>"; };
+		3CCF878B2420EE8A007570EB /* Icons-Plus-white@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icons-Plus-white@3x.png"; sourceTree = "<group>"; };
+		3CCF87932421FD21007570EB /* EaseAboutHuanxinViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseAboutHuanxinViewController.h; sourceTree = "<group>"; };
+		3CCF87942421FD21007570EB /* EaseAboutHuanxinViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseAboutHuanxinViewController.m; sourceTree = "<group>"; };
+		3CCF879624220456007570EB /* webRefreshButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "webRefreshButton@2x.png"; sourceTree = "<group>"; };
+		3CCF87982422045E007570EB /* webRefreshButton@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "webRefreshButton@3x.png"; sourceTree = "<group>"; };
+		3CCF879E24238806007570EB /* huanxin-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "huanxin-logo@2x.png"; sourceTree = "<group>"; };
+		3CCF87A024238810007570EB /* huanxin-logo@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "huanxin-logo@3x.png"; sourceTree = "<group>"; };
 		3EF28DDAEBA5A9451CF1F4AF /* Pods-EaseMobLiveDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EaseMobLiveDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo.debug.xcconfig"; sourceTree = "<group>"; };
-		9A41D9499C63F9EC6616B282 /* libPods-UCloudMediaRecorderDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-UCloudMediaRecorderDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D21C545F1E658F8B0019A341 /* EaseAdminView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EaseAdminView.h; sourceTree = "<group>"; };
 		D21C54601E658F8B0019A341 /* EaseAdminView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EaseAdminView.m; sourceTree = "<group>"; };
 		D23C12951E6FEED4007C5012 /* EaseLiveRoom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EaseLiveRoom.h; sourceTree = "<group>"; };
@@ -178,234 +390,6 @@
 		D275D7DB1E666C44001BBA61 /* open@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "open@3x.png"; sourceTree = "<group>"; };
 		D275D7DC1E666C44001BBA61 /* reversal_camera@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reversal_camera@3x.png"; sourceTree = "<group>"; };
 		D275D7DD1E666C44001BBA61 /* search@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "search@3x.png"; sourceTree = "<group>"; };
-		D27B1F2E1E4D76BD00318031 /* libUCloudMediaPlayer.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUCloudMediaPlayer.a; sourceTree = "<group>"; };
-		D27B1F2F1E4D76BD00318031 /* UCloudMediaModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudMediaModule.h; sourceTree = "<group>"; };
-		D27B1F301E4D76BD00318031 /* UCloudMediaPlayback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudMediaPlayback.h; sourceTree = "<group>"; };
-		D27B1F311E4D76BD00318031 /* UCloudMediaPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudMediaPlayer.h; sourceTree = "<group>"; };
-		D27B1F321E4D76BD00318031 /* UCloudPlayback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudPlayback.h; sourceTree = "<group>"; };
-		D27B1F341E4D76BD00318031 /* CameraServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraServer.h; sourceTree = "<group>"; };
-		D27B1F361E4D76BD00318031 /* UCloudGLProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGLProgram.h; sourceTree = "<group>"; };
-		D27B1F371E4D76BD00318031 /* UCloudGPUImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImage.h; sourceTree = "<group>"; };
-		D27B1F381E4D76BD00318031 /* UCloudGPUImage3x3ConvolutionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImage3x3ConvolutionFilter.h; sourceTree = "<group>"; };
-		D27B1F391E4D76BD00318031 /* UCloudGPUImage3x3TextureSamplingFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImage3x3TextureSamplingFilter.h; sourceTree = "<group>"; };
-		D27B1F3A1E4D76BD00318031 /* UCloudGPUImageAdaptiveThresholdFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageAdaptiveThresholdFilter.h; sourceTree = "<group>"; };
-		D27B1F3B1E4D76BD00318031 /* UCloudGPUImageAddBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageAddBlendFilter.h; sourceTree = "<group>"; };
-		D27B1F3C1E4D76BD00318031 /* UCloudGPUImageAlphaBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageAlphaBlendFilter.h; sourceTree = "<group>"; };
-		D27B1F3D1E4D76BD00318031 /* UCloudGPUImageAmatorkaFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageAmatorkaFilter.h; sourceTree = "<group>"; };
-		D27B1F3E1E4D76BD00318031 /* UCloudGPUImageAverageColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageAverageColor.h; sourceTree = "<group>"; };
-		D27B1F3F1E4D76BD00318031 /* UCloudGPUImageAverageLuminanceThresholdFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageAverageLuminanceThresholdFilter.h; sourceTree = "<group>"; };
-		D27B1F401E4D76BD00318031 /* UCloudGPUImageBeautyFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageBeautyFilter.h; sourceTree = "<group>"; };
-		D27B1F411E4D76BD00318031 /* UCloudGPUImageBeautyFilter2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageBeautyFilter2.h; sourceTree = "<group>"; };
-		D27B1F421E4D76BD00318031 /* UCloudGPUImageBilateralFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageBilateralFilter.h; sourceTree = "<group>"; };
-		D27B1F431E4D76BD00318031 /* UCloudGPUImageBoxBlurFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageBoxBlurFilter.h; sourceTree = "<group>"; };
-		D27B1F441E4D76BD00318031 /* UCloudGPUImageBrightnessFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageBrightnessFilter.h; sourceTree = "<group>"; };
-		D27B1F451E4D76BD00318031 /* UCloudGPUImageBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageBuffer.h; sourceTree = "<group>"; };
-		D27B1F461E4D76BD00318031 /* UCloudGPUImageBulgeDistortionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageBulgeDistortionFilter.h; sourceTree = "<group>"; };
-		D27B1F471E4D76BD00318031 /* UCloudGPUImageCannyEdgeDetectionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageCannyEdgeDetectionFilter.h; sourceTree = "<group>"; };
-		D27B1F481E4D76BD00318031 /* UCloudGPUImageCGAColorspaceFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageCGAColorspaceFilter.h; sourceTree = "<group>"; };
-		D27B1F491E4D76BD00318031 /* UCloudGPUImageChromaKeyBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageChromaKeyBlendFilter.h; sourceTree = "<group>"; };
-		D27B1F4A1E4D76BD00318031 /* UCloudGPUImageChromaKeyFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageChromaKeyFilter.h; sourceTree = "<group>"; };
-		D27B1F4B1E4D76BD00318031 /* UCloudGPUImageClosingFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageClosingFilter.h; sourceTree = "<group>"; };
-		D27B1F4C1E4D76BD00318031 /* UCloudGPUImageColorBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageColorBlendFilter.h; sourceTree = "<group>"; };
-		D27B1F4D1E4D76BD00318031 /* UCloudGPUImageColorBurnBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageColorBurnBlendFilter.h; sourceTree = "<group>"; };
-		D27B1F4E1E4D76BD00318031 /* UCloudGPUImageColorConversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageColorConversion.h; sourceTree = "<group>"; };
-		D27B1F4F1E4D76BD00318031 /* UCloudGPUImageColorDodgeBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageColorDodgeBlendFilter.h; sourceTree = "<group>"; };
-		D27B1F501E4D76BD00318031 /* UCloudGPUImageColorInvertFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageColorInvertFilter.h; sourceTree = "<group>"; };
-		D27B1F511E4D76BD00318031 /* UCloudGPUImageColorLocalBinaryPatternFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageColorLocalBinaryPatternFilter.h; sourceTree = "<group>"; };
-		D27B1F521E4D76BD00318031 /* UCloudGPUImageColorMatrixFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageColorMatrixFilter.h; sourceTree = "<group>"; };
-		D27B1F531E4D76BD00318031 /* UCloudGPUImageColorPackingFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageColorPackingFilter.h; sourceTree = "<group>"; };
-		D27B1F541E4D76BD00318031 /* UCloudGPUImageColourFASTFeatureDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageColourFASTFeatureDetector.h; sourceTree = "<group>"; };
-		D27B1F551E4D76BD00318031 /* UCloudGPUImageColourFASTSamplingOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageColourFASTSamplingOperation.h; sourceTree = "<group>"; };
-		D27B1F561E4D76BD00318031 /* UCloudGPUImageContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageContext.h; sourceTree = "<group>"; };
-		D27B1F571E4D76BD00318031 /* UCloudGPUImageContrastFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageContrastFilter.h; sourceTree = "<group>"; };
-		D27B1F581E4D76BD00318031 /* UCloudGPUImageCropFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageCropFilter.h; sourceTree = "<group>"; };
-		D27B1F591E4D76BD00318031 /* UCloudGPUImageCrosshairGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageCrosshairGenerator.h; sourceTree = "<group>"; };
-		D27B1F5A1E4D76BD00318031 /* UCloudGPUImageCrosshatchFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageCrosshatchFilter.h; sourceTree = "<group>"; };
-		D27B1F5B1E4D76BD00318031 /* UCloudGPUImageDarkenBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageDarkenBlendFilter.h; sourceTree = "<group>"; };
-		D27B1F5C1E4D76BD00318031 /* UCloudGPUImageDifferenceBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageDifferenceBlendFilter.h; sourceTree = "<group>"; };
-		D27B1F5D1E4D76BD00318031 /* UCloudGPUImageDilationFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageDilationFilter.h; sourceTree = "<group>"; };
-		D27B1F5E1E4D76BD00318031 /* UCloudGPUImageDirectionalNonMaximumSuppressionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageDirectionalNonMaximumSuppressionFilter.h; sourceTree = "<group>"; };
-		D27B1F5F1E4D76BD00318031 /* UCloudGPUImageDirectionalSobelEdgeDetectionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageDirectionalSobelEdgeDetectionFilter.h; sourceTree = "<group>"; };
-		D27B1F601E4D76BD00318031 /* UCloudGPUImageDissolveBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageDissolveBlendFilter.h; sourceTree = "<group>"; };
-		D27B1F611E4D76BD00318031 /* UCloudGPUImageDivideBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageDivideBlendFilter.h; sourceTree = "<group>"; };
-		D27B1F621E4D76BD00318031 /* UCloudGPUImageEmbossFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageEmbossFilter.h; sourceTree = "<group>"; };
-		D27B1F631E4D76BD00318031 /* UCloudGPUImageErosionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageErosionFilter.h; sourceTree = "<group>"; };
-		D27B1F641E4D76BD00318031 /* UCloudGPUImageExclusionBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageExclusionBlendFilter.h; sourceTree = "<group>"; };
-		D27B1F651E4D76BD00318031 /* UCloudGPUImageExposureFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageExposureFilter.h; sourceTree = "<group>"; };
-		D27B1F661E4D76BD00318031 /* UCloudGPUImageFalseColorFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageFalseColorFilter.h; sourceTree = "<group>"; };
-		D27B1F671E4D76BD00318031 /* UCloudGPUImageFASTCornerDetectionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageFASTCornerDetectionFilter.h; sourceTree = "<group>"; };
-		D27B1F681E4D76BD00318031 /* UCloudGPUImageFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageFilter.h; sourceTree = "<group>"; };
-		D27B1F691E4D76BD00318031 /* UCloudGPUImageFilterGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageFilterGroup.h; sourceTree = "<group>"; };
-		D27B1F6A1E4D76BD00318031 /* UCloudGPUImageFilterPipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageFilterPipeline.h; sourceTree = "<group>"; };
-		D27B1F6B1E4D76BD00318031 /* UCloudGPUImageFourInputFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageFourInputFilter.h; sourceTree = "<group>"; };
-		D27B1F6C1E4D76BD00318031 /* UCloudGPUImageFramebuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageFramebuffer.h; sourceTree = "<group>"; };
-		D27B1F6D1E4D76BD00318031 /* UCloudGPUImageFramebufferCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageFramebufferCache.h; sourceTree = "<group>"; };
-		D27B1F6E1E4D76BD00318031 /* UCloudGPUImageGammaFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageGammaFilter.h; sourceTree = "<group>"; };
-		D27B1F6F1E4D76BD00318031 /* UCloudGPUImageGaussianBlurFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageGaussianBlurFilter.h; sourceTree = "<group>"; };
-		D27B1F701E4D76BD00318031 /* UCloudGPUImageGaussianBlurPositionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageGaussianBlurPositionFilter.h; sourceTree = "<group>"; };
-		D27B1F711E4D76BD00318031 /* UCloudGPUImageGaussianSelectiveBlurFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageGaussianSelectiveBlurFilter.h; sourceTree = "<group>"; };
-		D27B1F721E4D76BD00318031 /* UCloudGPUImageGlassSphereFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageGlassSphereFilter.h; sourceTree = "<group>"; };
-		D27B1F731E4D76BD00318031 /* UCloudGPUImageGrayscaleFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageGrayscaleFilter.h; sourceTree = "<group>"; };
-		D27B1F741E4D76BD00318031 /* UCloudGPUImageHalftoneFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageHalftoneFilter.h; sourceTree = "<group>"; };
-		D27B1F751E4D76BD00318031 /* UCloudGPUImageHardLightBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageHardLightBlendFilter.h; sourceTree = "<group>"; };
-		D27B1F761E4D76BD00318031 /* UCloudGPUImageHarrisCornerDetectionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageHarrisCornerDetectionFilter.h; sourceTree = "<group>"; };
-		D27B1F771E4D76BD00318031 /* UCloudGPUImageHazeFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageHazeFilter.h; sourceTree = "<group>"; };
-		D27B1F781E4D76BD00318031 /* UCloudGPUImageHighlightShadowFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageHighlightShadowFilter.h; sourceTree = "<group>"; };
-		D27B1F791E4D76BD00318031 /* UCloudGPUImageHighPassFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageHighPassFilter.h; sourceTree = "<group>"; };
-		D27B1F7A1E4D76BD00318031 /* UCloudGPUImageHistogramEqualizationFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageHistogramEqualizationFilter.h; sourceTree = "<group>"; };
-		D27B1F7B1E4D76BD00318031 /* UCloudGPUImageHistogramFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageHistogramFilter.h; sourceTree = "<group>"; };
-		D27B1F7C1E4D76BD00318031 /* UCloudGPUImageHistogramGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageHistogramGenerator.h; sourceTree = "<group>"; };
-		D27B1F7D1E4D76BD00318031 /* UCloudGPUImageHoughTransformLineDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageHoughTransformLineDetector.h; sourceTree = "<group>"; };
-		D27B1F7E1E4D76BD00318031 /* UCloudGPUImageHSBFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageHSBFilter.h; sourceTree = "<group>"; };
-		D27B1F7F1E4D76BD00318031 /* UCloudGPUImageHueBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageHueBlendFilter.h; sourceTree = "<group>"; };
-		D27B1F801E4D76BD00318031 /* UCloudGPUImageHueFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageHueFilter.h; sourceTree = "<group>"; };
-		D27B1F811E4D76BD00318031 /* UCloudGPUImageiOSBlurFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageiOSBlurFilter.h; sourceTree = "<group>"; };
-		D27B1F821E4D76BD00318031 /* UCloudGPUImageJFAVoronoiFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageJFAVoronoiFilter.h; sourceTree = "<group>"; };
-		D27B1F831E4D76BD00318031 /* UCloudGPUImageKuwaharaFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageKuwaharaFilter.h; sourceTree = "<group>"; };
-		D27B1F841E4D76BD00318031 /* UCloudGPUImageKuwaharaRadius3Filter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageKuwaharaRadius3Filter.h; sourceTree = "<group>"; };
-		D27B1F851E4D76BD00318031 /* UCloudGPUImageLanczosResamplingFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageLanczosResamplingFilter.h; sourceTree = "<group>"; };
-		D27B1F861E4D76BD00318031 /* UCloudGPUImageLaplacianFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageLaplacianFilter.h; sourceTree = "<group>"; };
-		D27B1F871E4D76BD00318031 /* UCloudGPUImageLevelsFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageLevelsFilter.h; sourceTree = "<group>"; };
-		D27B1F881E4D76BD00318031 /* UCloudGPUImageLightenBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageLightenBlendFilter.h; sourceTree = "<group>"; };
-		D27B1F891E4D76BD00318031 /* UCloudGPUImageLinearBurnBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageLinearBurnBlendFilter.h; sourceTree = "<group>"; };
-		D27B1F8A1E4D76BD00318031 /* UCloudGPUImageLineGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageLineGenerator.h; sourceTree = "<group>"; };
-		D27B1F8B1E4D76BD00318031 /* UCloudGPUImageLocalBinaryPatternFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageLocalBinaryPatternFilter.h; sourceTree = "<group>"; };
-		D27B1F8C1E4D76BD00318031 /* UCloudGPUImageLookupFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageLookupFilter.h; sourceTree = "<group>"; };
-		D27B1F8D1E4D76BD00318031 /* UCloudGPUImageLowPassFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageLowPassFilter.h; sourceTree = "<group>"; };
-		D27B1F8E1E4D76BD00318031 /* UCloudGPUImageLuminanceRangeFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageLuminanceRangeFilter.h; sourceTree = "<group>"; };
-		D27B1F8F1E4D76BD00318031 /* UCloudGPUImageLuminanceThresholdFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageLuminanceThresholdFilter.h; sourceTree = "<group>"; };
-		D27B1F901E4D76BD00318031 /* UCloudGPUImageLuminosity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageLuminosity.h; sourceTree = "<group>"; };
-		D27B1F911E4D76BD00318031 /* UCloudGPUImageLuminosityBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageLuminosityBlendFilter.h; sourceTree = "<group>"; };
-		D27B1F921E4D76BD00318031 /* UCloudGPUImageMaskFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageMaskFilter.h; sourceTree = "<group>"; };
-		D27B1F931E4D76BD00318031 /* UCloudGPUImageMedianFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageMedianFilter.h; sourceTree = "<group>"; };
-		D27B1F941E4D76BD00318031 /* UCloudGPUImageMissEtikateFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageMissEtikateFilter.h; sourceTree = "<group>"; };
-		D27B1F951E4D76BD00318031 /* UCloudGPUImageMonochromeFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageMonochromeFilter.h; sourceTree = "<group>"; };
-		D27B1F961E4D76BD00318031 /* UCloudGPUImageMosaicFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageMosaicFilter.h; sourceTree = "<group>"; };
-		D27B1F971E4D76BD00318031 /* UCloudGPUImageMotionBlurFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageMotionBlurFilter.h; sourceTree = "<group>"; };
-		D27B1F981E4D76BD00318031 /* UCloudGPUImageMotionDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageMotionDetector.h; sourceTree = "<group>"; };
-		D27B1F991E4D76BD00318031 /* UCloudGPUImageMovie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageMovie.h; sourceTree = "<group>"; };
-		D27B1F9A1E4D76BD00318031 /* UCloudGPUImageMovieComposition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageMovieComposition.h; sourceTree = "<group>"; };
-		D27B1F9B1E4D76BD00318031 /* UCloudGPUImageMovieWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageMovieWriter.h; sourceTree = "<group>"; };
-		D27B1F9C1E4D76BD00318031 /* UCloudGPUImageMultiplyBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageMultiplyBlendFilter.h; sourceTree = "<group>"; };
-		D27B1F9D1E4D76BD00318031 /* UCloudGPUImageNobleCornerDetectionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageNobleCornerDetectionFilter.h; sourceTree = "<group>"; };
-		D27B1F9E1E4D76BD00318031 /* UCloudGPUImageNonMaximumSuppressionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageNonMaximumSuppressionFilter.h; sourceTree = "<group>"; };
-		D27B1F9F1E4D76BD00318031 /* UCloudGPUImageNormalBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageNormalBlendFilter.h; sourceTree = "<group>"; };
-		D27B1FA01E4D76BD00318031 /* UCloudGPUImageOpacityFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageOpacityFilter.h; sourceTree = "<group>"; };
-		D27B1FA11E4D76BD00318031 /* UCloudGPUImageOpeningFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageOpeningFilter.h; sourceTree = "<group>"; };
-		D27B1FA21E4D76BD00318031 /* UCloudGPUImageOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageOutput.h; sourceTree = "<group>"; };
-		D27B1FA31E4D76BD00318031 /* UCloudGPUImageOverlayBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageOverlayBlendFilter.h; sourceTree = "<group>"; };
-		D27B1FA41E4D76BD00318031 /* UCloudGPUImageParallelCoordinateLineTransformFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageParallelCoordinateLineTransformFilter.h; sourceTree = "<group>"; };
-		D27B1FA51E4D76BD00318031 /* UCloudGPUImagePerlinNoiseFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImagePerlinNoiseFilter.h; sourceTree = "<group>"; };
-		D27B1FA61E4D76BD00318031 /* UCloudGPUImagePicture+TextureSubimage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UCloudGPUImagePicture+TextureSubimage.h"; sourceTree = "<group>"; };
-		D27B1FA71E4D76BD00318031 /* UCloudGPUImagePicture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImagePicture.h; sourceTree = "<group>"; };
-		D27B1FA81E4D76BD00318031 /* UCloudGPUImagePinchDistortionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImagePinchDistortionFilter.h; sourceTree = "<group>"; };
-		D27B1FA91E4D76BD00318031 /* UCloudGPUImagePixellateFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImagePixellateFilter.h; sourceTree = "<group>"; };
-		D27B1FAA1E4D76BD00318031 /* UCloudGPUImagePixellatePositionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImagePixellatePositionFilter.h; sourceTree = "<group>"; };
-		D27B1FAB1E4D76BD00318031 /* UCloudGPUImagePoissonBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImagePoissonBlendFilter.h; sourceTree = "<group>"; };
-		D27B1FAC1E4D76BD00318031 /* UCloudGPUImagePolarPixellateFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImagePolarPixellateFilter.h; sourceTree = "<group>"; };
-		D27B1FAD1E4D76BD00318031 /* UCloudGPUImagePolkaDotFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImagePolkaDotFilter.h; sourceTree = "<group>"; };
-		D27B1FAE1E4D76BD00318031 /* UCloudGPUImagePosterizeFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImagePosterizeFilter.h; sourceTree = "<group>"; };
-		D27B1FAF1E4D76BD00318031 /* UCloudGPUImagePrewittEdgeDetectionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImagePrewittEdgeDetectionFilter.h; sourceTree = "<group>"; };
-		D27B1FB01E4D76BD00318031 /* UCloudGPUImageRawDataInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageRawDataInput.h; sourceTree = "<group>"; };
-		D27B1FB11E4D76BD00318031 /* UCloudGPUImageRawDataOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageRawDataOutput.h; sourceTree = "<group>"; };
-		D27B1FB21E4D76BD00318031 /* UCloudGPUImageRGBClosingFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageRGBClosingFilter.h; sourceTree = "<group>"; };
-		D27B1FB31E4D76BD00318031 /* UCloudGPUImageRGBDilationFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageRGBDilationFilter.h; sourceTree = "<group>"; };
-		D27B1FB41E4D76BD00318031 /* UCloudGPUImageRGBErosionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageRGBErosionFilter.h; sourceTree = "<group>"; };
-		D27B1FB51E4D76BD00318031 /* UCloudGPUImageRGBFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageRGBFilter.h; sourceTree = "<group>"; };
-		D27B1FB61E4D76BD00318031 /* UCloudGPUImageRGBOpeningFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageRGBOpeningFilter.h; sourceTree = "<group>"; };
-		D27B1FB71E4D76BD00318031 /* UCloudGPUImageSaturationBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageSaturationBlendFilter.h; sourceTree = "<group>"; };
-		D27B1FB81E4D76BD00318031 /* UCloudGPUImageSaturationFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageSaturationFilter.h; sourceTree = "<group>"; };
-		D27B1FB91E4D76BD00318031 /* UCloudGPUImageScreenBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageScreenBlendFilter.h; sourceTree = "<group>"; };
-		D27B1FBA1E4D76BD00318031 /* UCloudGPUImageSepiaFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageSepiaFilter.h; sourceTree = "<group>"; };
-		D27B1FBB1E4D76BD00318031 /* UCloudGPUImageSharpenFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageSharpenFilter.h; sourceTree = "<group>"; };
-		D27B1FBC1E4D76BD00318031 /* UCloudGPUImageShiTomasiFeatureDetectionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageShiTomasiFeatureDetectionFilter.h; sourceTree = "<group>"; };
-		D27B1FBD1E4D76BD00318031 /* UCloudGPUImageSingleComponentGaussianBlurFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageSingleComponentGaussianBlurFilter.h; sourceTree = "<group>"; };
-		D27B1FBE1E4D76BD00318031 /* UCloudGPUImageSketchFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageSketchFilter.h; sourceTree = "<group>"; };
-		D27B1FBF1E4D76BD00318031 /* UCloudGPUImageSmoothToonFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageSmoothToonFilter.h; sourceTree = "<group>"; };
-		D27B1FC01E4D76BD00318031 /* UCloudGPUImageSobelEdgeDetectionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageSobelEdgeDetectionFilter.h; sourceTree = "<group>"; };
-		D27B1FC11E4D76BD00318031 /* UCloudGPUImageSoftEleganceFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageSoftEleganceFilter.h; sourceTree = "<group>"; };
-		D27B1FC21E4D76BD00318031 /* UCloudGPUImageSoftLightBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageSoftLightBlendFilter.h; sourceTree = "<group>"; };
-		D27B1FC31E4D76BD00318031 /* UCloudGPUImageSolidColorGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageSolidColorGenerator.h; sourceTree = "<group>"; };
-		D27B1FC41E4D76BD00318031 /* UCloudGPUImageSourceOverBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageSourceOverBlendFilter.h; sourceTree = "<group>"; };
-		D27B1FC51E4D76BD00318031 /* UCloudGPUImageSphereRefractionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageSphereRefractionFilter.h; sourceTree = "<group>"; };
-		D27B1FC61E4D76BD00318031 /* UCloudGPUImageStillCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageStillCamera.h; sourceTree = "<group>"; };
-		D27B1FC71E4D76BD00318031 /* UCloudGPUImageStretchDistortionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageStretchDistortionFilter.h; sourceTree = "<group>"; };
-		D27B1FC81E4D76BD00318031 /* UCloudGPUImageSubtractBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageSubtractBlendFilter.h; sourceTree = "<group>"; };
-		D27B1FC91E4D76BD00318031 /* UCloudGPUImageSwirlFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageSwirlFilter.h; sourceTree = "<group>"; };
-		D27B1FCA1E4D76BD00318031 /* UCloudGPUImageTextureInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageTextureInput.h; sourceTree = "<group>"; };
-		D27B1FCB1E4D76BD00318031 /* UCloudGPUImageTextureOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageTextureOutput.h; sourceTree = "<group>"; };
-		D27B1FCC1E4D76BD00318031 /* UCloudGPUImageThreeInputFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageThreeInputFilter.h; sourceTree = "<group>"; };
-		D27B1FCD1E4D76BD00318031 /* UCloudGPUImageThresholdEdgeDetectionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageThresholdEdgeDetectionFilter.h; sourceTree = "<group>"; };
-		D27B1FCE1E4D76BD00318031 /* UCloudGPUImageThresholdedNonMaximumSuppressionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageThresholdedNonMaximumSuppressionFilter.h; sourceTree = "<group>"; };
-		D27B1FCF1E4D76BD00318031 /* UCloudGPUImageThresholdSketchFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageThresholdSketchFilter.h; sourceTree = "<group>"; };
-		D27B1FD01E4D76BD00318031 /* UCloudGPUImageTiltShiftFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageTiltShiftFilter.h; sourceTree = "<group>"; };
-		D27B1FD11E4D76BD00318031 /* UCloudGPUImageToneCurveFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageToneCurveFilter.h; sourceTree = "<group>"; };
-		D27B1FD21E4D76BD00318031 /* UCloudGPUImageToonFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageToonFilter.h; sourceTree = "<group>"; };
-		D27B1FD31E4D76BD00318031 /* UCloudGPUImageTransformFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageTransformFilter.h; sourceTree = "<group>"; };
-		D27B1FD41E4D76BD00318031 /* UCloudGPUImageTwoInputCrossTextureSamplingFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageTwoInputCrossTextureSamplingFilter.h; sourceTree = "<group>"; };
-		D27B1FD51E4D76BD00318031 /* UCloudGPUImageTwoInputFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageTwoInputFilter.h; sourceTree = "<group>"; };
-		D27B1FD61E4D76BD00318031 /* UCloudGPUImageTwoPassFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageTwoPassFilter.h; sourceTree = "<group>"; };
-		D27B1FD71E4D76BD00318031 /* UCloudGPUImageTwoPassTextureSamplingFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageTwoPassTextureSamplingFilter.h; sourceTree = "<group>"; };
-		D27B1FD81E4D76BD00318031 /* UCloudGPUImageUIElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageUIElement.h; sourceTree = "<group>"; };
-		D27B1FD91E4D76BD00318031 /* UCloudGPUImageUnsharpMaskFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageUnsharpMaskFilter.h; sourceTree = "<group>"; };
-		D27B1FDA1E4D76BD00318031 /* UCloudGPUImageVideoCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageVideoCamera.h; sourceTree = "<group>"; };
-		D27B1FDB1E4D76BD00318031 /* UCloudGPUImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageView.h; sourceTree = "<group>"; };
-		D27B1FDC1E4D76BD00318031 /* UCloudGPUImageVignetteFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageVignetteFilter.h; sourceTree = "<group>"; };
-		D27B1FDD1E4D76BE00318031 /* UCloudGPUImageVoronoiConsumerFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageVoronoiConsumerFilter.h; sourceTree = "<group>"; };
-		D27B1FDE1E4D76BE00318031 /* UCloudGPUImageWeakPixelInclusionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageWeakPixelInclusionFilter.h; sourceTree = "<group>"; };
-		D27B1FDF1E4D76BE00318031 /* UCloudGPUImageWhiteBalanceFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageWhiteBalanceFilter.h; sourceTree = "<group>"; };
-		D27B1FE01E4D76BE00318031 /* UCloudGPUImageXYDerivativeFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageXYDerivativeFilter.h; sourceTree = "<group>"; };
-		D27B1FE11E4D76BE00318031 /* UCloudGPUImageZoomBlurFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudGPUImageZoomBlurFilter.h; sourceTree = "<group>"; };
-		D27B1FE21E4D76BE00318031 /* FilterManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterManager.h; sourceTree = "<group>"; };
-		D27B1FE31E4D76BE00318031 /* FilterManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilterManager.m; sourceTree = "<group>"; };
-		D27B1FE41E4D76BE00318031 /* libUCloudMediaRecorder.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUCloudMediaRecorder.a; sourceTree = "<group>"; };
-		D27B1FE51E4D76BE00318031 /* NSString+UCloudCameraCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+UCloudCameraCode.h"; sourceTree = "<group>"; };
-		D27B1FE61E4D76BE00318031 /* UCloudRecorderTypeDef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudRecorderTypeDef.h; sourceTree = "<group>"; };
-		D27B1FEC1E4D770F00318031 /* UIWindow+YzdHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWindow+YzdHUD.h"; sourceTree = "<group>"; };
-		D27B1FED1E4D770F00318031 /* UIWindow+YzdHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWindow+YzdHUD.m"; sourceTree = "<group>"; };
-		D27B1FEE1E4D770F00318031 /* YzdHUDBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YzdHUDBackgroundView.h; sourceTree = "<group>"; };
-		D27B1FEF1E4D770F00318031 /* YzdHUDBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YzdHUDBackgroundView.m; sourceTree = "<group>"; };
-		D27B1FF01E4D770F00318031 /* YzdHUDImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YzdHUDImageView.h; sourceTree = "<group>"; };
-		D27B1FF11E4D770F00318031 /* YzdHUDImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YzdHUDImageView.m; sourceTree = "<group>"; };
-		D27B1FF21E4D770F00318031 /* YzdHUDIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YzdHUDIndicator.h; sourceTree = "<group>"; };
-		D27B1FF31E4D770F00318031 /* YzdHUDIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YzdHUDIndicator.m; sourceTree = "<group>"; };
-		D27B1FF41E4D770F00318031 /* YzdHUDLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YzdHUDLabel.h; sourceTree = "<group>"; };
-		D27B1FF51E4D770F00318031 /* YzdHUDLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YzdHUDLabel.m; sourceTree = "<group>"; };
-		D27B1FF61E4D770F00318031 /* PlayerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerManager.h; sourceTree = "<group>"; };
-		D27B1FF71E4D770F00318031 /* PlayerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerManager.m; sourceTree = "<group>"; };
-		D27B1FF91E4D770F00318031 /* bg_screen_shot_complete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bg_screen_shot_complete.png; sourceTree = "<group>"; };
-		D27B1FFA1E4D770F00318031 /* bg_screen_shot_complete@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_screen_shot_complete@2x.png"; sourceTree = "<group>"; };
-		D27B1FFB1E4D770F00318031 /* bg_screen_shot_complete@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_screen_shot_complete@3x.png"; sourceTree = "<group>"; };
-		D27B1FFC1E4D770F00318031 /* bg_screen_shot_frame.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bg_screen_shot_frame.png; sourceTree = "<group>"; };
-		D27B1FFD1E4D770F00318031 /* bright_point.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bright_point.png; sourceTree = "<group>"; };
-		D27B1FFE1E4D770F00318031 /* brightness_bgiphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = brightness_bgiphone.png; sourceTree = "<group>"; };
-		D27B1FFF1E4D770F00318031 /* brightness_bg~iphone@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "brightness_bg~iphone@3x.png"; sourceTree = "<group>"; };
-		D27B20001E4D770F00318031 /* danmu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = danmu.png; sourceTree = "<group>"; };
-		D27B20011E4D770F00318031 /* danmu_h.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = danmu_h.png; sourceTree = "<group>"; };
-		D27B20021E4D770F00318031 /* ic_screen_shot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_screen_shot.png; sourceTree = "<group>"; };
-		D27B20031E4D770F00318031 /* icon_bottomview_brightness_button_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_bottomview_brightness_button_normal.png; sourceTree = "<group>"; };
-		D27B20041E4D770F00318031 /* icon_bottomview_brightness_button_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_bottomview_brightness_button_selected.png; sourceTree = "<group>"; };
-		D27B20051E4D770F00318031 /* icon_bottomview_pause_button_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_bottomview_pause_button_normal.png; sourceTree = "<group>"; };
-		D27B20061E4D770F00318031 /* icon_bottomview_play_button_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_bottomview_play_button_normal.png; sourceTree = "<group>"; };
-		D27B20071E4D770F00318031 /* icon_bottomview_volume_button_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_bottomview_volume_button_normal.png; sourceTree = "<group>"; };
-		D27B20081E4D770F00318031 /* icon_bottomview_volume_button_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_bottomview_volume_button_selected.png; sourceTree = "<group>"; };
-		D27B20091E4D770F00318031 /* icon_play_status.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_play_status.png; sourceTree = "<group>"; };
-		D27B200A1E4D770F00318031 /* icon_screen_shot_action.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_screen_shot_action.png; sourceTree = "<group>"; };
-		D27B200B1E4D770F00318031 /* icon_topview_left__button_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_topview_left__button_selected.png; sourceTree = "<group>"; };
-		D27B200C1E4D770F00318031 /* icon_topview_left_button_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_topview_left_button_normal.png; sourceTree = "<group>"; };
-		D27B200D1E4D770F00318031 /* icon_topview_right_button_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_topview_right_button_normal.png; sourceTree = "<group>"; };
-		D27B200E1E4D770F00318031 /* icon_topview_right_button_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_topview_right_button_selected.png; sourceTree = "<group>"; };
-		D27B200F1E4D770F00318031 /* loading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loading.png; sourceTree = "<group>"; };
-		D27B20101E4D770F00318031 /* UCloudBrightnessView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudBrightnessView.h; sourceTree = "<group>"; };
-		D27B20111E4D770F00318031 /* UCloudBrightnessView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UCloudBrightnessView.m; sourceTree = "<group>"; };
-		D27B20121E4D770F00318031 /* UCloudHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudHeader.h; sourceTree = "<group>"; };
-		D27B20131E4D770F00318031 /* UCloudLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudLoadingView.h; sourceTree = "<group>"; };
-		D27B20141E4D770F00318031 /* UCloudLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UCloudLoadingView.m; sourceTree = "<group>"; };
-		D27B20151E4D770F00318031 /* UCloudMediaViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudMediaViewController.h; sourceTree = "<group>"; };
-		D27B20161E4D770F00318031 /* UCloudMediaViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UCloudMediaViewController.m; sourceTree = "<group>"; };
-		D27B20171E4D770F00318031 /* UCloudMediaViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UCloudMediaViewController.xib; sourceTree = "<group>"; };
-		D27B20181E4D770F00318031 /* UCloudProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCloudProgressView.h; sourceTree = "<group>"; };
-		D27B20191E4D770F00318031 /* UCloudProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UCloudProgressView.m; sourceTree = "<group>"; };
 		D27B203E1E51AAA800318031 /* EaseHttpManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EaseHttpManager.h; sourceTree = "<group>"; };
 		D27B203F1E51AAA800318031 /* EaseHttpManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EaseHttpManager.m; sourceTree = "<group>"; };
 		D293607E1D192EB8003F14C6 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
@@ -499,7 +483,7 @@
 		E9271D401C3CC735000DBADF /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		E9271D421C3CC749000DBADF /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		E9271D441C3CC752000DBADF /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		E94670CF1BD78B9B00374D7A /* EaseMobLiveDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EaseMobLiveDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E94670CF1BD78B9B00374D7A /* 环信聊天室.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "环信聊天室.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E96627751BE75E4000FA5B03 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		E96627771BE75E4900FA5B03 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		E96627791BE75E5000FA5B03 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -516,15 +500,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				D2FD8DC81E5C6A3B0097B20D /* libstdc++.tbd in Frameworks */,
-				D27B1FE91E4D76BE00318031 /* libUCloudMediaRecorder.a in Frameworks */,
 				D23E25321CE0380A007506CB /* MobileCoreServices.framework in Frameworks */,
-				D23E252E1CE0379E007506CB /* ImageIO.framework in Frameworks */,
 				D23E252C1CE03775007506CB /* libsqlite3.tbd in Frameworks */,
 				E9271D451C3CC752000DBADF /* QuartzCore.framework in Frameworks */,
 				E9271D431C3CC749000DBADF /* OpenGLES.framework in Frameworks */,
 				E9271D411C3CC735000DBADF /* CoreVideo.framework in Frameworks */,
+				3C70A163241B2C4E00A5185F /* ImageIO.framework in Frameworks */,
 				E9ED2EE11C0C551900BA59A6 /* libz.tbd in Frameworks */,
-				D27B1FE71E4D76BE00318031 /* libUCloudMediaPlayer.a in Frameworks */,
 				E966277C1BE75E5D00FA5B03 /* CoreMedia.framework in Frameworks */,
 				E966277A1BE75E5000FA5B03 /* AVFoundation.framework in Frameworks */,
 				E96627781BE75E4900FA5B03 /* VideoToolbox.framework in Frameworks */,
@@ -545,18 +527,87 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		3C44F424240BE4D300445129 /* giftAnimation */ = {
+			isa = PBXGroup;
+			children = (
+				3C44F425240BE51600445129 /* JPGiftManager */,
+			);
+			path = giftAnimation;
+			sourceTree = "<group>";
+		};
+		3C44F425240BE51600445129 /* JPGiftManager */ = {
+			isa = PBXGroup;
+			children = (
+				3C44F448240CB0E700445129 /* X.png */,
+				3C44F449240CB0E700445129 /* X@2x.png */,
+				3C44F447240CB0E600445129 /* X@3x.png */,
+				3C44F429240BE51600445129 /* JPGiftCellModel.h */,
+				3C44F435240BE51600445129 /* JPGiftCellModel.m */,
+				3C44F432240BE51600445129 /* JPGiftCountLabel.h */,
+				3C44F42C240BE51600445129 /* JPGiftCountLabel.m */,
+				3C44F433240BE51600445129 /* JPGiftModel.h */,
+				3C44F42B240BE51600445129 /* JPGiftModel.m */,
+				3C44F42E240BE51600445129 /* JPGiftOperation.h */,
+				3C44F436240BE51600445129 /* JPGiftOperation.m */,
+				3C44F428240BE51600445129 /* JPGiftShowManager.h */,
+				3C44F430240BE51600445129 /* JPGiftShowManager.m */,
+				3C44F427240BE51600445129 /* JPGiftShowView.h */,
+				3C44F431240BE51600445129 /* JPGiftShowView.m */,
+			);
+			path = JPGiftManager;
+			sourceTree = "<group>";
+		};
 		D275D7C41E666C44001BBA61 /* @2x */ = {
 			isa = PBXGroup;
 			children = (
-				D2CC47181E7FFBED005459DF /* default_image@2x.png */,
+				3CCF879E24238806007570EB /* huanxin-logo@2x.png */,
+				3CCF879624220456007570EB /* webRefreshButton@2x.png */,
 				D275D7C51E666C44001BBA61 /* admin@2x.png */,
+				3CCF87142420DF2D007570EB /* attention@2x.png */,
+				3CCF877B2420ED3A007570EB /* auidence@2x.png */,
+				3CCF871D2420DF2F007570EB /* avatat_1@2x.png */,
+				3CCF871C2420DF2F007570EB /* avatat_2@2x.png */,
+				3CCF871E2420DF30007570EB /* avatat_3@2x.png */,
+				3CCF87242420DF32007570EB /* avatat_4@2x.png */,
+				3CCF87202420DF31007570EB /* avatat_5@2x.png */,
+				3CCF87252420DF32007570EB /* avatat_6@2x.png */,
+				3CCF87132420DF2C007570EB /* avatat_7@2x.png */,
 				D275D7C61E666C44001BBA61 /* back@2x.png */,
+				3CCF87162420DF2D007570EB /* backPic@2x.png */,
+				3CCF87282420DF33007570EB /* barrage@2x.png */,
 				D275D7C71E666C44001BBA61 /* chat@2x.png */,
 				D275D7C81E666C44001BBA61 /* close@2x.png */,
+				3CCF871B2420DF2F007570EB /* default_anchor_avatar@2x.png */,
+				3CCF86C6241F2C7D007570EB /* default_back_image@2x.png */,
+				D2CC47181E7FFBED005459DF /* default_image@2x.png */,
+				3CCF87642420E613007570EB /* gift.balloons@2x.png */,
+				3CCF87612420E611007570EB /* gift.bouquet@2x.png */,
+				3CCF875F2420E610007570EB /* gift.box@2x.png */,
+				3CCF87622420E611007570EB /* gift.cake@2x.png */,
+				3CCF87632420E613007570EB /* gift.dog@2x.png */,
+				3CCF87602420E611007570EB /* gift.rings@2x.png */,
+				3CCF875D2420E610007570EB /* gift.rose@2x.png */,
+				3CCF875E2420E610007570EB /* gift.wishs_come_true@2x.png */,
+				3CCF87812420ED8F007570EB /* giftrecord@2x.png */,
+				3CCF87232420DF32007570EB /* ic_chat@2x.png */,
+				3CCF87152420DF2D007570EB /* ic_exit@2x.png */,
+				3CCF871F2420DF30007570EB /* ic_Gift@2x.png */,
+				3CCF87782420ED0A007570EB /* ic_praise@2x.png */,
+				3CCF87772420ED0A007570EB /* ic_praised@2x.png */,
+				3CCF87212420DF31007570EB /* icon-backAction@2x.png */,
+				3CCF87832420ED9D007570EB /* icon-broadcast@2x.png */,
+				3CCF871A2420DF2E007570EB /* icon-enter@2x.png */,
+				3CCF87462420DF56007570EB /* icon-liveList-selected@2x.png */,
+				3CCF87412420DF54007570EB /* icon-liveList-unSelected@2x.png */,
+				3CCF87442420DF55007570EB /* icon-living@2x.png */,
+				3CCF87432420DF55007570EB /* icon-setting-selected@2x.png */,
+				3CCF87422420DF55007570EB /* icon-setting-unSelected@2x.png */,
+				3CCF87872420EE3C007570EB /* Icons-Plus-white@2x.png */,
 				D275D7C91E666C44001BBA61 /* kick@2x.png */,
 				D275D7CA1E666C44001BBA61 /* like@2x.png */,
 				D275D7CB1E666C44001BBA61 /* list@2x.png */,
 				D275D7CC1E666C44001BBA61 /* live@2x.png */,
+				3CCF87452420DF56007570EB /* Logo@2x.png */,
 				D275D7CD1E666C44001BBA61 /* notalk@2x.png */,
 				D275D7CE1E666C44001BBA61 /* open@2x.png */,
 				D275D7CF1E666C44001BBA61 /* reversal_camera@2x.png */,
@@ -568,15 +619,54 @@
 		D275D7D11E666C44001BBA61 /* @3x */ = {
 			isa = PBXGroup;
 			children = (
-				D2CC471A1E7FFBF5005459DF /* default_image@3x.png */,
+				3CCF87A024238810007570EB /* huanxin-logo@3x.png */,
+				3CCF87982422045E007570EB /* webRefreshButton@3x.png */,
 				D275D7D21E666C44001BBA61 /* admin@3x.png */,
+				3CCF86DC2420DE92007570EB /* attention@3x.png */,
+				3CCF877D2420ED45007570EB /* auidence@3x.png */,
+				3CCF875B2420E54E007570EB /* avatat_1@3x.png */,
+				3CCF86E22420DE94007570EB /* avatat_2@3x.png */,
+				3CCF86E32420DE94007570EB /* avatat_3@3x.png */,
+				3CCF86DD2420DE92007570EB /* avatat_4@3x.png */,
+				3CCF86DB2420DE92007570EB /* avatat_5@3x.png */,
+				3CCF86E12420DE94007570EB /* avatat_6@3x.png */,
+				3CCF86E52420DE95007570EB /* avatat_7@3x.png */,
 				D275D7D31E666C44001BBA61 /* back@3x.png */,
+				3CCF86E42420DE95007570EB /* backPic@3x.png */,
+				3CCF86E72420DE96007570EB /* barrage@3x.png */,
 				D275D7D41E666C44001BBA61 /* chat@3x.png */,
 				D275D7D51E666C44001BBA61 /* close@3x.png */,
+				3CCF86EC2420DE98007570EB /* default_anchor_avatar@3x.png */,
+				3CCF86C8241F2C8D007570EB /* default_back_image@3x.png */,
+				D2CC471A1E7FFBF5005459DF /* default_image@3x.png */,
+				3CCF87042420DEDE007570EB /* gift.balloons@3x.png */,
+				3CCF87032420DEDD007570EB /* gift.bouquet@3x.png */,
+				3CCF87072420DEDF007570EB /* gift.box@3x.png */,
+				3CCF87082420DEDF007570EB /* gift.cake@3x.png */,
+				3CCF870A2420DEE0007570EB /* gift.dog@3x.png */,
+				3CCF87092420DEDF007570EB /* gift.rings@3x.png */,
+				3CCF87062420DEDE007570EB /* gift.rose@3x.png */,
+				3CCF87052420DEDE007570EB /* gift.wishs_come_true@3x.png */,
+				3CCF877F2420ED7E007570EB /* giftrecord@3x.png */,
+				3CCF86D92420DE91007570EB /* ic_chat@3x.png */,
+				3CCF86DA2420DE92007570EB /* ic_exit@3x.png */,
+				3CCF86E02420DE94007570EB /* ic_Gift@3x.png */,
+				3CCF87752420ECF9007570EB /* ic_praise@3x.png */,
+				3CCF87732420ECEF007570EB /* ic_praised@3x.png */,
+				3CCF86EA2420DE97007570EB /* icon-backAction@3x.png */,
+				3CCF87852420EDA7007570EB /* icon-broadcast@3x.png */,
+				3CCF86E82420DE96007570EB /* icon-enter@3x.png */,
+				3CCF874F2420DF74007570EB /* icon-liveList-selected@3x.png */,
+				3CCF87522420DF75007570EB /* icon-liveList-unSelected@3x.png */,
+				3CCF87502420DF75007570EB /* icon-living@3x.png */,
+				3CCF874E2420DF73007570EB /* icon-setting-selected@3x.png */,
+				3CCF874D2420DF73007570EB /* icon-setting-unSelected@3x.png */,
+				3CCF878B2420EE8A007570EB /* Icons-Plus-white@3x.png */,
 				D275D7D61E666C44001BBA61 /* kick@3x.png */,
 				D275D7D71E666C44001BBA61 /* like@3x.png */,
 				D275D7D81E666C44001BBA61 /* list@3x.png */,
 				D275D7D91E666C44001BBA61 /* live@3x.png */,
+				3CCF87512420DF75007570EB /* Logo@3x.png */,
 				D275D7DA1E666C44001BBA61 /* notalk@3x.png */,
 				D275D7DB1E666C44001BBA61 /* open@3x.png */,
 				D275D7DC1E666C44001BBA61 /* reversal_camera@3x.png */,
@@ -585,283 +675,13 @@
 			path = "@3x";
 			sourceTree = "<group>";
 		};
-		D27B1F2D1E4D76BD00318031 /* Player */ = {
-			isa = PBXGroup;
-			children = (
-				D27B1F2E1E4D76BD00318031 /* libUCloudMediaPlayer.a */,
-				D27B1F2F1E4D76BD00318031 /* UCloudMediaModule.h */,
-				D27B1F301E4D76BD00318031 /* UCloudMediaPlayback.h */,
-				D27B1F311E4D76BD00318031 /* UCloudMediaPlayer.h */,
-				D27B1F321E4D76BD00318031 /* UCloudPlayback.h */,
-			);
-			path = Player;
-			sourceTree = "<group>";
-		};
-		D27B1F331E4D76BD00318031 /* Recorder */ = {
-			isa = PBXGroup;
-			children = (
-				D27B1F341E4D76BD00318031 /* CameraServer.h */,
-				D27B1F351E4D76BD00318031 /* Filter */,
-				D27B1FE21E4D76BE00318031 /* FilterManager.h */,
-				D27B1FE31E4D76BE00318031 /* FilterManager.m */,
-				D27B1FE41E4D76BE00318031 /* libUCloudMediaRecorder.a */,
-				D27B1FE51E4D76BE00318031 /* NSString+UCloudCameraCode.h */,
-				D27B1FE61E4D76BE00318031 /* UCloudRecorderTypeDef.h */,
-			);
-			path = Recorder;
-			sourceTree = "<group>";
-		};
-		D27B1F351E4D76BD00318031 /* Filter */ = {
-			isa = PBXGroup;
-			children = (
-				D27B1F361E4D76BD00318031 /* UCloudGLProgram.h */,
-				D27B1F371E4D76BD00318031 /* UCloudGPUImage.h */,
-				D27B1F381E4D76BD00318031 /* UCloudGPUImage3x3ConvolutionFilter.h */,
-				D27B1F391E4D76BD00318031 /* UCloudGPUImage3x3TextureSamplingFilter.h */,
-				D27B1F3A1E4D76BD00318031 /* UCloudGPUImageAdaptiveThresholdFilter.h */,
-				D27B1F3B1E4D76BD00318031 /* UCloudGPUImageAddBlendFilter.h */,
-				D27B1F3C1E4D76BD00318031 /* UCloudGPUImageAlphaBlendFilter.h */,
-				D27B1F3D1E4D76BD00318031 /* UCloudGPUImageAmatorkaFilter.h */,
-				D27B1F3E1E4D76BD00318031 /* UCloudGPUImageAverageColor.h */,
-				D27B1F3F1E4D76BD00318031 /* UCloudGPUImageAverageLuminanceThresholdFilter.h */,
-				D27B1F401E4D76BD00318031 /* UCloudGPUImageBeautyFilter.h */,
-				D27B1F411E4D76BD00318031 /* UCloudGPUImageBeautyFilter2.h */,
-				D27B1F421E4D76BD00318031 /* UCloudGPUImageBilateralFilter.h */,
-				D27B1F431E4D76BD00318031 /* UCloudGPUImageBoxBlurFilter.h */,
-				D27B1F441E4D76BD00318031 /* UCloudGPUImageBrightnessFilter.h */,
-				D27B1F451E4D76BD00318031 /* UCloudGPUImageBuffer.h */,
-				D27B1F461E4D76BD00318031 /* UCloudGPUImageBulgeDistortionFilter.h */,
-				D27B1F471E4D76BD00318031 /* UCloudGPUImageCannyEdgeDetectionFilter.h */,
-				D27B1F481E4D76BD00318031 /* UCloudGPUImageCGAColorspaceFilter.h */,
-				D27B1F491E4D76BD00318031 /* UCloudGPUImageChromaKeyBlendFilter.h */,
-				D27B1F4A1E4D76BD00318031 /* UCloudGPUImageChromaKeyFilter.h */,
-				D27B1F4B1E4D76BD00318031 /* UCloudGPUImageClosingFilter.h */,
-				D27B1F4C1E4D76BD00318031 /* UCloudGPUImageColorBlendFilter.h */,
-				D27B1F4D1E4D76BD00318031 /* UCloudGPUImageColorBurnBlendFilter.h */,
-				D27B1F4E1E4D76BD00318031 /* UCloudGPUImageColorConversion.h */,
-				D27B1F4F1E4D76BD00318031 /* UCloudGPUImageColorDodgeBlendFilter.h */,
-				D27B1F501E4D76BD00318031 /* UCloudGPUImageColorInvertFilter.h */,
-				D27B1F511E4D76BD00318031 /* UCloudGPUImageColorLocalBinaryPatternFilter.h */,
-				D27B1F521E4D76BD00318031 /* UCloudGPUImageColorMatrixFilter.h */,
-				D27B1F531E4D76BD00318031 /* UCloudGPUImageColorPackingFilter.h */,
-				D27B1F541E4D76BD00318031 /* UCloudGPUImageColourFASTFeatureDetector.h */,
-				D27B1F551E4D76BD00318031 /* UCloudGPUImageColourFASTSamplingOperation.h */,
-				D27B1F561E4D76BD00318031 /* UCloudGPUImageContext.h */,
-				D27B1F571E4D76BD00318031 /* UCloudGPUImageContrastFilter.h */,
-				D27B1F581E4D76BD00318031 /* UCloudGPUImageCropFilter.h */,
-				D27B1F591E4D76BD00318031 /* UCloudGPUImageCrosshairGenerator.h */,
-				D27B1F5A1E4D76BD00318031 /* UCloudGPUImageCrosshatchFilter.h */,
-				D27B1F5B1E4D76BD00318031 /* UCloudGPUImageDarkenBlendFilter.h */,
-				D27B1F5C1E4D76BD00318031 /* UCloudGPUImageDifferenceBlendFilter.h */,
-				D27B1F5D1E4D76BD00318031 /* UCloudGPUImageDilationFilter.h */,
-				D27B1F5E1E4D76BD00318031 /* UCloudGPUImageDirectionalNonMaximumSuppressionFilter.h */,
-				D27B1F5F1E4D76BD00318031 /* UCloudGPUImageDirectionalSobelEdgeDetectionFilter.h */,
-				D27B1F601E4D76BD00318031 /* UCloudGPUImageDissolveBlendFilter.h */,
-				D27B1F611E4D76BD00318031 /* UCloudGPUImageDivideBlendFilter.h */,
-				D27B1F621E4D76BD00318031 /* UCloudGPUImageEmbossFilter.h */,
-				D27B1F631E4D76BD00318031 /* UCloudGPUImageErosionFilter.h */,
-				D27B1F641E4D76BD00318031 /* UCloudGPUImageExclusionBlendFilter.h */,
-				D27B1F651E4D76BD00318031 /* UCloudGPUImageExposureFilter.h */,
-				D27B1F661E4D76BD00318031 /* UCloudGPUImageFalseColorFilter.h */,
-				D27B1F671E4D76BD00318031 /* UCloudGPUImageFASTCornerDetectionFilter.h */,
-				D27B1F681E4D76BD00318031 /* UCloudGPUImageFilter.h */,
-				D27B1F691E4D76BD00318031 /* UCloudGPUImageFilterGroup.h */,
-				D27B1F6A1E4D76BD00318031 /* UCloudGPUImageFilterPipeline.h */,
-				D27B1F6B1E4D76BD00318031 /* UCloudGPUImageFourInputFilter.h */,
-				D27B1F6C1E4D76BD00318031 /* UCloudGPUImageFramebuffer.h */,
-				D27B1F6D1E4D76BD00318031 /* UCloudGPUImageFramebufferCache.h */,
-				D27B1F6E1E4D76BD00318031 /* UCloudGPUImageGammaFilter.h */,
-				D27B1F6F1E4D76BD00318031 /* UCloudGPUImageGaussianBlurFilter.h */,
-				D27B1F701E4D76BD00318031 /* UCloudGPUImageGaussianBlurPositionFilter.h */,
-				D27B1F711E4D76BD00318031 /* UCloudGPUImageGaussianSelectiveBlurFilter.h */,
-				D27B1F721E4D76BD00318031 /* UCloudGPUImageGlassSphereFilter.h */,
-				D27B1F731E4D76BD00318031 /* UCloudGPUImageGrayscaleFilter.h */,
-				D27B1F741E4D76BD00318031 /* UCloudGPUImageHalftoneFilter.h */,
-				D27B1F751E4D76BD00318031 /* UCloudGPUImageHardLightBlendFilter.h */,
-				D27B1F761E4D76BD00318031 /* UCloudGPUImageHarrisCornerDetectionFilter.h */,
-				D27B1F771E4D76BD00318031 /* UCloudGPUImageHazeFilter.h */,
-				D27B1F781E4D76BD00318031 /* UCloudGPUImageHighlightShadowFilter.h */,
-				D27B1F791E4D76BD00318031 /* UCloudGPUImageHighPassFilter.h */,
-				D27B1F7A1E4D76BD00318031 /* UCloudGPUImageHistogramEqualizationFilter.h */,
-				D27B1F7B1E4D76BD00318031 /* UCloudGPUImageHistogramFilter.h */,
-				D27B1F7C1E4D76BD00318031 /* UCloudGPUImageHistogramGenerator.h */,
-				D27B1F7D1E4D76BD00318031 /* UCloudGPUImageHoughTransformLineDetector.h */,
-				D27B1F7E1E4D76BD00318031 /* UCloudGPUImageHSBFilter.h */,
-				D27B1F7F1E4D76BD00318031 /* UCloudGPUImageHueBlendFilter.h */,
-				D27B1F801E4D76BD00318031 /* UCloudGPUImageHueFilter.h */,
-				D27B1F811E4D76BD00318031 /* UCloudGPUImageiOSBlurFilter.h */,
-				D27B1F821E4D76BD00318031 /* UCloudGPUImageJFAVoronoiFilter.h */,
-				D27B1F831E4D76BD00318031 /* UCloudGPUImageKuwaharaFilter.h */,
-				D27B1F841E4D76BD00318031 /* UCloudGPUImageKuwaharaRadius3Filter.h */,
-				D27B1F851E4D76BD00318031 /* UCloudGPUImageLanczosResamplingFilter.h */,
-				D27B1F861E4D76BD00318031 /* UCloudGPUImageLaplacianFilter.h */,
-				D27B1F871E4D76BD00318031 /* UCloudGPUImageLevelsFilter.h */,
-				D27B1F881E4D76BD00318031 /* UCloudGPUImageLightenBlendFilter.h */,
-				D27B1F891E4D76BD00318031 /* UCloudGPUImageLinearBurnBlendFilter.h */,
-				D27B1F8A1E4D76BD00318031 /* UCloudGPUImageLineGenerator.h */,
-				D27B1F8B1E4D76BD00318031 /* UCloudGPUImageLocalBinaryPatternFilter.h */,
-				D27B1F8C1E4D76BD00318031 /* UCloudGPUImageLookupFilter.h */,
-				D27B1F8D1E4D76BD00318031 /* UCloudGPUImageLowPassFilter.h */,
-				D27B1F8E1E4D76BD00318031 /* UCloudGPUImageLuminanceRangeFilter.h */,
-				D27B1F8F1E4D76BD00318031 /* UCloudGPUImageLuminanceThresholdFilter.h */,
-				D27B1F901E4D76BD00318031 /* UCloudGPUImageLuminosity.h */,
-				D27B1F911E4D76BD00318031 /* UCloudGPUImageLuminosityBlendFilter.h */,
-				D27B1F921E4D76BD00318031 /* UCloudGPUImageMaskFilter.h */,
-				D27B1F931E4D76BD00318031 /* UCloudGPUImageMedianFilter.h */,
-				D27B1F941E4D76BD00318031 /* UCloudGPUImageMissEtikateFilter.h */,
-				D27B1F951E4D76BD00318031 /* UCloudGPUImageMonochromeFilter.h */,
-				D27B1F961E4D76BD00318031 /* UCloudGPUImageMosaicFilter.h */,
-				D27B1F971E4D76BD00318031 /* UCloudGPUImageMotionBlurFilter.h */,
-				D27B1F981E4D76BD00318031 /* UCloudGPUImageMotionDetector.h */,
-				D27B1F991E4D76BD00318031 /* UCloudGPUImageMovie.h */,
-				D27B1F9A1E4D76BD00318031 /* UCloudGPUImageMovieComposition.h */,
-				D27B1F9B1E4D76BD00318031 /* UCloudGPUImageMovieWriter.h */,
-				D27B1F9C1E4D76BD00318031 /* UCloudGPUImageMultiplyBlendFilter.h */,
-				D27B1F9D1E4D76BD00318031 /* UCloudGPUImageNobleCornerDetectionFilter.h */,
-				D27B1F9E1E4D76BD00318031 /* UCloudGPUImageNonMaximumSuppressionFilter.h */,
-				D27B1F9F1E4D76BD00318031 /* UCloudGPUImageNormalBlendFilter.h */,
-				D27B1FA01E4D76BD00318031 /* UCloudGPUImageOpacityFilter.h */,
-				D27B1FA11E4D76BD00318031 /* UCloudGPUImageOpeningFilter.h */,
-				D27B1FA21E4D76BD00318031 /* UCloudGPUImageOutput.h */,
-				D27B1FA31E4D76BD00318031 /* UCloudGPUImageOverlayBlendFilter.h */,
-				D27B1FA41E4D76BD00318031 /* UCloudGPUImageParallelCoordinateLineTransformFilter.h */,
-				D27B1FA51E4D76BD00318031 /* UCloudGPUImagePerlinNoiseFilter.h */,
-				D27B1FA61E4D76BD00318031 /* UCloudGPUImagePicture+TextureSubimage.h */,
-				D27B1FA71E4D76BD00318031 /* UCloudGPUImagePicture.h */,
-				D27B1FA81E4D76BD00318031 /* UCloudGPUImagePinchDistortionFilter.h */,
-				D27B1FA91E4D76BD00318031 /* UCloudGPUImagePixellateFilter.h */,
-				D27B1FAA1E4D76BD00318031 /* UCloudGPUImagePixellatePositionFilter.h */,
-				D27B1FAB1E4D76BD00318031 /* UCloudGPUImagePoissonBlendFilter.h */,
-				D27B1FAC1E4D76BD00318031 /* UCloudGPUImagePolarPixellateFilter.h */,
-				D27B1FAD1E4D76BD00318031 /* UCloudGPUImagePolkaDotFilter.h */,
-				D27B1FAE1E4D76BD00318031 /* UCloudGPUImagePosterizeFilter.h */,
-				D27B1FAF1E4D76BD00318031 /* UCloudGPUImagePrewittEdgeDetectionFilter.h */,
-				D27B1FB01E4D76BD00318031 /* UCloudGPUImageRawDataInput.h */,
-				D27B1FB11E4D76BD00318031 /* UCloudGPUImageRawDataOutput.h */,
-				D27B1FB21E4D76BD00318031 /* UCloudGPUImageRGBClosingFilter.h */,
-				D27B1FB31E4D76BD00318031 /* UCloudGPUImageRGBDilationFilter.h */,
-				D27B1FB41E4D76BD00318031 /* UCloudGPUImageRGBErosionFilter.h */,
-				D27B1FB51E4D76BD00318031 /* UCloudGPUImageRGBFilter.h */,
-				D27B1FB61E4D76BD00318031 /* UCloudGPUImageRGBOpeningFilter.h */,
-				D27B1FB71E4D76BD00318031 /* UCloudGPUImageSaturationBlendFilter.h */,
-				D27B1FB81E4D76BD00318031 /* UCloudGPUImageSaturationFilter.h */,
-				D27B1FB91E4D76BD00318031 /* UCloudGPUImageScreenBlendFilter.h */,
-				D27B1FBA1E4D76BD00318031 /* UCloudGPUImageSepiaFilter.h */,
-				D27B1FBB1E4D76BD00318031 /* UCloudGPUImageSharpenFilter.h */,
-				D27B1FBC1E4D76BD00318031 /* UCloudGPUImageShiTomasiFeatureDetectionFilter.h */,
-				D27B1FBD1E4D76BD00318031 /* UCloudGPUImageSingleComponentGaussianBlurFilter.h */,
-				D27B1FBE1E4D76BD00318031 /* UCloudGPUImageSketchFilter.h */,
-				D27B1FBF1E4D76BD00318031 /* UCloudGPUImageSmoothToonFilter.h */,
-				D27B1FC01E4D76BD00318031 /* UCloudGPUImageSobelEdgeDetectionFilter.h */,
-				D27B1FC11E4D76BD00318031 /* UCloudGPUImageSoftEleganceFilter.h */,
-				D27B1FC21E4D76BD00318031 /* UCloudGPUImageSoftLightBlendFilter.h */,
-				D27B1FC31E4D76BD00318031 /* UCloudGPUImageSolidColorGenerator.h */,
-				D27B1FC41E4D76BD00318031 /* UCloudGPUImageSourceOverBlendFilter.h */,
-				D27B1FC51E4D76BD00318031 /* UCloudGPUImageSphereRefractionFilter.h */,
-				D27B1FC61E4D76BD00318031 /* UCloudGPUImageStillCamera.h */,
-				D27B1FC71E4D76BD00318031 /* UCloudGPUImageStretchDistortionFilter.h */,
-				D27B1FC81E4D76BD00318031 /* UCloudGPUImageSubtractBlendFilter.h */,
-				D27B1FC91E4D76BD00318031 /* UCloudGPUImageSwirlFilter.h */,
-				D27B1FCA1E4D76BD00318031 /* UCloudGPUImageTextureInput.h */,
-				D27B1FCB1E4D76BD00318031 /* UCloudGPUImageTextureOutput.h */,
-				D27B1FCC1E4D76BD00318031 /* UCloudGPUImageThreeInputFilter.h */,
-				D27B1FCD1E4D76BD00318031 /* UCloudGPUImageThresholdEdgeDetectionFilter.h */,
-				D27B1FCE1E4D76BD00318031 /* UCloudGPUImageThresholdedNonMaximumSuppressionFilter.h */,
-				D27B1FCF1E4D76BD00318031 /* UCloudGPUImageThresholdSketchFilter.h */,
-				D27B1FD01E4D76BD00318031 /* UCloudGPUImageTiltShiftFilter.h */,
-				D27B1FD11E4D76BD00318031 /* UCloudGPUImageToneCurveFilter.h */,
-				D27B1FD21E4D76BD00318031 /* UCloudGPUImageToonFilter.h */,
-				D27B1FD31E4D76BD00318031 /* UCloudGPUImageTransformFilter.h */,
-				D27B1FD41E4D76BD00318031 /* UCloudGPUImageTwoInputCrossTextureSamplingFilter.h */,
-				D27B1FD51E4D76BD00318031 /* UCloudGPUImageTwoInputFilter.h */,
-				D27B1FD61E4D76BD00318031 /* UCloudGPUImageTwoPassFilter.h */,
-				D27B1FD71E4D76BD00318031 /* UCloudGPUImageTwoPassTextureSamplingFilter.h */,
-				D27B1FD81E4D76BD00318031 /* UCloudGPUImageUIElement.h */,
-				D27B1FD91E4D76BD00318031 /* UCloudGPUImageUnsharpMaskFilter.h */,
-				D27B1FDA1E4D76BD00318031 /* UCloudGPUImageVideoCamera.h */,
-				D27B1FDB1E4D76BD00318031 /* UCloudGPUImageView.h */,
-				D27B1FDC1E4D76BD00318031 /* UCloudGPUImageVignetteFilter.h */,
-				D27B1FDD1E4D76BE00318031 /* UCloudGPUImageVoronoiConsumerFilter.h */,
-				D27B1FDE1E4D76BE00318031 /* UCloudGPUImageWeakPixelInclusionFilter.h */,
-				D27B1FDF1E4D76BE00318031 /* UCloudGPUImageWhiteBalanceFilter.h */,
-				D27B1FE01E4D76BE00318031 /* UCloudGPUImageXYDerivativeFilter.h */,
-				D27B1FE11E4D76BE00318031 /* UCloudGPUImageZoomBlurFilter.h */,
-			);
-			path = Filter;
-			sourceTree = "<group>";
-		};
-		D27B1FEA1E4D770F00318031 /* PlayerUI */ = {
-			isa = PBXGroup;
-			children = (
-				D27B1FEB1E4D770F00318031 /* Class */,
-				D27B1FF61E4D770F00318031 /* PlayerManager.h */,
-				D27B1FF71E4D770F00318031 /* PlayerManager.m */,
-				D27B1FF81E4D770F00318031 /* Resuce */,
-				D27B20101E4D770F00318031 /* UCloudBrightnessView.h */,
-				D27B20111E4D770F00318031 /* UCloudBrightnessView.m */,
-				D27B20121E4D770F00318031 /* UCloudHeader.h */,
-				D27B20131E4D770F00318031 /* UCloudLoadingView.h */,
-				D27B20141E4D770F00318031 /* UCloudLoadingView.m */,
-				D27B20151E4D770F00318031 /* UCloudMediaViewController.h */,
-				D27B20161E4D770F00318031 /* UCloudMediaViewController.m */,
-				D27B20171E4D770F00318031 /* UCloudMediaViewController.xib */,
-				D27B20181E4D770F00318031 /* UCloudProgressView.h */,
-				D27B20191E4D770F00318031 /* UCloudProgressView.m */,
-			);
-			path = PlayerUI;
-			sourceTree = "<group>";
-		};
-		D27B1FEB1E4D770F00318031 /* Class */ = {
-			isa = PBXGroup;
-			children = (
-				D27B1FEC1E4D770F00318031 /* UIWindow+YzdHUD.h */,
-				D27B1FED1E4D770F00318031 /* UIWindow+YzdHUD.m */,
-				D27B1FEE1E4D770F00318031 /* YzdHUDBackgroundView.h */,
-				D27B1FEF1E4D770F00318031 /* YzdHUDBackgroundView.m */,
-				D27B1FF01E4D770F00318031 /* YzdHUDImageView.h */,
-				D27B1FF11E4D770F00318031 /* YzdHUDImageView.m */,
-				D27B1FF21E4D770F00318031 /* YzdHUDIndicator.h */,
-				D27B1FF31E4D770F00318031 /* YzdHUDIndicator.m */,
-				D27B1FF41E4D770F00318031 /* YzdHUDLabel.h */,
-				D27B1FF51E4D770F00318031 /* YzdHUDLabel.m */,
-			);
-			path = Class;
-			sourceTree = "<group>";
-		};
-		D27B1FF81E4D770F00318031 /* Resuce */ = {
-			isa = PBXGroup;
-			children = (
-				D27B1FF91E4D770F00318031 /* bg_screen_shot_complete.png */,
-				D27B1FFA1E4D770F00318031 /* bg_screen_shot_complete@2x.png */,
-				D27B1FFB1E4D770F00318031 /* bg_screen_shot_complete@3x.png */,
-				D27B1FFC1E4D770F00318031 /* bg_screen_shot_frame.png */,
-				D27B1FFD1E4D770F00318031 /* bright_point.png */,
-				D27B1FFE1E4D770F00318031 /* brightness_bgiphone.png */,
-				D27B1FFF1E4D770F00318031 /* brightness_bg~iphone@3x.png */,
-				D27B20001E4D770F00318031 /* danmu.png */,
-				D27B20011E4D770F00318031 /* danmu_h.png */,
-				D27B20021E4D770F00318031 /* ic_screen_shot.png */,
-				D27B20031E4D770F00318031 /* icon_bottomview_brightness_button_normal.png */,
-				D27B20041E4D770F00318031 /* icon_bottomview_brightness_button_selected.png */,
-				D27B20051E4D770F00318031 /* icon_bottomview_pause_button_normal.png */,
-				D27B20061E4D770F00318031 /* icon_bottomview_play_button_normal.png */,
-				D27B20071E4D770F00318031 /* icon_bottomview_volume_button_normal.png */,
-				D27B20081E4D770F00318031 /* icon_bottomview_volume_button_selected.png */,
-				D27B20091E4D770F00318031 /* icon_play_status.png */,
-				D27B200A1E4D770F00318031 /* icon_screen_shot_action.png */,
-				D27B200B1E4D770F00318031 /* icon_topview_left__button_selected.png */,
-				D27B200C1E4D770F00318031 /* icon_topview_left_button_normal.png */,
-				D27B200D1E4D770F00318031 /* icon_topview_right_button_normal.png */,
-				D27B200E1E4D770F00318031 /* icon_topview_right_button_selected.png */,
-				D27B200F1E4D770F00318031 /* loading.png */,
-			);
-			path = Resuce;
-			sourceTree = "<group>";
-		};
 		D2E368891D3F243F00B1C90C /* liveView */ = {
 			isa = PBXGroup;
 			children = (
+				3C44F424240BE4D300445129 /* giftAnimation */,
 				D2E369941D40AF4800B1C90C /* cell */,
+				3C72AD6A240F97C3007BC99F /* EaseEmoticonView.h */,
+				3C72AD6B240F97CA007BC99F /* EaseEmoticonView.m */,
 				D2E3688C1D3F243F00B1C90C /* EaseChatView.h */,
 				D2E3688D1D3F243F00B1C90C /* EaseChatView.m */,
 				D2E3688E1D3F243F00B1C90C /* EaseEndLiveView.h */,
@@ -880,6 +700,22 @@
 				D2E368B61D3F7E7800B1C90C /* EaseProfileLiveView.m */,
 				D21C545F1E658F8B0019A341 /* EaseAdminView.h */,
 				D21C54601E658F8B0019A341 /* EaseAdminView.m */,
+				3C1237E223FA445F00C4135B /* EaseAnchorCardView.h */,
+				3C1237E323FA445F00C4135B /* EaseAnchorCardView.m */,
+				3C12380C23FD1CA500C4135B /* EaseGiftConfirmView.h */,
+				3C12380F23FD2EED00C4135B /* EaseKeyBoardView.h */,
+				3C12381023FD2EED00C4135B /* EaseKeyBoardView.m */,
+				3C12381223FD30E000C4135B /* EaseCustomKeyBoardView.h */,
+				3C12380D23FD1CA500C4135B /* EaseGiftConfirmView.m */,
+				3C12381323FD30E000C4135B /* EaseCustomKeyBoardView.m */,
+				3C44F44D240CF0C100445129 /* EaseCustomSwitch.h */,
+				3C44F44E240CF0C100445129 /* EaseCustomSwitch.m */,
+				3C9F89E9240E3C3C00653B2F /* EaseAudienceBehaviorView.h */,
+				3C9F89EA240E3C3C00653B2F /* EaseAudienceBehaviorView.m */,
+				3C8AD50C24127AE2002B6464 /* EaseGiftListView.h */,
+				3C8AD50D24127AE2002B6464 /* EaseGiftListView.m */,
+				3CCF86CA241F3379007570EB /* EaseFinishLiveView.h */,
+				3CCF86CB241F3379007570EB /* EaseFinishLiveView.m */,
 			);
 			path = liveView;
 			sourceTree = "<group>";
@@ -900,8 +736,6 @@
 		D2F4E0EA1D12C8AB00BB7E1A /* EaseMobLiveDemo */ = {
 			isa = PBXGroup;
 			children = (
-				D27B1FEA1E4D770F00318031 /* PlayerUI */,
-				D2F4E14F1D12C8AB00BB7E1A /* lib */,
 				D2F4E0EB1D12C8AB00BB7E1A /* AppDelegate+Hyphenate.h */,
 				D2F4E0EC1D12C8AB00BB7E1A /* AppDelegate+Hyphenate.m */,
 				D2F4E0EF1D12C8AB00BB7E1A /* AppDelegate.h */,
@@ -921,6 +755,8 @@
 		D2F4E0F51D12C8AB00BB7E1A /* hyphenate */ = {
 			isa = PBXGroup;
 			children = (
+				3C8AD5132412AD41002B6464 /* EaseTransitionViewController.h */,
+				3C8AD5142412AD41002B6464 /* EaseTransitionViewController.m */,
 				D2F4E10C1D12C8AB00BB7E1A /* EaseLoginViewController.h */,
 				D2F4E10D1D12C8AB00BB7E1A /* EaseLoginViewController.m */,
 				D2E368781D3CFD3500B1C90C /* EaseSignUpViewController.h */,
@@ -982,6 +818,8 @@
 				D2E3687F1D3E141D00B1C90C /* UIView+Position.m */,
 				D23C12A11E6FFCD6007C5012 /* NSDictionary+SafeValue.h */,
 				D23C12A21E6FFCD6007C5012 /* NSDictionary+SafeValue.m */,
+				3C72AD63240F8E2C007BC99F /* UIViewController+HUD.h */,
+				3C72AD64240F8E2C007BC99F /* UIViewController+HUD.m */,
 			);
 			path = category;
 			sourceTree = "<group>";
@@ -995,6 +833,10 @@
 				D2F4E1141D12C8AB00BB7E1A /* EaseLiveViewController.m */,
 				D2E36B3F1D41CD2900B1C90C /* EaseSearchDisplayController.h */,
 				D2E36B401D41CD2900B1C90C /* EaseSearchDisplayController.m */,
+				3C27576223F293A4004DF2C3 /* EaseSettingsViewController.h */,
+				3C27576323F293A4004DF2C3 /* EaseSettingsViewController.m */,
+				3CCF87932421FD21007570EB /* EaseAboutHuanxinViewController.h */,
+				3CCF87942421FD21007570EB /* EaseAboutHuanxinViewController.m */,
 			);
 			path = live;
 			sourceTree = "<group>";
@@ -1067,10 +909,20 @@
 		D2F4E1361D12C8AB00BB7E1A /* util */ = {
 			isa = PBXGroup;
 			children = (
+				3C72AD6D240F9804007BC99F /* EMEmoticonGroup.h */,
+				3C72AD6E240F9804007BC99F /* EMEmoticonGroup.m */,
+				3C72AD66240F9429007BC99F /* EaseEmojiHelper.h */,
+				3C72AD67240F9431007BC99F /* EaseEmojiHelper.m */,
+				3C1237E523FB9B1200C4135B /* EaseLiveGiftHelper.h */,
+				3C1237E623FB9B1200C4135B /* EaseLiveGiftHelper.m */,
 				D2E36B421D41CF7600B1C90C /* RealtimeSearchUtil.h */,
 				D2E36B431D41CF7600B1C90C /* RealtimeSearchUtil.m */,
 				D27B203E1E51AAA800318031 /* EaseHttpManager.h */,
 				D27B203F1E51AAA800318031 /* EaseHttpManager.m */,
+				3C1238872406839700C4135B /* EaseDefaultDataHelper.h */,
+				3C1238882406839700C4135B /* EaseDefaultDataHelper.m */,
+				3C70A15E241A654E00A5185F /* EaseCustomMessageHelper.h */,
+				3C70A15F241A654E00A5185F /* EaseCustomMessageHelper.m */,
 			);
 			path = util;
 			sourceTree = "<group>";
@@ -1097,20 +949,12 @@
 			path = animation;
 			sourceTree = "<group>";
 		};
-		D2F4E14F1D12C8AB00BB7E1A /* lib */ = {
-			isa = PBXGroup;
-			children = (
-				D27B1F2D1E4D76BD00318031 /* Player */,
-				D27B1F331E4D76BD00318031 /* Recorder */,
-			);
-			path = lib;
-			sourceTree = "<group>";
-		};
 		E93E8F451CC9D16B0076EC23 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				D2FD8DC71E5C6A3B0097B20D /* libstdc++.tbd */,
 				D293607E1D192EB8003F14C6 /* libiconv.tbd */,
+				3C72AD69240F9559007BC99F /* CoreServices.framework */,
 				D23E25311CE0380A007506CB /* MobileCoreServices.framework */,
 				D23E252F1CE037F6007506CB /* SystemConfiguration.framework */,
 				D23E252D1CE0379E007506CB /* ImageIO.framework */,
@@ -1124,7 +968,6 @@
 				E96627791BE75E5000FA5B03 /* AVFoundation.framework */,
 				E96627771BE75E4900FA5B03 /* VideoToolbox.framework */,
 				E96627751BE75E4000FA5B03 /* AudioToolbox.framework */,
-				9A41D9499C63F9EC6616B282 /* libPods-UCloudMediaRecorderDemo.a */,
 				DF86793993FB1D45A5254772 /* libPods-EaseMobLiveDemo.a */,
 			);
 			name = Frameworks;
@@ -1133,6 +976,7 @@
 		E94670C61BD78B9B00374D7A = {
 			isa = PBXGroup;
 			children = (
+				3C1238A92408C97300C4135B /* Zapfino.ttf */,
 				E96F3D891C17FE410099718A /* Default-568h@2x.png */,
 				D2F4E0EA1D12C8AB00BB7E1A /* EaseMobLiveDemo */,
 				E93E8F451CC9D16B0076EC23 /* Frameworks */,
@@ -1144,7 +988,7 @@
 		E94670D01BD78B9B00374D7A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E94670CF1BD78B9B00374D7A /* EaseMobLiveDemo.app */,
+				E94670CF1BD78B9B00374D7A /* 环信聊天室.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1160,8 +1004,9 @@
 				E94670CB1BD78B9B00374D7A /* Sources */,
 				E94670CC1BD78B9B00374D7A /* Frameworks */,
 				E94670CD1BD78B9B00374D7A /* Resources */,
-				835E40F17F3084ECE0D18697 /* [CP] Embed Pods Frameworks */,
-				85E3A882B167893883305CC1 /* [CP] Copy Pods Resources */,
+				3C9F89F4240E598100653B2F /* Embed Frameworks */,
+				462FB34BC02A1DBC04A319ED /* [CP] Copy Pods Resources */,
+				4D4531831C2BB107ED7A2AF9 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1169,7 +1014,7 @@
 			);
 			name = EaseMobLiveDemo;
 			productName = UCloudMediaRecorderDemo;
-			productReference = E94670CF1BD78B9B00374D7A /* EaseMobLiveDemo.app */;
+			productReference = E94670CF1BD78B9B00374D7A /* 环信聊天室.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1198,6 +1043,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 				"zh-Hans",
@@ -1217,71 +1063,129 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D27B20321E4D770F00318031 /* icon_topview_left__button_selected.png in Resources */,
-				D27B20261E4D770F00318031 /* brightness_bg~iphone@3x.png in Resources */,
+				3CCF87102420DEE0007570EB /* gift.cake@3x.png in Resources */,
+				3C1238AA2408C97300C4135B /* Zapfino.ttf in Resources */,
+				3CCF87312420DF34007570EB /* icon-enter@2x.png in Resources */,
+				3CCF87532420DF76007570EB /* icon-setting-unSelected@3x.png in Resources */,
 				D2F4E2541D12C8AB00BB7E1A /* iconfont.svg in Resources */,
-				D27B202C1E4D770F00318031 /* icon_bottomview_pause_button_normal.png in Resources */,
+				3CCF87112420DEE0007570EB /* gift.rings@3x.png in Resources */,
 				D2F4E2431D12C8AB00BB7E1A /* sr_refresh@2X.png in Resources */,
-				D27B20341E4D770F00318031 /* icon_topview_right_button_normal.png in Resources */,
+				3CCF87562420DF76007570EB /* icon-living@3x.png in Resources */,
 				D275D7EC1E666C44001BBA61 /* chat@3x.png in Resources */,
 				D2F4E2421D12C8AB00BB7E1A /* sr_refresh.png in Resources */,
-				D27B202B1E4D770F00318031 /* icon_bottomview_brightness_button_selected.png in Resources */,
-				D27B20201E4D770F00318031 /* bg_screen_shot_complete.png in Resources */,
-				D27B20351E4D770F00318031 /* icon_topview_right_button_selected.png in Resources */,
-				D27B202D1E4D770F00318031 /* icon_bottomview_play_button_normal.png in Resources */,
 				D275D7E91E666C44001BBA61 /* search@2x.png in Resources */,
 				D2F4E2501D12C8AB00BB7E1A /* demo.css in Resources */,
 				D2F4E2521D12C8AB00BB7E1A /* iconfont.css in Resources */,
+				3C44F44A240CB0E700445129 /* X@3x.png in Resources */,
+				3CCF86FD2420DE98007570EB /* barrage@3x.png in Resources */,
+				3CCF86F12420DE98007570EB /* avatat_5@3x.png in Resources */,
 				D275D7E01E666C44001BBA61 /* chat@2x.png in Resources */,
-				D27B20231E4D770F00318031 /* bg_screen_shot_frame.png in Resources */,
-				D27B203A1E4D770F00318031 /* UCloudMediaViewController.xib in Resources */,
 				D275D7E31E666C44001BBA61 /* like@2x.png in Resources */,
-				D27B20311E4D770F00318031 /* icon_screen_shot_action.png in Resources */,
 				D2F4E2561D12C8AB00BB7E1A /* iconfont.woff in Resources */,
+				3CCF872B2420DF34007570EB /* attention@2x.png in Resources */,
+				3C44F44B240CB0E700445129 /* X.png in Resources */,
 				D275D7F21E666C44001BBA61 /* notalk@3x.png in Resources */,
+				3CCF87002420DE98007570EB /* icon-backAction@3x.png in Resources */,
 				D275D7DF1E666C44001BBA61 /* back@2x.png in Resources */,
+				3CCF87862420EDA7007570EB /* icon-broadcast@3x.png in Resources */,
 				D275D7DE1E666C44001BBA61 /* admin@2x.png in Resources */,
+				3CCF873C2420DF34007570EB /* avatat_6@2x.png in Resources */,
 				D2F4E26D1D12C8AB00BB7E1A /* Images.xcassets in Resources */,
+				3CCF87482420DF56007570EB /* icon-setting-unSelected@2x.png in Resources */,
+				3CCF87122420DEE0007570EB /* gift.dog@3x.png in Resources */,
+				3CCF872A2420DF34007570EB /* avatat_7@2x.png in Resources */,
+				3CCF872C2420DF34007570EB /* ic_exit@2x.png in Resources */,
+				3CCF870B2420DEE0007570EB /* gift.bouquet@3x.png in Resources */,
 				D275D7EF1E666C44001BBA61 /* like@3x.png in Resources */,
 				D275D7E61E666C44001BBA61 /* notalk@2x.png in Resources */,
-				D27B20241E4D770F00318031 /* bright_point.png in Resources */,
+				3CCF874B2420DF56007570EB /* Logo@2x.png in Resources */,
+				3CCF86FE2420DE98007570EB /* icon-enter@3x.png in Resources */,
+				3CCF87762420ECFA007570EB /* ic_praise@3x.png in Resources */,
+				3CCF87662420E613007570EB /* gift.wishs_come_true@2x.png in Resources */,
+				3CCF877C2420ED3A007570EB /* auidence@2x.png in Resources */,
+				3C44F44C240CB0E700445129 /* X@2x.png in Resources */,
 				D2CC471B1E7FFBF5005459DF /* default_image@3x.png in Resources */,
+				3CCF86C9241F2C8D007570EB /* default_back_image@3x.png in Resources */,
 				D2F4E25A1D12C8AB00BB7E1A /* live_default_user@2x.png in Resources */,
+				3CCF870C2420DEE0007570EB /* gift.balloons@3x.png in Resources */,
+				3CCF877E2420ED45007570EB /* auidence@3x.png in Resources */,
+				3CCF87742420ECEF007570EB /* ic_praised@3x.png in Resources */,
+				3CCF87882420EE3C007570EB /* Icons-Plus-white@2x.png in Resources */,
+				3CCF87382420DF34007570EB /* icon-backAction@2x.png in Resources */,
+				3CCF87322420DF34007570EB /* default_anchor_avatar@2x.png in Resources */,
+				3CCF87372420DF34007570EB /* avatat_5@2x.png in Resources */,
+				3CCF877A2420ED0B007570EB /* ic_praise@2x.png in Resources */,
+				3CCF876B2420E613007570EB /* gift.dog@2x.png in Resources */,
+				3CCF87A124238811007570EB /* huanxin-logo@3x.png in Resources */,
+				3CCF879724220457007570EB /* webRefreshButton@2x.png in Resources */,
+				3CCF86F02420DE98007570EB /* ic_exit@3x.png in Resources */,
+				3CCF87802420ED7E007570EB /* giftrecord@3x.png in Resources */,
+				3CCF87792420ED0B007570EB /* ic_praised@2x.png in Resources */,
+				3CCF873F2420DF34007570EB /* barrage@2x.png in Resources */,
 				D275D7E41E666C44001BBA61 /* list@2x.png in Resources */,
 				D275D7F31E666C44001BBA61 /* open@3x.png in Resources */,
+				3CCF873A2420DF34007570EB /* ic_chat@2x.png in Resources */,
 				D275D7F11E666C44001BBA61 /* live@3x.png in Resources */,
-				D27B20291E4D770F00318031 /* ic_screen_shot.png in Resources */,
-				D27B202A1E4D770F00318031 /* icon_bottomview_brightness_button_normal.png in Resources */,
+				3CCF87022420DE98007570EB /* default_anchor_avatar@3x.png in Resources */,
 				D275D7E21E666C44001BBA61 /* kick@2x.png in Resources */,
+				3CCF86F22420DE98007570EB /* attention@3x.png in Resources */,
+				3CCF87822420ED8F007570EB /* giftrecord@2x.png in Resources */,
 				D2F4E2531D12C8AB00BB7E1A /* iconfont.eot in Resources */,
+				3CCF872D2420DF34007570EB /* backPic@2x.png in Resources */,
+				3CCF870D2420DEE0007570EB /* gift.wishs_come_true@3x.png in Resources */,
+				3CCF86F32420DE98007570EB /* avatat_4@3x.png in Resources */,
+				3CCF87842420ED9D007570EB /* icon-broadcast@2x.png in Resources */,
+				3CCF875C2420E54F007570EB /* avatat_1@3x.png in Resources */,
 				D275D7EA1E666C44001BBA61 /* admin@3x.png in Resources */,
-				D27B202E1E4D770F00318031 /* icon_bottomview_volume_button_normal.png in Resources */,
-				D27B20221E4D770F00318031 /* bg_screen_shot_complete@3x.png in Resources */,
+				3CCF87652420E613007570EB /* gift.rose@2x.png in Resources */,
+				3CCF87472420DF56007570EB /* icon-liveList-unSelected@2x.png in Resources */,
 				D275D7E51E666C44001BBA61 /* live@2x.png in Resources */,
+				3CCF86F62420DE98007570EB /* ic_Gift@3x.png in Resources */,
+				3CCF876C2420E613007570EB /* gift.balloons@2x.png in Resources */,
 				D275D7E81E666C44001BBA61 /* reversal_camera@2x.png in Resources */,
-				D27B20331E4D770F00318031 /* icon_topview_left_button_normal.png in Resources */,
+				3CCF87692420E613007570EB /* gift.bouquet@2x.png in Resources */,
+				3CCF87352420DF34007570EB /* avatat_3@2x.png in Resources */,
+				3CCF870E2420DEE0007570EB /* gift.rose@3x.png in Resources */,
 				D2FD8DF61E6011670097B20D /* input_bar_1_icon_face@2x.png in Resources */,
+				3CCF874A2420DF56007570EB /* icon-living@2x.png in Resources */,
+				3CCF878C2420EE8B007570EB /* Icons-Plus-white@3x.png in Resources */,
+				3CCF87682420E613007570EB /* gift.rings@2x.png in Resources */,
+				3CCF87362420DF34007570EB /* ic_Gift@2x.png in Resources */,
 				D275D7ED1E666C44001BBA61 /* close@3x.png in Resources */,
 				D2CC47191E7FFBED005459DF /* default_image@2x.png in Resources */,
 				D2F4E2401D12C8AB00BB7E1A /* Main.storyboard in Resources */,
 				D275D7F01E666C44001BBA61 /* list@3x.png in Resources */,
+				3CCF87672420E613007570EB /* gift.box@2x.png in Resources */,
+				3CCF874C2420DF56007570EB /* icon-liveList-selected@2x.png in Resources */,
+				3CCF87332420DF34007570EB /* avatat_2@2x.png in Resources */,
 				D2E368221D3C7EFF00B1C90C /* Localizable.strings in Resources */,
-				D27B20271E4D770F00318031 /* danmu.png in Resources */,
-				D27B202F1E4D770F00318031 /* icon_bottomview_volume_button_selected.png in Resources */,
+				3CCF86FA2420DE98007570EB /* backPic@3x.png in Resources */,
+				3CCF87492420DF56007570EB /* icon-setting-selected@2x.png in Resources */,
 				D275D7EE1E666C44001BBA61 /* kick@3x.png in Resources */,
-				D27B20211E4D770F00318031 /* bg_screen_shot_complete@2x.png in Resources */,
+				3CCF87552420DF76007570EB /* icon-liveList-selected@3x.png in Resources */,
 				D2F4E2551D12C8AB00BB7E1A /* iconfont.ttf in Resources */,
-				D27B20251E4D770F00318031 /* brightness_bgiphone.png in Resources */,
+				3CCF87992422045F007570EB /* webRefreshButton@3x.png in Resources */,
+				3CCF86FB2420DE98007570EB /* avatat_7@3x.png in Resources */,
+				3CCF87572420DF76007570EB /* Logo@3x.png in Resources */,
+				3CCF87582420DF76007570EB /* icon-liveList-unSelected@3x.png in Resources */,
 				D275D7EB1E666C44001BBA61 /* back@3x.png in Resources */,
+				3CCF86F92420DE98007570EB /* avatat_3@3x.png in Resources */,
 				D2FD8DF71E6011670097B20D /* input_bar_1_icon_keyboard@2x.png in Resources */,
 				D2F4E23F1D12C8AB00BB7E1A /* LaunchScreen.xib in Resources */,
+				3CCF87542420DF76007570EB /* icon-setting-selected@3x.png in Resources */,
+				3CCF879F24238806007570EB /* huanxin-logo@2x.png in Resources */,
 				D275D7F41E666C44001BBA61 /* reversal_camera@3x.png in Resources */,
-				D27B20301E4D770F00318031 /* icon_play_status.png in Resources */,
+				3CCF876A2420E613007570EB /* gift.cake@2x.png in Resources */,
 				D275D7F51E666C44001BBA61 /* search@3x.png in Resources */,
-				D27B20281E4D770F00318031 /* danmu_h.png in Resources */,
+				3CCF87342420DF34007570EB /* avatat_1@2x.png in Resources */,
+				3CCF86F82420DE98007570EB /* avatat_2@3x.png in Resources */,
+				3CCF86F72420DE98007570EB /* avatat_6@3x.png in Resources */,
+				3CCF86EF2420DE98007570EB /* ic_chat@3x.png in Resources */,
 				D2F4E2511D12C8AB00BB7E1A /* demo.html in Resources */,
+				3CCF873B2420DF34007570EB /* avatat_4@2x.png in Resources */,
+				3CCF870F2420DEE0007570EB /* gift.box@3x.png in Resources */,
 				D275D7E71E666C44001BBA61 /* open@2x.png in Resources */,
-				D27B20361E4D770F00318031 /* loading.png in Resources */,
+				3CCF86C7241F2C7D007570EB /* default_back_image@2x.png in Resources */,
 				D275D7E11E666C44001BBA61 /* close@2x.png in Resources */,
 				E96F3D8A1C17FE410099718A /* Default-568h@2x.png in Resources */,
 			);
@@ -1290,49 +1194,58 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		462FB34BC02A1DBC04A319ED /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo-resources.sh",
+				"${PODS_ROOT}/MJRefresh/MJRefresh/MJRefresh.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MJRefresh.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4D4531831C2BB107ED7A2AF9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo-frameworks.sh",
+				"${PODS_ROOT}/Hyphenate/Hyphenate.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Hyphenate.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		5D08929F9378D07F85846DE9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-EaseMobLiveDemo-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		835E40F17F3084ECE0D18697 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		85E3A882B167893883305CC1 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo-resources.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1343,51 +1256,64 @@
 			buildActionMask = 2147483647;
 			files = (
 				D21C54611E658F8B0019A341 /* EaseAdminView.m in Sources */,
-				D27B1FE81E4D76BE00318031 /* FilterManager.m in Sources */,
+				3C44F440240BE51600445129 /* JPGiftOperation.m in Sources */,
+				3C72AD65240F8E2C007BC99F /* UIViewController+HUD.m in Sources */,
 				D2E368A11D3F243F00B1C90C /* EaseLiveHeaderListView.m in Sources */,
+				3C44F44F240CF0C100445129 /* EaseCustomSwitch.m in Sources */,
+				3CCF86CC241F3379007570EB /* EaseFinishLiveView.m in Sources */,
+				3C1237E423FA445F00C4135B /* EaseAnchorCardView.m in Sources */,
 				D2F4E24B1D12C8AB00BB7E1A /* EaseMainViewController.m in Sources */,
+				3C72AD68240F9431007BC99F /* EaseEmojiHelper.m in Sources */,
 				D2E368BD1D40812E00B1C90C /* EaseLiveGiftView.m in Sources */,
 				D2E3689D1D3F243F00B1C90C /* EaseChatView.m in Sources */,
 				D2E368B71D3F7E7800B1C90C /* EaseProfileLiveView.m in Sources */,
+				3C72AD6C240F97CA007BC99F /* EaseEmoticonView.m in Sources */,
 				D2E36B411D41CD2900B1C90C /* EaseSearchDisplayController.m in Sources */,
-				D27B201D1E4D770F00318031 /* YzdHUDIndicator.m in Sources */,
 				D2E3687A1D3CFD3500B1C90C /* EaseSignUpViewController.m in Sources */,
 				D2E3699D1D40AFC600B1C90C /* EaseGiftCell.m in Sources */,
+				3C12380E23FD1CA500C4135B /* EaseGiftConfirmView.m in Sources */,
 				D2F4E2651D12C8AB00BB7E1A /* EaseGiftFlyView.m in Sources */,
-				D27B201C1E4D770F00318031 /* YzdHUDImageView.m in Sources */,
+				3CCF87952421FD21007570EB /* EaseAboutHuanxinViewController.m in Sources */,
+				3C8AD5152412AD41002B6464 /* EaseTransitionViewController.m in Sources */,
 				D2F52C481D478EFC0094BB4A /* EaseLiveCastView.m in Sources */,
+				3C44F439240BE51600445129 /* JPGiftCountLabel.m in Sources */,
 				D2E368C01D4084CB00B1C90C /* EaseBaseSubView.m in Sources */,
-				D27B201E1E4D770F00318031 /* YzdHUDLabel.m in Sources */,
 				D2E3689F1D3F243F00B1C90C /* EaseInputTextView.m in Sources */,
-				D27B20371E4D770F00318031 /* UCloudBrightnessView.m in Sources */,
 				D2F4E24D1D12C8AB00BB7E1A /* EaseLiveViewController.m in Sources */,
 				D27B20401E51AAA800318031 /* EaseHttpManager.m in Sources */,
+				3C72AD6F240F9804007BC99F /* EMEmoticonGroup.m in Sources */,
 				D2F4E2721D12C8AB00BB7E1A /* main.m in Sources */,
 				D2F4E24A1D12C8AB00BB7E1A /* EaseLoginViewController.m in Sources */,
 				D23C12A31E6FFCD6007C5012 /* NSDictionary+SafeValue.m in Sources */,
+				3C44F43D240BE51600445129 /* JPGiftShowView.m in Sources */,
+				3C44F43F240BE51600445129 /* JPGiftCellModel.m in Sources */,
 				D2F4E23C1D12C8AB00BB7E1A /* AppDelegate+Hyphenate.m in Sources */,
 				D2F4E2661D12C8AB00BB7E1A /* EaseHeartFlyView.m in Sources */,
 				D2F4E24C1D12C8AB00BB7E1A /* EaseLiveTVListViewController.m in Sources */,
 				D2F4E2451D12C8AB00BB7E1A /* SRSlimeView.m in Sources */,
-				D27B201F1E4D770F00318031 /* PlayerManager.m in Sources */,
-				D27B20391E4D770F00318031 /* UCloudMediaViewController.m in Sources */,
-				D27B201B1E4D770F00318031 /* YzdHUDBackgroundView.m in Sources */,
+				3C8AD50E24127AE3002B6464 /* EaseGiftListView.m in Sources */,
 				D2E3689E1D3F243F00B1C90C /* EaseEndLiveView.m in Sources */,
 				D2F4E2641D12C8AB00BB7E1A /* EaseBarrageFlyView.m in Sources */,
 				D2F4E24F1D12C8AB00BB7E1A /* EasePublishViewController.m in Sources */,
-				D27B201A1E4D770F00318031 /* UIWindow+YzdHUD.m in Sources */,
 				D2D9EFEB1E6427DC001E4BFC /* EaseCreateLiveViewController.m in Sources */,
+				3C70A160241A654E00A5185F /* EaseCustomMessageHelper.m in Sources */,
 				D2F4E23E1D12C8AB00BB7E1A /* AppDelegate.m in Sources */,
+				3C12381123FD2EED00C4135B /* EaseKeyBoardView.m in Sources */,
 				D2E36B441D41CF7600B1C90C /* RealtimeSearchUtil.m in Sources */,
+				3C12381423FD30E000C4135B /* EaseCustomKeyBoardView.m in Sources */,
 				D2F4E2441D12C8AB00BB7E1A /* SRRefreshView.m in Sources */,
 				D2E369991D40AF4800B1C90C /* EaseChatCell.m in Sources */,
+				3C44F43C240BE51600445129 /* JPGiftShowManager.m in Sources */,
 				D2E368801D3E141D00B1C90C /* UIView+Position.m in Sources */,
-				D27B203B1E4D770F00318031 /* UCloudProgressView.m in Sources */,
 				D2F4E2411D12C8AB00BB7E1A /* MBProgressHUD+Add.m in Sources */,
+				3C9F89EB240E3C3C00653B2F /* EaseAudienceBehaviorView.m in Sources */,
 				D2E368B11D3F4E8400B1C90C /* EaseBaseViewController.m in Sources */,
-				D27B20381E4D770F00318031 /* UCloudLoadingView.m in Sources */,
+				3C27576423F293A4004DF2C3 /* EaseSettingsViewController.m in Sources */,
+				3C1238892406839700C4135B /* EaseDefaultDataHelper.m in Sources */,
+				3C1237E723FB9B1200C4135B /* EaseLiveGiftHelper.m in Sources */,
 				D23C12971E6FEED4007C5012 /* EaseLiveRoom.m in Sources */,
 				D2E3699A1D40AF4800B1C90C /* EaseLiveCollectionViewCell.m in Sources */,
+				3C44F438240BE51600445129 /* JPGiftModel.m in Sources */,
 				D23C129A1E6FEF86007C5012 /* EaseLiveSession.m in Sources */,
 				D2E368771D3CF38A00B1C90C /* UIImage+Color.m in Sources */,
 			);
@@ -1444,8 +1370,8 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Shanghai UCloud Information Technology Co.,Ltd (TKGBFB7R6R)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Distribution: EaseMob Inc. (JC854K845H)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: EaseMob Inc. (JC854K845H)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1493,8 +1419,8 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Shanghai UCloud Information Technology Co.,Ltd (TKGBFB7R6R)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Distribution: EaseMob Inc. (JC854K845H)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: EaseMob Inc. (JC854K845H)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1524,9 +1450,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2.0;
 				DEVELOPMENT_TEAM = 499WYUV8Q2;
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/EaseMobLiveDemo/PrefixHeader.pch";
@@ -1544,14 +1475,16 @@
 					"$(PROJECT_DIR)/EaseMobLiveDemo/lib/Player",
 					"$(PROJECT_DIR)/EaseMobLiveDemo/lib/Recorder",
 				);
+				MARKETING_VERSION = 1.0.5;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.easemob.enterprise.demo.live;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "环信聊天室";
 				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -1562,11 +1495,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2.0;
 				DEVELOPMENT_TEAM = 499WYUV8Q2;
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/EaseMobLiveDemo/PrefixHeader.pch";
@@ -1583,13 +1521,14 @@
 					"$(PROJECT_DIR)/EaseMobLiveDemo/lib/Player",
 					"$(PROJECT_DIR)/EaseMobLiveDemo/lib/Recorder",
 				);
+				MARKETING_VERSION = 1.0.5;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.easemob.enterprise.demo.live;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "环信聊天室";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;

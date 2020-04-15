@@ -9,38 +9,151 @@
 #import "EaseAdminView.h"
 
 #import "MJRefresh.h"
+#import "EaseDefaultDataHelper.h"
+#import "EaseCustomSwitch.h"
+#import <QuartzCore/CALayer.h>
 
 #define kButtonDefaultHeight 50.f
 #define kDefaultPageSize 10
 
 @interface EaseAdminCell : UITableViewCell
 
+@property (nonatomic, strong) UILabel *identityLabel;
 @property (nonatomic, strong) UIButton *clickButton;
+@property (nonatomic, strong) UIView *anchorIdentity;
+@property (nonatomic, strong) CAGradientLayer *livingGl;
+@property (nonatomic, strong) CAGradientLayer *mutingGl;
+@property (nonatomic, strong) UIImageView *headImageView;
+@property (strong, nonatomic) EaseCustomSwitch *muteSwitch;//房间禁言开关
+@property (strong, nonatomic) UILabel *mutingLabel;//正在禁言标签
 
 @end
 
+extern BOOL isAllTheSilence;
 @implementation EaseAdminCell
 
 - (UIButton*)clickButton
 {
     if (_clickButton == nil) {
         _clickButton = [[UIButton alloc] init];
-        _clickButton.frame = CGRectMake(self.width - 90, (65 - 30)/2, 80, 30);
-        [_clickButton setTitleColor:RGBACOLOR(255, 116, 49, 1) forState:UIControlStateNormal];
-        _clickButton.layer.borderWidth = 1.f;
-        _clickButton.layer.borderColor = RGBACOLOR(255, 116, 49, 1).CGColor;
-        _clickButton.layer.cornerRadius = 4.f;
-        [_clickButton.titleLabel setFont:[UIFont systemFontOfSize:15]];
+        _clickButton.frame = CGRectMake(self.width - 120, (54 - 30)/2, 60, 30);
+        [_clickButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_clickButton.titleLabel setFont:[UIFont systemFontOfSize:12]];
     }
     return _clickButton;
+}
+
+- (UILabel*)mutingLabel
+{
+    if (_mutingLabel == nil) {
+        _mutingLabel = [[UILabel alloc]initWithFrame:CGRectMake(self.width - 200, (54 - 15)/2, 40.f, 15.f)];
+        _mutingLabel.text = @"禁言中";
+        _mutingLabel.textAlignment = NSTextAlignmentCenter;
+        _mutingLabel.textColor = [UIColor whiteColor];
+        _mutingLabel.font = [UIFont systemFontOfSize:10.f];
+        _mutingLabel.layer.cornerRadius = 7.5;
+        [_mutingLabel.layer addSublayer:self.mutingGl];
+    }
+    return _mutingLabel;
+}
+
+- (EaseCustomSwitch*)muteSwitch
+{
+    if (_muteSwitch == nil) {
+        _muteSwitch = [[EaseCustomSwitch alloc]initWithTextFont:[UIFont systemFontOfSize:12.f] OnText:@"" offText:@"" onBackGroundColor:RGBACOLOR(4, 174, 240, 1) offBackGroundColor:RGBACOLOR(191, 191, 191, 1) onButtonColor:RGBACOLOR(255, 255, 255, 1) offButtonColor:RGBACOLOR(255, 255, 255, 1) onTextColor:RGBACOLOR(4, 174, 240, 1) andOffTextColor:RGBACOLOR(191, 191, 191, 1) isOn:isAllTheSilence frame:CGRectMake(self.width - 60, (54 - 24) / 2, 44.f, 24.f)];
+    }
+    return _muteSwitch;
+}
+
+- (UIView*)anchorIdentity
+{
+    if (_anchorIdentity == nil) {
+        _anchorIdentity = [[UIView alloc] initWithFrame:CGRectMake(self.width - 200, (54 - 15)/2, 45.f, 15.f)];
+        _anchorIdentity.backgroundColor = [UIColor clearColor];
+        _anchorIdentity.layer.cornerRadius = 7.5;
+        [_anchorIdentity.layer addSublayer:self.livingGl];
+        [_anchorIdentity addSubview:self.headImageView];
+        [self.headImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.width.height.equalTo(@11.f);
+            make.left.equalTo(_anchorIdentity.mas_left).offset(2.f);
+            make.top.equalTo(_anchorIdentity.mas_top).offset(2.f);
+        }];
+        [_anchorIdentity addSubview:self.identityLabel];
+        [self.identityLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.width.equalTo(@24.f);
+            make.height.equalTo(@15.f);
+            make.left.equalTo(self.headImageView.mas_right).offset(4.f);
+            make.top.equalTo(_anchorIdentity.mas_top);
+        }];
+    }
+    return _anchorIdentity;
+}
+
+- (UIImageView*)headImageView
+{
+    if (_headImageView == nil) {
+        _headImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon-living"]];
+        _headImageView.contentMode = UIViewContentModeScaleAspectFill;
+        _headImageView.layer.masksToBounds = YES;
+    }
+    return _headImageView;
+}
+
+- (UILabel*)identityLabel
+{
+    if (_identityLabel == nil) {
+        _identityLabel = [[UILabel alloc]init];
+        _identityLabel.text = @"主播";
+        _identityLabel.textColor = [UIColor whiteColor];
+        _identityLabel.font = [UIFont systemFontOfSize:10.f];
+    }
+    return _identityLabel;
+}
+
+- (CAGradientLayer *)mutingGl{
+    if(_mutingGl == nil){
+        _mutingGl = [CAGradientLayer layer];
+        _mutingGl.frame = CGRectMake(0,0,_mutingLabel.frame.size.width,_mutingLabel.frame.size.height);
+        _mutingGl.startPoint = CGPointMake(0.76, 0.84);
+        _mutingGl.endPoint = CGPointMake(0.26, 0.14);
+        _mutingGl.colors = @[(__bridge id)[UIColor colorWithRed:208/255.0 green:90/255.0 blue:90/255.0 alpha:1.0].CGColor, (__bridge id)[UIColor colorWithRed:240/255.0 green:118/255.0 blue:4/255.0 alpha:1.0].CGColor];
+        _mutingGl.locations = @[@(0), @(1.0f)];
+        _mutingGl.cornerRadius = 7.5;
+    }
+    
+    return _mutingGl;
+}
+
+
+- (CAGradientLayer *)livingGl{
+    if(_livingGl == nil){
+        _livingGl = [CAGradientLayer layer];
+        _livingGl.frame = CGRectMake(0,0,_anchorIdentity.frame.size.width,_anchorIdentity.frame.size.height);
+        _livingGl.startPoint = CGPointMake(0.76, 0.84);
+        _livingGl.endPoint = CGPointMake(0.26, 0.14);
+        _livingGl.colors = @[(__bridge id)[UIColor colorWithRed:90/255.0 green:93/255.0 blue:208/255.0 alpha:1.0].CGColor, (__bridge id)[UIColor colorWithRed:4/255.0 green:174/255.0 blue:240/255.0 alpha:1.0].CGColor];
+        _livingGl.locations = @[@(0), @(1.0f)];
+        _livingGl.cornerRadius = 7.5;
+    }
+    
+    return _livingGl;
 }
 
 - (void)layoutSubviews
 {
     [super layoutSubviews];
     
-    self.clickButton.left = self.width - 90;
+    [self.contentView addSubview:self.muteSwitch];
     [self.contentView addSubview:self.clickButton];
+    [self.contentView addSubview:self.anchorIdentity];
+    [self.contentView addSubview:self.mutingLabel];
+    self.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.6];
+    
+    CGRect textLabelFrame = self.textLabel.frame;
+    textLabelFrame.size.width=60.0f;
+    self.textLabel.frame = textLabelFrame;
+    
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
 }
 
 @end
@@ -50,10 +163,13 @@
     NSString* _chatroomId;
     EMChatroom *_chatroom;
     
+    MJRefreshFooter *_refreshMemberFooter;
+    NSInteger _memberPageNum;
+    
     MJRefreshFooter *_refreshMuteFooter;
     NSInteger _mutePageNum;
     
-    MJRefreshFooter *_refreshBlockFooter;
+    MJRefreshFooter *_refreshWhitelistFooter;
     NSInteger _blockPageNum;
     
     BOOL _isOwner;
@@ -61,23 +177,28 @@
 
 @property (nonatomic, strong) UIView *adminView;
 
+@property (nonatomic, strong) UIImageView *auidenceImg;
 @property (nonatomic, strong) UIButton *adminListBtn;
 @property (nonatomic, strong) UIButton *muteListBtn;
-@property (nonatomic, strong) UIButton *blockListBtn;
+@property (nonatomic, strong) UIButton *whitelistBtn;
 @property (nonatomic, strong) UIView *selectLine;
 @property (nonatomic, strong) UIView *line;
 
 @property (nonatomic, strong) UITableView *adminTableView;
 @property (nonatomic, strong) UITableView *muteTableView;
-@property (nonatomic, strong) UITableView *blockTableView;
+@property (nonatomic, strong) UITableView *whitelistTableView;
 
 @property (nonatomic, strong) NSMutableArray *muteList;
-@property (nonatomic, strong) NSMutableArray *blockList;
+@property (nonatomic, strong) NSMutableArray *whitelist;
+
+@property (nonatomic, strong) NSMutableArray *memberList;
+@property (nonatomic, strong) NSString *cursor;
 
 @property (nonatomic, strong) UIScrollView *mainScrollView;
 
 @end
 
+extern BOOL isAllTheSilence;
 @implementation EaseAdminView
 
 - (instancetype)initWithChatroomId:(NSString*)chatroomId
@@ -87,17 +208,22 @@
     if (self) {
         _chatroomId = chatroomId;
         _isOwner = isOwner;
+        _cursor = nil;
         [self addSubview:self.adminView];
         
         [self.adminView addSubview:self.adminListBtn];
-        [self.adminView addSubview:self.muteListBtn];
-        [self.adminView addSubview:self.blockListBtn];
-        [self.adminView addSubview:self.selectLine];
-        [self.adminView addSubview:self.line];
+        if (_isOwner) {
+            [self.adminView addSubview:self.whitelistBtn];
+            [self.adminView addSubview:self.muteListBtn];
+            [self.adminView addSubview:self.selectLine];
+            [self.adminView addSubview:self.line];
+        }
         [self.adminView addSubview:self.mainScrollView];
         [self.mainScrollView addSubview:self.adminTableView];
-        [self.mainScrollView addSubview:self.muteTableView];
-        [self.mainScrollView addSubview:self.blockTableView];
+        if (_isOwner) {
+            [self.mainScrollView addSubview:self.muteTableView];
+            [self.mainScrollView addSubview:self.whitelistTableView];
+        }
     }
     return self;
 }
@@ -108,9 +234,18 @@
 {
     if (_adminView == nil) {
          _adminView = [[UIView alloc] initWithFrame:CGRectMake(0, self.height - 320.f, self.width, 320.f)];
-        _adminView.backgroundColor = [UIColor whiteColor];
+        _adminView.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.5];
     }
     return _adminView;
+}
+
+- (UIImageView*)auidenceImg
+{
+    if (_auidenceImg == nil) {
+        _auidenceImg = [[UIImageView alloc]initWithFrame:CGRectMake(2, 16, 18, 18)];
+        _auidenceImg.image = [UIImage imageNamed:@"auidence"];
+    }
+    return _auidenceImg;
 }
 
 - (UIButton*)adminListBtn
@@ -118,38 +253,47 @@
     if (_adminListBtn == nil) {
         _adminListBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _adminListBtn.frame = CGRectMake(0, 0, KScreenWidth/3, kButtonDefaultHeight);
-        [_adminListBtn setTitle:NSLocalizedString(@"profile.admin", @"Admin") forState:UIControlStateNormal];
-        [_adminListBtn setTitleColor:RGBACOLOR(76, 76, 76, 1) forState:UIControlStateNormal];
+        _adminListBtn.backgroundColor = [UIColor clearColor];
+        [_adminListBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_adminListBtn setTitle:@"观众" forState:UIControlStateNormal];
+        [_adminListBtn.titleLabel setFont:[UIFont fontWithName:@"Alibaba-PuHuiTi" size:15.f]];
         _adminListBtn.tag = 100;
+        [_adminListBtn addSubview:self.auidenceImg];
         [_adminListBtn addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _adminListBtn;
+}
+
+- (UIButton*)whitelistBtn
+{
+    if (_whitelistBtn == nil) {
+        _whitelistBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        _whitelistBtn.frame = CGRectMake(CGRectGetMaxX(_adminListBtn.frame), 0, KScreenWidth/3, kButtonDefaultHeight);
+        //[_whitelistBtn setTitle:NSLocalizedString(@"profile.block", @"Block") forState:UIControlStateNormal];
+        _whitelistBtn.backgroundColor = [UIColor clearColor];
+        [_whitelistBtn setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.59] forState:UIControlStateNormal];
+        [_whitelistBtn setTitle:@"白名单" forState:UIControlStateNormal];
+        [_whitelistBtn.titleLabel setFont:[UIFont fontWithName:@"Alibaba-PuHuiTi" size:15.f]];
+        _whitelistBtn.tag = 101;
+        [_whitelistBtn addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _whitelistBtn;
 }
 
 - (UIButton*)muteListBtn
 {
     if (_muteListBtn == nil) {
         _muteListBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _muteListBtn.frame = CGRectMake(CGRectGetMaxX(_adminListBtn.frame), 0, KScreenWidth/3, kButtonDefaultHeight);
-        [_muteListBtn setTitle:NSLocalizedString(@"profile.mute", @"Mute") forState:UIControlStateNormal];
-        [_muteListBtn setTitleColor:RGBACOLOR(76, 76, 76, 1) forState:UIControlStateNormal];
-        _muteListBtn.tag = 101;
+        _muteListBtn.frame = CGRectMake(CGRectGetMaxX(_whitelistBtn.frame), 0, KScreenWidth/3, kButtonDefaultHeight);
+        //[_muteListBtn setTitle:NSLocalizedString(@"profile.mute", @"Mute") forState:UIControlStateNormal];
+        _muteListBtn.backgroundColor = [UIColor clearColor];
+        [_muteListBtn setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.59] forState:UIControlStateNormal];
+        [_muteListBtn setTitle:@"观众禁言" forState:UIControlStateNormal];
+        [_muteListBtn.titleLabel setFont:[UIFont fontWithName:@"Alibaba-PuHuiTi" size:15.f]];
+        _muteListBtn.tag = 102;
         [_muteListBtn addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _muteListBtn;
-}
-
-- (UIButton*)blockListBtn
-{
-    if (_blockListBtn == nil) {
-        _blockListBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _blockListBtn.frame = CGRectMake(CGRectGetMaxX(_muteListBtn.frame), 0, KScreenWidth/3, kButtonDefaultHeight);
-        [_blockListBtn setTitle:NSLocalizedString(@"profile.block", @"Block") forState:UIControlStateNormal];
-        [_blockListBtn setTitleColor:RGBACOLOR(76, 76, 76, 1) forState:UIControlStateNormal];
-        _blockListBtn.tag = 102;
-        [_blockListBtn addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _blockListBtn;
 }
 
 - (UIView*)selectLine
@@ -173,12 +317,17 @@
 - (UIScrollView*)mainScrollView
 {
     if (_mainScrollView == nil) {
-        _mainScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_selectLine.frame), _adminView.width, _adminView.height - CGRectGetMaxY(_selectLine.frame))];
+        _mainScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_adminListBtn.frame) + 2, _adminView.width, _adminView.height - CGRectGetMaxY(_adminListBtn.frame) - 2)];
         _mainScrollView.contentSize = CGSizeMake(_mainScrollView.width*3, _mainScrollView.height);
         _mainScrollView.tag = 1000;
         _mainScrollView.pagingEnabled = YES;
         _mainScrollView.delegate = self;
         _mainScrollView.showsHorizontalScrollIndicator = NO;
+        _mainScrollView.backgroundColor = [UIColor clearColor];
+        if (!_isOwner) {
+            CGSize scollableSize = CGSizeMake(KScreenWidth, _mainScrollView.height);
+            [_mainScrollView setContentSize:scollableSize];
+        }
     }
     return _mainScrollView;
 }
@@ -190,17 +339,26 @@
         _adminTableView.dataSource = self;
         _adminTableView.delegate = self;
         _adminTableView.backgroundColor = [UIColor clearColor];
-        _adminTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        _adminTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _adminTableView.tableFooterView = [[UIView alloc] init];
         
-        _chatroom = [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:_chatroomId error:nil];
+        [self _loadMemberList:YES];
         
+        _chatroom = [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:_chatroomId error:nil];
         __weak EaseAdminView *weakSelf = self;
         _adminTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
             _chatroom = [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:_chatroomId error:nil];
+            [weakSelf _loadMemberList:YES];
             [weakSelf _tableViewDidFinishTriggerHeader:YES reload:YES tableView:_adminTableView];
         }];
         _adminTableView.mj_header.accessibilityIdentifier = @"refresh_admin_header";
+        
+        _adminTableView.mj_footer = [MJRefreshBackFooter footerWithRefreshingBlock:^{
+            [weakSelf _loadMemberList:NO];
+            [weakSelf _tableViewDidFinishTriggerHeader:NO reload:YES tableView:_adminTableView];
+        }];
+        _adminTableView.mj_footer = nil;
+        _adminTableView.mj_footer.accessibilityIdentifier = @"refresh_admin_footer";
     }
     return _adminTableView;
 }
@@ -208,11 +366,11 @@
 - (UITableView*)muteTableView
 {
     if (_muteTableView == nil) {
-        _muteTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.mainScrollView.width, 0, self.mainScrollView.width, self.mainScrollView.height) style:UITableViewStylePlain];
+        _muteTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.mainScrollView.width*2, 0, self.mainScrollView.width, self.mainScrollView.height) style:UITableViewStylePlain];
         _muteTableView.dataSource = self;
         _muteTableView.delegate = self;
         _muteTableView.backgroundColor = [UIColor clearColor];
-        _muteTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        _muteTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _muteTableView.tableFooterView = [[UIView alloc] init];
         
         [self _loadMuteList:YES];
@@ -235,35 +393,40 @@
     return _muteTableView;
 }
 
-- (UITableView*)blockTableView
+- (UITableView*)whitelistTableView
 {
-    if (_blockTableView == nil) {
-        _blockTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.mainScrollView.width * 2, 0, self.mainScrollView.width, self.mainScrollView.height) style:UITableViewStylePlain];
-        _blockTableView.dataSource = self;
-        _blockTableView.delegate = self;
-        _blockTableView.backgroundColor = [UIColor clearColor];
-        _blockTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-        _blockTableView.tableFooterView = [[UIView alloc] init];
+    if (_whitelistTableView == nil) {
+        _whitelistTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.mainScrollView.width, 0, self.mainScrollView.width, self.mainScrollView.height) style:UITableViewStylePlain];
+        _whitelistTableView.dataSource = self;
+        _whitelistTableView.delegate = self;
+        _whitelistTableView.backgroundColor = [UIColor clearColor];
+        _whitelistTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        _whitelistTableView.tableFooterView = [[UIView alloc] init];
         
-        [self _loadBlockList:YES];
+        [self _loadWhitelist:YES];
         
         __weak EaseAdminView *weakSelf = self;
-        _blockTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-            _blockPageNum = 0;
-            [weakSelf _loadBlockList:YES];
+        _whitelistTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+            [weakSelf _loadWhitelist:YES];
         }];
-        _blockTableView.mj_header.accessibilityIdentifier = @"refresh_block_header";
+        _whitelistTableView.mj_header.accessibilityIdentifier = @"refresh_block_header";
         
-        _refreshBlockFooter = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
-            _blockPageNum ++;
-            [weakSelf _loadBlockList:NO];
-
+        _refreshWhitelistFooter = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
+            [weakSelf _loadWhitelist:NO];
         }];
         
-        _blockTableView.mj_footer = nil;
-        _blockTableView.mj_footer.accessibilityIdentifier = @"refresh_block_footer";
+        _whitelistTableView.mj_footer = nil;
+        _whitelistTableView.mj_footer.accessibilityIdentifier = @"refresh_block_footer";
     }
-    return _blockTableView;
+    return _whitelistTableView;
+}
+
+- (NSMutableArray*)memberList
+{
+    if (_memberList == nil) {
+        _memberList = [[NSMutableArray alloc] init];
+    }
+    return _memberList;
 }
 
 - (NSMutableArray*)muteList
@@ -274,12 +437,12 @@
     return _muteList;
 }
 
-- (NSMutableArray*)blockList
+- (NSMutableArray*)whitelist
 {
-    if (_blockList == nil) {
-        _blockList = [[NSMutableArray alloc] init];
+    if (_whitelist == nil) {
+        _whitelist = [[NSMutableArray alloc] init];
     }
-    return _blockList;
+    return _whitelist;
 }
 
 #pragma mark - UITableViewDataSource
@@ -288,31 +451,56 @@
 {
     if (tableView == _adminTableView) {
         if (_chatroom) {
-            return [_chatroom.adminList count];
+            return [_memberList count];
         }
         return 0;
     } else if (tableView == _muteTableView) {
         return [_muteList count];
     } else {
-        return [_blockList count];
+        return [_whitelist count];
     }
 }
 
+extern NSMutableDictionary*anchorInfoDic;
+extern NSArray<NSString*> *nickNameArray;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSMutableDictionary *anchorInfo = [anchorInfoDic objectForKey:_chatroom.chatroomId];
     EaseAdminCell *cell;
-    NSString *username = nil;
+    int random = (arc4random() % 100);
+    NSString *username = nickNameArray[random];
     if (tableView == _adminTableView) {
-        static NSString *CellIdentifier = @"admin";
-        cell = (EaseAdminCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        // Configure the cell...
+        static NSString *CellIdentifierMember = @"audience";
+        NSString *tempUsername = [_memberList objectAtIndex:indexPath.row];
+        cell = (EaseAdminCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifierMember];
         if (cell == nil) {
-            cell = [[EaseAdminCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+            cell = [[EaseAdminCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierMember];
         }
-        username = [_chatroom.adminList objectAtIndex:indexPath.row];
+        if (indexPath.row == 0) {
+            [cell.clickButton setTitle:@"房间禁言" forState:UIControlStateNormal];
+            cell.muteSwitch.hidden = NO;
+            cell.anchorIdentity.hidden = NO;
+        } else {
+            cell.anchorIdentity.hidden = YES;
+        }
         cell.textLabel.text = username;
-        [cell.clickButton setTitle:NSLocalizedString(@"profile.admin.remove", @"Remove") forState:UIControlStateNormal];
-        [cell.clickButton addTarget:self action:@selector(removeAdminAction:) forControlEvents:UIControlEventTouchUpInside];
+        if ([tempUsername isEqualToString:_chatroom.owner] && [tempUsername isEqualToString:EMClient.sharedClient.currentUsername]){
+            cell.muteSwitch.hidden = NO;
+            cell.clickButton.hidden = NO;
+            cell.textLabel.text = [anchorInfo objectForKey:kBROADCASTING_CURRENT_ANCHOR_NICKNAME];
+        } else {
+            cell.muteSwitch.hidden = YES;
+            cell.clickButton.hidden = YES;
+        }
+        if ([tempUsername isEqualToString:EMClient.sharedClient.currentUsername]) {
+            cell.textLabel.text = EaseDefaultDataHelper.shared.defaultNickname;
+        }
+        __weak typeof(self) weakSelf = self;
+        cell.muteSwitch.changeStateBlock = ^(BOOL isOn) {
+            isAllTheSilence = isOn;
+            [weakSelf allTheSilence:isAllTheSilence];
+        };
+        cell.mutingLabel.hidden = YES;
     } else if (tableView == _muteTableView) {
         static NSString *CellIdentifier = @"mute";
         cell = (EaseAdminCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -320,38 +508,66 @@
         if (cell == nil) {
             cell = [[EaseAdminCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         }
-        username = [_muteList objectAtIndex:indexPath.row];
+        //username = [_muteList objectAtIndex:indexPath.row];
         cell.textLabel.text = username;
-        [cell.clickButton setTitle:NSLocalizedString(@"profile.mute.cancel", @"Cancel") forState:UIControlStateNormal];
+        [cell.clickButton setTitle:@"解禁" forState:UIControlStateNormal];
         [cell.clickButton addTarget:self action:@selector(removeMuteAction:) forControlEvents:UIControlEventTouchUpInside];
+        cell.anchorIdentity.hidden = YES;
+        cell.muteSwitch.hidden = YES;
+        cell.mutingLabel.hidden = NO;
     } else {
-        static NSString *CellIdentifier = @"block";
+        static NSString *CellIdentifier = @"whitelist";
         cell = (EaseAdminCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         // Configure the cell...
         if (cell == nil) {
             cell = [[EaseAdminCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         }
-        username = [_blockList objectAtIndex:indexPath.row];
-        cell.textLabel.text = username;
-        [cell.clickButton setTitle:NSLocalizedString(@"profile.block.remove", @"Remove") forState:UIControlStateNormal];
-        [cell.clickButton addTarget:self action:@selector(removeBlackAction:) forControlEvents:UIControlEventTouchUpInside];
+        NSString *realUsername = [_whitelist objectAtIndex:indexPath.row];
+        if ([realUsername isEqualToString:EMClient.sharedClient.currentUsername]) {
+            cell.textLabel.text = EaseDefaultDataHelper.shared.defaultNickname;
+        } else {
+            cell.textLabel.text = username;
+        }
+        [cell.clickButton setTitle:@"删除" forState:UIControlStateNormal];
+        [cell.clickButton addTarget:self action:@selector(removeWhitelistAction:) forControlEvents:UIControlEventTouchUpInside];
+        cell.muteSwitch.hidden = YES;
+        cell.anchorIdentity.hidden = YES;
+        cell.mutingLabel.hidden = YES;
     }
-    cell.imageView.image = [UIImage imageNamed:@"live_default_user"];
+    
+    random = (arc4random() % 7) + 1;
+    cell.imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"avatat_%d",random]];
     cell.clickButton.tag = indexPath.row;
+   
     if (tableView == _adminTableView) {
-        if (_isOwner) {
-            cell.clickButton.hidden = NO;
+        if ([username isEqualToString:_chatroom.owner]) {
+            cell.imageView.image = [UIImage imageNamed:[anchorInfo objectForKey:kBROADCASTING_CURRENT_ANCHOR_AVATAR]];
+            if ([username isEqualToString:EMClient.sharedClient.currentUsername]) {
+                cell.imageView.image = [UIImage imageNamed:@"default_anchor_avatar"];
+            }
         } else {
-            cell.clickButton.hidden = YES;
+            if ([username isEqualToString:EMClient.sharedClient.currentUsername]) {
+                cell.imageView.image = [UIImage imageNamed:@"default_anchor_avatar"];
+            }
         }
+        cell.clickButton.frame = CGRectMake(self.width - 120, (54 - 30)/2, 60, 30);
+        [cell.clickButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     } else {
-        BOOL ret = username.length > 0 && [username isEqualToString:[EMClient sharedClient].currentUsername];
-        if (ret) {
-            cell.clickButton.hidden = YES;
-        } else {
-            cell.clickButton.hidden = NO;
-        }
+        cell.clickButton.frame = CGRectMake(self.width - 66, (54 - 20)/2, 30, 20);
+        [cell.clickButton setTitleColor:RGBACOLOR(255, 199, 0, 1) forState:UIControlStateNormal];
     }
+    CALayer *cellImageLayer = cell.imageView.layer;
+    [cellImageLayer setCornerRadius:15];
+    [cellImageLayer setMasksToBounds:YES];
+    
+    CGSize itemSize = CGSizeMake(28, 28);
+    UIGraphicsBeginImageContextWithOptions(itemSize, NO, UIScreen.mainScreen.scale);
+    CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
+    [cell.imageView.image drawInRect:imageRect];
+    cell.imageView.image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    cell.textLabel.textColor= [UIColor whiteColor];
     return cell;
 }
 
@@ -364,7 +580,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 65.f;
+    return 54.f;
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -389,6 +605,7 @@
     [self _setSelectWithIndex:index];
 }
 
+/*
 - (void)removeAdminAction:(id)sender
 {
     UIButton *btn = (UIButton*)sender;
@@ -401,7 +618,8 @@
                                             fromChatroom:_chatroomId
                                               completion:^(EMChatroom *aChatroom, EMError *aError) {
                                                   if (!aError) {
-                                                      [weakSelf.adminTableView reloadData];
+                                                      _chatroom = aChatroom;
+                                                      [weakSelf _loadMemberList:YES];
                                                       [weakHud hide:YES afterDelay:0.5];
                                                   } else {
                                                       [weakHud setLabelText:aError.errorDescription];
@@ -409,8 +627,28 @@
                                                   }
                                               }];
     }
+}*/
+
+//全体禁言
+
+- (void)allTheSilence:(BOOL)isAllTheSilence
+{
+    if (isAllTheSilence) {
+        [[EMClient sharedClient].roomManager muteAllMembersFromChatroom:_chatroomId completion:^(EMChatroom *aChatroom, EMError *aError) {
+            if (!aError) {
+                
+            }
+        }];
+    } else {
+        [[EMClient sharedClient].roomManager unmuteAllMembersFromChatroom:_chatroomId completion:^(EMChatroom *aChatroom, EMError *aError) {
+            if (!aError) {
+                
+            }
+        }];
+    }
 }
 
+//解除禁言
 - (void)removeMuteAction:(id)sender
 {
     UIButton *btn = (UIButton*)sender;
@@ -424,35 +662,38 @@
                                                 if (!aError) {
                                                     [weakSelf.muteTableView beginUpdates];
                                                     [weakSelf.muteList removeObjectAtIndex:btn.tag];
+                                                    [_muteListBtn setTitle:[NSString stringWithFormat:@"观众禁言(%lu)",(unsigned long)[weakSelf.muteList count]] forState:UIControlStateNormal];
                                                     [self.muteTableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:btn.tag inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
                                                     [self.muteTableView endUpdates];
-                                                    [weakHud hide:YES afterDelay:0.5];
+                                                    [weakHud hideAnimated:YES afterDelay:0.5];
                                                 } else {
-                                                    [weakHud setLabelText:aError.errorDescription];
-                                                    [weakHud hide:YES afterDelay:0.5];
+                                                    weakHud.label.text = aError.errorDescription;
+                                                    [weakHud hideAnimated:YES afterDelay:0.5];
                                                 }
                                             }];
 }
 
-- (void)removeBlackAction:(id)sender
+//从白名单移除
+- (void)removeWhitelistAction:(id)sender
 {
     UIButton *btn = (UIButton*)sender;
-    NSString *username = [_blockList objectAtIndex:btn.tag];
+    NSString *username = [_whitelist objectAtIndex:btn.tag];
     __weak EaseAdminView *weakSelf = self;
-    MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"%@..." ,NSLocalizedString(@"profile.block.remove", @"Remove")] toView:self];
+    MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"从白名单移除"] toView:self];
     __weak MBProgressHUD *weakHud = hud;
-    [[EMClient sharedClient].roomManager unblockMembers:@[username]
+    [[EMClient sharedClient].roomManager removeWhiteListMembers:@[username]
                                            fromChatroom:_chatroomId
                                              completion:^(EMChatroom *aChatroom, EMError *aError) {
                                                  if (!aError) {
-                                                     [weakSelf.blockTableView beginUpdates];
-                                                     [weakSelf.blockList removeObjectAtIndex:btn.tag];
-                                                     [self.blockTableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:btn.tag inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-                                                     [self.blockTableView endUpdates];
-                                                     [weakHud hide:YES afterDelay:0.5];
+                                                     [weakSelf.whitelistTableView beginUpdates];
+                                                     [weakSelf.whitelist removeObjectAtIndex:btn.tag];
+                                                     [_whitelistBtn setTitle:[NSString stringWithFormat:@"白名单(%lu)",(unsigned long)[weakSelf.whitelist count]] forState:UIControlStateNormal];
+                                                     [self.whitelistTableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:btn.tag inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+                                                     [self.whitelistTableView endUpdates];
+                                                     [weakHud hideAnimated:YES afterDelay:0.5];
                                                  } else {
-                                                     [weakHud setLabelText:aError.errorDescription];
-                                                     [weakHud hide:YES afterDelay:0.5];
+                                                     weakHud.label.text = aError.errorDescription;
+                                                     [weakHud hideAnimated:YES afterDelay:0.5];
                                                  }
                                              }];
 }
@@ -466,11 +707,19 @@
         return;
     }
     
+    [_whitelistBtn setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.59] forState:UIControlStateNormal];
+    [_muteListBtn setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.59] forState:UIControlStateNormal];
+    [_adminListBtn setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:0.59] forState:UIControlStateNormal];
+    
     CGFloat pointX = _adminListBtn.centerX - 50;
-    if (tagBtn.tag == 101) {
-        pointX = _muteListBtn.centerX - 50;
+    if (tagBtn.tag == 100) {
+        [_adminListBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    } else if (tagBtn.tag == 101) {
+        pointX = _whitelistBtn.centerX - 50;
+        [_whitelistBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     } else if (tagBtn.tag == 102) {
-        pointX = _blockListBtn.centerX - 50;
+        pointX = _muteListBtn.centerX - 50;
+        [_muteListBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     }
     
     [UIView animateWithDuration:0.25 animations:^{
@@ -488,6 +737,9 @@
         }
         
         if (isHeader) {
+            if (tableView == self.adminTableView) {
+                self.cursor = nil;
+            }
             [tableView.mj_header endRefreshing];
         }
         else{
@@ -496,6 +748,31 @@
     });
 }
 
+//观众列表
+- (void)_loadMemberList:(BOOL)isHeader
+{
+    __weak typeof(self) weakself = self;
+    [[EMClient sharedClient].roomManager getChatroomMemberListFromServerWithId:_chatroomId cursor:self.cursor pageSize:50 completion:^(EMCursorResult *aResult, EMError *aError) {
+        if (!aError) {
+           if (isHeader) {
+               [weakself.memberList removeAllObjects];
+               [weakself.memberList addObject:_chatroom.owner];
+               [weakself.memberList addObjectsFromArray:_chatroom.adminList];
+           }
+           weakself.cursor = aResult.cursor;
+           [weakself.memberList addObjectsFromArray:aResult.list];
+            [_adminListBtn setTitle:[NSString stringWithFormat:@"观众(%lu)",(unsigned long)[weakself.memberList count]] forState:UIControlStateNormal];
+           if ([aResult.list count] == 0 || [aResult.cursor length] == 0) {
+               weakself.adminTableView.mj_footer = nil;
+           } else {
+               weakself.adminTableView.mj_footer = _refreshMemberFooter;
+           }
+           [weakself _tableViewDidFinishTriggerHeader:isHeader reload:YES tableView:_adminTableView];
+        }
+    }];
+}
+
+//禁言列表
 - (void)_loadMuteList:(BOOL)isHeader
 {
     __weak typeof(self) weakSelf = self;
@@ -508,7 +785,7 @@
                                                                               [weakSelf.muteList removeAllObjects];
                                                                           }
                                                                           [weakSelf.muteList addObjectsFromArray:aList];
-                                                                          
+                                                                          [_muteListBtn setTitle:[NSString stringWithFormat:@"观众禁言(%lu)",(unsigned long)[weakSelf.muteList count]] forState:UIControlStateNormal];
                                                                           if ([aList count] < kDefaultPageSize) {
                                                                               weakSelf.muteTableView.mj_footer = nil;
                                                                           } else {
@@ -519,28 +796,25 @@
                                                                   }];
 }
 
-- (void)_loadBlockList:(BOOL)isHeader
+//白名单列表
+- (void)_loadWhitelist:(BOOL)isHeader
 {
     __weak typeof(self) weakSelf = self;
-    [[EMClient sharedClient].roomManager getChatroomBlacklistFromServerWithId:_chatroomId
-                                                                   pageNumber:_blockPageNum
-                                                                     pageSize:kDefaultPageSize
-                                                                   completion:^(NSArray *aList, EMError *aError) {
-                                                                       if (!aError) {
-                                                                           if (isHeader) {
-                                                                               [weakSelf.blockList removeAllObjects];
-                                                                           }
-                                                                           [weakSelf.blockList addObjectsFromArray:aList];
-                                                                           
-                                                                           if ([aList count] < kDefaultPageSize) {
-                                                                               weakSelf.blockTableView.mj_footer = nil;
-                                                                           } else {
-                                                                               weakSelf.blockTableView.mj_footer = _refreshBlockFooter;
-                                                                           }
-                                                                       }
-                                                                       
-                                                                       [weakSelf _tableViewDidFinishTriggerHeader:isHeader reload:YES tableView:_blockTableView];
-                                                                   }];
+    [[EMClient sharedClient].roomManager getChatroomWhiteListFromServerWithId:_chatroomId completion:^(NSArray *aList, EMError *aError) {
+        if (!aError) {
+            if (isHeader) {
+                [weakSelf.whitelist removeAllObjects];
+            }
+            [weakSelf.whitelist addObjectsFromArray:aList];
+            [_whitelistBtn setTitle:[NSString stringWithFormat:@"白名单(%lu)",(unsigned long)[weakSelf.whitelist count]] forState:UIControlStateNormal];
+            if ([aList count] < kDefaultPageSize) {
+                weakSelf.whitelistTableView.mj_footer = nil;
+            } else {
+                weakSelf.whitelistTableView.mj_footer = _refreshWhitelistFooter;
+            }
+        }
+        [weakSelf _tableViewDidFinishTriggerHeader:isHeader reload:YES tableView:_whitelistTableView];
+    }];
 }
 
 @end

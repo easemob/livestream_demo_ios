@@ -1,6 +1,5 @@
 //
 //  PrefixHeader.pch
-//  UCloudMediaRecorderDemo
 //
 //  Created by EaseMob on 16/6/2.
 //  Copyright © 2016年 zmw. All rights reserved.
@@ -22,23 +21,22 @@
 #define kDefaultSystemLightGrayColor RGBACOLOR(197, 197, 197, 1)
 #define kDefaultLoginButtonColor RGBACOLOR(25, 163, 255, 1)
 
-//demo中的推流地址仅供demo测试使用，如果更换推流域名地址，请联系客服或者客户经理索取对应的CGIKey
-#define CGIKey @"publish3-key"
-#define RecordDomain(id) [NSString stringWithFormat:@"rtmp://publish3.cdn.ucloud.com.cn/ucloud/%@", id];
-#define PlayDomain(id) [NSString stringWithFormat:@"rtmp://vlive3.rtmp.cdn.ucloud.com.cn/ucloud/%@", id];
-
-#define kLiveDemoVersion @"1.0.0"
+#define kLiveDemoVersion @"1.0.5"
 
 #define kNotificationRefreshList @"em_nofity_LiveListRefresh"
 
 #define kLiveLastLoginUsername @"em_last_username"
 
+#define kCustomMsgChatroomGift @"chatroom_gift"
+#define kCustomMsgChatroomPraise @"chatroom_praise"
+#define kCustomMsgChatroomBarrage @"chatroom_barrage"
+
 #ifdef __OBJC__
 
-    #import <HyphenateLite/HyphenateLite.h>
-    #import <EaseUILite/EaseUI.h>
+    #import <Hyphenate/Hyphenate.h>
     #import "MBProgressHUD+Add.h"
     #import "UIView+Position.h"
+    #import "UIViewController+HUD.h"
     #import "EaseHttpManager.h"
 
 #endif

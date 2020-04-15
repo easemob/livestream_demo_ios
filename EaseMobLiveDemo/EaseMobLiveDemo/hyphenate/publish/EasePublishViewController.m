@@ -1,6 +1,5 @@
 //
 //  EasePublishViewController.m
-//  UCloudMediaRecorderDemo
 //
 //  Created by EaseMob on 16/6/3.
 //  Copyright © 2016年 zmw. All rights reserved.
@@ -8,26 +7,30 @@
 
 #import "EasePublishViewController.h"
 
-#import "UCloudMediaPlayer.h"
-#import "CameraServer.h"
-#import "FilterManager.h"
+#import "SDImageCache.h"
+#import "SDWebImageDownloader.h"
 #import "EaseChatView.h"
-#import "EaseTextView.h"
 #import "EaseHeartFlyView.h"
 #import "EaseLiveHeaderListView.h"
-#import "EaseEndLiveView.h"
 #import "UIImage+Color.h"
 #import "EaseProfileLiveView.h"
 #import "EaseLiveCastView.h"
 #import "EaseAdminView.h"
-#import "UIViewController+DismissKeyboard.h"
 #import "EaseLiveRoom.h"
+#import "EaseAnchorCardView.h"
 #import "EaseCreateLiveViewController.h"
+#import "EaseDefaultDataHelper.h"
+#import "EaseAudienceBehaviorView.h"
+#import "EaseLiveCastView.h"
+#import "EaseGiftListView.h"
+#import "EaseCustomMessageHelper.h"
+#import "EaseFinishLiveView.h"
+#import "EaseCustomMessageHelper.h"
 
-#define kDefaultTop 30.f
+#define kDefaultTop 35.f
 #define kDefaultLeft 10.f
 
-@interface EasePublishViewController () <EaseChatViewDelegate,UITextViewDelegate,EMChatroomManagerDelegate,EaseEndLiveViewDelegate,TapBackgroundViewDelegate,EaseLiveHeaderListViewDelegate,EaseProfileLiveViewDelegate,UIAlertViewDelegate,EMClientDelegate>
+@interface EasePublishViewController () <EaseChatViewDelegate,UITextViewDelegate,EMChatroomManagerDelegate,TapBackgroundViewDelegate,EaseLiveHeaderListViewDelegate,EaseProfileLiveViewDelegate,UIAlertViewDelegate,EMClientDelegate,EaseCustomMessageHelperDelegate>
 {
     BOOL _isload;
     BOOL _isShutDown;
@@ -36,27 +39,25 @@
     
     BOOL _isPublish;
     
+    BOOL _isAllMute;
+    
     EaseLiveRoom *_room;
+    
+    NSInteger _praiseNum;//赞
+    NSInteger _giftsNum;//礼物
+    
+    EaseCustomMessageHelper *_customMsgHelper;//自定义消息帮助
 }
 
-@property (nonatomic, strong) UIButton *closeBtn;
-
 @property (nonatomic, strong) EaseLiveHeaderListView *headerListView;
-@property (nonatomic, strong) EaseEndLiveView *endLiveView;
 @property (nonatomic, strong) UILabel *roomNameLabel;
 @property (nonatomic, strong) UIWindow *subWindow;
-
-//直播相关
-@property (strong, nonatomic) FilterManager *filterManager;
-@property (strong, nonatomic) NSMutableArray *filters;
-@property (strong, nonatomic) UIView *videoView;
-@property (strong, nonatomic) AVCaptureDevice *currentDev;
-@property (nonatomic, assign) BOOL shouldAutoStarted;
 
 @property (strong, nonatomic) UITapGestureRecognizer *singleTapGR;
 
 //聊天室
 @property (strong, nonatomic) EaseChatView *chatview;
+@property(nonatomic,strong) UIImageView *backImageView;
 
 @end
 
@@ -67,19 +68,21 @@
     self = [super init];
     if (self) {
         _room = room;
+        _customMsgHelper = [[EaseCustomMessageHelper alloc]initWithCustomMsgImp:self chatId:_room.chatroomId];
+        _praiseNum = [EaseDefaultDataHelper.shared.praiseStatisticstCount intValue];
+        _giftsNum = [EaseDefaultDataHelper.shared.giftNumbers intValue];
+        EaseDefaultDataHelper.shared.currentRoomId = _room.roomId;
+        [EaseDefaultDataHelper.shared archive];
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.view.backgroundColor = [UIColor colorWithRed:0.88 green:0.88 blue:0.88 alpha:1.0];
+    [self.view insertSubview:self.backImageView atIndex:0];
     
     [[EMClient sharedClient].roomManager addDelegate:self delegateQueue:nil];
     [[EMClient sharedClient] addDelegate:self delegateQueue:nil];
-    
-    [self.view addSubview:self.closeBtn];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
     
@@ -93,10 +96,9 @@
                                         [self.headerListView loadHeaderListWithChatroomId:_room.chatroomId];
                                     }
                                 }];
-    [self.view addSubview:self.roomNameLabel];
+    //[self.view addSubview:self.roomNameLabel];
     [self.view layoutSubviews];
-    [self setBtnStateInSel:1];
-    [self startAction];
+    [self setBtnStateInSel:0];
 }
 
 - (void)dealloc
@@ -119,20 +121,38 @@
     return _subWindow;
 }
 
-- (EaseEndLiveView*)endLiveView
+- (UIImageView*)backImageView
 {
-    if (_endLiveView == nil) {
-        _endLiveView = [[EaseEndLiveView alloc] initWithUsername:[EMClient sharedClient].currentUsername audience:@"265381人看过"];
-        _endLiveView.delegate = self;
+    if (_backImageView == nil) {
+        _backImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight)];
+        _backImageView.contentMode = UIViewContentModeScaleAspectFill;
+        UIImage *image = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:_room.coverPictureUrl];
+        __weak typeof(self) weakSelf = self;
+        if (!image) {
+            [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:_room.coverPictureUrl]
+                                                                     options:SDWebImageDownloaderUseNSURLCache
+                                                                    progress:NULL
+                                                                   completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+                                                                       if (image) {
+                                                                           [[SDImageCache sharedImageCache] storeImage:image forKey:_room.coverPictureUrl toDisk:NO completion:^{
+                                                                               weakSelf.backImageView.image = image;
+                                                                           }];
+                                                                       } else {
+                                                                           weakSelf.backImageView.image = [UIImage imageNamed:@"default_back_image"];
+                                                                       }
+                                                                   }];
+           }
+        _backImageView.image = image;
     }
-    return _endLiveView;
+    return _backImageView;
 }
 
 - (EaseLiveHeaderListView*)headerListView
 {
     if (_headerListView == nil) {
-        _headerListView = [[EaseLiveHeaderListView alloc] initWithFrame:CGRectMake(0, kDefaultTop, KScreenWidth - 50, 30.f) room:_room];
+        _headerListView = [[EaseLiveHeaderListView alloc] initWithFrame:CGRectMake(0, kDefaultTop, KScreenWidth, 40.f) room:_room];
         _headerListView.delegate = self;
+        [_headerListView setLiveCastDelegate];
     }
     return _headerListView;
 }
@@ -152,25 +172,33 @@
 - (EaseChatView*)chatview
 {
     if (_chatview == nil) {
-        _chatview = [[EaseChatView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds) - 200, CGRectGetWidth(self.view.bounds), 200) room:_room isPublish:YES];
+        _chatview = [[EaseChatView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds) - 208, CGRectGetWidth(self.view.bounds), 200) room:_room isPublish:YES customMsgHelper:_customMsgHelper];
         _chatview.delegate = self;
     }
     return _chatview;
 }
 
-- (UIButton*)closeBtn
-{
-    if (_closeBtn == nil) {
-        _closeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _closeBtn.frame = CGRectMake(KScreenWidth - 40, kDefaultTop, 30, 30);
-        [_closeBtn setImage:[UIImage imageNamed:@"close"] forState:UIControlStateNormal];
-        [_closeBtn addTarget:self action:@selector(closeLiveAction) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _closeBtn;
-}
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
+}
+
+- (void)didSelectedExitButton
+{
+    EaseFinishLiveView *finishView = [[EaseFinishLiveView alloc]initWithTitleInfo:@"确定结束直播?"];
+    [self.view addSubview:finishView];
+    [finishView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.view).offset(16);
+        make.right.equalTo(self.view).offset(-16);
+        make.height.equalTo(@220);
+        make.center.equalTo(self.view);
+    }];
+     __weak EaseFinishLiveView *weakFinishView = finishView;
+    [finishView setDoneCompletion:^(BOOL isFinish) {
+        if (isFinish) {
+            [self didClickFinishButton];
+        }
+        [weakFinishView removeFromSuperview];
+    }];
 }
 
 #pragma mark - Action
@@ -184,176 +212,6 @@
         self.subWindow.hidden = YES;
         [self.view.window makeKeyAndVisible];
     }];
-}
-
-//点击屏幕点赞特效
--(void)showTheLoveAction
-{
-    EaseHeartFlyView* heart = [[EaseHeartFlyView alloc]initWithFrame:CGRectMake(0, 0, 55, 50)];
-    [_chatview addSubview:heart];
-    CGPoint fountainSource = CGPointMake(KScreenWidth - (20 + 50/2.0), _chatview.height);
-    heart.center = fountainSource;
-    [heart animateInView:_chatview];
-}
-
-- (void)changeAction
-{
-    [[CameraServer server] changeCamera];
-}
-
-- (void)closeLiveAction
-{
-    [self stopCameraAction];
-}
-
-//停止直播
-- (void)stopCameraAction
-{
-    __weak typeof(self) weakSelf = self;
-    [[EaseHttpManager sharedInstance] getLiveRoomCurrentWithRoomId:_room.roomId
-                                                        completion:^(EaseLiveSession *session, BOOL success) {
-                                                            if (success) {
-                                                                [weakSelf _shutDownLive];
-                                                                [weakSelf.endLiveView setAudience:[NSString stringWithFormat:@"%ld%@",(long)session.totalWatchCount,NSLocalizedString(@"endview.live.watch", @" Watched")]];
-                                                                [self.view addSubview:self.endLiveView];
-                                                                [self.view bringSubviewToFront:self.endLiveView];
-                                                            }
-                                                        }];
-}
-
-//切换摄像头
-- (void)changeCameraAction
-{
-    [[CameraServer server] changeCamera];
-}
-
-//发布直播
-- (void)startAction
-{
-    [self removeNoti];
-    [self addNoti];
-    self.shouldAutoStarted = YES;
-    if (self.filterManager)
-    {
-    }
-    
-    if ([[CameraServer server] lowThan5])
-    {
-        //5以下支持4：3
-        [[CameraServer server] setHeight:640];
-        [[CameraServer server] setWidth:480];
-    }
-    else
-    {
-        //5以上的支持16：9
-        [[CameraServer server] setHeight:640];
-        [[CameraServer server] setWidth:360];
-    }
-    
-    [[CameraServer server] setFps:15];
-    [[CameraServer server] setSupportFilter:YES];
-    
-    self.filterManager = [[FilterManager alloc] init];
-    
-    [self buildData];
-    
-    [[CameraServer server] setSecretKey:CGIKey];
-    //11.4  4.05 2.05 1.75
-    [[CameraServer server] setBitrate:UCloudVideoBitrateLow];
-    //
-    NSString *path = _room.session.mobilepushstream;
-    
-    __weak EasePublishViewController *weakSelf = self;
-    NSArray *filters = [self.filterManager filters];
-    [[CameraServer server] configureCameraWithOutputUrl:path
-                                                 filter:filters
-                                        messageCallBack:^(UCloudCameraCode code, NSInteger arg1, NSInteger arg2, id data){
-                                            if (code == UCloudCamera_BUFFER_OVERFLOW)
-                                            {
-                                                static BOOL viewShowed = NO;
-                                                if (arg1 == 1 && !viewShowed)
-                                                {
-                                                    viewShowed = YES;
-                                                }
-                                                else
-                                                {
-                                                    if (viewShowed)
-                                                    {
-                                                        viewShowed = NO;
-                                                    }
-                                                };
-                                            }
-                                            else if (code == UCloudCamera_SecretkeyNil)
-                                            {
-                                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Warning" message:@"密钥为空" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-                                                [alert show];
-                                                [weakSelf setBtnStateInSel:1];
-                                            }
-                                            else if (code == UCloudCamera_PreviewOK)
-                                            {
-                                                [self.videoView removeFromSuperview];
-                                                self.videoView = nil;
-                                                [weakSelf startPreview];
-                                            }
-                                            else if (code == UCloudCamera_PublishOk)
-                                            {
-                                                [[CameraServer server] cameraPrepare];
-                                                [weakSelf.filterManager setCurrentValue:weakSelf.filters];
-                                                [weakSelf.closeBtn addTarget:self action:@selector(closeLiveAction) forControlEvents:UIControlEventTouchUpInside];
-                                                dispatch_async(dispatch_get_main_queue(), ^{
-                                                    [weakSelf setBtnStateInSel:2];
-                                                });
-                                                [[CameraServer server] cameraStart];
-                                            }
-                                            else if (code == UCloudCamera_StartPublish)
-                                            {
-                                                _isPublish = YES;
-                                            }
-                                            else if (code == UCloudCamera_Permission)
-                                            {
-                                                UIAlertView *alterView = [[UIAlertView alloc] initWithTitle:@"相机授权" message:@"没有权限访问您的相机，请在“设置－隐私－相机”中允许使用" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil, nil];
-                                                [alterView show];
-                                            }
-                                            else if (code == UCloudCamera_Micphone)
-                                            {
-                                                [[[UIAlertView alloc] initWithTitle:@"麦克风授权" message:@"没有权限访问您的麦克风，请在“设置－隐私－麦克风”中允许使用" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil, nil] show];
-                                            }
-                                            
-                                        }
-                                            deviceBlock:^(AVCaptureDevice *dev) {
-                                                weakSelf.currentDev = dev;
-                                                
-                                                BOOL containISO = NO;
-                                                for (NSDictionary *fil in weakSelf.filters)
-                                                {
-                                                    NSString *type = fil[@"type"];
-                                                    if ([type isEqualToString:@"ISO"])
-                                                    {
-                                                        containISO = YES;
-                                                    }
-                                                }
-                                                
-                                                if (SysVersion >= 8.f && containISO)
-                                                {
-                                                    AVCaptureDeviceFormat *format = dev.activeFormat;
-                                                    
-                                                    float minISO = format.minISO;
-                                                    NSDictionary *iso = [weakSelf.filters lastObject];
-                                                    NSMutableDictionary *newIso = [NSMutableDictionary dictionaryWithDictionary:iso];
-                                                    newIso[@"min"] = @(minISO);
-                                                    newIso[@"max"] = @(200.f);
-                                                    newIso[@"current"] = @(57.7);
-                                                    [weakSelf.filters replaceObjectAtIndex:[self.filters indexOfObject:iso] withObject:newIso];
-                                                }
-                                                
-                                            }cameraData:^CMSampleBufferRef(CMSampleBufferRef buffer) {
-                                                /**
-                                                 *  若果不需要裸流，不建议在这里执行操作，讲增加额外的功耗
-                                                 */
-                                                
-                                                return nil;
-                                            }];
-    [UIApplication sharedApplication].idleTimerDisabled = YES;
 }
 
 #pragma mark - EaseLiveHeaderListViewDelegate
@@ -378,9 +236,7 @@
     [profileView removeFromParentView];
 }
 
-#pragma mark - EaseEndLiveViewDelegate
-
-- (void)didClickEndButton
+- (void)didClickFinishButton
 {
     __weak EasePublishViewController *weakSelf = self;
     
@@ -392,32 +248,23 @@
                                              } else {
                                                  [weakSelf showHint:@"退出聊天室失败"];
                                              }
-                                             if (weakSelf.videoView)
-                                             {
-                                                 [weakSelf.videoView removeFromSuperview];
-                                             }
-                                             weakSelf.videoView = nil;
-                                             weakSelf.closeBtn.enabled = YES;
                                              
                                              [UIApplication sharedApplication].idleTimerDisabled = NO;
-                                             [weakSelf removeNoti];
                                              [weakSelf dismissViewControllerAnimated:YES completion:^{
-                                                 [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationRefreshList object:@(YES)];
+                                                 
                                              }];
                                          }];
     };
-    
-    [[EaseHttpManager sharedInstance] modifyLiveRoomStatusWithRoomId:_room.roomId
-                                                              status:EaseLiveSessionCompleted
-                                                          completion:^(BOOL success) {
-                                                              if (!success) {
-                                                                  [weakSelf showHint:@"更新失败"];
-                                                              }
-                                                              block();
-                                                          }];
-    
-    self.shouldAutoStarted = NO;
-    self.closeBtn.enabled = NO;
+    [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOffline:_room completion:^(EaseLiveRoom *room, BOOL success) {
+        if (success) {
+            _room = room;
+            
+            //重置本地保存的直播间id
+            EaseDefaultDataHelper.shared.currentRoomId = @"";
+            [EaseDefaultDataHelper.shared archive];
+        }
+        block();
+    }];
 }
 
 - (void)didClickContinueButton
@@ -426,6 +273,46 @@
 }
 
 #pragma mark - EaseChatViewDelegate
+
+//礼物列表
+- (void)didSelectGiftButton:(BOOL)isOwner
+{
+    if (isOwner) {
+        EaseGiftListView *giftListView = [[EaseGiftListView alloc]init];
+        giftListView.delegate = self;
+        [giftListView showFromParentView:self.view];
+    }
+}
+
+//有观众送礼物
+- (void)userSendGifts:(EMMessage*)msg count:(NSInteger)count
+{
+    [_customMsgHelper userSendGifts:msg count:count backView:self.view];
+    
+    EMCustomMessageBody *msgBody = (EMCustomMessageBody*)msg.body;
+    NSString *giftid = [msgBody.ext objectForKey:@"id"];
+    
+    ++_giftsNum;
+    [self.headerListView.liveCastView setNumberOfGift:_giftsNum];
+    //礼物份数
+    EaseDefaultDataHelper.shared.giftNumbers = [NSString stringWithFormat:@"%ld",(long)_giftsNum];
+    //送礼物人列表
+    if (![EaseDefaultDataHelper.shared.rewardCount containsObject:msg.from]) {
+        [EaseDefaultDataHelper.shared.rewardCount addObject:msg.from];
+    }
+    NSMutableDictionary *giftDetailDic = (NSMutableDictionary*)[EaseDefaultDataHelper.shared.giftStatisticsCount objectForKey:giftid];
+    long long num = [(NSString*)[giftDetailDic objectForKey:msg.from] longLongValue];
+    [giftDetailDic setObject:[NSString stringWithFormat:@"%lld",(num+count)] forKey:msg.from];
+    //礼物统计字典
+    [EaseDefaultDataHelper.shared.giftStatisticsCount setObject:giftDetailDic forKey:giftid];
+    [EaseDefaultDataHelper.shared archive];
+}
+
+//弹幕
+- (void)didSelectedBarrageSwitch:(EMMessage*)msg
+{
+    [_customMsgHelper barrageAction:msg backView:self.view];
+}
 
 - (void)easeChatViewDidChangeFrameToHeight:(CGFloat)toHeight
 {
@@ -448,28 +335,39 @@
     }
 }
 
-- (void)didReceivePraiseWithCMDMessage:(EMMessage *)message
+//收到点赞
+- (void)didReceivePraiseMessage:(EMMessage *)message
 {
-    [self showTheLoveAction];
+    [_customMsgHelper praiseAction:_chatview];
+    EMCustomMessageBody *customBody = (EMCustomMessageBody*)message.body;
+    _praiseNum += [(NSString*)[customBody.ext objectForKey:@"num"] integerValue];
+    [self.headerListView.liveCastView setNumberOfPraise:_praiseNum];
+    EaseDefaultDataHelper.shared.praiseStatisticstCount = [NSString stringWithFormat:@"%ld",(long)_praiseNum];
+    [EaseDefaultDataHelper.shared archive];
 }
 
+//操作观众对象
 - (void)didSelectUserWithMessage:(EMMessage *)message
 {
     [self.view endEditing:YES];
-    EaseProfileLiveView *profileLiveView = [[EaseProfileLiveView alloc] initWithUsername:message.from
-                                                                              chatroomId:_room.chatroomId
-                                                                                 isOwner:YES];
-    profileLiveView.profileDelegate = self;
-    profileLiveView.delegate = self;
-    [profileLiveView showFromParentView:self.view];
+    if (![message.from isEqualToString:_room.anchor]) {
+        EaseAudienceBehaviorView *audienceBehaviorView = [[EaseAudienceBehaviorView alloc]initWithOperateUser:message.from chatroomId: _room.chatroomId];
+        audienceBehaviorView.delegate = self;
+        [audienceBehaviorView showFromParentView:self.view];
+    }
 }
 
-- (void)didSelectChangeCameraButton
+//主播信息卡片
+- (void)didClickAnchorCard:(EaseLiveRoom *)room
 {
-    [[CameraServer server] changeCamera];
+    [self.view endEditing:YES];
+    EaseAnchorCardView *anchorCardView = [[EaseAnchorCardView alloc]initWithLiveRoom:room];
+    anchorCardView.delegate = self;
+    [anchorCardView showFromParentView:self.view];
 }
 
-- (void)didSelectAdminButton:(BOOL)isOwner
+//成员列表
+- (void)didSelectMemberListButton:(BOOL)isOwner
 {
     EaseAdminView *adminView = [[EaseAdminView alloc] initWithChatroomId:_room.chatroomId
                                                                  isOwner:isOwner];
@@ -491,6 +389,17 @@
 #pragma mark - EaseProfileLiveViewDelegate
 
 #pragma mark - EMChatroomManagerDelegate
+
+- (void)chatroomWhiteListDidUpdate:(EMChatroom *)aChatroom addedWhiteListMembers:(NSArray *)aMembers
+{
+    NSLog(@"房主以添加");
+}
+
+extern bool isAllTheSilence;
+- (void)chatroomAllMemberMuteChanged:(EMChatroom *)aChatroom isAllMemberMuted:(BOOL)aMuted
+{
+    isAllTheSilence = aMuted;
+}
 
 - (void)userDidJoinChatroom:(EMChatroom *)aChatroom
                        user:(NSString *)aUsername
@@ -545,7 +454,7 @@
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:[NSString stringWithFormat:@"聊天室创建者有更新:%@",aChatroom.chatroomId] preferredStyle:UIAlertControllerStyleAlert];
         
         UIAlertAction *ok = [UIAlertAction actionWithTitle:NSLocalizedString(@"publish.ok", @"Ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self didClickEndButton];
+            [self didClickFinishButton];
         }];
         
         [alert addAction:ok];
@@ -557,46 +466,8 @@
 {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"被踢出直播聊天室" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
     [alert show];
-    [self _shutDownLive];
-    [self didClickEndButton];
-}
-
-#pragma mark - EMClientDelegate
-
-- (void)userAccountDidLoginFromOtherDevice
-{
-    [self _shutDownLive];
-}
-
-#pragma mark - private
-
-- (void)startPreview
-{
-    UIView *cameraView = [[CameraServer server] getCameraView];
-    cameraView.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:cameraView];
-    [self.view sendSubviewToBack:cameraView];
-    self.videoView = cameraView;
-}
-
-- (void)addNoti
-{
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noti:) name:UCloudNeedRestart object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noti:) name:UIApplicationWillResignActiveNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noti:) name:UIApplicationDidBecomeActiveNotification object:nil];
-}
-
-- (void)removeNoti
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UCloudNeedRestart object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
-}
-
-
-- (void)buildData
-{
-    self.filters = [self.filterManager buildData];
+    //[self _shutDownLive];
+    [self didClickFinishButton];
 }
 
 - (void)setBtnStateInSel:(NSInteger)num
@@ -610,56 +481,9 @@
     }
 }
 
-- (void)noti:(NSNotification *)noti
-{
-    NSLog(@"noti name :%@",noti.name);
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
-    if ([noti.name isEqualToString:UCloudMoviePlayerClickBack]) {
-        [self setBtnStateInSel:1];
-    }
-    else if ([noti.name isEqualToString:UCloudNeedRestart])
-    {
-        if (self.shouldAutoStarted)
-        {
-            NSLog(@"restart");
-            [self startAction];
-        }
-    }
-    else if ([noti.name isEqualToString:UIApplicationDidEnterBackgroundNotification] || [noti.name isEqualToString:UIApplicationWillResignActiveNotification])
-    {
-        [self _shutDownLive];
-    }
-    else if ([noti.name isEqualToString:UIApplicationDidBecomeActiveNotification])
-    {
-        [self _recoverLive];
-    }
-}
-
-- (void)_shutDownLive;
-{
-    while (!_isShutDown) {
-        [[CameraServer server] shutdown:^{
-            _blackView = [[CameraServer server] createBlurringScreenshot];
-            _blackView.backgroundColor = [UIColor blackColor];
-            [self.videoView addSubview:_blackView];
-            
-            UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc]init];
-            activity.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
-            activity.center = _blackView.center;
-            [activity startAnimating];
-            [_blackView addSubview:activity];
-            
-        }];
-        _isShutDown = YES;
-    }
-    _isload = NO;
-}
-
 - (void)_recoverLive
 {
     while (!_isload) {
-        [self startAction];
-        _isShutDown = NO;
         _isload = YES;
     }
 }

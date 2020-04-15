@@ -9,15 +9,20 @@
 #import <UIKit/UIKit.h>
 
 #import "EaseBaseSubView.h"
+#import "EaseGiftCell.h"
+#import "EaseCustomKeyBoardView.h"
 
-@protocol EaseLiveGiftViewDelegate <NSObject>
+@protocol EaseLiveGiftViewDelegate;
+@interface EaseLiveGiftView : EaseBaseSubView<EaseCustomKeyBoardDelegate>
 
-- (void)didSelectGiftWithGiftId:(NSString*)giftId;
+@property (nonatomic, weak) id<EaseLiveGiftViewDelegate> giftDelegate;
 
 @end
 
-@interface EaseLiveGiftView : EaseBaseSubView
+@protocol EaseLiveGiftViewDelegate <NSObject>
 
-@property (nonatomic, weak) id<EaseLiveGiftViewDelegate> giftDelegate;
+- (void)didConfirmGift:(EaseGiftCell *)giftCell giftNum:(long)num;
+
+- (void)giftNumCustom:(EaseLiveGiftView *)liveGiftView;
 
 @end

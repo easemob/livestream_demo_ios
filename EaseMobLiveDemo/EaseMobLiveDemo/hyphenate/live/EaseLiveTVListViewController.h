@@ -1,16 +1,18 @@
 //
 //  EaseLiveTVListViewController.h
-//  UCloudMediaRecorderDemo
 //
 //  Created by EaseMob on 16/5/30.
 //  Copyright © 2016年 zmw. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
+#import "EaseBaseViewController.h"
 
-@interface EaseLiveTVListViewController : UIViewController
+@interface EaseLiveTVListViewController : EaseBaseViewController
 
 @property (nonatomic, strong) UIBarButtonItem *searchBarItem;
 @property (nonatomic, strong) UIBarButtonItem *logoutItem;
+
+- (instancetype)initWithBehavior:(kTabbarItemBehavior)tabBarBehavior;
 
 @end
