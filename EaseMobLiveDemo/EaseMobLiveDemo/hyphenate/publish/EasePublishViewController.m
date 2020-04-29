@@ -27,10 +27,13 @@
 #import "EaseFinishLiveView.h"
 #import "EaseCustomMessageHelper.h"
 
+#import <PLMediaStreamingKit/PLMediaStreamingKit.h>
+#import "PLPermissionRequestor.h"
+
 #define kDefaultTop 35.f
 #define kDefaultLeft 10.f
 
-@interface EasePublishViewController () <EaseChatViewDelegate,UITextViewDelegate,EMChatroomManagerDelegate,TapBackgroundViewDelegate,EaseLiveHeaderListViewDelegate,EaseProfileLiveViewDelegate,UIAlertViewDelegate,EMClientDelegate,EaseCustomMessageHelperDelegate>
+@interface EasePublishViewController () <EaseChatViewDelegate,UITextViewDelegate,EMChatroomManagerDelegate,TapBackgroundViewDelegate,EaseLiveHeaderListViewDelegate,EaseProfileLiveViewDelegate,UIAlertViewDelegate,EMClientDelegate,EaseCustomMessageHelperDelegate,PLMediaStreamingSessionDelegate>
 {
     BOOL _isload;
     BOOL _isShutDown;
@@ -47,6 +50,14 @@
     NSInteger _giftsNum;//礼物
     
     EaseCustomMessageHelper *_customMsgHelper;//自定义消息帮助
+    
+    NSURL *_streamCloudURL;
+    NSURL *_streamURL;
+    
+    PLVideoCaptureConfiguration *videoCaptureConfiguration;
+    PLAudioCaptureConfiguration *audioCaptureConfiguration;
+    PLVideoStreamingConfiguration *videoStreamingConfiguration;
+    PLAudioStreamingConfiguration *audioStreamingConfiguration;
 }
 
 @property (nonatomic, strong) EaseLiveHeaderListView *headerListView;
@@ -58,6 +69,9 @@
 //聊天室
 @property (strong, nonatomic) EaseChatView *chatview;
 @property(nonatomic,strong) UIImageView *backImageView;
+
+//七牛媒体流
+@property (nonatomic, strong) PLMediaStreamingSession *session;
 
 @end
 
@@ -79,7 +93,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.view insertSubview:self.backImageView atIndex:0];
+    //[self.view insertSubview:self.backImageView atIndex:0];
     
     [[EMClient sharedClient].roomManager addDelegate:self delegateQueue:nil];
     [[EMClient sharedClient] addDelegate:self delegateQueue:nil];
@@ -99,6 +113,10 @@
     //[self.view addSubview:self.roomNameLabel];
     [self.view layoutSubviews];
     [self setBtnStateInSel:0];
+    
+    [self _prepareForCameraSetting];
+    [self actionPushStream];
+    
 }
 
 - (void)dealloc
@@ -111,7 +129,61 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-#pragma mark - getter
+#pragma mark - mediastream
+
+- (PLMediaStreamingSession *)session
+{
+    if (_session == nil) {
+        videoCaptureConfiguration = [PLVideoCaptureConfiguration defaultConfiguration];
+        videoCaptureConfiguration.position = AVCaptureDevicePositionFront;
+        audioCaptureConfiguration = [PLAudioCaptureConfiguration defaultConfiguration];
+        audioCaptureConfiguration.acousticEchoCancellationEnable = YES;
+        videoStreamingConfiguration = [PLVideoStreamingConfiguration defaultConfiguration];
+        audioStreamingConfiguration = [PLAudioStreamingConfiguration defaultConfiguration];
+        _session = [[PLMediaStreamingSession alloc] initWithVideoCaptureConfiguration:videoCaptureConfiguration audioCaptureConfiguration:audioCaptureConfiguration videoStreamingConfiguration:videoStreamingConfiguration audioStreamingConfiguration:audioStreamingConfiguration stream:nil];
+        _session.delegate = self;
+        _session.autoReconnectEnable = YES;//掉线重连
+    }
+    return _session;
+}
+//摄像头权限
+- (void)_prepareForCameraSetting
+{
+    PLPermissionRequestor *permission = [[PLPermissionRequestor alloc] init];
+    __weak typeof(self) weakSelf = self;
+    permission.permissionGranted = ^{
+        UIView *previewView = _session.previewView;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf.view insertSubview:weakSelf.session.previewView atIndex:0];
+            [previewView mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.top.bottom.left.and.right.equalTo(weakSelf.view);
+            }];
+        });
+    };
+    [permission checkAndRequestPermission];
+}
+
+- (void)actionPushStream {
+    NSString *pushUrl = [NSString stringWithFormat:@"rtmp://pili-publish.easemob.com/es-liveroom/%@",_room.chatroomId];
+    _streamURL = [NSURL URLWithString:pushUrl];
+    
+    [self.session startStreamingWithPushURL:_streamURL feedback:^(PLStreamStartStateFeedback feedback) {
+        NSString *log = [NSString stringWithFormat:@"session start state %lu",(unsigned long)feedback];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"%@", log);
+            if (PLStreamStartStateSuccess == feedback) {
+            } else {
+                [[[UIAlertView alloc] initWithTitle:@"错误" message:@"推流失败了，将重新请求有效的URL" delegate:nil cancelButtonTitle:@"知道啦" otherButtonTitles:nil] show];
+            }
+        });
+     }];
+}
+
+//切换前后摄像头
+- (void)didSelectChangeCameraButton
+{
+    [self.session toggleCamera];
+}
 
 - (UIWindow*)subWindow
 {
@@ -192,9 +264,11 @@
         make.height.equalTo(@220);
         make.center.equalTo(self.view);
     }];
-     __weak EaseFinishLiveView *weakFinishView = finishView;
+    __weak EaseFinishLiveView *weakFinishView = finishView;
     [finishView setDoneCompletion:^(BOOL isFinish) {
         if (isFinish) {
+            [_session stopStreaming];//结束推流
+            [_session destroy];
             [self didClickFinishButton];
         }
         [weakFinishView removeFromSuperview];

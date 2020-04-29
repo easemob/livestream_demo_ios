@@ -106,7 +106,7 @@
     __weak EaseLiveTVListViewController *weakSelf = self;
     if (self.tabBarBehavior == kTabbarItemTag_Live) {
         [[EaseHttpManager sharedInstance] fetchLiveRoomsOngoingWithCursor:nil
-                                                                       limit:8
+                                                                       limit:20
                                                                   completion:^(EMCursorResult *result, BOOL success) {
                                                                       if (success) {
                                                                           if (isHeader) {
@@ -133,7 +133,7 @@
                                                                       _isLoading = NO;
                                                                   }];
     } else if (self.tabBarBehavior == kTabbarItemTag_Broadcast) {
-        [[EaseHttpManager sharedInstance] fetchLiveRoomsWithCursor:nil limit:8 completion:^(EMCursorResult *result, BOOL success) {
+        [[EaseHttpManager sharedInstance] fetchLiveRoomsWithCursor:nil limit:20 completion:^(EMCursorResult *result, BOOL success) {
             if (success) {
                 if (isHeader) {
                     [weakSelf.dataArray removeAllObjects];

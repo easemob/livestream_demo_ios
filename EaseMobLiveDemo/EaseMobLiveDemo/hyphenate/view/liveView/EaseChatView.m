@@ -105,12 +105,11 @@ BOOL isAllTheSilence;//全体禁言
         //底部功能按钮
         [self addSubview:self.bottomView];
         [self.bottomView addSubview:self.sendTextButton];
-        //[self.bottomView addSubview:self.adminButton];
         [self.bottomView addSubview:self.exitButton];
         if (!isPublish) {
             [self.bottomView addSubview:self.likeButton];
         } else {
-            self.exitButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*2 - 2*kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
+            [self.bottomView addSubview:self.changeCameraButton];
         }
         [self.bottomView addSubview:self.giftButton];
         self.bottomSendMsgView.hidden = YES;
@@ -189,6 +188,17 @@ BOOL isAllTheSilence;//全体禁言
         [_sendTextButton addTarget:self action:@selector(sendTextAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _sendTextButton;
+}
+
+- (UIButton*)changeCameraButton
+{
+    if (_changeCameraButton == nil) {
+        _changeCameraButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _changeCameraButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*2 - 2*kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
+        [_changeCameraButton setImage:[UIImage imageNamed:@"reversal_camera"] forState:UIControlStateNormal];
+        [_changeCameraButton addTarget:self action:@selector(changeCameraAction) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _changeCameraButton;
 }
 
 - (UIButton*)exitButton
@@ -822,6 +832,7 @@ BOOL isAllTheSilence;//全体禁言
 //赞
 - (void)praiseAction
 {
+    [_customMsgHelper praiseAction:self];
     ++_praiseCount;
     if (_praiseInterval != 0) {
         return;
@@ -835,7 +846,6 @@ BOOL isAllTheSilence;//全体禁言
     [_customMsgHelper sendCustomMessage:@"" num:_praiseCount to:_chatroomId messageType:EMChatTypeChatRoom customMsgType:customMessageType_praise completion:^(EMMessage * _Nonnull message, EMError * _Nonnull error) {
         if (!error) {
             _praiseCount = 0;
-            [_customMsgHelper praiseAction:self];
             [weakSelf currentViewDataFill:message];
         } else {
             [MBProgressHUD showError:@"点赞失败" toView:weakSelf];
@@ -864,6 +874,14 @@ BOOL isAllTheSilence;//全体禁言
         return;
     }
     _praiseInterval -= 1;
+}
+
+- (void)changeCameraAction
+{
+    if (_delegate && [_delegate respondsToSelector:@selector(didSelectChangeCameraButton)]) {
+        [_delegate didSelectChangeCameraButton];
+        _changeCameraButton.selected = !_changeCameraButton.selected;
+    }
 }
 
 - (void)exitAction
@@ -955,12 +973,5 @@ BOOL isAllTheSilence;//全体禁言
                                                        aCompletion(ret);
                                                    }];
 }
-
-- (void)sendMessageAtWithUsername:(NSString *)username
-{
-    self.textView.text = [self.textView.text stringByAppendingString:[NSString stringWithFormat:@"@%@ ",username]];
-    [self _setSendState:YES];
-}
-
 
 @end

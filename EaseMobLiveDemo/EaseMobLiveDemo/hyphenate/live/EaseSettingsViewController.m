@@ -24,7 +24,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor colorWithRed:220/255.0 green:220/255.0 blue:220/255.0 alpha:1.0];
+    self.view.backgroundColor = [UIColor colorWithRed:249/255.0 green:249/255.0 blue:249/255.0 alpha:1.0];
     [self _setupSubviews];
 }
 
@@ -45,7 +45,7 @@
     }];
     
     UIView *line = [[UIView alloc]init];
-    line.backgroundColor = [UIColor colorWithRed:220/255.0 green:220/255.0 blue:220/255.0 alpha:1.0];
+    line.backgroundColor = [UIColor colorWithRed:249/255.0 green:249/255.0 blue:249/255.0 alpha:1.0];
     [self.view addSubview:line];
     [line mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.view).offset(16);
@@ -70,7 +70,8 @@
         UIImageView *logoImg = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"huanxin-logo"]];
         [_logoView addSubview:logoImg];
         [logoImg mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.height.equalTo(@60);
+            make.width.equalTo(@60);
+            make.height.equalTo(@45);
             make.center.equalTo(_logoView);
         }];
         UILabel *productName = [[UILabel alloc]init];

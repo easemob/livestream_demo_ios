@@ -31,6 +31,8 @@
 #define kCustomMsgChatroomPraise @"chatroom_praise"
 #define kCustomMsgChatroomBarrage @"chatroom_barrage"
 
+#define kEndPushStream @"endpushstream"
+
 #ifdef __OBJC__
 
     #import <Hyphenate/Hyphenate.h>

@@ -22,7 +22,7 @@
 
 - (void)didSelectUserWithMessage:(EMMessage*)message;
 
-//- (void)didSelectAdminButton:(BOOL)isOwner;
+- (void)didSelectChangeCameraButton;
 
 - (void)didSelectGiftButton:(BOOL)isOwner;//礼物
 
@@ -52,8 +52,6 @@
 - (void)leaveChatroomWithIsCount:(BOOL)aIsCount
                       completion:(void (^)(BOOL success))aCompletion;
 
-
-- (void)sendMessageAtWithUsername:(NSString*)username;
 
 - (void)sendGiftAction:(NSString *)giftId num:(NSInteger)num completion:(void (^)(BOOL success))aCompletion;
 
