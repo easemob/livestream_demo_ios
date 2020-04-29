@@ -28,13 +28,9 @@
 #import "EaseCustomMessageHelper.h"
 
 #import <PLPlayerKit/PLPlayerKit.h>
-#import "PLMediaInfo.h"
 
 #define kDefaultTop 35.f
 #define kDefaultLeft 10.f
-
-#define REQUEST_HOST    @"http://api-demo.qnsdk.com"
-#define PLAY_HOST       @"http://demo-videos.qnsdk.com"
 
 @interface EaseLiveViewController () <EaseChatViewDelegate,EaseLiveHeaderListViewDelegate,TapBackgroundViewDelegate,EaseLiveGiftViewDelegate,EMChatroomManagerDelegate,EaseProfileLiveViewDelegate,EMClientDelegate,EaseCustomMessageHelperDelegate,PLPlayerDelegate>
 {
