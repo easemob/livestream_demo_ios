@@ -135,7 +135,7 @@
 //拉取直播流
 - (void)fetchLivingStream
 {
-    NSString *pullStreamStr = [NSString stringWithFormat:@"rtmp://pili-publish.easemob.com/es-liveroom/%@",_room.chatroomId];
+    NSString *pullStreamStr = [NSString stringWithFormat:@"rtmp://pili-live-rtmp.easemob.com/es-liveroom/%@",_room.chatroomId];
     NSURL *pullStreamUrl = [NSURL URLWithString:pullStreamStr];
     [self startPLayVideoStream:pullStreamUrl];
 }

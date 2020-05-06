@@ -7,7 +7,6 @@ source 'https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git'
 target 'EaseMobLiveDemo' do
 pod 'Masonry'
 pod 'MJRefresh'
-pod 'JGProgressHUD'
 pod 'MBProgressHUD', '~> 1.1.0'
 pod 'SDWebImage', '~> 4.0'
 pod 'Hyphenate', '~> 3.6.6'
