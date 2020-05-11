@@ -448,6 +448,7 @@
 //成员列表
 - (void)didSelectMemberListButton:(BOOL)isOwner
 {
+    [self.view endEditing:YES];
     EaseAdminView *adminView = [[EaseAdminView alloc] initWithChatroomId:_room.chatroomId
                                                                  isOwner:isOwner];
     adminView.delegate = self;

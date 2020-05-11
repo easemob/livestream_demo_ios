@@ -569,6 +569,7 @@ BOOL isAllTheSilence;//全体禁言
     
     
     if (self.activityView) {
+        [self _setSendState:NO];
         [self _willShowBottomView:nil];
     }
     
@@ -585,6 +586,7 @@ BOOL isAllTheSilence;//全体禁言
 
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
+    [self _setSendState:NO];
     [self _willShowBottomView:nil];
 }
 
@@ -936,8 +938,8 @@ BOOL isAllTheSilence;//全体禁言
 - (BOOL)endEditing:(BOOL)force
 {
     BOOL result = [super endEditing:force];
-    [self _willShowBottomView:nil];
     [self _setSendState:NO];
+    [self _willShowBottomView:nil];
     self.faceButton.selected = NO;
     return result;
 }
