@@ -95,7 +95,7 @@ extern NSMutableDictionary *anchorInfoDic;
         _giftLabel.frame = CGRectMake(self.frame.origin.x + _praiseLabel.width, self.frame.origin.y + self.height + 5, self.width / 2, self.height / 2);
         _giftLabel.font = [UIFont systemFontOfSize:12.f];
         _giftLabel.textColor = [UIColor colorWithRed:255/255.0 green:199/255.0 blue:0/255.0 alpha:1.0];
-        _giftLabel.text = [NSString stringWithFormat:@"礼物:%d",[EaseDefaultDataHelper.shared.giftNumbers intValue]];
+        _giftLabel.text = [NSString stringWithFormat:@"礼物:%d",[EaseDefaultDataHelper.shared.totalGifts intValue]];
         _giftLabel.textAlignment = NSTextAlignmentLeft;
     }
     return _giftLabel;

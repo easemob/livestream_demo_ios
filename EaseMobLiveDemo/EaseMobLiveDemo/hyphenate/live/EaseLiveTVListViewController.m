@@ -6,7 +6,7 @@
 //
 
 #define kCollectionCellDefaultHeight 150
-#define kDefaultPageSize 20
+#define kDefaultPageSize 8
 #define kCollectionIdentifier @"collectionCell"
 
 #import "EaseLiveTVListViewController.h"
@@ -37,7 +37,7 @@
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIButton *liveButton;
-@property (nonatomic) kTabbarItemBehavior tabBarBehavior; //tabbar行为：看直播/开播/设置
+@property (nonatomic) kTabbarItemBehavior tabBarBehavior; //tabbar行为：看直播/开播
 
 @end
 
@@ -66,16 +66,14 @@
     [[EMClient sharedClient] removeDelegate:self];
     [[EMClient sharedClient] addDelegate:self delegateQueue:nil];
     
-    [self setup];
-    
-
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshList:) name:kNotificationRefreshList object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     if ([[EMClient sharedClient] isConnected]) {
+        _cursor = @"";
+        _noMore = NO;
         [self loadData:YES];
     }
 }
@@ -92,11 +90,6 @@
     
 }
 
-- (void)setup
-{
-    _cursor = @"";
-}
-
 - (void)loadData:(BOOL)isHeader
 {
     if (_isLoading) {
@@ -105,19 +98,17 @@
     _isLoading = YES;
     __weak EaseLiveTVListViewController *weakSelf = self;
     if (self.tabBarBehavior == kTabbarItemTag_Live) {
-        [[EaseHttpManager sharedInstance] fetchLiveRoomsOngoingWithCursor:nil
+        [[EaseHttpManager sharedInstance] fetchLiveRoomsOngoingWithCursor:_cursor
                                                                        limit:8
                                                                   completion:^(EMCursorResult *result, BOOL success) {
                                                                       if (success) {
                                                                           if (isHeader) {
                                                                               [weakSelf.dataArray removeAllObjects];
                                                                               [weakSelf.dataArray addObjectsFromArray:result.list];
-                                                                              [weakSelf.collectionView reloadData];
                                                                           } else {
                                                                               [weakSelf.dataArray addObjectsFromArray:result.list];
-                                                                              [weakSelf.collectionView reloadData];
                                                                           }
-                                                                          //_cursor = result.cursor;
+                                                                          _cursor = result.cursor;
                                                                           
                                                                           if ([result.list count] < kDefaultPageSize) {
                                                                               _noMore = YES;
@@ -133,15 +124,13 @@
                                                                       _isLoading = NO;
                                                                   }];
     } else if (self.tabBarBehavior == kTabbarItemTag_Broadcast) {
-        [[EaseHttpManager sharedInstance] fetchLiveRoomsWithCursor:nil limit:8 completion:^(EMCursorResult *result, BOOL success) {
+        [[EaseHttpManager sharedInstance] fetchLiveRoomsWithCursor:_cursor limit:8 completion:^(EMCursorResult *result, BOOL success) {
             if (success) {
                 if (isHeader) {
                     [weakSelf.dataArray removeAllObjects];
                     [weakSelf.dataArray addObjectsFromArray:result.list];
-                    [weakSelf.collectionView reloadData];
                 } else {
                     [weakSelf.dataArray addObjectsFromArray:result.list];
-                    [weakSelf.collectionView reloadData];
                 }
                 _cursor = result.cursor;
                 

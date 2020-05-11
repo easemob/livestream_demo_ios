@@ -34,6 +34,7 @@ NSMutableDictionary *anchorInfoDic;//直播间主播本应用显示信息库
     options.apnsCertName = apnsCertName;
     options.isAutoAcceptGroupInvitation = NO;
     options.enableConsoleLog = YES;
+    
     [[EMClient sharedClient] initializeSDKWithOptions:options];
     
     [self _setupAppDelegateNotifications];
