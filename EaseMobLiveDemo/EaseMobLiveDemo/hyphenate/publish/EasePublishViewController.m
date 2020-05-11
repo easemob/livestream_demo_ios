@@ -47,7 +47,8 @@
     EaseLiveRoom *_room;
     
     NSInteger _praiseNum;//赞
-    NSInteger _giftsNum;//礼物
+    NSInteger _giftsNum;//礼物份数
+    NSInteger _totalGifts;//礼物合计总数
     
     EaseCustomMessageHelper *_customMsgHelper;//自定义消息帮助
     
@@ -85,6 +86,7 @@
         _customMsgHelper = [[EaseCustomMessageHelper alloc]initWithCustomMsgImp:self chatId:_room.chatroomId];
         _praiseNum = [EaseDefaultDataHelper.shared.praiseStatisticstCount intValue];
         _giftsNum = [EaseDefaultDataHelper.shared.giftNumbers intValue];
+        _totalGifts = [EaseDefaultDataHelper.shared.totalGifts intValue];
         EaseDefaultDataHelper.shared.currentRoomId = _room.roomId;
         [EaseDefaultDataHelper.shared archive];
     }
@@ -366,10 +368,13 @@
     EMCustomMessageBody *msgBody = (EMCustomMessageBody*)msg.body;
     NSString *giftid = [msgBody.ext objectForKey:@"id"];
     
+    _totalGifts += count;
     ++_giftsNum;
-    [self.headerListView.liveCastView setNumberOfGift:_giftsNum];
+    [self.headerListView.liveCastView setNumberOfGift:_totalGifts];
     //礼物份数
     EaseDefaultDataHelper.shared.giftNumbers = [NSString stringWithFormat:@"%ld",(long)_giftsNum];
+    //礼物合计总数
+    EaseDefaultDataHelper.shared.totalGifts = [NSString stringWithFormat:@"%ld",(long)_totalGifts];
     //送礼物人列表
     if (![EaseDefaultDataHelper.shared.rewardCount containsObject:msg.from]) {
         [EaseDefaultDataHelper.shared.rewardCount addObject:msg.from];

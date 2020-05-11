@@ -15,6 +15,7 @@ static NSString *eDefaultData_praiseStatisticst = @"praiseStatisticst";
 static NSString *eDefaultData_giftStatistics = @"giftStatistics";
 static NSString *eDefaultData_rewardCount = @"rewardCount";
 static NSString *eDefaultData_giftNumbers = @"giftNumbers";
+static NSString *eDefaultData_totalGifts = @"totalGifts";
 
 static EaseDefaultDataHelper *shared = nil;
 
@@ -43,6 +44,7 @@ extern NSArray<NSString*> *nickNameArray;
         self.giftStatisticsCount = [self emptyGiftStatisticsCount];
         self.rewardCount = [[NSMutableArray alloc]init];
         self.giftNumbers = @"";
+        self.totalGifts = @"";
     }
     
     return self;
@@ -75,6 +77,7 @@ extern NSArray<NSString*> *nickNameArray;
             self.rewardCount = tempArray;
         }
         self.giftNumbers = [aDecoder decodeObjectForKey:eDefaultData_giftNumbers];
+        self.totalGifts = [aDecoder decodeObjectForKey:eDefaultData_totalGifts];
         [self archive];
     }
     return self;
@@ -89,6 +92,7 @@ extern NSArray<NSString*> *nickNameArray;
     [aCoder encodeObject:self.giftStatisticsCount forKey:eDefaultData_giftStatistics];
     [aCoder encodeObject:self.rewardCount forKey:eDefaultData_rewardCount];
     [aCoder encodeObject:self.giftNumbers forKey:eDefaultData_giftNumbers];
+    [aCoder encodeObject:self.totalGifts forKey:eDefaultData_totalGifts];
 }
 
 #pragma mark - Private

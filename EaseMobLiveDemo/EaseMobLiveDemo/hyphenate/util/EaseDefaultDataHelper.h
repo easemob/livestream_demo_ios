@@ -26,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSMutableDictionary *giftStatisticsCount;//礼物统计
 @property (nonatomic, strong) NSMutableArray *rewardCount;//打赏人列表
 @property (nonatomic, strong) NSString *giftNumbers;//礼物份数
+@property (nonatomic, strong) NSString *totalGifts;//礼物总数合计
 
 
 + (instancetype)shared;
