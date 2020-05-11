@@ -166,8 +166,8 @@
 }
 
 - (void)actionPushStream {
-    NSString *pushUrl = [NSString stringWithFormat:@"rtmp://pili-publish.easemob.com/es-liveroom/%@",_room.chatroomId];
-    _streamURL = [NSURL URLWithString:pushUrl];
+    
+    _streamURL = [NSURL URLWithString:@"your push liveStream address"];
     
     [self.session startStreamingWithPushURL:_streamURL feedback:^(PLStreamStartStateFeedback feedback) {
         NSString *log = [NSString stringWithFormat:@"session start state %lu",(unsigned long)feedback];

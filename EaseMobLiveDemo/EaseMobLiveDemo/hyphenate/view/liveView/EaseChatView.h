@@ -28,6 +28,8 @@
 
 - (void)didSelectedExitButton;
 
+- (void)liveRoomOwnerDidUpdate:(EMChatroom *)aChatroom newOwner:(NSString *)aNewOwner;
+
 @end
 
 @interface EaseChatView : UIView
@@ -51,7 +53,6 @@
 
 - (void)leaveChatroomWithIsCount:(BOOL)aIsCount
                       completion:(void (^)(BOOL success))aCompletion;
-
 
 - (void)sendGiftAction:(NSString *)giftId num:(NSInteger)num completion:(void (^)(BOOL success))aCompletion;
 

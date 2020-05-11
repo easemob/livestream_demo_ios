@@ -115,6 +115,7 @@ BOOL isAllTheSilence;//全体禁言
         self.bottomSendMsgView.hidden = YES;
         _curtime = (long long)([[NSDate date] timeIntervalSince1970]*1000);
         _defaultHeight = self.height;
+
     }
     return self;
 }
@@ -165,6 +166,7 @@ BOOL isAllTheSilence;//全体禁言
         _tableView.delegate = self;
         _tableView.backgroundColor = [UIColor clearColor];
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        _tableView.scrollsToTop = NO;
         _tableView.showsVerticalScrollIndicator = NO;
     }
     return _tableView;
@@ -364,6 +366,12 @@ BOOL isAllTheSilence;//全体禁言
 //有用户加入聊天室
 - (void)userDidJoinChatroom:(EMChatroom *)aChatroom user:(NSString *)aUsername
 {
+    if ([_room.anchor isEqualToString:aUsername]) {
+        //当前主播退出房间重进
+        if (self.delegate && [self.delegate respondsToSelector:@selector(liveRoomOwnerDidUpdate:newOwner:)]) {
+            [self.delegate liveRoomOwnerDidUpdate:aChatroom newOwner:aUsername];
+        }
+    }
     EMTextMessageBody *body = [[EMTextMessageBody alloc] initWithText:@"进入了直播间"];
     NSMutableDictionary *ext = [[NSMutableDictionary alloc]init];
     [ext setObject:@"em_join" forKey:@"em_join"];
@@ -403,7 +411,11 @@ BOOL isAllTheSilence;//全体禁言
                       newOwner:(NSString *)aNewOwner
                       oldOwner:(NSString *)aOldOwner
 {
-    
+    _chatroom = aChatroom;
+    _room.anchor = aNewOwner;
+    if (self.delegate && [self.delegate respondsToSelector:@selector(liveRoomOwnerDidUpdate:newOwner:)]) {
+        [self.delegate liveRoomOwnerDidUpdate:aChatroom newOwner:aNewOwner];
+    }
 }
 
 #pragma  mark - UITableViewDelegate

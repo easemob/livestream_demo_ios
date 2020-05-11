@@ -135,8 +135,7 @@
 //拉取直播流
 - (void)fetchLivingStream
 {
-    NSString *pullStreamStr = [NSString stringWithFormat:@"rtmp://pili-live-rtmp.easemob.com/es-liveroom/%@",_room.chatroomId];
-    NSURL *pullStreamUrl = [NSURL URLWithString:pullStreamStr];
+    NSURL *pullStreamUrl = [NSURL URLWithString:@"your pull liveStream address"];
     [self startPLayVideoStream:pullStreamUrl];
 }
 
@@ -334,6 +333,13 @@
 }
 
 #pragma mark - EaseChatViewDelegate
+
+- (void)liveRoomOwnerDidUpdate:(EMChatroom *)aChatroom newOwner:(NSString *)aNewOwner
+{
+    _chatroom = aChatroom;
+    _room.anchor = aNewOwner;
+    [self fetchLivingStream];
+}
 
 - (void)easeChatViewDidChangeFrameToHeight:(CGFloat)toHeight
 {
