@@ -166,19 +166,25 @@
 }
 
 - (void)actionPushStream {
-    
-    _streamURL = [NSURL URLWithString:@"your push liveStream address"];
-    
-    [self.session startStreamingWithPushURL:_streamURL feedback:^(PLStreamStartStateFeedback feedback) {
-        NSString *log = [NSString stringWithFormat:@"session start state %lu",(unsigned long)feedback];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSLog(@"%@", log);
-            if (PLStreamStartStateSuccess == feedback) {
-            } else {
-                [[[UIAlertView alloc] initWithTitle:@"错误" message:@"推流失败了，将重新请求有效的URL" delegate:nil cancelButtonTitle:@"知道啦" otherButtonTitles:nil] show];
-            }
-        });
-     }];
+    __weak typeof(self) weakSelf = self;
+    [EaseHttpManager.sharedInstance getLiveRoomPushStreamUrlWithRoomId:_room.chatroomId completion:^(NSString *pushUrl) {
+        if (!pushUrl) {
+            return;
+        }
+        _streamURL = [NSURL URLWithString:pushUrl];
+        [self.session startStreamingWithPushURL:_streamURL feedback:^(PLStreamStartStateFeedback feedback) {
+           NSString *log = [NSString stringWithFormat:@"session start state %lu",(unsigned long)feedback];
+           dispatch_async(dispatch_get_main_queue(), ^{
+               NSLog(@"%@", log);
+               if (PLStreamStartStateSuccess == feedback) {
+                   return;
+               } else {
+                   [[[UIAlertView alloc] initWithTitle:@"错误" message:@"推流失败了，将重新请求有效的URL" delegate:nil cancelButtonTitle:@"知道啦" otherButtonTitles:nil] show];
+                   [weakSelf actionPushStream];
+               }
+           });
+        }];
+    }];
 }
 
 //切换前后摄像头
@@ -470,15 +476,17 @@
 
 #pragma mark - EMChatroomManagerDelegate
 
-- (void)chatroomWhiteListDidUpdate:(EMChatroom *)aChatroom addedWhiteListMembers:(NSArray *)aMembers
-{
-    NSLog(@"房主以添加");
-}
-
 extern bool isAllTheSilence;
 - (void)chatroomAllMemberMuteChanged:(EMChatroom *)aChatroom isAllMemberMuted:(BOOL)aMuted
 {
     isAllTheSilence = aMuted;
+    if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
+        if (aMuted) {
+            [self showHint:@"全员禁言开启！"];
+        } else {
+            [self showHint:@"解除全员禁言！"];
+        }
+    }
 }
 
 - (void)userDidJoinChatroom:(EMChatroom *)aChatroom
@@ -498,6 +506,28 @@ extern bool isAllTheSilence;
         if (![aChatroom.owner isEqualToString:aUsername]) {
             [_headerListView leaveChatroomWithUsername:aUsername];
         }
+    }
+}
+
+- (void)chatroomWhiteListDidUpdate:(EMChatroom *)aChatroom addedWhiteListMembers:(NSArray *)aMembers
+{
+    if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
+        NSMutableString *text = [NSMutableString string];
+        for (NSString *name in aMembers) {
+            [text appendString:name];
+        }
+        [self showHint:[NSString stringWithFormat:@"被加入白名单:%@",text]];
+    }
+}
+
+- (void)chatroomWhiteListDidUpdate:(EMChatroom *)aChatroom removedWhiteListMembers:(NSArray *)aMembers
+{
+    if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
+        NSMutableString *text = [NSMutableString string];
+        for (NSString *name in aMembers) {
+            [text appendString:name];
+        }
+        [self showHint:[NSString stringWithFormat:@"从白名单移除:%@",text]];
     }
 }
 

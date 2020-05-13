@@ -235,7 +235,7 @@
             _nameLabel.text = EaseDefaultDataHelper.shared.defaultNickname;
             _headImageView.image = [UIImage imageNamed:@"default_anchor_avatar"];
             _praiseLabel.text = [NSString stringWithFormat:@"赞:%d",[EaseDefaultDataHelper.shared.praiseStatisticstCount intValue]];
-            _giftLabel.text = [NSString stringWithFormat:@"礼物:%d",[EaseDefaultDataHelper.shared.giftNumbers intValue]];
+            _giftLabel.text = [NSString stringWithFormat:@"礼物:%d",[EaseDefaultDataHelper.shared.totalGifts intValue]];
         } else {
             NSMutableDictionary *anchorInfo = [anchorInfoDic objectForKey:_room.roomId];
             _nameLabel.text = [anchorInfo objectForKey:kBROADCASTING_CURRENT_ANCHOR_NICKNAME];

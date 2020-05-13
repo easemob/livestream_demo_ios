@@ -242,10 +242,6 @@ message.chatType = EMChatTypeChatRoom;
 ```
 - 进入某个直播间加入聊天室并且设置消息监听接收消息通知，观看直播
 
-## 直播视频推拉流缺省需知： ##
-
-- 用户需要分别在观众端 EaseLiveViewController / fetchLivingStream 方法中 和主播端 EasePublishViewController / actionPushStream 方法中 填入自己的视频推拉流地址来进行视频直播
-
 ## 新特性：自定义消息体 ##
 
 - 本demo所实现的‘礼物’，‘弹幕’，‘点赞’等功能均通过“自定义消息体”构建传输消息

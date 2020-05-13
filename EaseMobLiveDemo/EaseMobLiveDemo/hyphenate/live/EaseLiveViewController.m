@@ -135,8 +135,11 @@
 //拉取直播流
 - (void)fetchLivingStream
 {
-    NSURL *pullStreamUrl = [NSURL URLWithString:@"your pull liveStream address"];
-    [self startPLayVideoStream:pullStreamUrl];
+    __weak typeof(self) weakSelf = self;
+    [EaseHttpManager.sharedInstance getLiveRoomPullStreamUrlWithRoomId:_room.chatroomId completion:^(NSString *pullStreamStr) {
+        NSURL *pullStreamUrl = [NSURL URLWithString:pullStreamStr];
+        [weakSelf startPLayVideoStream:pullStreamUrl];
+    }];
 }
 
 - (PLPlayerOption *)_getPlayerOPtion
@@ -429,7 +432,13 @@
 
 - (void)chatroomAllMemberMuteChanged:(EMChatroom *)aChatroom isAllMemberMuted:(BOOL)aMuted
 {
-    NSLog(@"观众");
+    if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
+        if (aMuted) {
+            [self showHint:@"主播已开启全员禁言状态，不可发言！"];
+        } else {
+            [self showHint:@"主播已解除全员禁言，尽情发言吧！"];
+        }
+    }
 }
 
 - (void)userDidJoinChatroom:(EMChatroom *)aChatroom
@@ -510,6 +519,28 @@
             [text appendString:name];
         }
         [self showHint:[NSString stringWithFormat:@"解除禁言:%@",text]];
+    }
+}
+
+- (void)chatroomWhiteListDidUpdate:(EMChatroom *)aChatroom addedWhiteListMembers:(NSArray *)aMembers
+{
+    if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
+        NSMutableString *text = [NSMutableString string];
+        for (NSString *name in aMembers) {
+            [text appendString:name];
+        }
+        [self showHint:[NSString stringWithFormat:@"被加入白名单:%@",text]];
+    }
+}
+
+- (void)chatroomWhiteListDidUpdate:(EMChatroom *)aChatroom removedWhiteListMembers:(NSArray *)aMembers
+{
+    if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
+        NSMutableString *text = [NSMutableString string];
+        for (NSString *name in aMembers) {
+            [text appendString:name];
+        }
+        [self showHint:[NSString stringWithFormat:@"从白名单移除:%@",text]];
     }
 }
 

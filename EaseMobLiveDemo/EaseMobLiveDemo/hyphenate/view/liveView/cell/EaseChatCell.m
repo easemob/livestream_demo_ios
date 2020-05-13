@@ -56,6 +56,7 @@
     return text;
 }
 
+extern NSMutableDictionary *audienceNickname;
 extern NSArray<NSString*> *nickNameArray;
 + (NSMutableAttributedString *)latestMessageTitleForConversationModel:(EMMessage*)lastMessage;
 {
@@ -93,6 +94,11 @@ extern NSArray<NSString*> *nickNameArray;
     
     int random = (arc4random() % 100);
     NSString *randomNickname = nickNameArray[random];
+    if (![audienceNickname objectForKey:lastMessage.from]) {
+        [audienceNickname setObject:randomNickname forKey:lastMessage.from];
+    } else {
+        randomNickname = [audienceNickname objectForKey:lastMessage.from];
+    }
     if ([lastMessage.from isEqualToString:EMClient.sharedClient.currentUsername]) {
         randomNickname = EaseDefaultDataHelper.shared.defaultNickname;
     }

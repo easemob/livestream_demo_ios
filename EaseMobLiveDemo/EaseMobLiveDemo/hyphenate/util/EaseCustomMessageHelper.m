@@ -87,9 +87,13 @@
         msgContent = [NSString stringWithFormat:@"给主播点了%ld个赞",(long)[(NSString*)[customBody.ext objectForKey:@"num"] integerValue]];
     } else if ([customBody.event isEqualToString:kCustomMsgChatroomGift]) {
         NSString *giftid = [customBody.ext objectForKey:@"id"];
-        int index = [[giftid substringFromIndex:5] intValue];
-        NSDictionary *dict = EaseLiveGiftHelper.sharedInstance.giftArray[index-1];
-        msgContent = [NSString stringWithFormat:@"赠送了 %@x%@",NSLocalizedString((NSString *)[dict allKeys][0],@""),(NSString*)[customBody.ext objectForKey:@"num"]];
+        if (giftid) {
+            int index = [[giftid substringFromIndex:5] intValue];
+            NSDictionary *dict = EaseLiveGiftHelper.sharedInstance.giftArray[index-1];
+            msgContent = [NSString stringWithFormat:@"赠送了 %@x%@",NSLocalizedString((NSString *)[dict allKeys][0],@""),(NSString*)[customBody.ext objectForKey:@"num"]];
+        } else {
+            msgContent = @"";
+        }
     }
     return msgContent;
 }
