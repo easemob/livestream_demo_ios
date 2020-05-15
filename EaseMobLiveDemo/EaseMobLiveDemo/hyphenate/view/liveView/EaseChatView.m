@@ -22,8 +22,10 @@
 #define kButtonWitdh 40
 #define kButtonHeight 40
 
-#define kDefaultSpace 5.f
+#define kDefaultSpace 8.f
 #define kDefaulfLeftSpace 10.f
+
+NSMutableDictionary *audienceNickname;//直播间观众昵称库
 
 @interface EaseChatView () <EMChatManagerDelegate,EMChatroomManagerDelegate,UITableViewDelegate,UITableViewDataSource,UITextViewDelegate,EaseEmoticonViewDelegate>
 {
@@ -105,18 +107,19 @@ BOOL isAllTheSilence;//全体禁言
         //底部功能按钮
         [self addSubview:self.bottomView];
         [self.bottomView addSubview:self.sendTextButton];
-        //[self.bottomView addSubview:self.adminButton];
         [self.bottomView addSubview:self.exitButton];
         if (!isPublish) {
             [self.bottomView addSubview:self.likeButton];
         } else {
-            self.exitButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*2 - 2*kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
+            [self.bottomView addSubview:self.changeCameraButton];
         }
         [self.bottomView addSubview:self.giftButton];
         self.bottomSendMsgView.hidden = YES;
         _curtime = (long long)([[NSDate date] timeIntervalSince1970]*1000);
         _defaultHeight = self.height;
+
     }
+    audienceNickname = [[NSMutableDictionary alloc]init];
     return self;
 }
 
@@ -166,6 +169,7 @@ BOOL isAllTheSilence;//全体禁言
         _tableView.delegate = self;
         _tableView.backgroundColor = [UIColor clearColor];
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        _tableView.scrollsToTop = NO;
         _tableView.showsVerticalScrollIndicator = NO;
     }
     return _tableView;
@@ -184,18 +188,29 @@ BOOL isAllTheSilence;//全体禁言
 {
     if (_sendTextButton == nil) {
         _sendTextButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _sendTextButton.frame = CGRectMake(kDefaultSpace*2, 6.f, kButtonWitdh, kButtonHeight);
+        _sendTextButton.frame = CGRectMake(kDefaultSpace*1.5, 0, kButtonWitdh, kButtonHeight);
         [_sendTextButton setImage:[UIImage imageNamed:@"chat"] forState:UIControlStateNormal];
         [_sendTextButton addTarget:self action:@selector(sendTextAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _sendTextButton;
 }
 
+- (UIButton*)changeCameraButton
+{
+    if (_changeCameraButton == nil) {
+        _changeCameraButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _changeCameraButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*2 - 2*kButtonWitdh, 0, kButtonWitdh, kButtonHeight);
+        [_changeCameraButton setImage:[UIImage imageNamed:@"reversal_camera"] forState:UIControlStateNormal];
+        [_changeCameraButton addTarget:self action:@selector(changeCameraAction) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _changeCameraButton;
+}
+
 - (UIButton*)exitButton
 {
     if (_exitButton == nil) {
         _exitButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _exitButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*3 - 3*kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
+        _exitButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*3 - 3*kButtonWitdh, 0, kButtonWitdh, kButtonHeight);
         [_exitButton setImage:[UIImage imageNamed:@"ic_exit"] forState:UIControlStateNormal];
         _exitButton.imageEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 0);
         _exitButton.backgroundColor = [UIColor colorWithRed:255/255.0 green:92/255.0 blue:92/255.0 alpha:0.25];
@@ -209,7 +224,7 @@ BOOL isAllTheSilence;//全体禁言
 {
     if (_likeButton == nil) {
         _likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _likeButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*2 - 2*kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
+        _likeButton.frame = CGRectMake(KScreenWidth - kDefaultSpace*2 - 2*kButtonWitdh, 0, kButtonWitdh, kButtonHeight);
         _likeButton.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.25];
         _likeButton.layer.cornerRadius = kButtonWitdh / 2;
         [_likeButton setImage:[UIImage imageNamed:@"ic_praise"] forState:UIControlStateNormal];
@@ -223,7 +238,7 @@ BOOL isAllTheSilence;//全体禁言
 {
     if (_giftButton == nil) {
         _giftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _giftButton.frame = CGRectMake(KScreenWidth - kDefaultSpace - kButtonWitdh, 6.f, kButtonWitdh, kButtonHeight);
+        _giftButton.frame = CGRectMake(KScreenWidth - kDefaultSpace - kButtonWitdh, 0, kButtonWitdh, kButtonHeight);
         _giftButton.backgroundColor = [UIColor colorWithRed:240/255.0 green:85/255.0 blue:34/255.0 alpha:1.0];
         _giftButton.layer.cornerRadius = kButtonWitdh / 2;
         [_giftButton setImage:[UIImage imageNamed:@"ic_Gift"] forState:UIControlStateNormal];
@@ -236,7 +251,7 @@ BOOL isAllTheSilence;//全体禁言
 {
     if (_adminButton == nil) {
         _adminButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _adminButton.frame = CGRectMake(CGRectGetMaxX(_sendTextButton.frame) + kDefaultSpace*2, 6.f, kButtonWitdh, kButtonHeight);
+        _adminButton.frame = CGRectMake(CGRectGetMaxX(_sendTextButton.frame) + kDefaultSpace*2, 0, kButtonWitdh, kButtonHeight);
         [_adminButton setImage:[UIImage imageNamed:@"list"] forState:UIControlStateNormal];
         //[_adminButton addTarget:self action:@selector(adminAction) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -354,6 +369,12 @@ BOOL isAllTheSilence;//全体禁言
 //有用户加入聊天室
 - (void)userDidJoinChatroom:(EMChatroom *)aChatroom user:(NSString *)aUsername
 {
+    if ([_room.anchor isEqualToString:aUsername]) {
+        //当前主播退出房间重进
+        if (self.delegate && [self.delegate respondsToSelector:@selector(liveRoomOwnerDidUpdate:newOwner:)]) {
+            [self.delegate liveRoomOwnerDidUpdate:aChatroom newOwner:aUsername];
+        }
+    }
     EMTextMessageBody *body = [[EMTextMessageBody alloc] initWithText:@"进入了直播间"];
     NSMutableDictionary *ext = [[NSMutableDictionary alloc]init];
     [ext setObject:@"em_join" forKey:@"em_join"];
@@ -393,7 +414,11 @@ BOOL isAllTheSilence;//全体禁言
                       newOwner:(NSString *)aNewOwner
                       oldOwner:(NSString *)aOldOwner
 {
-    
+    _chatroom = aChatroom;
+    _room.anchor = aNewOwner;
+    if (self.delegate && [self.delegate respondsToSelector:@selector(liveRoomOwnerDidUpdate:newOwner:)]) {
+        [self.delegate liveRoomOwnerDidUpdate:aChatroom newOwner:aNewOwner];
+    }
 }
 
 #pragma  mark - UITableViewDelegate
@@ -547,6 +572,7 @@ BOOL isAllTheSilence;//全体禁言
     
     
     if (self.activityView) {
+        [self _setSendState:NO];
         [self _willShowBottomView:nil];
     }
     
@@ -563,6 +589,7 @@ BOOL isAllTheSilence;//全体禁言
 
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
+    [self _setSendState:NO];
     [self _willShowBottomView:nil];
 }
 
@@ -822,6 +849,7 @@ BOOL isAllTheSilence;//全体禁言
 //赞
 - (void)praiseAction
 {
+    [_customMsgHelper praiseAction:self];
     ++_praiseCount;
     if (_praiseInterval != 0) {
         return;
@@ -835,7 +863,6 @@ BOOL isAllTheSilence;//全体禁言
     [_customMsgHelper sendCustomMessage:@"" num:_praiseCount to:_chatroomId messageType:EMChatTypeChatRoom customMsgType:customMessageType_praise completion:^(EMMessage * _Nonnull message, EMError * _Nonnull error) {
         if (!error) {
             _praiseCount = 0;
-            [_customMsgHelper praiseAction:self];
             [weakSelf currentViewDataFill:message];
         } else {
             [MBProgressHUD showError:@"点赞失败" toView:weakSelf];
@@ -864,6 +891,14 @@ BOOL isAllTheSilence;//全体禁言
         return;
     }
     _praiseInterval -= 1;
+}
+
+- (void)changeCameraAction
+{
+    if (_delegate && [_delegate respondsToSelector:@selector(didSelectChangeCameraButton)]) {
+        [_delegate didSelectChangeCameraButton];
+        _changeCameraButton.selected = !_changeCameraButton.selected;
+    }
 }
 
 - (void)exitAction
@@ -906,8 +941,8 @@ BOOL isAllTheSilence;//全体禁言
 - (BOOL)endEditing:(BOOL)force
 {
     BOOL result = [super endEditing:force];
-    [self _willShowBottomView:nil];
     [self _setSendState:NO];
+    [self _willShowBottomView:nil];
     self.faceButton.selected = NO;
     return result;
 }
@@ -955,12 +990,5 @@ BOOL isAllTheSilence;//全体禁言
                                                        aCompletion(ret);
                                                    }];
 }
-
-- (void)sendMessageAtWithUsername:(NSString *)username
-{
-    self.textView.text = [self.textView.text stringByAppendingString:[NSString stringWithFormat:@"@%@ ",username]];
-    [self _setSendState:YES];
-}
-
 
 @end

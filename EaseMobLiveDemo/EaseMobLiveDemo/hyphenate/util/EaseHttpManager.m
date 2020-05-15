@@ -37,7 +37,7 @@
 /*
  POST request   创建直播间
  */
-#define kPostRequestCreateLiveroomsUrl [NSString stringWithFormat:@"%@/%@/liverooms?status=ongoing", kDefaultDomain, kAppKeyForDomain]  //创建直播间
+#define kPostRequestCreateLiveroomsUrl [NSString stringWithFormat:@"%@/liverooms", kDefaultDomain]  //创建直播间
 
 /*
  DELETE/PUT request 删除直播间
@@ -58,6 +58,16 @@
  Get request 获取直播间详情
  */
 #define kRequestFetchLiveroomsDetailUrl(liveroomid) [NSString stringWithFormat:@"%@/liverooms/%@", kDefaultDomain, liveroomid]
+
+/*
+Get request 获取直播间推流地址
+*/
+#define kRequestLiveRoomPushStreamUrlWithRoomId(liveroomid) [NSString stringWithFormat:@"%@/streams/url/publish?streamKey=%@", kDefaultDomain, liveroomid]
+
+/*
+Get request 获取直播间拉流地址
+*/
+#define kRequestLiveRoomPullStreamUrlWithRoomId(liveroomid) [NSString stringWithFormat:@"%@/streams/url/play?streamKey=%@", kDefaultDomain, liveroomid]
 
 /*
  Put request 修改直播间详情
@@ -115,8 +125,8 @@
 #define kHttpRequestTimeout 60.f
 #define kHttpRequestMaxOperation 5
 
-//#define kDefaultDomain @"http://a1.easemob.com"
 #define kDefaultDomain @"http://a1.easemob.com/appserver"
+//#define kDefaultDomain @"http://a1-hsb.easemob.com/appserver"
 
 static EaseHttpManager *sharedInstance = nil;
 
@@ -163,32 +173,20 @@ static EaseHttpManager *sharedInstance = nil;
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     if (aRoom) {
         if (aRoom.title.length > 0) {
-            [parameters setObject:aRoom.title forKey:@"title"];
+            [parameters setObject:aRoom.title forKey:@"name"];
         }
         
         if (aRoom.desc.length > 0) {
-            [parameters setObject:aRoom.desc forKey:@"desc"];
+            [parameters setObject:aRoom.desc forKey:@"description"];
         }
         
-        if (aRoom.session.anchor.length > 0) {
-            [parameters setObject:aRoom.session.anchor forKey:@"anchor"];
+        if (aRoom.anchor.length > 0) {
+            [parameters setObject:aRoom.anchor forKey:@"owner"];
         }
         
         if (aRoom.coverPictureUrl.length > 0) {
-            [parameters setObject:aRoom.coverPictureUrl forKey:@"cover_picture_url"];
+            [parameters setObject:aRoom.coverPictureUrl forKey:@"cover"];
         }
-        
-        if (aRoom.custom != nil) {
-            [parameters setObject:aRoom.custom forKey:@"custom"];
-        }
-        
-        if (aRoom.needPassword) {
-            [parameters setObject:@(YES) forKey:@"need_password"];
-            if (aRoom.password.length > 0) {
-                [parameters setObject:aRoom.password forKey:@"password"];
-            }
-        }
-//        [parameters setObject:@"ongoing" forKey:@"status"];
     }
     
     [self _doPostRequestWithPath:kPostRequestCreateLiveroomsUrl parameters:parameters completion:^(id responseObject, NSError *error) {
@@ -475,6 +473,36 @@ static EaseHttpManager *sharedInstance = nil;
                 }
             }
             aCompletion(status, ret);
+        }
+    }];
+}
+
+- (void)getLiveRoomPushStreamUrlWithRoomId:(NSString*)aRoomId
+                         completion:(void (^)(NSString *pushStreamStr))aCompletion
+{
+    [self _doGetRequestWithPath:kRequestLiveRoomPushStreamUrlWithRoomId(aRoomId) parameters:nil completion:^(id responseObject, NSError *error) {
+        if (aCompletion) {
+            if (!error) {
+                if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+                    NSString *pushStr = [responseObject objectForKey:@"data"];
+                    aCompletion(pushStr);
+                }
+            }
+        }
+    }];
+}
+
+- (void)getLiveRoomPullStreamUrlWithRoomId:(NSString*)aRoomId
+                         completion:(void (^)(NSString *pullStreamStr))aCompletion
+{
+    [self _doGetRequestWithPath:kRequestLiveRoomPullStreamUrlWithRoomId(aRoomId) parameters:nil completion:^(id responseObject, NSError *error) {
+        if (aCompletion) {
+            if (!error) {
+                if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+                    NSString *pullStr = [responseObject objectForKey:@"data"];
+                    aCompletion(pullStr);
+                }
+            }
         }
     }];
 }

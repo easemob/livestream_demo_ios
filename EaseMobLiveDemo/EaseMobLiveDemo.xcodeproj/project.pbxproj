@@ -15,6 +15,7 @@
 		3C1238892406839700C4135B /* EaseDefaultDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C1238882406839700C4135B /* EaseDefaultDataHelper.m */; };
 		3C1238AA2408C97300C4135B /* Zapfino.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3C1238A92408C97300C4135B /* Zapfino.ttf */; };
 		3C27576423F293A4004DF2C3 /* EaseSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C27576323F293A4004DF2C3 /* EaseSettingsViewController.m */; };
+		3C2B1ECC244FE97F000E97B2 /* PLPermissionRequestor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C2B1ECA244FE97F000E97B2 /* PLPermissionRequestor.m */; };
 		3C44F438240BE51600445129 /* JPGiftModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C44F42B240BE51600445129 /* JPGiftModel.m */; };
 		3C44F439240BE51600445129 /* JPGiftCountLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C44F42C240BE51600445129 /* JPGiftCountLabel.m */; };
 		3C44F43C240BE51600445129 /* JPGiftShowManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C44F430240BE51600445129 /* JPGiftShowManager.m */; };
@@ -25,6 +26,7 @@
 		3C44F44B240CB0E700445129 /* X.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C44F448240CB0E700445129 /* X.png */; };
 		3C44F44C240CB0E700445129 /* X@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C44F449240CB0E700445129 /* X@2x.png */; };
 		3C44F44F240CF0C100445129 /* EaseCustomSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C44F44E240CF0C100445129 /* EaseCustomSwitch.m */; };
+		3C525E2124650C7200D16DD5 /* 直播聊天室集成第三方视频推拉流介绍.md in Resources */ = {isa = PBXBuildFile; fileRef = 3C525E2024650C7200D16DD5 /* 直播聊天室集成第三方视频推拉流介绍.md */; };
 		3C70A160241A654E00A5185F /* EaseCustomMessageHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C70A15F241A654E00A5185F /* EaseCustomMessageHelper.m */; };
 		3C70A163241B2C4E00A5185F /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D23E252D1CE0379E007506CB /* ImageIO.framework */; };
 		3C72AD65240F8E2C007BC99F /* UIViewController+HUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C72AD64240F8E2C007BC99F /* UIViewController+HUD.m */; };
@@ -237,6 +239,8 @@
 		3C1238A92408C97300C4135B /* Zapfino.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zapfino.ttf; sourceTree = "<group>"; };
 		3C27576223F293A4004DF2C3 /* EaseSettingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseSettingsViewController.h; sourceTree = "<group>"; };
 		3C27576323F293A4004DF2C3 /* EaseSettingsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseSettingsViewController.m; sourceTree = "<group>"; };
+		3C2B1ECA244FE97F000E97B2 /* PLPermissionRequestor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLPermissionRequestor.m; sourceTree = "<group>"; };
+		3C2B1ECB244FE97F000E97B2 /* PLPermissionRequestor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLPermissionRequestor.h; sourceTree = "<group>"; };
 		3C44F427240BE51600445129 /* JPGiftShowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPGiftShowView.h; sourceTree = "<group>"; };
 		3C44F428240BE51600445129 /* JPGiftShowManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPGiftShowManager.h; sourceTree = "<group>"; };
 		3C44F429240BE51600445129 /* JPGiftCellModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPGiftCellModel.h; sourceTree = "<group>"; };
@@ -254,6 +258,7 @@
 		3C44F449240CB0E700445129 /* X@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "X@2x.png"; sourceTree = "<group>"; };
 		3C44F44D240CF0C100445129 /* EaseCustomSwitch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseCustomSwitch.h; sourceTree = "<group>"; };
 		3C44F44E240CF0C100445129 /* EaseCustomSwitch.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseCustomSwitch.m; sourceTree = "<group>"; };
+		3C525E2024650C7200D16DD5 /* 直播聊天室集成第三方视频推拉流介绍.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "直播聊天室集成第三方视频推拉流介绍.md"; sourceTree = "<group>"; };
 		3C70A15E241A654E00A5185F /* EaseCustomMessageHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseCustomMessageHelper.h; sourceTree = "<group>"; };
 		3C70A15F241A654E00A5185F /* EaseCustomMessageHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseCustomMessageHelper.m; sourceTree = "<group>"; };
 		3C72AD63240F8E2C007BC99F /* UIViewController+HUD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+HUD.h"; sourceTree = "<group>"; };
@@ -527,6 +532,15 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		3C2B1EC6244FE8B6000E97B2 /* EaseMediaStream */ = {
+			isa = PBXGroup;
+			children = (
+				3C2B1ECB244FE97F000E97B2 /* PLPermissionRequestor.h */,
+				3C2B1ECA244FE97F000E97B2 /* PLPermissionRequestor.m */,
+			);
+			path = EaseMediaStream;
+			sourceTree = "<group>";
+		};
 		3C44F424240BE4D300445129 /* giftAnimation */ = {
 			isa = PBXGroup;
 			children = (
@@ -755,6 +769,7 @@
 		D2F4E0F51D12C8AB00BB7E1A /* hyphenate */ = {
 			isa = PBXGroup;
 			children = (
+				3C2B1EC6244FE8B6000E97B2 /* EaseMediaStream */,
 				3C8AD5132412AD41002B6464 /* EaseTransitionViewController.h */,
 				3C8AD5142412AD41002B6464 /* EaseTransitionViewController.m */,
 				D2F4E10C1D12C8AB00BB7E1A /* EaseLoginViewController.h */,
@@ -976,6 +991,7 @@
 		E94670C61BD78B9B00374D7A = {
 			isa = PBXGroup;
 			children = (
+				3C525E2024650C7200D16DD5 /* 直播聊天室集成第三方视频推拉流介绍.md */,
 				3C1238A92408C97300C4135B /* Zapfino.ttf */,
 				E96F3D891C17FE410099718A /* Default-568h@2x.png */,
 				D2F4E0EA1D12C8AB00BB7E1A /* EaseMobLiveDemo */,
@@ -1135,6 +1151,7 @@
 				3CCF870D2420DEE0007570EB /* gift.wishs_come_true@3x.png in Resources */,
 				3CCF86F32420DE98007570EB /* avatat_4@3x.png in Resources */,
 				3CCF87842420ED9D007570EB /* icon-broadcast@2x.png in Resources */,
+				3C525E2124650C7200D16DD5 /* 直播聊天室集成第三方视频推拉流介绍.md in Resources */,
 				3CCF875C2420E54F007570EB /* avatat_1@3x.png in Resources */,
 				D275D7EA1E666C44001BBA61 /* admin@3x.png in Resources */,
 				3CCF87652420E613007570EB /* gift.rose@2x.png in Resources */,
@@ -1220,10 +1237,16 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo-frameworks.sh",
 				"${PODS_ROOT}/Hyphenate/Hyphenate.framework",
+				"${PODS_ROOT}/PLMediaStreamingKit/Pod/Library/PLMediaStreamingKit.framework",
+				"${PODS_ROOT}/PLMediaStreamingKit/Pod/Library/HappyDNS.framework",
+				"${PODS_ROOT}/PLPlayerKit/Pod/Library/PLPlayerKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Hyphenate.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PLMediaStreamingKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HappyDNS.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PLPlayerKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1282,6 +1305,7 @@
 				D2F4E24D1D12C8AB00BB7E1A /* EaseLiveViewController.m in Sources */,
 				D27B20401E51AAA800318031 /* EaseHttpManager.m in Sources */,
 				3C72AD6F240F9804007BC99F /* EMEmoticonGroup.m in Sources */,
+				3C2B1ECC244FE97F000E97B2 /* PLPermissionRequestor.m in Sources */,
 				D2F4E2721D12C8AB00BB7E1A /* main.m in Sources */,
 				D2F4E24A1D12C8AB00BB7E1A /* EaseLoginViewController.m in Sources */,
 				D23C12A31E6FFCD6007C5012 /* NSDictionary+SafeValue.m in Sources */,
@@ -1370,8 +1394,8 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "Apple Distribution: EaseMob Inc. (JC854K845H)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: EaseMob Inc. (JC854K845H)";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1419,8 +1443,8 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "Apple Distribution: EaseMob Inc. (JC854K845H)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: EaseMob Inc. (JC854K845H)";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1448,8 +1472,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2.0;
 				DEVELOPMENT_TEAM = 499WYUV8Q2;
@@ -1468,14 +1492,10 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/EaseMobLiveDemo/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/EaseMobLiveDemo/lib/Player",
-					"$(PROJECT_DIR)/EaseMobLiveDemo/lib/Recorder",
-				);
-				MARKETING_VERSION = 1.0.5;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MARKETING_VERSION = 1.0.6;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1495,8 +1515,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2.0;
 				DEVELOPMENT_TEAM = 499WYUV8Q2;
@@ -1514,14 +1534,10 @@
 					"COCOAPODS=1",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/EaseMobLiveDemo/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/EaseMobLiveDemo/lib/Player",
-					"$(PROJECT_DIR)/EaseMobLiveDemo/lib/Recorder",
-				);
-				MARKETING_VERSION = 1.0.5;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MARKETING_VERSION = 1.0.6;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",

@@ -109,6 +109,24 @@
                          completion:(void (^)(EaseLiveSessionStatus status, BOOL success))aCompletion;
 
 /*
+*  获取直播聊天室推流地址
+*
+*  @param aRoomId          直播聊天室ID
+*  @param aCompletion      完成的回调block
+*/
+- (void)getLiveRoomPushStreamUrlWithRoomId:(NSString*)aRoomId
+                                completion:(void (^)(NSString *pushStreamStr))aCompletion;
+
+/*
+*  获取直播聊天室拉流地址
+*
+*  @param aRoomId          直播聊天室ID
+*  @param aCompletion      完成的回调block
+*/
+- (void)getLiveRoomPullStreamUrlWithRoomId:(NSString*)aRoomId
+                                completion:(void (^)(NSString *pullStreamStr))aCompletion;
+
+/*
  *  修改直播聊天室状态
  *
  *  @param aRoomId          直播聊天室ID
