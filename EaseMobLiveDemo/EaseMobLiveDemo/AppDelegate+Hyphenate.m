@@ -20,10 +20,10 @@ NSMutableDictionary *anchorInfoDic;//直播间主播本应用显示信息库
 {
     EMOptions *options = [EMOptions optionsWithAppkey:@"easemob-demo#chatdemoui"];
     /*
-    [options setEnableDnsConfig:false];
+    [options setEnableDnsConfig:NO];
     [options setRestServer:@"a1-hsb.easemob.com"];
     [options setChatPort:6717];
-    [options setChatServer:@"39.107.54.56"];*/
+    [options setChatServer:@"116.85.43.118"];*/
     
     NSString *apnsCertName = nil;
 #if DEBUG

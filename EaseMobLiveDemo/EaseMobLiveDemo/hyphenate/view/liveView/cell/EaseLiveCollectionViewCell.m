@@ -283,7 +283,7 @@
             self.studioOccupancy.hidden = NO;
             self.broadcastView.hidden = YES;
             self.liveFooter.hidden = NO;
-            self.userInteractionEnabled = NO;
+            self.userInteractionEnabled = YES;
         } else if (room.status == offline) {
             self.studioOccupancy.hidden = YES;
             self.broadcastView.hidden = NO;

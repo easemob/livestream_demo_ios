@@ -377,6 +377,12 @@
                                      completion:^{
                     [weakSelf.navigationController popToRootViewControllerAnimated:NO];
                                      }];
+            } else {
+                UIAlertController *alertControler = [UIAlertController alertControllerWithTitle:@"提示" message:@"当前房间正在直播！" preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *conform = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    }];
+                [alertControler addAction:conform];
+                [weakSelf presentViewController:alertControler animated:YES completion:nil];
             }
         }];
         //[self.navigationController pushViewController:view animated:NO];
