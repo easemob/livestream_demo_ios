@@ -152,7 +152,7 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
         _broadCastBtn.layer.cornerRadius = 35;
         _broadCastBtn.backgroundColor = [UIColor whiteColor];
         [_broadCastBtn addTarget:self action:@selector(broadCastFeedBack:) forControlEvents:UIControlEventTouchDown];
-        [_broadCastBtn addTarget:self action:@selector(anchorHall:) forControlEvents:UIControlEventTouchUpInside];
+        [_broadCastBtn addTarget:self action:@selector(createBroadcastRoom) forControlEvents:UIControlEventTouchUpInside];
     }
     return _broadCastBtn;
 }
@@ -162,6 +162,14 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
     [UIView animateWithDuration:0.25 animations:^{
         sender.transform = CGAffineTransformMakeScale(broadCastBtnScale, broadCastBtnScale);
     }];
+}
+
+- (void)createBroadcastRoom
+{
+    EaseCreateLiveViewController *createLiveView = [[EaseCreateLiveViewController alloc] init];
+    createLiveView.modalPresentationStyle = 0;
+    [self presentViewController:createLiveView animated:YES completion:nil];
+    //[self.navigationController pushViewController:createLiveView animated:NO];
 }
 
 //主播大厅

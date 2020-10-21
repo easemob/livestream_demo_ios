@@ -94,7 +94,7 @@ Get request 获取直播间拉流地址
  GET request    获取appkey下的正在直播的直播聊天室列表
  */
 //#define kGetRequestGetLiveroomsOngoingUrl(limit, cursor) [NSString stringWithFormat:@"%@/%@/liverooms?ongoing=true&limit=%ld&cursor=%@", kDefaultDomain, kAppKeyForDomain, limit, cursor]
-#define kGetRequestGetLiveroomsOngoingUrl(limit, cursor) [NSString stringWithFormat:@"%@/liverooms/ongoing?limit=%ld&cursor=%@", kDefaultDomain, limit, cursor]
+#define kGetRequestGetLiveroomsOngoingUrl(limit, cursor, video_type) [NSString stringWithFormat:@"%@/liverooms/ongoing?limit=%ld&cursor=%@&video_type=%@", kDefaultDomain, limit, cursor, video_type]
 
 /*
  GET request    获取某个具体直播房间的详情
@@ -188,18 +188,19 @@ static EaseHttpManager *sharedInstance = nil;
             [parameters setObject:aRoom.coverPictureUrl forKey:@"cover"];
         }
     }
-    
+    [parameters setObject:@NO forKey:@"persistent"];
     [self _doPostRequestWithPath:kPostRequestCreateLiveroomsUrl parameters:parameters completion:^(id responseObject, NSError *error) {
         if (aCompletion) {
             EaseLiveRoom *room = nil;
             BOOL ret = NO;
             if (!error) {
                 if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+                    /*
                     NSDictionary *data = [responseObject objectForKey:@"data"];
                     if (data) {
                         [parameters addEntriesFromDictionary:data];
-                    }
-                    room = [[EaseLiveRoom alloc] initWithParameter:parameters];
+                    }*/
+                    room = [[EaseLiveRoom alloc] initWithParameter:responseObject];
                     ret = YES;
                 }
             }
@@ -415,15 +416,55 @@ static EaseHttpManager *sharedInstance = nil;
     }];
 }
 
+- (void)fetchVodRoomWithCursor:(NSString*)aCursor
+                         limit:(NSInteger)aLimit
+                    video_type:(NSString*)video_type
+                    completion:(void (^)(EMCursorResult *result, BOOL success))aCompletion
+{
+    NSString *cursor = @"";
+    if (aCursor.length > 0) {
+        cursor = [aCursor copy];
+    }
+    [self _doGetRequestWithPath:kGetRequestGetLiveroomsOngoingUrl((long)aLimit, cursor, video_type) parameters:nil completion:^(id responseObject, NSError *error) {
+        if (aCompletion) {
+            NSMutableArray *array = nil;
+            NSString *cursor = nil;
+            EMCursorResult *result = nil;
+            BOOL ret = NO;
+            if (!error) {
+                if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+                    if ([responseObject objectForKey:@"entities"]) {
+                        NSArray *data = [responseObject objectForKey:@"entities"];
+                        array = [[NSMutableArray alloc] init];
+                        if ([data count] > 0) {
+                            for (NSDictionary *dic in data) {
+                                if (dic && [dic isKindOfClass:[NSDictionary class]]) {
+                                    EaseLiveRoom *room = [[EaseLiveRoom alloc] initWithParameter:dic];
+                                    [array addObject:room];
+                                }
+                            }
+                        }
+                    }
+                    cursor = [responseObject objectForKey:@"cursor"];
+                    result = [EMCursorResult cursorResultWithList:array andCursor:cursor];
+                    ret = YES;
+                }
+            }
+            aCompletion(result, ret);
+        }
+    }];
+}
+
 - (void)fetchLiveRoomsOngoingWithCursor:(NSString*)aCursor
                                   limit:(NSInteger)aLimit
+                             video_type:(NSString*)video_type
                              completion:(void (^)(EMCursorResult *result, BOOL success))aCompletion
 {
     NSString *cursor = @"";
     if (aCursor.length > 0) {
         cursor = [aCursor copy];
     }
-    [self _doGetRequestWithPath:kGetRequestGetLiveroomsOngoingUrl((long)aLimit, cursor) parameters:nil completion:^(id responseObject, NSError *error) {
+    [self _doGetRequestWithPath:kGetRequestGetLiveroomsOngoingUrl((long)aLimit, cursor, video_type) parameters:nil completion:^(id responseObject, NSError *error) {
         if (aCompletion) {
             NSMutableArray *array = nil;
             NSString *cursor = nil;

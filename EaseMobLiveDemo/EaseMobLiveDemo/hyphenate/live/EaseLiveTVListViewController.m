@@ -98,31 +98,16 @@
     _isLoading = YES;
     __weak EaseLiveTVListViewController *weakSelf = self;
     if (self.tabBarBehavior == kTabbarItemTag_Live) {
-        [[EaseHttpManager sharedInstance] fetchLiveRoomsOngoingWithCursor:_cursor
-                                                                       limit:8
-                                                                  completion:^(EMCursorResult *result, BOOL success) {
-                                                                      if (success) {
-                                                                          if (isHeader) {
-                                                                              [weakSelf.dataArray removeAllObjects];
-                                                                              [weakSelf.dataArray addObjectsFromArray:result.list];
-                                                                          } else {
-                                                                              [weakSelf.dataArray addObjectsFromArray:result.list];
-                                                                          }
-                                                                          _cursor = result.cursor;
-                                                                          
-                                                                          if ([result.list count] < kDefaultPageSize) {
-                                                                              _noMore = YES;
-                                                                          }
-                                                                          if (_noMore) {
-                                                                              weakSelf.collectionView.mj_footer = nil;
-                                                                          } else {
-                                                                              weakSelf.collectionView.mj_footer = _refreshFooter;
-                                                                          }
-                                                                      }
-                                                                      
-                                                                      [weakSelf _collectionViewDidFinishTriggerHeader:isHeader reload:YES];
-                                                                      _isLoading = NO;
-                                                                  }];
+        if (isHeader) {
+            //获取vod点播房间列表
+            [[EaseHttpManager sharedInstance] fetchVodRoomWithCursor:0 limit:2 video_type:@"vod" completion:^(EMCursorResult *result, BOOL success) {
+                if (success) {
+                    [weakSelf getOngoingLiveroom:YES vodList:result.list];
+                }
+            }];
+        } else {
+            [self getOngoingLiveroom:NO vodList:nil];
+        }
     } else if (self.tabBarBehavior == kTabbarItemTag_Broadcast) {
         [[EaseHttpManager sharedInstance] fetchLiveRoomsWithCursor:_cursor limit:8 completion:^(EMCursorResult *result, BOOL success) {
             if (success) {
@@ -148,6 +133,36 @@
             _isLoading = NO;
         }];
     }
+}
+
+- (void)getOngoingLiveroom:(BOOL)isHeader vodList:(NSArray*)vodList
+{
+    __weak EaseLiveTVListViewController *weakSelf = self;
+    //获取正在直播的直播间列表
+    [[EaseHttpManager sharedInstance] fetchLiveRoomsOngoingWithCursor:_cursor limit:8 video_type:@"live"
+                                          completion:^(EMCursorResult *result, BOOL success) {
+          if (success) {
+              if (isHeader) {
+                  [weakSelf.dataArray removeAllObjects];
+                  [weakSelf.dataArray addObjectsFromArray:vodList];
+                  [weakSelf.dataArray addObjectsFromArray:result.list];
+              } else {
+                  [weakSelf.dataArray addObjectsFromArray:result.list];
+              }
+              _cursor = result.cursor;
+              if ([result.list count] < kDefaultPageSize) {
+                  _noMore = YES;
+              }
+              if (_noMore) {
+                  weakSelf.collectionView.mj_footer = nil;
+              } else {
+                  weakSelf.collectionView.mj_footer = _refreshFooter;
+              }
+          }
+          
+          [weakSelf _collectionViewDidFinishTriggerHeader:isHeader reload:YES];
+          _isLoading = NO;
+  }];
 }
 
 - (void)setupCollectionView

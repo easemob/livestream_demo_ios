@@ -10,50 +10,41 @@
 #import "EasePublishViewController.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <CoreServices/CoreServices.h>
+#import "Masonry.h"
+#import "EaseLiveroomCoverSettingView.h"
+#import "EaseTextField.h"
 
 #define kDefaultHeight 45.f
 #define kDefaultTextHeight 50.f
 #define kDefaultWidth (KScreenWidth - 75.f)
 
-@interface EaseCreateLiveViewController ()<UITextFieldDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIPickerViewDelegate,UIPickerViewDataSource>
+@interface EaseCreateLiveViewController ()<UITextFieldDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIPickerViewDelegate>
 {
     NSString *_coverpictureurl;
-    BOOL _isRelevance;
-    NSMutableArray *_relevanceArray;
     EaseLiveRoom *_liveRoom;
 }
 
-@property (nonatomic, strong) UIButton *relevanceBtn;
 @property (nonatomic, strong) UIButton *backBtn;
+@property (nonatomic, strong) UIButton *cancelBtn;
 
-@property (nonatomic, strong) UILabel *coverLabel;
+@property (nonatomic, strong) UIView *coverView;
 @property (nonatomic, strong) UIImageView *coverImageView;
-@property (nonatomic, strong) UITextField *relevanceTextField;
 @property (nonatomic, strong) UITextField *liveNameTextField;
 @property (nonatomic, strong) UITextField *liveDescTextField;
 @property (nonatomic, strong) UITextField *anchorDescTextField;
 
 @property (nonatomic, strong) UIButton *createLiveBtn;
-@property (nonatomic, strong) UIButton *showPickerBtn;
+@property (nonatomic, strong) UILabel *createLiveLabel;
+@property (nonatomic, strong) CAGradientLayer *gl;
 @property (nonatomic, strong) UIImagePickerController *imagePicker;
 
 @property (nonatomic, strong) UIView *pickerView;
-@property (nonatomic, strong) UIPickerView *relevancePicker;
 
-@property (nonatomic, strong) UIScrollView *mainView;
+@property (nonatomic, strong) UIView *mainView;
 
 @end
 
 @implementation EaseCreateLiveViewController
-
-- (instancetype)initWithRelevance:(BOOL)isRelevance
-{
-    self = [super init];
-    if (self) {
-        _isRelevance = isRelevance;
-    }
-    return self;
-}
 
 - (instancetype)initWithLiveroom:(EaseLiveRoom *)liveroom
 {
@@ -67,55 +58,93 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.title = NSLocalizedString(@"publish.title", @"Create Live");
-    self.view.backgroundColor = RGBACOLOR(251, 251, 251, 1);
-    
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.backBtn];
+    //self.title = NSLocalizedString(@"publish.title", @"Create Live");
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.cancelBtn = [[UIButton alloc]init];
+    [self.cancelBtn setTitle:@"取消" forState:UIControlStateNormal];
+    self.cancelBtn.titleLabel.font = [UIFont systemFontOfSize:16.f];
+    [self.cancelBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [self.cancelBtn addTarget:self action:@selector(cancelAction) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.cancelBtn];
+    [self.cancelBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.height.equalTo(@20);
+        make.width.equalTo(@40);
+        make.top.equalTo(self.view).offset(EMVIEWTOPMARGIN + 35);
+        make.right.equalTo(self.view).offset(-24);
+    }];
+    //self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.backBtn];
     //self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.relevanceBtn];
-    
     [self.view addSubview:self.mainView];
-    [self.mainView addSubview:self.coverImageView];
-    [self.coverImageView addSubview:self.coverLabel];
-    if (_isRelevance) {
-        self.title = NSLocalizedString(@"publish.relevance.title", @"Relevance Room");
-        
-        UIButton *backBtn = (UIButton*)[self.navigationItem.leftBarButtonItem customView];
-        [backBtn setTitle:NSLocalizedString(@"publish.back", @"Back") forState:UIControlStateNormal];
-        self.navigationItem.rightBarButtonItem = nil;
-        [self.mainView addSubview:self.relevanceTextField];
-        [self.mainView addSubview:self.showPickerBtn];
-    }
+    [self.mainView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.cancelBtn.mas_bottom).offset(24);
+        make.left.right.equalTo(self.view);
+        make.bottom.equalTo(self.view);
+    }];
+    
+    UILabel *subjectLabel = [[UILabel alloc] init];
+    subjectLabel.text = @"创建直播间";
+    subjectLabel.textColor = [UIColor colorWithRed:58/255.0 green:58/255.0 blue:58/255.0 alpha:1.0];
+    subjectLabel.font = [UIFont systemFontOfSize:18.f];
+    [self.mainView addSubview:subjectLabel];
+    [subjectLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(self.view);
+        make.top.equalTo(self.mainView);
+        make.height.equalTo(@25);
+    }];
+    
     [self.mainView addSubview:self.liveNameTextField];
-    [self.mainView addSubview:self.liveDescTextField];
-//    [self.mainView addSubview:self.anchorDescTextField];
+    [self.liveNameTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(subjectLabel.mas_bottom).offset(25);
+        make.left.equalTo(self.mainView).offset(44);
+        make.right.equalTo(self.mainView).offset(-44);
+        make.height.equalTo(@44);
+    }];
+    
+    [self.mainView addSubview:self.coverImageView];
+    [self.coverImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.liveNameTextField.mas_bottom).offset(15);
+        make.left.equalTo(self.liveNameTextField);
+        make.right.equalTo(self.liveNameTextField);
+        make.height.equalTo(@(KScreenWidth - 88));
+    }];
+    
+    [self.coverImageView addSubview:self.coverView];
+    [self.coverView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.height.equalTo(@100);
+        make.left.right.equalTo(self.coverImageView);
+        make.centerX.equalTo(self.view);
+        make.centerY.equalTo(self.coverImageView);
+    }];
+
+    //[self.mainView addSubview:self.liveDescTextField];
+    //[self.mainView addSubview:self.anchorDescTextField];
     [self.mainView addSubview:self.createLiveBtn];
-    
-    if (_isRelevance) {
-        MBProgressHUD *hud = [MBProgressHUD showMessag:@"获取关联直播间" toView:self.view];
-        __weak MBProgressHUD *weakHud = hud;
-        [[EaseHttpManager sharedInstance] getLiveRoomListWithUsername:[EMClient sharedClient].currentUsername
-                                                                 page:0
-                                                             pagesize:100
-                                                           completion:^(NSArray *roomList, BOOL success) {
-                                                               if (success) {
-                                                                   _relevanceArray = [NSMutableArray arrayWithArray:roomList];
-                                                               } else {
-                                                                   [weakHud setLabelText:@"获取失败"];
-                                                               }
-                                                               [weakHud hide:YES afterDelay:0.5];
-                                                           }];
-    }
-    
-    if (KScreenHeight <= 675.f) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
-    }
+    [self.createLiveBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.coverImageView.mas_bottom).offset(55);
+        make.left.equalTo(self.liveNameTextField);
+        make.right.equalTo(self.liveNameTextField);
+        make.height.equalTo(@44);
+    }];
+    self.createLiveLabel = [[UILabel alloc] init];
+    _createLiveLabel.numberOfLines = 0;
+    _createLiveLabel.font = [UIFont systemFontOfSize:18];
+    _createLiveLabel.text = @"开始直播";
+    [_createLiveLabel setTextColor:[UIColor whiteColor]];
+    _createLiveLabel.textAlignment = NSTextAlignmentCenter;
+    [self.mainView addSubview:_createLiveLabel];
+    [_createLiveLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.createLiveBtn);
+        make.centerX.equalTo(self.createLiveBtn);
+        make.width.equalTo(@85);
+        make.height.equalTo(@22);
+    }];
 }
 
-- (void)viewWillLayoutSubviews
+- (void)viewDidAppear:(BOOL)animated
 {
-    [self setEdgesForExtendedLayout:UIRectEdgeAll];
-    [self setAutomaticallyAdjustsScrollViewInsets:YES];
+    [_createLiveBtn.layer addSublayer:self.gl];
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -127,13 +156,17 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    [self.view endEditing:YES];
+}
+
 #pragma mark - getter
 
-- (UIScrollView*)mainView
+- (UIView*)mainView
 {
     if (_mainView == nil) {
-        _mainView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight)];
-        _mainView.backgroundColor = RGBACOLOR(251, 251, 251, 1);
+        _mainView = [[UIView alloc] init];
+        _mainView.backgroundColor = [UIColor whiteColor];
     }
     return _mainView;
 }
@@ -154,94 +187,57 @@
     return _backBtn;
 }
 
-- (UIButton*)relevanceBtn
-{
-    if (_relevanceBtn == nil) {
-        _relevanceBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _relevanceBtn.frame = CGRectMake(0, 0, 85.f, 44.f);
-        [_relevanceBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, -5, -30)];
-        [_relevanceBtn.titleLabel setFont:[UIFont systemFontOfSize:17.f]];
-        [_relevanceBtn setTitle:NSLocalizedString(@"publish.relevance", @"Relevance") forState:UIControlStateNormal];
-        [_relevanceBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [_relevanceBtn addTarget:self action:@selector(relevanceAction) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _relevanceBtn;
-}
-
 - (UIImageView*)coverImageView
 {
     if (_coverImageView == nil) {
-        _coverImageView = [[UIImageView alloc] initWithFrame:CGRectMake((KScreenWidth-185)/2, 20, 185, 185)];
-        _coverImageView.backgroundColor = [UIColor whiteColor];
+        _coverImageView = [[UIImageView alloc] init];
+        _coverImageView.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.16];
         _coverImageView.userInteractionEnabled = YES;
         _coverImageView.contentMode = UIViewContentModeScaleAspectFill;
         _coverImageView.layer.masksToBounds = YES;
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoAction)];
+        _coverImageView.layer.cornerRadius = 22;
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(coverPicker)];
         [_coverImageView addGestureRecognizer:tap];
     }
     return _coverImageView;
 }
 
-- (UILabel*)coverLabel
+- (UIView*)coverView
 {
-    if (_coverLabel == nil) {
-        _coverLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, (_coverImageView.height - 15)/2, _coverImageView.width, 15.f)];
-        _coverLabel.textColor = RGBACOLOR(200, 200, 200, 1);
-        _coverLabel.text = NSLocalizedString(@"publish.addcoverimage", @"Add a Cover Image");
-        _coverLabel.font = [UIFont systemFontOfSize:15.f];
-        _coverLabel.textAlignment = NSTextAlignmentCenter;
+    if (_coverView == nil) {
+        _coverView = [[UIView alloc]init];
+        UIImageView *coverImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"coverImage"]];
+        [_coverView addSubview:coverImageView];
+        [coverImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.width.height.equalTo(@70);
+            make.top.equalTo(_coverView);
+            make.centerX.equalTo(_coverView);
+        }];
+        UILabel *coverLabel = [[UILabel alloc]init];
+        coverLabel.textColor = [UIColor whiteColor];
+        coverLabel.text = @"设置一个吸引人的封面";
+        coverLabel.font = [UIFont systemFontOfSize:16.f];
+        coverLabel.textAlignment = NSTextAlignmentCenter;
+        [_coverView addSubview:coverLabel];
+        [coverLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(coverImageView.mas_bottom).offset(10);
+            make.left.right.equalTo(_coverView);
+        }];
     }
-    return _coverLabel;
-}
-
-- (UITextField*)relevanceTextField
-{
-    if (_relevanceTextField == nil) {
-        _relevanceTextField = [[UITextField alloc] initWithFrame:CGRectMake((KScreenWidth - kDefaultWidth)/2, CGRectGetMaxY(_coverImageView.frame), kDefaultWidth, kDefaultTextHeight)];
-        _relevanceTextField.delegate = self;
-        _relevanceTextField.placeholder = NSLocalizedString(@"publish.liveroomid", @"Live Room ID");
-        _relevanceTextField.backgroundColor = [UIColor clearColor];
-        _relevanceTextField.returnKeyType = UIReturnKeyNext;
-        _relevanceTextField.font = [UIFont systemFontOfSize:15.f];
-        _relevanceTextField.enabled = NO;
-        _relevanceTextField.userInteractionEnabled = YES;
-        
-        UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, _relevanceTextField.height - 1, _relevanceTextField.width, 1)];
-        line.backgroundColor = RGBACOLOR(220, 220, 220, 1);
-        [_relevanceTextField addSubview:line];
-    }
-    return _relevanceTextField;
-}
-
-- (UIButton*)showPickerBtn
-{
-    if (_showPickerBtn == nil) {
-        _showPickerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _showPickerBtn.frame = CGRectMake(CGRectGetMaxX(_relevanceTextField.frame) - 20.f, _relevanceTextField.top + (_relevanceTextField.height - 20.f)/2, 20.f, 20.f);
-        [_showPickerBtn setImage:[UIImage imageNamed:@"open"] forState:UIControlStateNormal];
-        [_showPickerBtn addTarget:self action:@selector(showPickerAction) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _showPickerBtn;
+    return _coverView;
 }
 
 - (UITextField*)liveNameTextField
 {
     if (_liveNameTextField == nil) {
-        _liveNameTextField = [[UITextField alloc] initWithFrame:CGRectMake((KScreenWidth - kDefaultWidth)/2, CGRectGetMaxY(_coverImageView.frame), kDefaultWidth, kDefaultTextHeight)];
-        if (_isRelevance) {
-            _liveNameTextField.top = CGRectGetMaxY(_relevanceTextField.frame);
-            _liveNameTextField.hidden = YES;
-        }
+        _liveNameTextField = [[EaseTextField alloc] init];
         _liveNameTextField.delegate = self;
-        _liveNameTextField.placeholder = NSLocalizedString(@"publish.liveName", @"Live Name");
-        _liveNameTextField.backgroundColor = [UIColor clearColor];
+        _liveNameTextField.placeholder = @"请输入直播间名称";
+        _liveNameTextField.tintColor = [UIColor blackColor];
+        _liveNameTextField.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1.0];
         _liveNameTextField.returnKeyType = UIReturnKeyDone;
         _liveNameTextField.font = [UIFont systemFontOfSize:15.f];
-        
-        UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, _liveNameTextField.height - 1, _liveNameTextField.width, 1)];
-        line.backgroundColor = RGBACOLOR(220, 220, 220, 1);
-        [_liveNameTextField addSubview:line];
-        
+        _liveNameTextField.layer.cornerRadius = 22;
     }
     return _liveNameTextField;
 }
@@ -250,9 +246,6 @@
 {
     if (_liveDescTextField == nil) {
         _liveDescTextField = [[UITextField alloc] initWithFrame:CGRectMake((KScreenWidth - kDefaultWidth)/2, CGRectGetMaxY(_liveNameTextField.frame), kDefaultWidth, kDefaultTextHeight)];
-        if (_isRelevance) {
-            _liveDescTextField.hidden = YES;
-        }
         _liveDescTextField.delegate = self;
         _liveDescTextField.placeholder = NSLocalizedString(@"publish.liveDesc", @"Live Description");
         _liveDescTextField.backgroundColor = [UIColor clearColor];
@@ -271,9 +264,6 @@
 {
     if (_anchorDescTextField == nil) {
         _anchorDescTextField = [[UITextField alloc] initWithFrame:CGRectMake((KScreenWidth - kDefaultWidth)/2, CGRectGetMaxY(_liveDescTextField.frame), kDefaultWidth, kDefaultTextHeight)];
-        if (_isRelevance) {
-            _anchorDescTextField.hidden = YES;
-        }
         _anchorDescTextField.delegate = self;
         _anchorDescTextField.placeholder = NSLocalizedString(@"publish.introduceSelf", @"Self-introduction");
         _anchorDescTextField.backgroundColor = [UIColor clearColor];
@@ -292,23 +282,24 @@
 {
     if (_createLiveBtn == nil) {
         _createLiveBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        _createLiveBtn.frame = CGRectMake((KScreenWidth - kDefaultWidth)/2, _liveDescTextField.bottom + 51.f, kDefaultWidth, kDefaultHeight);
-        [_createLiveBtn setTitle:NSLocalizedString(@"publish.button.live", @"Publish Live") forState:UIControlStateNormal];
-        [_createLiveBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [_createLiveBtn setBackgroundColor:kDefaultLoginButtonColor];
-        _createLiveBtn.layer.cornerRadius = 4.f;
-        
-        if (_isRelevance) {
-            [_createLiveBtn setBackgroundColor:RGBACOLOR(185, 185, 185, 1)];
-            _createLiveBtn.enabled = NO;
-            [_createLiveBtn addTarget:self action:@selector(modifyAction) forControlEvents:UIControlEventTouchUpInside];
-        } else {
-            [_createLiveBtn addTarget:self action:@selector(createAction) forControlEvents:UIControlEventTouchUpInside];
-        }
-        
-        [_mainView setContentSize:CGSizeMake(KScreenWidth, CGRectGetMaxY(_createLiveBtn.frame) + 75.f)];
+        _createLiveBtn.layer.cornerRadius = 22.f;
+        [_createLiveBtn addTarget:self action:@selector(createAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _createLiveBtn;
+}
+
+- (CAGradientLayer *)gl{
+    if(_gl == nil){
+        _gl = [CAGradientLayer layer];
+        _gl.frame = CGRectMake(0,0,_createLiveBtn.frame.size.width,44);
+        _gl.startPoint = CGPointMake(0.76, 0.84);
+        _gl.endPoint = CGPointMake(0.26, 0.14);
+        _gl.colors = @[(__bridge id)[UIColor colorWithRed:90/255.0 green:93/255.0 blue:208/255.0 alpha:1.0].CGColor, (__bridge id)[UIColor colorWithRed:4/255.0 green:174/255.0 blue:240/255.0 alpha:1.0].CGColor];
+        _gl.locations = @[@(0), @(1.0f)];
+        _gl.cornerRadius = 22;
+    }
+    
+    return _gl;
 }
 
 - (UIImagePickerController *)imagePicker
@@ -323,59 +314,6 @@
     return _imagePicker;
 }
 
-- (UIPickerView*)relevancePicker
-{
-    if (_relevancePicker == nil) {
-        _relevancePicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, KScreenHeight - 264, KScreenWidth, 200)];
-        _relevancePicker.delegate = self;
-        _relevancePicker.dataSource = self;
-        _relevancePicker.backgroundColor = [UIColor whiteColor];
-    }
-    return _relevancePicker;
-}
-
-- (UIView*)pickerView
-{
-    if (_pickerView == nil) {
-        _pickerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight)];
-        
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(50, 0, KScreenWidth - 100, 50)];
-        label.textAlignment = NSTextAlignmentCenter;
-        label.text = NSLocalizedString(@"publish.liveroomid", @"Live Room ID");
-        label.textColor = RGBACOLOR(76, 76, 76, 1);
-        label.font = [UIFont systemFontOfSize:17.f];
-        
-        UIButton *canceBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        canceBtn.frame = CGRectMake(10, 0, 60, 50);
-        [canceBtn setTitle:NSLocalizedString(@"publish.cancel", @"Cancel") forState:UIControlStateNormal];
-        [canceBtn setTitleColor:RGBACOLOR(76, 76, 76, 1) forState:UIControlStateNormal];
-        [canceBtn.titleLabel setFont:[UIFont systemFontOfSize:17]];
-        [canceBtn addTarget:self action:@selector(hidePickerAction) forControlEvents:UIControlEventTouchUpInside];
-        
-        UIButton *saveBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        saveBtn.frame = CGRectMake(KScreenWidth - 60, 0, 50, 50);
-        [saveBtn setTitle:NSLocalizedString(@"publish.save", @"Save") forState:UIControlStateNormal];
-        [saveBtn setTitleColor:RGBACOLOR(25, 163, 255, 1) forState:UIControlStateNormal];
-        [saveBtn.titleLabel setFont:[UIFont systemFontOfSize:17]];
-        [saveBtn addTarget:self action:@selector(saveAction) forControlEvents:UIControlEventTouchUpInside];
-        
-        
-        UIView *btnView = [[UIView alloc] initWithFrame:CGRectMake(0, KScreenHeight - 314, KScreenWidth, 50)];
-        btnView.backgroundColor = [UIColor whiteColor];
-        [btnView addSubview:canceBtn];
-        [btnView addSubview:label];
-        [btnView addSubview:saveBtn];
-        
-        UIView *separateLine = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(btnView.frame) + 0.5, KScreenWidth, 0.5)];
-        separateLine.backgroundColor = RGBACOLOR(220, 220, 220, 1);
-        
-        [_pickerView addSubview:btnView];
-        [_pickerView addSubview:self.relevancePicker];
-        [_pickerView addSubview:separateLine];
-    }
-    return _pickerView;
-}
-
 #pragma mark - UIImagePickerControllerDelegate
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
@@ -383,7 +321,7 @@
     UIImage *editImage = info[UIImagePickerControllerEditedImage];
     [picker dismissViewControllerAnimated:YES completion:nil];
     if (editImage) {
-        _coverLabel.hidden = YES;
+        _coverView.hidden = YES;
         _coverImageView.image = editImage;
         NSData *fileData = UIImageJPEGRepresentation(editImage, 1.0);
         [[EaseHttpManager sharedInstance] uploadFileWithData:fileData
@@ -404,92 +342,50 @@
     [self.imagePicker dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark - UIPickerViewDataSource
-
-- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView;
-{
-    return 1;
-}
-
-- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
-{
-    return [_relevanceArray count];
-}
-
-#pragma mark - UIPickerViewDelegate
-
-- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(nullable UIView *)view
-{
-    UILabel *pickerLabel = (UILabel *)view;
-    if (pickerLabel == nil) {
-        CGRect frame = CGRectMake(0, 0, 0, 0);
-        pickerLabel = [[UILabel alloc] initWithFrame:frame];
-        [pickerLabel setTextAlignment:NSTextAlignmentCenter];
-        [pickerLabel setBackgroundColor:[UIColor clearColor]];
-        [pickerLabel setFont:[UIFont boldSystemFontOfSize:18.0f]];
-    }
-    if (component == 0) {
-        pickerLabel.text =  [_relevanceArray objectAtIndex:row];
-    }
-    return pickerLabel;
-}
-
-- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
-{
-
-}
-
-
 #pragma mark - action
+
+- (void)coverPicker
+{
+    EaseLiveroomCoverSettingView *coverView = [[EaseLiveroomCoverSettingView alloc]init];
+    [coverView setDoneCompletion:^(NSUInteger type) {
+        if (type == 0) {
+            [self camerAction];
+        } else if (type == 1) {
+            [self photoAction];
+        }
+    }];
+    [coverView showFromParentView:self.view];
+}
 
 - (void)photoAction
 {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:(UIAlertControllerStyleActionSheet)];
-    
-    UIAlertAction *albumAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"publish.photo", @"Take photo") style:(UIAlertActionStyleDefault) handler:^(UIAlertAction *action) {
+    self.imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    self.imagePicker.mediaTypes = @[(NSString *)kUTTypeImage];
+    self.imagePicker.editing = YES;
+    self.imagePicker.modalPresentationStyle = 0;
+    [self presentViewController:self.imagePicker animated:YES completion:NULL];
+}
+
+- (void)camerAction
+{
 #if TARGET_OS_IPHONE
-        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-            self.imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-            if ([UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceFront]) {
-                _imagePicker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
-            }
-            self.imagePicker.editing = YES;
-            self.imagePicker.mediaTypes = @[(NSString *)kUTTypeImage];
-            self.imagePicker.modalPresentationStyle = 0;
-            [self presentViewController:self.imagePicker animated:YES completion:NULL];
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        self.imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        if ([UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceFront]) {
+            _imagePicker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
         }
-#endif
-    }];
-    
-    UIAlertAction *cameraAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"publish.albums", @"Albums") style:(UIAlertActionStyleDefault) handler:^(UIAlertAction *action) {
-        self.imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        self.imagePicker.mediaTypes = @[(NSString *)kUTTypeImage];
         self.imagePicker.editing = YES;
+        self.imagePicker.mediaTypes = @[(NSString *)kUTTypeImage];
         self.imagePicker.modalPresentationStyle = 0;
         [self presentViewController:self.imagePicker animated:YES completion:NULL];
-    }];
-    
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"publish.cancel", @"Cancel") style:(UIAlertActionStyleCancel) handler:^(UIAlertAction *action) {
-    }];
-    
-    [alertController addAction:albumAction];
-    [alertController addAction:cameraAction];
-    [alertController addAction:cancelAction];
-    
-    alertController.modalPresentationStyle = 0;
-    [self presentViewController:alertController animated:YES completion:nil];
+    }
+#endif
 }
 
 - (void)createAction
 {
-    
     if (_liveNameTextField.text.length == 0) {
         [self showHint:@"填入房间名"];
-        return;
-    }
-       
-    if (_liveDescTextField.text.length == 0) {
-        [self showHint:@"填入房间介绍"];
         return;
     }
     
@@ -497,136 +393,33 @@
         [self showHint:@"选择封面图"];
         return;
     }
+    _liveRoom = [[EaseLiveRoom alloc] init];
+    _liveRoom.title = _liveNameTextField.text;
+    if (_liveDescTextField.text.length != 0) {
+        _liveRoom.desc = _liveDescTextField.text;
+    }
+    _liveRoom.coverPictureUrl = _coverpictureurl;
+    _liveRoom.anchor = [EMClient sharedClient].currentUsername;
     __weak typeof(self) weakSelf = self;
     MBProgressHUD *hud = [MBProgressHUD showMessag:@"开始直播..." toView:self.view];
     __weak MBProgressHUD *weakHud = hud;
-
-    _liveRoom.anchor = [EMClient sharedClient].currentUsername;
-    [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOngoing:_liveRoom completion:^(EaseLiveRoom *room, BOOL success) {
+    [[EaseHttpManager sharedInstance] createLiveRoomWithRoom:_liveRoom completion:^(EaseLiveRoom *room, BOOL success) {
         [weakHud hideAnimated:YES];
         if (success) {
             _liveRoom = room;
-            EaseLiveRoom *liveRoom = _liveRoom;
-            if (_liveNameTextField.text.length != 0) {
-                liveRoom.title = _liveNameTextField.text;
-            } else {
-                return;
-            }
-            
-            if (_liveDescTextField.text.length != 0) {
-                liveRoom.desc = _liveDescTextField.text;
-            } else {
-                return;
-            }
-            
-            if (_coverpictureurl.length != 0){
-                liveRoom.coverPictureUrl = _coverpictureurl;
-            } else {
-                return;
-            }
-            
-            [[EaseHttpManager sharedInstance] modifyLiveRoomWithRoom:liveRoom completion:^(EaseLiveRoom *aRoom, BOOL success) {
-                _liveRoom = aRoom;
+            [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOngoing:_liveRoom completion:^(EaseLiveRoom *room, BOOL success) {
                 EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:_liveRoom];
                 publishView.modalPresentationStyle = 0;
                 [weakSelf presentViewController:publishView
                                        animated:YES
                                      completion:^{
-                    [weakSelf.navigationController popToRootViewControllerAnimated:NO];
-                                     }];
+                    [weakSelf.navigationController popToRootViewControllerAnimated:NO];}];
             }];
         } else {
-            [self showHint:@"开始直播失败"];
+            [weakSelf showHint:@"开始直播失败"];
         }
     }];
     [EaseHttpManager sharedInstance];
-}
-
-- (void)modifyAction
-{
-    if (_liveRoom == nil) {
-        _liveRoom = [[EaseLiveRoom alloc] init];
-    }
-    
-    if (_liveNameTextField.text.length != 0) {
-        _liveRoom.title = _liveNameTextField.text;
-    }
-    
-    if (_liveDescTextField.text.length != 0) {
-        _liveRoom.desc = _liveDescTextField.text;
-    }
-    
-    if (_coverpictureurl.length != 0){
-        _liveRoom.coverPictureUrl = _coverpictureurl;
-    }
-    
-    BOOL ret = _liveRoom.session.anchor.length == 0 || ![_liveRoom.session.anchor isEqualToString:[EMClient sharedClient].currentUsername];
-    if (ret) {
-        [self showHint:@"请到后台设定此账户为直播间主播"];
-        return;
-    }
-    
-    if (_liveRoom.session.status == EaseLiveSessionUnknown) {
-        [self showHint:@"直播状态未知,创建失败"];
-        return;
-    }
-    
-    MBProgressHUD *hud = [MBProgressHUD showMessag:@"创建中..." toView:self.view];
-    __weak MBProgressHUD *weakHud = hud;
-    __weak typeof(self) weakSelf = self;
-    dispatch_block_t modifyBlock = ^{
-        [[EaseHttpManager sharedInstance] modifyLiveRoomWithRoom:_liveRoom
-                                                      completion:^(EaseLiveRoom *room, BOOL success) {
-                                                          [weakHud hideAnimated:YES];
-                                                          if (success) {
-                                                              EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:_liveRoom];
-                                                              publishView.modalPresentationStyle = 0;
-                                                              [weakSelf presentViewController:publishView animated:YES completion:^{
-                                                                  [weakSelf.navigationController popToRootViewControllerAnimated:NO];
-                                                              }];
-                                                          } else {
-                                                              [weakSelf showHint:@"创建失败"];
-                                                          }
-                                                      }];
-    };
-    if (_liveRoom.session.status == EaseLiveSessionOngoing) {
-        modifyBlock();
-    } else if (_liveRoom.session.status == EaseLiveSessionNotStart) {
-        [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOngoing:_liveRoom completion:^(EaseLiveRoom *room, BOOL success) {
-            [weakHud hideAnimated:YES];
-            if (success) {
-                modifyBlock();
-            } else {
-                [self showHint:@"开始直播失败"];
-            }
-        }];
-        /*
-        [[EaseHttpManager sharedInstance] modifyLiveRoomStatusWithRoomId:_liveRoom.roomId
-                                                                  status:EaseLiveSessionOngoing
-                                                              completion:^(BOOL success) {
-                                                                  if (success) {
-                                                                      modifyBlock();
-                                                                  } else {
-                                                                      [weakHud hide:YES];
-                                                                      [weakSelf showHint:@"创建失败"];
-                                                                  }
-                                                              }];*/
-    } else {
-        [[EaseHttpManager sharedInstance] createLiveSessionWithRoom:_liveRoom
-                                                         completion:^(EaseLiveRoom *room, BOOL success) {
-                                                             [weakHud hideAnimated:YES];
-                                                             if (success) {
-                                                                 modifyBlock();
-                                                                 EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:room];
-                                                                 publishView.modalPresentationStyle = 0;
-                                                                 [weakSelf presentViewController:publishView animated:YES completion:^{
-                                                                     [weakSelf.navigationController popToRootViewControllerAnimated:NO];
-                                                                 }];
-                                                             } else {
-                                                                 [weakSelf showHint:@"创建失败"];
-                                                             }
-                                                         }];
-    }
 }
 
 - (void)backAction
@@ -634,128 +427,13 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)relevanceAction
+- (void)cancelAction
 {
-    EaseCreateLiveViewController *relevanceLiveView = [[EaseCreateLiveViewController alloc] initWithRelevance:YES];
-    [self.navigationController pushViewController:relevanceLiveView animated:YES];
-}
-
-- (void)showPickerAction
-{
-    [self.view addSubview:self.pickerView];
-}
-
-- (void)hidePickerAction
-{
-    [self.pickerView removeFromSuperview];
-}
-
-- (void)saveAction
-{
-    [self.pickerView removeFromSuperview];
-    if ([_relevanceArray count] == 0) {
-        return;
-    }
-    NSString *value = [_relevanceArray objectAtIndex:[_relevancePicker selectedRowInComponent:0]];
-    if (value.length > 0) {
-        _relevanceTextField.text = value;
-        
-        _liveDescTextField.hidden = NO;
-        _liveNameTextField.hidden = NO;
-        _anchorDescTextField.hidden = NO;
-        
-        [_createLiveBtn setBackgroundColor:kDefaultLoginButtonColor];
-        _createLiveBtn.enabled = YES;
-        
-        dispatch_block_t block = ^{
-            [[EaseHttpManager sharedInstance] getLiveRoomStatusWithRoomId:value
-                                                               completion:^(EaseLiveSessionStatus status, BOOL success) {
-                                                                   if (success) {
-                                                                       if (_liveRoom == nil) {
-                                                                           _liveRoom = [[EaseLiveRoom alloc] init];
-                                                                       }
-                                                                       _liveRoom.session.status = status;
-                                                                   }
-                                                               }];
-        };
-        
-        __weak typeof(self) weakSelf = self;
-        [[EaseHttpManager sharedInstance] getLiveRoomWithRoomId:value
-                                                     completion:^(EaseLiveRoom *room, BOOL sucess) {
-                                                         if (sucess) {
-                                                             _liveRoom = room;
-                                                             if (_liveRoom.title.length > 0) {
-                                                                 weakSelf.liveNameTextField.text = _liveRoom.title;
-                                                             } else {
-                                                                 weakSelf.liveNameTextField.text = @"";
-                                                             }
-                                                             
-                                                             if (_liveRoom.desc.length > 0) {
-                                                                 weakSelf.liveDescTextField.text = _liveRoom.desc;
-                                                             } else {
-                                                                 weakSelf.liveDescTextField.text = @"";
-                                                             }
-                                                             
-                                                             if (_liveRoom.custom != nil) {
-                                                                 
-                                                             }
-                                                             
-                                                             if (_liveRoom.coverPictureUrl.length > 0) {
-                                                                 [weakSelf.coverImageView sd_setImageWithURL:[NSURL URLWithString:_liveRoom.coverPictureUrl] placeholderImage:nil];
-                                                                 _coverpictureurl = [_liveRoom.coverPictureUrl copy];
-                                                                 _coverLabel.hidden = YES;
-                                                             } else {
-                                                                 weakSelf.coverImageView.image = nil;
-                                                                 _coverpictureurl = nil;
-                                                                 _coverLabel.hidden = NO;
-                                                             }
-                                                         } else {
-                                                             weakSelf.liveNameTextField.text = @"";
-                                                             weakSelf.liveDescTextField.text = @"";
-                                                             weakSelf.anchorDescTextField.text = @"";
-                                                             weakSelf.coverImageView.image = nil;
-                                                             _coverpictureurl = nil;
-                                                             _coverLabel.hidden = NO;
-                                                         }
-                                                         block();
-                                                     }];
-    }
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - notification
 
-- (void)keyboardWillChangeFrame:(NSNotification *)notification
-{
-    NSDictionary *userInfo = notification.userInfo;
-    NSValue *beginValue = [userInfo objectForKey:@"UIKeyboardFrameBeginUserInfoKey"];
-    NSValue *endValue = [userInfo objectForKey:@"UIKeyboardFrameEndUserInfoKey"];
-    CGRect beginRect;
-    [beginValue getValue:&beginRect];
-    CGRect endRect;
-    [endValue getValue:&endRect];
-    
-    CGRect actionViewFrame = _mainView.frame;
-    CGPoint point = CGPointMake(0, 0);
-    //键盘隐藏
-    if (endRect.origin.y == KScreenHeight) {
-        actionViewFrame = CGRectMake(0, 0, KScreenWidth, KScreenHeight);
-    }
-    //键盘显示
-    else if(beginRect.origin.y == KScreenHeight){
-        actionViewFrame.origin.y = -150.f;
-        point.y = _mainView.contentSize.height - _mainView.height;
-    }
-    //键盘告诉变化
-    else{
-        actionViewFrame.origin.y = -150.f;
-        point.y = _mainView.contentSize.height - _mainView.height;
-    }
-    
-    [UIView animateWithDuration:0.3 animations:^{
-        _mainView.frame = actionViewFrame;
-        _mainView.contentOffset = point;
-    }];
-}
 - (BOOL)textFieldShouldReturn:(UITextField *)aTextfield {
      [aTextfield resignFirstResponder];//关闭键盘
     return YES;

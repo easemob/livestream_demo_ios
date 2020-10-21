@@ -125,7 +125,7 @@
 {
     [[EMClient sharedClient].roomManager removeDelegate:self];
     [[EMClient sharedClient] removeDelegate:self];
-    
+    [_headerListView stopTimer];
     _chatview.delegate = nil;
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -452,11 +452,12 @@
 }
 
 //成员列表
-- (void)didSelectMemberListButton:(BOOL)isOwner
+- (void)didSelectMemberListButton:(BOOL)isOwner currentMemberList:(NSArray*)currentMemberList
 {
     [self.view endEditing:YES];
     EaseAdminView *adminView = [[EaseAdminView alloc] initWithChatroomId:_room.chatroomId
-                                                                 isOwner:isOwner];
+                                                                 isOwner:isOwner
+                                                                currentMemberList:currentMemberList];
     adminView.delegate = self;
     [adminView showFromParentView:self.view];
 }
@@ -488,7 +489,7 @@ extern bool isAllTheSilence;
         }
     }
 }
-
+/*
 - (void)userDidJoinChatroom:(EMChatroom *)aChatroom
                        user:(NSString *)aUsername
 {
@@ -508,7 +509,7 @@ extern bool isAllTheSilence;
         }
     }
 }
-
+*/
 - (void)chatroomWhiteListDidUpdate:(EMChatroom *)aChatroom addedWhiteListMembers:(NSArray *)aMembers
 {
     if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {

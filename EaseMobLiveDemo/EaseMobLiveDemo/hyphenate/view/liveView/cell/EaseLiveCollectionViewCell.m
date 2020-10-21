@@ -267,11 +267,7 @@
     } else {
         _liveImageView.image = [UIImage imageNamed:@"default_image"];
     }
-    if (room.currentUserCount > 0) {
-        _numLabel.text = [NSString stringWithFormat:@"%ld",(long)(room.currentUserCount-1)];
-    } else {
-        _numLabel.text = [NSString stringWithFormat:@"%ld",(long)room.currentUserCount];
-    }
+    _numLabel.text = [NSString stringWithFormat:@"%ld",(long)room.currentUserCount];
     
     //判断房间状态
     if (liveBehavior == kTabbarItemTag_Live) {

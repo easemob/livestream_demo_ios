@@ -33,6 +33,10 @@
 		3C72AD68240F9431007BC99F /* EaseEmojiHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C72AD67240F9431007BC99F /* EaseEmojiHelper.m */; };
 		3C72AD6C240F97CA007BC99F /* EaseEmoticonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C72AD6B240F97CA007BC99F /* EaseEmoticonView.m */; };
 		3C72AD6F240F9804007BC99F /* EMEmoticonGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C72AD6E240F9804007BC99F /* EMEmoticonGroup.m */; };
+		3C859785253D53D200B6EFF1 /* coverImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C859784253D53D100B6EFF1 /* coverImage@2x.png */; };
+		3C859787253D53DB00B6EFF1 /* coverImage@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C859786253D53DB00B6EFF1 /* coverImage@3x.png */; };
+		3C85978A253D872300B6EFF1 /* EaseLiveroomCoverSettingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C859789253D872300B6EFF1 /* EaseLiveroomCoverSettingView.m */; };
+		3C85978D253D916F00B6EFF1 /* EaseTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C85978C253D916F00B6EFF1 /* EaseTextField.m */; };
 		3C8AD50E24127AE3002B6464 /* EaseGiftListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8AD50D24127AE2002B6464 /* EaseGiftListView.m */; };
 		3C8AD5152412AD41002B6464 /* EaseTransitionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8AD5142412AD41002B6464 /* EaseTransitionViewController.m */; };
 		3C9F89EB240E3C3C00653B2F /* EaseAudienceBehaviorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C9F89EA240E3C3C00653B2F /* EaseAudienceBehaviorView.m */; };
@@ -270,6 +274,12 @@
 		3C72AD6B240F97CA007BC99F /* EaseEmoticonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EaseEmoticonView.m; sourceTree = "<group>"; };
 		3C72AD6D240F9804007BC99F /* EMEmoticonGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMEmoticonGroup.h; sourceTree = "<group>"; };
 		3C72AD6E240F9804007BC99F /* EMEmoticonGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMEmoticonGroup.m; sourceTree = "<group>"; };
+		3C859784253D53D100B6EFF1 /* coverImage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "coverImage@2x.png"; sourceTree = "<group>"; };
+		3C859786253D53DB00B6EFF1 /* coverImage@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "coverImage@3x.png"; sourceTree = "<group>"; };
+		3C859788253D872300B6EFF1 /* EaseLiveroomCoverSettingView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseLiveroomCoverSettingView.h; sourceTree = "<group>"; };
+		3C859789253D872300B6EFF1 /* EaseLiveroomCoverSettingView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseLiveroomCoverSettingView.m; sourceTree = "<group>"; };
+		3C85978B253D916F00B6EFF1 /* EaseTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseTextField.h; sourceTree = "<group>"; };
+		3C85978C253D916F00B6EFF1 /* EaseTextField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseTextField.m; sourceTree = "<group>"; };
 		3C8AD50C24127AE2002B6464 /* EaseGiftListView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseGiftListView.h; sourceTree = "<group>"; };
 		3C8AD50D24127AE2002B6464 /* EaseGiftListView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseGiftListView.m; sourceTree = "<group>"; };
 		3C8AD5132412AD41002B6464 /* EaseTransitionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseTransitionViewController.h; sourceTree = "<group>"; };
@@ -574,6 +584,7 @@
 		D275D7C41E666C44001BBA61 /* @2x */ = {
 			isa = PBXGroup;
 			children = (
+				3C859784253D53D100B6EFF1 /* coverImage@2x.png */,
 				3CCF879E24238806007570EB /* huanxin-logo@2x.png */,
 				3CCF879624220456007570EB /* webRefreshButton@2x.png */,
 				D275D7C51E666C44001BBA61 /* admin@2x.png */,
@@ -633,6 +644,7 @@
 		D275D7D11E666C44001BBA61 /* @3x */ = {
 			isa = PBXGroup;
 			children = (
+				3C859786253D53DB00B6EFF1 /* coverImage@3x.png */,
 				3CCF87A024238810007570EB /* huanxin-logo@3x.png */,
 				3CCF87982422045E007570EB /* webRefreshButton@3x.png */,
 				D275D7D21E666C44001BBA61 /* admin@3x.png */,
@@ -874,6 +886,10 @@
 				D2F4E11A1D12C8AB00BB7E1A /* EasePublishViewController.m */,
 				D2D9EFE91E6427DC001E4BFC /* EaseCreateLiveViewController.h */,
 				D2D9EFEA1E6427DC001E4BFC /* EaseCreateLiveViewController.m */,
+				3C859788253D872300B6EFF1 /* EaseLiveroomCoverSettingView.h */,
+				3C859789253D872300B6EFF1 /* EaseLiveroomCoverSettingView.m */,
+				3C85978B253D916F00B6EFF1 /* EaseTextField.h */,
+				3C85978C253D916F00B6EFF1 /* EaseTextField.m */,
 			);
 			path = publish;
 			sourceTree = "<group>";
@@ -1174,6 +1190,7 @@
 				D275D7F01E666C44001BBA61 /* list@3x.png in Resources */,
 				3CCF87672420E613007570EB /* gift.box@2x.png in Resources */,
 				3CCF874C2420DF56007570EB /* icon-liveList-selected@2x.png in Resources */,
+				3C859785253D53D200B6EFF1 /* coverImage@2x.png in Resources */,
 				3CCF87332420DF34007570EB /* avatat_2@2x.png in Resources */,
 				D2E368221D3C7EFF00B1C90C /* Localizable.strings in Resources */,
 				3CCF86FA2420DE98007570EB /* backPic@3x.png in Resources */,
@@ -1191,6 +1208,7 @@
 				D2F4E23F1D12C8AB00BB7E1A /* LaunchScreen.xib in Resources */,
 				3CCF87542420DF76007570EB /* icon-setting-selected@3x.png in Resources */,
 				3CCF879F24238806007570EB /* huanxin-logo@2x.png in Resources */,
+				3C859787253D53DB00B6EFF1 /* coverImage@3x.png in Resources */,
 				D275D7F41E666C44001BBA61 /* reversal_camera@3x.png in Resources */,
 				3CCF876A2420E613007570EB /* gift.cake@2x.png in Resources */,
 				D275D7F51E666C44001BBA61 /* search@3x.png in Resources */,
@@ -1292,6 +1310,7 @@
 				D2E368B71D3F7E7800B1C90C /* EaseProfileLiveView.m in Sources */,
 				3C72AD6C240F97CA007BC99F /* EaseEmoticonView.m in Sources */,
 				D2E36B411D41CD2900B1C90C /* EaseSearchDisplayController.m in Sources */,
+				3C85978A253D872300B6EFF1 /* EaseLiveroomCoverSettingView.m in Sources */,
 				D2E3687A1D3CFD3500B1C90C /* EaseSignUpViewController.m in Sources */,
 				D2E3699D1D40AFC600B1C90C /* EaseGiftCell.m in Sources */,
 				3C12380E23FD1CA500C4135B /* EaseGiftConfirmView.m in Sources */,
@@ -1326,6 +1345,7 @@
 				D2E36B441D41CF7600B1C90C /* RealtimeSearchUtil.m in Sources */,
 				3C12381423FD30E000C4135B /* EaseCustomKeyBoardView.m in Sources */,
 				D2F4E2441D12C8AB00BB7E1A /* SRRefreshView.m in Sources */,
+				3C85978D253D916F00B6EFF1 /* EaseTextField.m in Sources */,
 				D2E369991D40AF4800B1C90C /* EaseChatCell.m in Sources */,
 				3C44F43C240BE51600445129 /* JPGiftShowManager.m in Sources */,
 				D2E368801D3E141D00B1C90C /* UIView+Position.m in Sources */,
@@ -1495,7 +1515,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 1.0.6;
+				MARKETING_VERSION = 1.0.8;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1537,7 +1557,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 1.0.6;
+				MARKETING_VERSION = 1.0.8;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",

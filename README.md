@@ -1,11 +1,11 @@
 # 简介 #
-本demo演示了通过环信sdk实现的直播聊天室
+本demo演示了通过环信sdk以及环信appServer实现的直播聊天室
 
 ## 怎么使用本demo ##
 - 首先在EaseMobLiveDemo文件夹下执行pod install,集成环信sdk
 - 初次进入app时会自动注册一个UUID游客账号，默认密码000000，注册成功自动登录，自动登录完成跳转到主页面
-- 点击主页底部“我要直播”蓝色按钮，选择一个可“立即开播”的直播间，点击进入该直播间基本信息页，键入封面图以及本次直播主题和描述后，点击“开始直播”开启一场直播
-- 游客点击主页面任意一个直播间即可进入该直播间观看直播，在直播间目前可以发群聊消息、给主播点赞，给主播刷礼物，发弹幕等，当前直播间聊天室观众均可收到消息动画
+- 点击主页底部“我要直播”蓝色按钮，可创建一个直播间，键入封面图以及本次直播主题后，点击“开始直播”开启一场直播，直播间即出现在“直播大厅”列表，其他游客即可从“直播大厅”进入直播间
+- 游客点击直播大厅任一直播间即可进入该直播间观看直播，直播间内目前可以发聊天消息、给主播点赞，给主播刷礼物，发弹幕消息等，当前直播间聊天室观众均可收到消息动画
 
 ## 功能实现 ##
 
@@ -13,20 +13,18 @@
 ### 我要直播
 **具体演示代码见EaseLiveTVListViewController,EaseCreateLiveViewController,EasePublishViewController,EaseHttpManager**
 
-1、获取直播聊天室列表
+1、创建直播聊天室
 ```
 /*
- *  获取当前appKey下的直播房间列表
+ *  创建直播聊天室
  *
- *  @param aPage          第几页
- *  @param aPageSize      每页大小
- *  @param aCompletion    完成的回调block
+ *  @param aRoom            直播聊天室
+ *  @param aCompletion      完成的回调block
  */
-- (void)fetchLiveRoomsWithCursor:(NSString*)aCursor
-                            limit:(NSInteger)aLimit
-                            completion:(void (^)(EMCursorResult *result, BOOL success))aCompletion;
+- (void)createLiveRoomWithRoom:(EaseLiveRoom*)aRoom
+                    completion:(void (^)(EaseLiveRoom *room, BOOL success))aCompletion;
 ```
-2、设置当前将要直播的直播聊天室为“ongoing”正直播状态
+2、创建成功后设置当前将要直播的直播聊天室为“ongoing”正直播状态
 
 ```
 /*
@@ -38,19 +36,8 @@
 - (void)modifyLiveroomStatusWithOngoing:(EaseLiveRoom *)room
                              completion:(void (^)(EaseLiveRoom *room, BOOL success))aCompletion;
 ```
-3、自定义直播聊天室封面信息，包括封面，主题，描述信息，并修改直播聊天室详情为自定义详情信息，该场直播结束后，任何用户也可在原有直播聊天室开始一场新的直播
 
-```
-/*
- *  修改直播聊天室详情
- *
- *  @param aRoom            直播聊天室
- *  @param aCompletion      完成的回调block
- */
-- (void)modifyLiveRoomWithRoom:(EaseLiveRoom*)aRoom
-                    completion:(void (^)(EaseLiveRoom *room, BOOL success))aCompletion;
-```
-4、加入聊天室
+3、加入聊天室
 
 ```
 /*
@@ -66,7 +53,7 @@
                        isCount:(BOOL)aIsCount
                        completion:(void (^)(BOOL success))aCompletion;
 ```
-5、设置消息监听
+4、设置消息监听
 
 ```
 	 [[EMClient sharedClient].chatManager addDelegate:self delegateQueue:nil];
@@ -81,7 +68,7 @@
 	//收到cmd消息
 	}
 ```
-6、发送消息
+5、发送消息
 
 ```
 EMTextMessageBody *body = [[EMTextMessageBody alloc] initWithText:@"发送内容"];
@@ -94,23 +81,18 @@ message.chatType = EMChatTypeChatRoom;
 	}
 }];   
 ``` 
-7、获取直播聊天室成员列表
+6、从appServer获取直播聊天室详情并获取成员列表
 
 ```
-/*!
- *  获取聊天室成员列表
- *
- *  @param aChatroomId      聊天室ID
- *  @param aCursor          游标，首次调用传空
- *  @param aPageSize        获取多少条
- *  @param aCompletionBlock 完成的回调
- */
-- (void)getChatroomMemberListFromServerWithId:(NSString *)aChatroomId
-                                       cursor:(NSString *)aCursor
-                                     pageSize:(NSInteger)aPageSize
-                                     completion:(void (^)(EMCursorResult *aResult, EMError *aError))aCompletionBlock;
+/*
+*  获取直播聊天室详情
+*
+*  @param aRoom            直播聊天室
+*  @param aCompletion      完成的回调block
+*/
+- (void)fetchLiveroomDetail:(NSString *)roomId completion:(void (^)(EaseLiveRoom *room, BOOL success))aCompletion;
 ```
-8、获取直播聊天室禁言列表
+7、获取直播聊天室禁言列表
 
 ```
 /*!
@@ -126,7 +108,7 @@ message.chatType = EMChatTypeChatRoom;
                                    pageSize:(NSInteger)aPageSize
                                    completion:(void (^)(NSArray *aList, EMError *aError))aCompletionBlock;
 ```
-9、直播聊天室某观众解除禁言
+8、直播聊天室某观众解除禁言
 
 ```
 /*!
@@ -140,7 +122,7 @@ message.chatType = EMChatTypeChatRoom;
                  fromChatroom:(NSString *)aChatroomId
                  completion:(void (^)(EMChatroom *aChatroom, EMError *aError))aCompletionBlock;
 ```
-10、获取直播聊天室白名单列表
+9、获取直播聊天室白名单列表
 
 ```
 /*!
@@ -152,7 +134,7 @@ message.chatType = EMChatTypeChatRoom;
 - (void)getChatroomWhiteListFromServerWithId:(NSString *)aChatroomId
         completion:(void (^)(NSArray *aList, EMError *aError))aCompletionBlock;
 ```
-11、直播聊天室从白名单移除成员
+10、直播聊天室从白名单移除成员
 
 ```
 /*!
@@ -166,7 +148,7 @@ message.chatType = EMChatTypeChatRoom;
                   fromChatroom:(NSString *)aChatroomId
                   completion:(void (^)(EMChatroom *aChatroom, EMError *aError))aCompletionBlock;
 ```
-12、直播聊天室全体禁言
+11、直播聊天室全体禁言
 
 ```
 /*!
@@ -178,7 +160,7 @@ message.chatType = EMChatTypeChatRoom;
 - (void)muteAllMembersFromChatroom:(NSString *)aChatroomId
                   completion:(void(^)(EMChatroom *aChatroom, EMError *aError))aCompletionBlock;
 ```
-13、直播聊天室解除全体禁言
+12、直播聊天室解除全体禁言
 
 ```
 /*!
@@ -196,7 +178,7 @@ message.chatType = EMChatTypeChatRoom;
 ```
 - 直播聊天室全体禁言与观众禁言列表没有直接关系，互不影响
 
-14、离开聊天室并设置当前直播聊天室为“Offline”未直播状态，结束直播
+13、离开聊天室并设置当前直播聊天室为“Offline”未直播状态，结束直播
 
 ```
 /*
@@ -226,7 +208,7 @@ message.chatType = EMChatTypeChatRoom;
 ### 观看直播
 **具体代码参考demo EaseLiveViewController，EaseLiveTVListViewController**
 
-1、获取当前正直播的直播聊天室列表
+1、获取当前正直播的直播聊天室列表（包含点播房间和直播房间）
 
 ```
 /*
@@ -234,11 +216,13 @@ message.chatType = EMChatTypeChatRoom;
  *
  *  @param aCursor          游标
  *  @param aLimit           预期获取的记录数
+ *  @video_type             直播间类型（vod：点播 live：直播）
  *  @param aCompletion      完成的回调block
  */
 - (void)fetchLiveRoomsOngoingWithCursor:(NSString*)aCursor
                                   limit:(NSInteger)aLimit
-                                  completion:(void (^)(EMCursorResult *result, BOOL success))aCompletion;
+                             video_type:(NSString*)video_type
+                             completion:(void (^)(EMCursorResult *result, BOOL success))aCompletion;
 ```
 - 进入某个直播间加入聊天室并且设置消息监听接收消息通知，观看直播
 

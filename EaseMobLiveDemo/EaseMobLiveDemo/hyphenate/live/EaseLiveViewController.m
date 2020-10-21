@@ -116,26 +116,32 @@
     
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[EMClient sharedClient].roomManager removeDelegate:self];
     [[EMClient sharedClient] removeDelegate:self];
+    [_headerListView stopTimer];
     _chatview.delegate = nil;
     _chatview = nil;
 }
 
 #pragma mark - fetchlivingstream
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
 
 //拉取直播流
 - (void)fetchLivingStream
 {
     __weak typeof(self) weakSelf = self;
+    if ([_room.liveroomType isEqual:@"vod"]) {
+        NSURL *pushUrl = [NSURL URLWithString:[[_room.liveroomExt objectForKey:@"play"] objectForKey:@"rtmp"]];
+        [self startPLayVideoStream:pushUrl];
+        return;
+    }
     [EaseHttpManager.sharedInstance getLiveRoomPullStreamUrlWithRoomId:_room.chatroomId completion:^(NSString *pullStreamStr) {
         NSURL *pullStreamUrl = [NSURL URLWithString:pullStreamStr];
         [weakSelf startPLayVideoStream:pullStreamUrl];
@@ -320,11 +326,12 @@
 }
 
 //成员列表
-- (void)didSelectMemberListButton:(BOOL)isOwner
+- (void)didSelectMemberListButton:(BOOL)isOwner currentMemberList:(NSArray*)currentMemberList
 {
     [self.view endEditing:YES];
     EaseAdminView *adminView = [[EaseAdminView alloc] initWithChatroomId:_room.chatroomId
-                                                                 isOwner:isOwner];
+                                                                 isOwner:isOwner
+                                                                currentMemberList:currentMemberList];
     adminView.delegate = self;
     [adminView showFromParentView:self.view];
 }
@@ -440,7 +447,7 @@
         }
     }
 }
-
+/*
 - (void)userDidJoinChatroom:(EMChatroom *)aChatroom
                        user:(NSString *)aUsername
 {
@@ -465,7 +472,7 @@
             [hud hideAnimated:YES];
         }
     }
-}
+}*/
 
 - (void)didDismissFromChatroom:(EMChatroom *)aChatroom
                         reason:(EMChatroomBeKickedReason)aReason

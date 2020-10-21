@@ -24,7 +24,7 @@
                     completion:(void (^)(EaseLiveRoom *room, BOOL success))aCompletion;
 
 /*
-*  g获取直播聊天室详情
+*  获取直播聊天室详情
 *
 *  @param aRoom            直播聊天室
 *  @param aCompletion      完成的回调block
@@ -89,14 +89,28 @@
                             completion:(void (^)(EMCursorResult *result, BOOL success))aCompletion;
 
 /*
- *  获取正在直播聊天室列表
+ *  获取vod点播房间列表
  *
  *  @param aCursor          游标
  *  @param aLimit           预期获取的记录数
  *  @param aCompletion      完成的回调block
  */
+- (void)fetchVodRoomWithCursor:(NSString*)aCursor
+                         limit:(NSInteger)aLimit
+                    video_type:(NSString*)video_type
+                    completion:(void (^)(EMCursorResult *result, BOOL success))aCompletion;
+
+/*
+ *  获取正在直播聊天室列表
+ *
+ *  @param aCursor          游标
+ *  @param aLimit           预期获取的记录数
+ *  @video_type             直播间类型（vod：点播 live：直播）
+ *  @param aCompletion      完成的回调block
+ */
 - (void)fetchLiveRoomsOngoingWithCursor:(NSString*)aCursor
                                   limit:(NSInteger)aLimit
+                             video_type:(NSString*)video_type
                              completion:(void (^)(EMCursorResult *result, BOOL success))aCompletion;
 
 /*

@@ -194,6 +194,8 @@ extern BOOL isAllTheSilence;
 @property (nonatomic, strong) NSMutableArray *memberList;
 @property (nonatomic, strong) NSString *cursor;
 
+@property (nonatomic, strong) NSArray *currentMemberList;
+
 @property (nonatomic, strong) UIScrollView *mainScrollView;
 
 @end
@@ -203,12 +205,14 @@ extern BOOL isAllTheSilence;
 
 - (instancetype)initWithChatroomId:(NSString*)chatroomId
                            isOwner:(BOOL)isOwner
+                        currentMemberList:(NSArray*)currentMemberList
 {
     self = [super init];
     if (self) {
         _chatroomId = chatroomId;
         _isOwner = isOwner;
         _cursor = nil;
+        _currentMemberList = currentMemberList;
         [self addSubview:self.adminView];
         
         [self.adminView addSubview:self.adminListBtn];
@@ -761,7 +765,7 @@ extern NSArray<NSString*> *nickNameArray;
            }
            weakself.cursor = aResult.cursor;
            [weakself.memberList addObjectsFromArray:aResult.list];
-            [_adminListBtn setTitle:[NSString stringWithFormat:@"观众(%lu)",(unsigned long)[weakself.memberList count]] forState:UIControlStateNormal];
+            [_adminListBtn setTitle:[NSString stringWithFormat:@"成员(%lu)",(unsigned long)[weakself.memberList count]] forState:UIControlStateNormal];
            if ([aResult.list count] == 0 || [aResult.cursor length] == 0) {
                weakself.adminTableView.mj_footer = nil;
            } else {
