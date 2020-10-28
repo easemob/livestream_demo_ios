@@ -47,12 +47,17 @@ extern BOOL isAllTheSilence;
 {
     if (_mutingLabel == nil) {
         _mutingLabel = [[UILabel alloc]initWithFrame:CGRectMake(self.width - 200, (54 - 15)/2, 40.f, 15.f)];
-        _mutingLabel.text = @"禁言中";
-        _mutingLabel.textAlignment = NSTextAlignmentCenter;
-        _mutingLabel.textColor = [UIColor whiteColor];
-        _mutingLabel.font = [UIFont systemFontOfSize:10.f];
         _mutingLabel.layer.cornerRadius = 7.5;
         [_mutingLabel.layer addSublayer:self.mutingGl];
+        //[_mutingLabel.layer insertSublayer:self.mutingGl atIndex:-1];
+        UILabel *textLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 40.f, 15.f)];
+        textLabel.backgroundColor = [UIColor clearColor];
+        textLabel.layer.cornerRadius = 7.5;
+        textLabel.text = @"禁言中";
+        textLabel.textAlignment = NSTextAlignmentCenter;
+        textLabel.textColor = [UIColor whiteColor];
+        textLabel.font = [UIFont systemFontOfSize:10.f];
+        [_mutingLabel addSubview:textLabel];
     }
     return _mutingLabel;
 }
@@ -160,8 +165,7 @@ extern BOOL isAllTheSilence;
 
 @interface EaseAdminView () <UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate>
 {
-    NSString* _chatroomId;
-    EMChatroom *_chatroom;
+    EaseLiveRoom *_liveroom;
     
     MJRefreshFooter *_refreshMemberFooter;
     NSInteger _memberPageNum;
@@ -191,10 +195,10 @@ extern BOOL isAllTheSilence;
 @property (nonatomic, strong) NSMutableArray *muteList;
 @property (nonatomic, strong) NSMutableArray *whitelist;
 
-@property (nonatomic, strong) NSMutableArray *memberList;
+//@property (nonatomic, strong) NSMutableArray *memberList;
 @property (nonatomic, strong) NSString *cursor;
 
-@property (nonatomic, strong) NSArray *currentMemberList;
+@property (nonatomic, strong) NSMutableArray *currentMemberList;
 
 @property (nonatomic, strong) UIScrollView *mainScrollView;
 
@@ -203,13 +207,13 @@ extern BOOL isAllTheSilence;
 extern BOOL isAllTheSilence;
 @implementation EaseAdminView
 
-- (instancetype)initWithChatroomId:(NSString*)chatroomId
+- (instancetype)initWithChatroomId:(EaseLiveRoom*)liveroom
                            isOwner:(BOOL)isOwner
-                        currentMemberList:(NSArray*)currentMemberList
+                        currentMemberList:(NSMutableArray*)currentMemberList
 {
     self = [super init];
     if (self) {
-        _chatroomId = chatroomId;
+        _liveroom = liveroom;
         _isOwner = isOwner;
         _cursor = nil;
         _currentMemberList = currentMemberList;
@@ -221,6 +225,12 @@ extern BOOL isAllTheSilence;
             [self.adminView addSubview:self.muteListBtn];
             [self.adminView addSubview:self.selectLine];
             [self.adminView addSubview:self.line];
+            [_currentMemberList insertObject:EMClient.sharedClient.currentUsername atIndex:0];
+        }
+        if (_isOwner) {
+            [_adminListBtn setTitle:[NSString stringWithFormat:@"成员(%lu)",(unsigned long)[_currentMemberList count]] forState:UIControlStateNormal];
+        } else {
+            [_adminListBtn setTitle:[NSString stringWithFormat:@"观众(%lu)",(unsigned long)[_currentMemberList count]] forState:UIControlStateNormal];
         }
         [self.adminView addSubview:self.mainScrollView];
         [self.mainScrollView addSubview:self.adminTableView];
@@ -229,6 +239,7 @@ extern BOOL isAllTheSilence;
             [self.mainScrollView addSubview:self.whitelistTableView];
         }
     }
+    [self _tableViewDidFinishTriggerHeader:YES reload:YES tableView:_adminTableView];
     return self;
 }
 
@@ -346,9 +357,8 @@ extern BOOL isAllTheSilence;
         _adminTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _adminTableView.tableFooterView = [[UIView alloc] init];
         
+        /*
         [self _loadMemberList:YES];
-        
-        _chatroom = [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:_chatroomId error:nil];
         __weak EaseAdminView *weakSelf = self;
         _adminTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
             _chatroom = [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:_chatroomId error:nil];
@@ -362,7 +372,7 @@ extern BOOL isAllTheSilence;
             [weakSelf _tableViewDidFinishTriggerHeader:NO reload:YES tableView:_adminTableView];
         }];
         _adminTableView.mj_footer = nil;
-        _adminTableView.mj_footer.accessibilityIdentifier = @"refresh_admin_footer";
+        _adminTableView.mj_footer.accessibilityIdentifier = @"refresh_admin_footer";*/
     }
     return _adminTableView;
 }
@@ -424,14 +434,14 @@ extern BOOL isAllTheSilence;
     }
     return _whitelistTableView;
 }
-
+/*
 - (NSMutableArray*)memberList
 {
     if (_memberList == nil) {
         _memberList = [[NSMutableArray alloc] init];
     }
     return _memberList;
-}
+}*/
 
 - (NSMutableArray*)muteList
 {
@@ -454,8 +464,8 @@ extern BOOL isAllTheSilence;
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;
 {
     if (tableView == _adminTableView) {
-        if (_chatroom) {
-            return [_memberList count];
+        if (_liveroom) {
+            return [_currentMemberList count];
         }
         return 0;
     } else if (tableView == _muteTableView) {
@@ -469,18 +479,18 @@ extern NSMutableDictionary*anchorInfoDic;
 extern NSArray<NSString*> *nickNameArray;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSMutableDictionary *anchorInfo = [anchorInfoDic objectForKey:_chatroom.chatroomId];
+    NSMutableDictionary *anchorInfo = [anchorInfoDic objectForKey:_liveroom.roomId];
     EaseAdminCell *cell;
     int random = (arc4random() % 100);
     NSString *username = nickNameArray[random];
     if (tableView == _adminTableView) {
         static NSString *CellIdentifierMember = @"audience";
-        NSString *tempUsername = [_memberList objectAtIndex:indexPath.row];
+        NSString *tempUsername = [_currentMemberList objectAtIndex:indexPath.row];
         cell = (EaseAdminCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifierMember];
         if (cell == nil) {
             cell = [[EaseAdminCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierMember];
         }
-        if (indexPath.row == 0) {
+        if (indexPath.row == 0 && _isOwner) {
             [cell.clickButton setTitle:@"房间禁言" forState:UIControlStateNormal];
             cell.muteSwitch.hidden = NO;
             cell.anchorIdentity.hidden = NO;
@@ -488,7 +498,7 @@ extern NSArray<NSString*> *nickNameArray;
             cell.anchorIdentity.hidden = YES;
         }
         cell.textLabel.text = username;
-        if ([tempUsername isEqualToString:_chatroom.owner] && [tempUsername isEqualToString:EMClient.sharedClient.currentUsername]){
+        if ([tempUsername isEqualToString:_liveroom.anchor] && [tempUsername isEqualToString:EMClient.sharedClient.currentUsername]){
             cell.muteSwitch.hidden = NO;
             cell.clickButton.hidden = NO;
             cell.textLabel.text = [anchorInfo objectForKey:kBROADCASTING_CURRENT_ANCHOR_NICKNAME];
@@ -544,7 +554,7 @@ extern NSArray<NSString*> *nickNameArray;
     cell.clickButton.tag = indexPath.row;
    
     if (tableView == _adminTableView) {
-        if ([username isEqualToString:_chatroom.owner]) {
+        if ([username isEqualToString:_liveroom.anchor]) {
             cell.imageView.image = [UIImage imageNamed:[anchorInfo objectForKey:kBROADCASTING_CURRENT_ANCHOR_AVATAR]];
             if ([username isEqualToString:EMClient.sharedClient.currentUsername]) {
                 cell.imageView.image = [UIImage imageNamed:@"default_anchor_avatar"];
@@ -554,7 +564,7 @@ extern NSArray<NSString*> *nickNameArray;
                 cell.imageView.image = [UIImage imageNamed:@"default_anchor_avatar"];
             }
         }
-        cell.clickButton.frame = CGRectMake(self.width - 120, (54 - 30)/2, 60, 30);
+        cell.clickButton.frame = CGRectMake(self.width - 100, (54 - 30)/2, 60, 30);
         [cell.clickButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     } else {
         cell.clickButton.frame = CGRectMake(self.width - 66, (54 - 20)/2, 30, 20);
@@ -638,13 +648,13 @@ extern NSArray<NSString*> *nickNameArray;
 - (void)allTheSilence:(BOOL)isAllTheSilence
 {
     if (isAllTheSilence) {
-        [[EMClient sharedClient].roomManager muteAllMembersFromChatroom:_chatroomId completion:^(EMChatroom *aChatroom, EMError *aError) {
+        [[EMClient sharedClient].roomManager muteAllMembersFromChatroom:_liveroom.roomId completion:^(EMChatroom *aChatroom, EMError *aError) {
             if (!aError) {
                 
             }
         }];
     } else {
-        [[EMClient sharedClient].roomManager unmuteAllMembersFromChatroom:_chatroomId completion:^(EMChatroom *aChatroom, EMError *aError) {
+        [[EMClient sharedClient].roomManager unmuteAllMembersFromChatroom:_liveroom.roomId completion:^(EMChatroom *aChatroom, EMError *aError) {
             if (!aError) {
                 
             }
@@ -661,7 +671,7 @@ extern NSArray<NSString*> *nickNameArray;
     MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"%@..." ,NSLocalizedString(@"profile.mute.cancel", @"Cancel")] toView:self];
     __weak MBProgressHUD *weakHud = hud;
     [[EMClient sharedClient].roomManager unmuteMembers:@[username]
-                                          fromChatroom:_chatroomId
+                                          fromChatroom:_liveroom.roomId
                                             completion:^(EMChatroom *aChatroom, EMError *aError) {
                                                 if (!aError) {
                                                     [weakSelf.muteTableView beginUpdates];
@@ -686,7 +696,7 @@ extern NSArray<NSString*> *nickNameArray;
     MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"从白名单移除"] toView:self];
     __weak MBProgressHUD *weakHud = hud;
     [[EMClient sharedClient].roomManager removeWhiteListMembers:@[username]
-                                           fromChatroom:_chatroomId
+                                           fromChatroom:_liveroom.roomId
                                              completion:^(EMChatroom *aChatroom, EMError *aError) {
                                                  if (!aError) {
                                                      [weakSelf.whitelistTableView beginUpdates];
@@ -751,7 +761,7 @@ extern NSArray<NSString*> *nickNameArray;
         }
     });
 }
-
+/*
 //观众列表
 - (void)_loadMemberList:(BOOL)isHeader
 {
@@ -760,7 +770,8 @@ extern NSArray<NSString*> *nickNameArray;
         if (!aError) {
            if (isHeader) {
                [weakself.memberList removeAllObjects];
-               [weakself.memberList addObject:_chatroom.owner];
+               if (_isOwner)
+                   [weakself.memberList addObject:_chatroom.owner];
                [weakself.memberList addObjectsFromArray:_chatroom.adminList];
            }
            weakself.cursor = aResult.cursor;
@@ -774,13 +785,13 @@ extern NSArray<NSString*> *nickNameArray;
            [weakself _tableViewDidFinishTriggerHeader:isHeader reload:YES tableView:_adminTableView];
         }
     }];
-}
+}*/
 
 //禁言列表
 - (void)_loadMuteList:(BOOL)isHeader
 {
     __weak typeof(self) weakSelf = self;
-    [[EMClient sharedClient].roomManager getChatroomMuteListFromServerWithId:_chatroomId
+    [[EMClient sharedClient].roomManager getChatroomMuteListFromServerWithId:_liveroom.roomId
                                                                   pageNumber:_mutePageNum
                                                                     pageSize:kDefaultPageSize
                                                                   completion:^(NSArray *aList, EMError *aError) {
@@ -804,7 +815,7 @@ extern NSArray<NSString*> *nickNameArray;
 - (void)_loadWhitelist:(BOOL)isHeader
 {
     __weak typeof(self) weakSelf = self;
-    [[EMClient sharedClient].roomManager getChatroomWhiteListFromServerWithId:_chatroomId completion:^(NSArray *aList, EMError *aError) {
+    [[EMClient sharedClient].roomManager getChatroomWhiteListFromServerWithId:_liveroom.roomId completion:^(NSArray *aList, EMError *aError) {
         if (!aError) {
             if (isHeader) {
                 [weakSelf.whitelist removeAllObjects];

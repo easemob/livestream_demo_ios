@@ -30,6 +30,8 @@
 
 - (void)liveRoomOwnerDidUpdate:(EMChatroom *)aChatroom newOwner:(NSString *)aNewOwner;
 
+- (void)liveRoomDidDEstory;
+
 @end
 
 @interface EaseChatView : UIView

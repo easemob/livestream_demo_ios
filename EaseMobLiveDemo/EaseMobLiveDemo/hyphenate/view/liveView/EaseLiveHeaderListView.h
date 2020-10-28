@@ -14,7 +14,7 @@
 
 - (void)didClickAnchorCard:(EaseLiveRoom*)room;
 
-- (void)didSelectMemberListButton:(BOOL)isOwner currentMemberList:(NSArray*)currentMemberList;
+- (void)didSelectMemberListButton:(BOOL)isOwner currentMemberList:(NSMutableArray*)currentMemberList;
 
 @end
 

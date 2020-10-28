@@ -12,4 +12,6 @@
 
 - (instancetype)initWithLiveRoom:(EaseLiveRoom*)room;
 
+@property (nonatomic, copy) void (^finishBroadcastCompletion)(BOOL isFinish);
+
 @end

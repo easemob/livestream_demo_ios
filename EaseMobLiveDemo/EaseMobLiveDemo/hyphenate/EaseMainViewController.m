@@ -57,16 +57,19 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
     [self fetchLiveroomStatus];
 }
 
-//判断之前之前直播的直播间是否正直播
+//判断之前直播的直播间owner是否是自己
 - (void)fetchLiveroomStatus
 {
+    __weak typeof(self) weakSelf = self;
     [[EaseHttpManager sharedInstance] fetchLiveroomDetail:EaseDefaultDataHelper.shared.currentRoomId completion:^(EaseLiveRoom *room, BOOL success) {
         if (success) {
             if (room.status == ongoing && [room.anchor isEqualToString:EMClient.sharedClient.currentUsername]) {
-                EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:room];
-                publishView.modalPresentationStyle = 0;
-                [self presentViewController:publishView animated:YES completion:^{
-                    [self.navigationController popToRootViewControllerAnimated:NO];
+                [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOngoing:room completion:^(EaseLiveRoom *room, BOOL success) {
+                    EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:room];
+                    publishView.modalPresentationStyle = 0;
+                    [weakSelf presentViewController:publishView animated:YES completion:^{
+                        [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+                    }];
                 }];
             }
         }

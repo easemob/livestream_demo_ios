@@ -9,7 +9,7 @@
 
 @interface EaseChatCell : UITableViewCell
 
-- (void)setMesssage:(EMMessage*)message;
+- (void)setMesssage:(EMMessage*)message liveroom:(EaseLiveRoom*)liveroom;
 
 + (CGFloat)heightForMessage:(EMMessage *)message;
 

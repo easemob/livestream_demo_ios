@@ -369,12 +369,6 @@ BOOL isAllTheSilence;//全体禁言
 //有用户加入聊天室
 - (void)userDidJoinChatroom:(EMChatroom *)aChatroom user:(NSString *)aUsername
 {
-    if ([_room.anchor isEqualToString:aUsername]) {
-        //当前主播退出房间重进
-        if (self.delegate && [self.delegate respondsToSelector:@selector(liveRoomOwnerDidUpdate:newOwner:)]) {
-            [self.delegate liveRoomOwnerDidUpdate:aChatroom newOwner:aUsername];
-        }
-    }
     EMTextMessageBody *body = [[EMTextMessageBody alloc] initWithText:@"进入了直播间"];
     NSMutableDictionary *ext = [[NSMutableDictionary alloc]init];
     [ext setObject:@"em_join" forKey:@"em_join"];
@@ -425,7 +419,7 @@ BOOL isAllTheSilence;//全体禁言
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath;
 {
-    EMMessage *message = [self.datasource objectAtIndex:indexPath.row];
+    EMMessage *message = [self.datasource objectAtIndex:indexPath.section];
     return [EaseChatCell heightForMessage:message];
 }
 
@@ -448,8 +442,10 @@ BOOL isAllTheSilence;//全体禁言
     if (cell == nil) {
         cell = [[EaseChatCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
+    if (!self.datasource || [self.datasource count] < 1)
+        return nil;
     EMMessage *message = [self.datasource objectAtIndex:indexPath.section];
-    [cell setMesssage:message];
+    [cell setMesssage:message liveroom:_room];
     return cell;
 }
 

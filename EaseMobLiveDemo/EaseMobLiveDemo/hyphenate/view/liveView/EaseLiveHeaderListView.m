@@ -179,7 +179,7 @@
         if (_room && [_room.anchor isEqualToString:[EMClient sharedClient].currentUsername]) {
             isOwner = YES;
         }
-        [self.delegate didSelectMemberListButton:isOwner currentMemberList:_room.currentMemberList];
+        [self.delegate didSelectMemberListButton:isOwner currentMemberList:[_room.currentMemberList mutableCopy]];
         _numberBtn.selected = !_numberBtn.selected;
     }
 }

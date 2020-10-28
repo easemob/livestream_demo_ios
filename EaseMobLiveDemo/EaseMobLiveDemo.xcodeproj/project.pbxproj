@@ -16,6 +16,7 @@
 		3C1238AA2408C97300C4135B /* Zapfino.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3C1238A92408C97300C4135B /* Zapfino.ttf */; };
 		3C27576423F293A4004DF2C3 /* EaseSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C27576323F293A4004DF2C3 /* EaseSettingsViewController.m */; };
 		3C2B1ECC244FE97F000E97B2 /* PLPermissionRequestor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C2B1ECA244FE97F000E97B2 /* PLPermissionRequestor.m */; };
+		3C30742C2546C900003696CA /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C30742B2546C900003696CA /* CoreTelephony.framework */; };
 		3C44F438240BE51600445129 /* JPGiftModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C44F42B240BE51600445129 /* JPGiftModel.m */; };
 		3C44F439240BE51600445129 /* JPGiftCountLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C44F42C240BE51600445129 /* JPGiftCountLabel.m */; };
 		3C44F43C240BE51600445129 /* JPGiftShowManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C44F430240BE51600445129 /* JPGiftShowManager.m */; };
@@ -245,6 +246,7 @@
 		3C27576323F293A4004DF2C3 /* EaseSettingsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseSettingsViewController.m; sourceTree = "<group>"; };
 		3C2B1ECA244FE97F000E97B2 /* PLPermissionRequestor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLPermissionRequestor.m; sourceTree = "<group>"; };
 		3C2B1ECB244FE97F000E97B2 /* PLPermissionRequestor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLPermissionRequestor.h; sourceTree = "<group>"; };
+		3C30742B2546C900003696CA /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		3C44F427240BE51600445129 /* JPGiftShowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPGiftShowView.h; sourceTree = "<group>"; };
 		3C44F428240BE51600445129 /* JPGiftShowManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPGiftShowManager.h; sourceTree = "<group>"; };
 		3C44F429240BE51600445129 /* JPGiftCellModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPGiftCellModel.h; sourceTree = "<group>"; };
@@ -516,6 +518,7 @@
 			files = (
 				D2FD8DC81E5C6A3B0097B20D /* libstdc++.tbd in Frameworks */,
 				D23E25321CE0380A007506CB /* MobileCoreServices.framework in Frameworks */,
+				3C30742C2546C900003696CA /* CoreTelephony.framework in Frameworks */,
 				D23E252C1CE03775007506CB /* libsqlite3.tbd in Frameworks */,
 				E9271D451C3CC752000DBADF /* QuartzCore.framework in Frameworks */,
 				E9271D431C3CC749000DBADF /* OpenGLES.framework in Frameworks */,
@@ -983,6 +986,7 @@
 		E93E8F451CC9D16B0076EC23 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3C30742B2546C900003696CA /* CoreTelephony.framework */,
 				D2FD8DC71E5C6A3B0097B20D /* libstdc++.tbd */,
 				D293607E1D192EB8003F14C6 /* libiconv.tbd */,
 				3C72AD69240F9559007BC99F /* CoreServices.framework */,
@@ -1495,7 +1499,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2.0;
+				CURRENT_PROJECT_VERSION = 7.0;
 				DEVELOPMENT_TEAM = 499WYUV8Q2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1538,7 +1542,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2.0;
+				CURRENT_PROJECT_VERSION = 7.0;
 				DEVELOPMENT_TEAM = 499WYUV8Q2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (

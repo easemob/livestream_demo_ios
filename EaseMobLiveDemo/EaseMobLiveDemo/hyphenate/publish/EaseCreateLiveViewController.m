@@ -22,6 +22,7 @@
 {
     NSString *_coverpictureurl;
     EaseLiveRoom *_liveRoom;
+    NSData *_fileData;
 }
 
 @property (nonatomic, strong) UIButton *backBtn;
@@ -323,15 +324,17 @@
     if (editImage) {
         _coverView.hidden = YES;
         _coverImageView.image = editImage;
-        NSData *fileData = UIImageJPEGRepresentation(editImage, 1.0);
+        _fileData = UIImageJPEGRepresentation(editImage, 1.0);
+        /*
         [[EaseHttpManager sharedInstance] uploadFileWithData:fileData
                                                   completion:^(NSString *url, BOOL success) {
                                                       if (success) {
+                                                          [self showHint:@"设置封面图完成"];
                                                           _coverpictureurl = url;
                                                       } else {
-                                                          [self showHint:@"选择封面图失败"];
+                                                          [self showHint:@"设置封面图失败"];
                                                       }
-                                                  }];
+                                                  }];*/
     } else {
         
     }
@@ -388,38 +391,49 @@
         [self showHint:@"填入房间名"];
         return;
     }
-    
-    if (_coverpictureurl.length == 0){
-        [self showHint:@"选择封面图"];
-        return;
-    }
-    _liveRoom = [[EaseLiveRoom alloc] init];
-    _liveRoom.title = _liveNameTextField.text;
-    if (_liveDescTextField.text.length != 0) {
-        _liveRoom.desc = _liveDescTextField.text;
-    }
-    _liveRoom.coverPictureUrl = _coverpictureurl;
-    _liveRoom.anchor = [EMClient sharedClient].currentUsername;
     __weak typeof(self) weakSelf = self;
-    MBProgressHUD *hud = [MBProgressHUD showMessag:@"开始直播..." toView:self.view];
-    __weak MBProgressHUD *weakHud = hud;
-    [[EaseHttpManager sharedInstance] createLiveRoomWithRoom:_liveRoom completion:^(EaseLiveRoom *room, BOOL success) {
-        [weakHud hideAnimated:YES];
+    MBProgressHUD *picHud = [MBProgressHUD showMessag:@"上传直播间封面..." toView:self.view];
+    __weak MBProgressHUD *weaPicHud = picHud;
+    [[EaseHttpManager sharedInstance] uploadFileWithData:_fileData completion:^(NSString *url, BOOL success) {
+        [weaPicHud hideAnimated:YES];
         if (success) {
-            _liveRoom = room;
-            [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOngoing:_liveRoom completion:^(EaseLiveRoom *room, BOOL success) {
-                EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:_liveRoom];
-                publishView.modalPresentationStyle = 0;
-                [weakSelf presentViewController:publishView
-                                       animated:YES
-                                     completion:^{
-                    [weakSelf.navigationController popToRootViewControllerAnimated:NO];}];
+            _coverpictureurl = url;
+            _liveRoom = [[EaseLiveRoom alloc] init];
+            _liveRoom.title = _liveNameTextField.text;
+            if (_liveDescTextField.text.length != 0) {
+                _liveRoom.desc = _liveDescTextField.text;
+            }
+            _liveRoom.coverPictureUrl = _coverpictureurl;
+            _liveRoom.anchor = [EMClient sharedClient].currentUsername;
+            MBProgressHUD *hud = [MBProgressHUD showMessag:@"开始直播..." toView:self.view];
+            __weak MBProgressHUD *weakHud = hud;
+            [[EaseHttpManager sharedInstance] createLiveRoomWithRoom:_liveRoom completion:^(EaseLiveRoom *room, BOOL success) {
+                [weakHud hideAnimated:YES];
+                if (success) {
+                    _liveRoom = room;
+                    [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOngoing:_liveRoom completion:^(EaseLiveRoom *room, BOOL success) {
+                        EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:_liveRoom];
+                        publishView.modalPresentationStyle = 0;
+                        [weakSelf presentViewController:publishView
+                                               animated:YES
+                                             completion:^{
+                            [publishView setFinishBroadcastCompletion:^(BOOL isFinish) {
+                                if (isFinish)
+                                    [weakSelf dismissViewControllerAnimated:NO completion:nil];
+                            }];
+                        }];
+                    }];
+                } else {
+                    [weakSelf showHint:@"开始直播失败"];
+                }
             }];
+            [EaseHttpManager sharedInstance];
         } else {
-            [weakSelf showHint:@"开始直播失败"];
+            [weaPicHud hideAnimated:YES];
+            [self showHint:@"设置封面图失败"];
+            return;
         }
     }];
-    [EaseHttpManager sharedInstance];
 }
 
 - (void)backAction

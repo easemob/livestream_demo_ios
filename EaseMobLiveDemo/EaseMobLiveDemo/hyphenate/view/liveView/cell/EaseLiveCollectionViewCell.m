@@ -48,8 +48,20 @@
         [self.liveImageView addSubview:self.studioOccupancy];//正在直播
         [self.liveImageView addSubview:self.broadcastView];//开播
         [self.liveFooter addSubview:self.textLable];
-        [self.liveFooter addSubview:self.numLabel];
         [self.liveFooter addSubview:self.descLabel];
+        [_descLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.right.equalTo(self.liveFooter).offset(-5);
+            make.height.equalTo(@12);
+            make.width.equalTo(@35);
+            make.top.equalTo(self.liveFooter).offset(2);
+        }];
+        [self.liveFooter addSubview:self.numLabel];
+        [_numLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.right.equalTo(self.descLabel.mas_left);
+            make.top.equalTo(self.liveFooter).offset(2);
+            make.left.equalTo(self.textLable.mas_right);
+            make.height.equalTo(@12);
+        }];
     }
     return self;
 }
@@ -65,7 +77,6 @@
         _textLable.layer.masksToBounds = YES;
         _textLable.shadowColor = [UIColor blackColor];
         _textLable.shadowOffset = CGSizeMake(1, 1);
-        
     }
     return _textLable;
 }
@@ -74,13 +85,13 @@
 {
     if (_numLabel == nil) {
         _numLabel = [[UILabel alloc] init];
-        _numLabel.frame = CGRectMake(CGRectGetWidth(self.frame) - 55.f, 2.f, 15.f, 12.f);
         _numLabel.font = [UIFont systemFontOfSize:14.f];
         _numLabel.textColor = [UIColor whiteColor];
         _numLabel.textAlignment = NSTextAlignmentLeft;
         _numLabel.backgroundColor = [UIColor clearColor];
         _numLabel.shadowColor = [UIColor blackColor];
         _numLabel.shadowOffset = CGSizeMake(1, 1);
+        _numLabel.textAlignment = NSTextAlignmentRight;
     }
     return _numLabel;
 }
@@ -89,7 +100,6 @@
 {
     if (_descLabel == nil) {
         _descLabel = [[UILabel alloc] init];
-        _descLabel.frame = CGRectMake(CGRectGetWidth(self.frame) - 40.f, 2.f, 35.f, 12.f);
         _descLabel.font = [UIFont systemFontOfSize:10.f];
         _descLabel.textColor = [UIColor whiteColor];
         _descLabel.textAlignment = NSTextAlignmentRight;
