@@ -475,14 +475,13 @@ extern BOOL isAllTheSilence;
     }
 }
 
+extern NSMutableDictionary *audienceNickname;
 extern NSMutableDictionary*anchorInfoDic;
 extern NSArray<NSString*> *nickNameArray;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSMutableDictionary *anchorInfo = [anchorInfoDic objectForKey:_liveroom.roomId];
     EaseAdminCell *cell;
-    int random = (arc4random() % 100);
-    NSString *username = nickNameArray[random];
     if (tableView == _adminTableView) {
         static NSString *CellIdentifierMember = @"audience";
         NSString *tempUsername = [_currentMemberList objectAtIndex:indexPath.row];
@@ -497,7 +496,7 @@ extern NSArray<NSString*> *nickNameArray;
         } else {
             cell.anchorIdentity.hidden = YES;
         }
-        cell.textLabel.text = username;
+        cell.textLabel.text = [self getNicknameWithId:tempUsername];
         if ([tempUsername isEqualToString:_liveroom.anchor] && [tempUsername isEqualToString:EMClient.sharedClient.currentUsername]){
             cell.muteSwitch.hidden = NO;
             cell.clickButton.hidden = NO;
@@ -522,8 +521,7 @@ extern NSArray<NSString*> *nickNameArray;
         if (cell == nil) {
             cell = [[EaseAdminCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         }
-        //username = [_muteList objectAtIndex:indexPath.row];
-        cell.textLabel.text = username;
+        cell.textLabel.text = [self getNicknameWithId:[_muteList objectAtIndex:indexPath.row]];
         [cell.clickButton setTitle:@"解禁" forState:UIControlStateNormal];
         [cell.clickButton addTarget:self action:@selector(removeMuteAction:) forControlEvents:UIControlEventTouchUpInside];
         cell.anchorIdentity.hidden = YES;
@@ -540,7 +538,7 @@ extern NSArray<NSString*> *nickNameArray;
         if ([realUsername isEqualToString:EMClient.sharedClient.currentUsername]) {
             cell.textLabel.text = EaseDefaultDataHelper.shared.defaultNickname;
         } else {
-            cell.textLabel.text = username;
+            cell.textLabel.text = [self getNicknameWithId:realUsername];
         }
         [cell.clickButton setTitle:@"删除" forState:UIControlStateNormal];
         [cell.clickButton addTarget:self action:@selector(removeWhitelistAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -549,11 +547,12 @@ extern NSArray<NSString*> *nickNameArray;
         cell.mutingLabel.hidden = YES;
     }
     
-    random = (arc4random() % 7) + 1;
+    int random = (arc4random() % 7) + 1;
     cell.imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"avatat_%d",random]];
     cell.clickButton.tag = indexPath.row;
    
     if (tableView == _adminTableView) {
+        NSString *username = [_currentMemberList objectAtIndex:indexPath.row];
         if ([username isEqualToString:_liveroom.anchor]) {
             cell.imageView.image = [UIImage imageNamed:[anchorInfo objectForKey:kBROADCASTING_CURRENT_ANCHOR_AVATAR]];
             if ([username isEqualToString:EMClient.sharedClient.currentUsername]) {
@@ -583,6 +582,18 @@ extern NSArray<NSString*> *nickNameArray;
     
     cell.textLabel.textColor= [UIColor whiteColor];
     return cell;
+}
+
+//获取环信id对应的nickname
+- (NSString *)getNicknameWithId:(NSString *)huaxinId {
+    int random = (arc4random() % 100);
+    NSString *randomNickname = nickNameArray[random];
+    if (![audienceNickname objectForKey:huaxinId]) {
+        [audienceNickname setObject:randomNickname forKey:huaxinId];
+    } else {
+        randomNickname = [audienceNickname objectForKey:huaxinId];
+    }
+    return randomNickname;
 }
 
 #pragma mark - UITableViewDelegate

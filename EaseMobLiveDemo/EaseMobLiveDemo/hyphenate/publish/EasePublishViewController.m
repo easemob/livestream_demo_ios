@@ -336,6 +336,8 @@
     __weak EaseFinishLiveView *weakFinishView = finishView;
     [finishView setDoneCompletion:^(BOOL isFinish) {
         if (isFinish) {
+            _isFinishBroadcast = YES;
+            _session.delegate = nil;
             [_session stopStreaming];//结束推流
             [_session destroy];
             [self didClickFinishButton];
