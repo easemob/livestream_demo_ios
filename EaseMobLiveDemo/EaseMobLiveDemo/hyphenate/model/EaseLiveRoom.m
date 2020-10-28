@@ -46,8 +46,25 @@
         _status = [[parameter safeStringValueForKey:@"status"] isEqualToString:@"offline"] ? offline : ongoing;
         _anchor = [parameter safeStringValueForKey:@"owner"];
         _currentUserCount = [parameter safeIntegerValueForKey:@"affiliations_count"];
+        _currentMemberList = [self memberList:[parameter safeObjectForKey:@"affiliations"]];
+        _liveroomExt = [parameter safeObjectForKey:@"ext"];
+        _liveroomType = [parameter safeStringValueForKey:@"video_type"];
     }
     return self;
+}
+
+- (NSArray*)memberList:(id)memberList
+{
+    if (memberList == nil)
+        return nil;
+    NSMutableArray *array = [[NSMutableArray alloc]init];
+    for (NSDictionary *str in memberList) {
+        if (str && [str isKindOfClass:[NSDictionary class]]) {
+            NSString * member = [str objectForKey:@"member"];
+            [array addObject:member];
+        }
+    }
+    return [array copy];
 }
 
 - (NSDictionary*)parameters

@@ -30,6 +30,9 @@
 #import <PLMediaStreamingKit/PLMediaStreamingKit.h>
 #import "PLPermissionRequestor.h"
 
+#import <CoreTelephony/CTCallCenter.h>
+#import <CoreTelephony/CTCall.h>
+
 #define kDefaultTop 35.f
 #define kDefaultLeft 10.f
 
@@ -43,6 +46,8 @@
     BOOL _isPublish;
     
     BOOL _isAllMute;
+    
+    BOOL _isFinishBroadcast;
     
     EaseLiveRoom *_room;
     
@@ -74,6 +79,8 @@
 //七牛媒体流
 @property (nonatomic, strong) PLMediaStreamingSession *session;
 
+@property (nonatomic, strong) CTCallCenter *callCenter;
+
 @end
 
 @implementation EasePublishViewController
@@ -87,6 +94,7 @@
         _praiseNum = [EaseDefaultDataHelper.shared.praiseStatisticstCount intValue];
         _giftsNum = [EaseDefaultDataHelper.shared.giftNumbers intValue];
         _totalGifts = [EaseDefaultDataHelper.shared.totalGifts intValue];
+        _isFinishBroadcast = NO;
         EaseDefaultDataHelper.shared.currentRoomId = _room.roomId;
         [EaseDefaultDataHelper.shared archive];
     }
@@ -96,7 +104,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     //[self.view insertSubview:self.backImageView atIndex:0];
-    
     [[EMClient sharedClient].roomManager addDelegate:self delegateQueue:nil];
     [[EMClient sharedClient] addDelegate:self delegateQueue:nil];
     
@@ -104,8 +111,8 @@
     
     [self setupForDismissKeyboard];
     
-    [self.view addSubview:self.chatview];
     [self.view addSubview:self.headerListView];
+    [self.view addSubview:self.chatview];
     [self.chatview joinChatroomWithIsCount:NO
                                 completion:^(BOOL success) {
                                     if (success) {
@@ -118,17 +125,71 @@
     
     [self _prepareForCameraSetting];
     [self actionPushStream];
-    
+    [self monitorCall];
 }
 
 - (void)dealloc
 {
     [[EMClient sharedClient].roomManager removeDelegate:self];
     [[EMClient sharedClient] removeDelegate:self];
-    
+    [_headerListView stopTimer];
     _chatview.delegate = nil;
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    [self.chatview endEditing:YES];
+}
+
+//检测来电
+- (void)monitorCall
+{
+    __weak typeof(self) weakSelf = self;
+    self.callCenter.callEventHandler = ^(CTCall* call) {
+        if (call.callState == CTCallStateDisconnected) {
+            NSLog(@"电话结束或挂断电话");
+            [weakSelf connectionStateDidChange:EMConnectionConnected];
+        } else if (call.callState == CTCallStateConnected){
+            NSLog(@"电话接通");
+        } else if(call.callState == CTCallStateIncoming) {
+            NSLog(@"来电话");
+            [weakSelf.session stopStreaming];
+        } else if (call.callState ==CTCallStateDialing) {
+            NSLog(@"拨号打电话(在应用内调用打电话功能)");
+        }
+    };
+}
+
+#pragma mark - EMClientDelegate
+
+- (void)connectionStateDidChange:(EMConnectionState)aConnectionState
+{
+    __weak typeof(self) weakSelf = self;
+    //断网重连后，修改直播间状态为ongoing并重新推流&加入聊天室
+    if (aConnectionState == EMConnectionConnected) {
+        [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOngoing:_room completion:^(EaseLiveRoom *room, BOOL success) {
+            if (success)
+                _room = room;
+            [weakSelf.chatview joinChatroomWithIsCount:NO
+                                        completion:^(BOOL success) {
+                                            if (success) {
+                                                [weakSelf.headerListView loadHeaderListWithChatroomId:_room.chatroomId];
+                                            }
+                                        }];
+            [weakSelf.session restartStreamingWithPushURL:_streamURL feedback:^(PLStreamStartStateFeedback feedback) {}];
+        }];
+    }
+}
+
+#pragma mark - PLMediaStreamingSessionDelegate
+
+- (void)mediaStreamingSession:(PLMediaStreamingSession *)session streamStateDidChange:(PLStreamState)state
+{
+    if ((state == PLStreamStateDisconnected || state == PLStreamStateDisconnecting || state == PLStreamStateAutoReconnecting) && _isFinishBroadcast == NO) {
+        [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOngoing:_room completion:^(EaseLiveRoom *room, BOOL success) {}];
+    }
 }
 
 #pragma mark - mediastream
@@ -166,7 +227,6 @@
 }
 
 - (void)actionPushStream {
-    __weak typeof(self) weakSelf = self;
     [EaseHttpManager.sharedInstance getLiveRoomPushStreamUrlWithRoomId:_room.chatroomId completion:^(NSString *pushUrl) {
         if (!pushUrl) {
             return;
@@ -176,12 +236,6 @@
            NSString *log = [NSString stringWithFormat:@"session start state %lu",(unsigned long)feedback];
            dispatch_async(dispatch_get_main_queue(), ^{
                NSLog(@"%@", log);
-               if (PLStreamStartStateSuccess == feedback) {
-                   return;
-               } else {
-                   [[[UIAlertView alloc] initWithTitle:@"错误" message:@"推流失败了，将重新请求有效的URL" delegate:nil cancelButtonTitle:@"知道啦" otherButtonTitles:nil] show];
-                   [weakSelf actionPushStream];
-               }
            });
         }];
     }];
@@ -258,6 +312,13 @@
     return _chatview;
 }
 
+- (CTCallCenter *)callCenter {
+    if (!_callCenter) {
+        _callCenter = [[CTCallCenter alloc] init];
+    }
+    return _callCenter;
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
@@ -275,6 +336,8 @@
     __weak EaseFinishLiveView *weakFinishView = finishView;
     [finishView setDoneCompletion:^(BOOL isFinish) {
         if (isFinish) {
+            _isFinishBroadcast = YES;
+            _session.delegate = nil;
             [_session stopStreaming];//结束推流
             [_session destroy];
             [self didClickFinishButton];
@@ -333,14 +396,18 @@
                                              
                                              [UIApplication sharedApplication].idleTimerDisabled = NO;
                                              [weakSelf dismissViewControllerAnimated:YES completion:^{
-                                                 
+                                                 if (_finishBroadcastCompletion) {
+                                                     _finishBroadcastCompletion(YES);
+                                                 }
                                              }];
                                          }];
     };
     [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOffline:_room completion:^(EaseLiveRoom *room, BOOL success) {
         if (success) {
             _room = room;
-            
+            [weakSelf.session stopStreaming];
+            [weakSelf.session destroy];
+            _isFinishBroadcast = YES;
             //重置本地保存的直播间id
             EaseDefaultDataHelper.shared.currentRoomId = @"";
             [EaseDefaultDataHelper.shared archive];
@@ -452,11 +519,12 @@
 }
 
 //成员列表
-- (void)didSelectMemberListButton:(BOOL)isOwner
+- (void)didSelectMemberListButton:(BOOL)isOwner currentMemberList:(NSMutableArray*)currentMemberList
 {
     [self.view endEditing:YES];
-    EaseAdminView *adminView = [[EaseAdminView alloc] initWithChatroomId:_room.chatroomId
-                                                                 isOwner:isOwner];
+    EaseAdminView *adminView = [[EaseAdminView alloc] initWithChatroomId:_room
+                                                                 isOwner:isOwner
+                                                                currentMemberList:currentMemberList];
     adminView.delegate = self;
     [adminView showFromParentView:self.view];
 }
@@ -485,26 +553,6 @@ extern bool isAllTheSilence;
             [self showHint:@"全员禁言开启！"];
         } else {
             [self showHint:@"解除全员禁言！"];
-        }
-    }
-}
-
-- (void)userDidJoinChatroom:(EMChatroom *)aChatroom
-                       user:(NSString *)aUsername
-{
-    if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
-        if (![aChatroom.owner isEqualToString:aUsername]) {
-            [_headerListView joinChatroomWithUsername:aUsername];
-        }
-    }
-}
-
-- (void)userDidLeaveChatroom:(EMChatroom *)aChatroom
-                        user:(NSString *)aUsername
-{
-    if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
-        if (![aChatroom.owner isEqualToString:aUsername]) {
-            [_headerListView leaveChatroomWithUsername:aUsername];
         }
     }
 }
@@ -571,12 +619,14 @@ extern bool isAllTheSilence;
     }
 }
 
-- (void)didDismissFromChatroom:(EMChatroom *)aChatroom
-                        reason:(EMChatroomBeKickedReason)aReason
+- (void)didDismissFromChatroom:(EMChatroom *)aChatroom reason:(EMChatroomBeKickedReason)aReason
 {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"被踢出直播聊天室" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-    [alert show];
-    //[self _shutDownLive];
+    if (aReason == 0)
+        [MBProgressHUD showMessag:[NSString stringWithFormat:@"被移出直播聊天室 %@", aChatroom.subject] toView:nil];
+    if (aReason == 1)
+        [MBProgressHUD showMessag:[NSString stringWithFormat:@"直播聊天室 %@ 已解散", aChatroom.subject] toView:nil];
+    if (aReason == 2)
+        [MBProgressHUD showMessag:@"您的账号已离线" toView:nil];
     [self didClickFinishButton];
 }
 

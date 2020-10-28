@@ -11,8 +11,6 @@
 
 @interface EaseCreateLiveViewController : UIViewController
 
-- (instancetype)initWithRelevance:(BOOL)isRelevance;
-
 - (instancetype)initWithLiveroom:(EaseLiveRoom *)liveroom;
 
 @end

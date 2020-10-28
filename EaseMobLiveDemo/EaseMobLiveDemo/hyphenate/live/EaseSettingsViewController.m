@@ -97,6 +97,7 @@
         _versionView.backgroundColor = [UIColor whiteColor];
         UILabel *version = [[UILabel alloc]initWithFrame:CGRectMake(16, 20, 50, 20)];
         version.text = @"版本";
+        version.textColor = [UIColor blackColor];
         [_versionView addSubview:version];
         UILabel *versionNum = [[UILabel alloc]initWithFrame:CGRectMake(self.view.width - 56, 20, 40, 20)];
         versionNum.textAlignment = NSTextAlignmentRight;
@@ -113,6 +114,7 @@
         _regardBtn.backgroundColor = [UIColor whiteColor];
         UILabel *regard = [[UILabel alloc]initWithFrame:CGRectMake(16, 20, 80, 20)];
         regard.text = @"关于环信";
+        regard.textColor = [UIColor blackColor];
         [_regardBtn addSubview:regard];
         UIImageView *arrow = [[UIImageView alloc]initWithFrame:CGRectMake(self.view.width - 36, 20, 20, 20)];
         arrow.image = [UIImage imageNamed:@"icon-enter"];

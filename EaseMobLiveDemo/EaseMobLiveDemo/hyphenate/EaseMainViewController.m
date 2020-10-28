@@ -57,16 +57,19 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
     [self fetchLiveroomStatus];
 }
 
-//判断之前之前直播的直播间是否正直播
+//判断之前直播的直播间owner是否是自己
 - (void)fetchLiveroomStatus
 {
+    __weak typeof(self) weakSelf = self;
     [[EaseHttpManager sharedInstance] fetchLiveroomDetail:EaseDefaultDataHelper.shared.currentRoomId completion:^(EaseLiveRoom *room, BOOL success) {
         if (success) {
             if (room.status == ongoing && [room.anchor isEqualToString:EMClient.sharedClient.currentUsername]) {
-                EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:room];
-                publishView.modalPresentationStyle = 0;
-                [self presentViewController:publishView animated:YES completion:^{
-                    [self.navigationController popToRootViewControllerAnimated:NO];
+                [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOngoing:room completion:^(EaseLiveRoom *room, BOOL success) {
+                    EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:room];
+                    publishView.modalPresentationStyle = 0;
+                    [weakSelf presentViewController:publishView animated:YES completion:^{
+                        [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+                    }];
                 }];
             }
         }
@@ -152,7 +155,7 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
         _broadCastBtn.layer.cornerRadius = 35;
         _broadCastBtn.backgroundColor = [UIColor whiteColor];
         [_broadCastBtn addTarget:self action:@selector(broadCastFeedBack:) forControlEvents:UIControlEventTouchDown];
-        [_broadCastBtn addTarget:self action:@selector(anchorHall:) forControlEvents:UIControlEventTouchUpInside];
+        [_broadCastBtn addTarget:self action:@selector(createBroadcastRoom) forControlEvents:UIControlEventTouchUpInside];
     }
     return _broadCastBtn;
 }
@@ -162,6 +165,14 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
     [UIView animateWithDuration:0.25 animations:^{
         sender.transform = CGAffineTransformMakeScale(broadCastBtnScale, broadCastBtnScale);
     }];
+}
+
+- (void)createBroadcastRoom
+{
+    EaseCreateLiveViewController *createLiveView = [[EaseCreateLiveViewController alloc] init];
+    createLiveView.modalPresentationStyle = 0;
+    [self presentViewController:createLiveView animated:YES completion:nil];
+    //[self.navigationController pushViewController:createLiveView animated:NO];
 }
 
 //主播大厅

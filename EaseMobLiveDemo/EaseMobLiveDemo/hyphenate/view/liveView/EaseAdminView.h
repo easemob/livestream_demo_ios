@@ -18,8 +18,9 @@
 
 @interface EaseAdminView : EaseBaseSubView
 
-- (instancetype)initWithChatroomId:(NSString*)chatroomId
-                           isOwner:(BOOL)isOwner;
+- (instancetype)initWithChatroomId:(EaseLiveRoom*)liveroom
+                           isOwner:(BOOL)isOwner
+                        currentMemberList:(NSMutableArray*)currentMemberList;
 
 @property (nonatomic, weak) id<EaseMuteDelegate> muteDelegate;
 

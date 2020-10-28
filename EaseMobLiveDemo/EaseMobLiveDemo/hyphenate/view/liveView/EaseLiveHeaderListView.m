@@ -47,20 +47,18 @@
 @interface EaseLiveHeaderListView () <UICollectionViewDelegate,UICollectionViewDataSource>
 {
     EasePublishModel *_model;
-    EaseLiveRoom *_room;
+    NSTimer *_timer;
 }
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) NSMutableArray *dataArray;
 @property (nonatomic, assign) NSInteger occupantsCount;
 @property (nonatomic, strong) UIButton *numberBtn;
+@property (nonatomic, strong) EaseLiveRoom *room;
 
 @end
 
 @implementation EaseLiveHeaderListView
-{
-    EMChatroom *_chatroom;
-}
 
 - (instancetype)initWithFrame:(CGRect)frame model:(EasePublishModel*)model
 {
@@ -69,6 +67,7 @@
         _model = model;
         [self addSubview:self.collectionView];
         [self addSubview:self.liveCastView];
+        [self startTimer];
     }
     return self;
 }
@@ -81,8 +80,27 @@
         [self addSubview:self.collectionView];
         [self addSubview:self.liveCastView];
         [self addSubview:self.numberBtn];
+        [self startTimer];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [self stopTimer];
+}
+
+- (void)startTimer {
+    [self stopTimer];
+    _timer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(loadHeaderListWithChatroomId:) userInfo:nil repeats:YES];
+    [_timer fire];
+}
+
+- (void)stopTimer {
+    if (_timer) {
+        [_timer invalidate];
+        _timer = nil;
+    }
 }
 
 #pragma mark - getter
@@ -156,45 +174,37 @@
 
 - (void)memberListAction
 {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectMemberListButton:)]) {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectMemberListButton:currentMemberList:)]) {
         BOOL isOwner = NO;
-        if (_chatroom && _chatroom.permissionType == EMChatroomPermissionTypeOwner) {
+        if (_room && [_room.anchor isEqualToString:[EMClient sharedClient].currentUsername]) {
             isOwner = YES;
         }
-        [self.delegate didSelectMemberListButton:isOwner];
+        [self.delegate didSelectMemberListButton:isOwner currentMemberList:[_room.currentMemberList mutableCopy]];
         _numberBtn.selected = !_numberBtn.selected;
     }
 }
 
 #pragma mark - public
+
 - (void)loadHeaderListWithChatroomId:(NSString*)chatroomId
 {
     __weak typeof(self) weakself = self;
-    [[EMClient sharedClient].roomManager getChatroomSpecificationFromServerWithId:chatroomId
-                                                                       completion:^(EMChatroom *aChatroom, EMError *aError) {
-                                                                           if (!aError) {
-                                                                               _chatroom = aChatroom;
-                                                                           }
-                                                                       }];
-    
-    [[EMClient sharedClient].roomManager getChatroomMemberListFromServerWithId:chatroomId
-                                                                        cursor:nil
-                                                                      pageSize:10
-                                                                    completion:^(EMCursorResult *aResult, EMError *aError) {
-                                                                        if (!aError) {
-                                                                            weakself.occupantsCount = [aResult.list count];
-                                                                            [weakself.numberBtn setTitle:[NSString stringWithFormat:@"%ld%@",(long)weakself.occupantsCount ,NSLocalizedString(@"profile.people", @"")] forState:UIControlStateNormal];
-                                                                            [weakself.dataArray addObjectsFromArray:aResult.list];
-                                                                            [weakself.collectionView reloadData];
-                                                                        }
-                                                                    }];
+    [[EaseHttpManager sharedInstance] fetchLiveroomDetail:_room.chatroomId completion:^(EaseLiveRoom *room, BOOL success) {
+        if (success) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                _room = room;
+                weakself.occupantsCount = _room.currentUserCount;
+                [weakself.numberBtn setTitle:[NSString stringWithFormat:@"%ld%@",(long)weakself.occupantsCount ,NSLocalizedString(@"profile.people", @"")] forState:UIControlStateNormal];
+                [weakself.dataArray removeAllObjects];
+                [weakself.dataArray addObjectsFromArray:_room.currentMemberList];
+                [weakself.collectionView reloadData];
+            });
+        }
+    }];
 }
-
+/*
 - (void)joinChatroomWithUsername:(NSString *)username
 {
-    if ([self.dataArray count] > 10) {
-        [self.dataArray removeObjectAtIndex:0];
-    }
     if ([self.dataArray containsObject:username]) {
         return;
     }
@@ -219,8 +229,9 @@
     [_numberBtn setTitle:[NSString stringWithFormat:@"%ld人",(long)self.occupantsCount] forState:UIControlStateNormal];
     [self.collectionView reloadData];
 }
-
+*/
 #pragma mark - UICollectionViewDataSource
+
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     return [_dataArray count];

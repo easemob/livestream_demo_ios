@@ -14,13 +14,16 @@
 #import "EaseCustomMessageHelper.h"
 
 @interface EaseChatCell ()
-@property (nonatomic,strong)UIView *blankView;
+
+@property (nonatomic, strong)UIView *blankView;
+
 @end
 
 @implementation EaseChatCell
 
+static EaseLiveRoom *room;
 
-- (void)setMesssage:(EMMessage*)message
+- (void)setMesssage:(EMMessage*)message liveroom:(EaseLiveRoom*)liveroom
 {
     self.textLabel.textColor = [UIColor whiteColor];
     self.textLabel.layer.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.2].CGColor;
@@ -29,13 +32,13 @@
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     self.textLabel.attributedText = [EaseChatCell _attributedStringWithMessage:message];
     self.textLabel.numberOfLines = (int)([EaseChatCell heightForMessage:message]/15.f) + 1;
-
+    room = liveroom;
 }
 
 + (CGFloat)heightForMessage:(EMMessage *)message
 {
     if (message) {
-        CGRect rect = [[EaseChatCell _attributedStringWithMessage:message] boundingRectWithSize:CGSizeMake(KCustomerWidth, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+        CGRect rect = [[EaseChatCell _attributedStringWithMessage:message] boundingRectWithSize:CGSizeMake(KCustomerWidth, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading context:nil];
         
         if (rect.size.height < 25.f) {
             return 25.f;
@@ -48,7 +51,6 @@
 + (NSMutableAttributedString*)_attributedStringWithMessage:(EMMessage*)message
 {
     NSMutableAttributedString *text = [EaseChatCell latestMessageTitleForConversationModel:message];
-    //NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:text attributes:nil];
     NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
     paraStyle.lineBreakMode = NSLineBreakByWordWrapping;
     NSDictionary *attributes = @{NSParagraphStyleAttributeName: paraStyle,NSFontAttributeName :[UIFont systemFontOfSize:15.0f]};
@@ -58,6 +60,8 @@
 
 extern NSMutableDictionary *audienceNickname;
 extern NSArray<NSString*> *nickNameArray;
+extern NSMutableDictionary *anchorInfoDic;
+
 + (NSMutableAttributedString *)latestMessageTitleForConversationModel:(EMMessage*)lastMessage;
 {
     NSString *latestMessageTitle = @"";
@@ -98,6 +102,12 @@ extern NSArray<NSString*> *nickNameArray;
         [audienceNickname setObject:randomNickname forKey:lastMessage.from];
     } else {
         randomNickname = [audienceNickname objectForKey:lastMessage.from];
+    }
+    if ([lastMessage.from isEqualToString:room.anchor]) {
+        NSMutableDictionary *anchorInfo = [anchorInfoDic objectForKey:room.roomId];
+        if (anchorInfo && [anchorInfo objectForKey:kBROADCASTING_CURRENT_ANCHOR] && ![[anchorInfo objectForKey:kBROADCASTING_CURRENT_ANCHOR] isEqualToString:@""]) {
+            randomNickname = [anchorInfo objectForKey:kBROADCASTING_CURRENT_ANCHOR_NICKNAME];
+        }
     }
     if ([lastMessage.from isEqualToString:EMClient.sharedClient.currentUsername]) {
         randomNickname = EaseDefaultDataHelper.shared.defaultNickname;

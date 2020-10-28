@@ -78,6 +78,11 @@ typedef enum {
 @property (nonatomic) EaseLiveStatus status;
 
 /*
+ *  直播间类型
+ */
+@property (nonatomic, copy) NSString *liveroomType;
+
+/*
  *  直播间主播
  */
 @property (nonatomic, copy) NSString *anchor;
@@ -86,6 +91,17 @@ typedef enum {
  *  直播间观众人数
  */
 @property (nonatomic, assign) NSInteger currentUserCount;
+
+/*
+ *  直播间当前观众列表
+ */
+@property (nonatomic, copy) NSArray *currentMemberList;
+
+/*
+ *  直播间扩展
+ */
+@property (nonatomic, copy) NSDictionary *liveroomExt;
+
 
 - (instancetype)initWithParameter:(NSDictionary*)parameter;
 

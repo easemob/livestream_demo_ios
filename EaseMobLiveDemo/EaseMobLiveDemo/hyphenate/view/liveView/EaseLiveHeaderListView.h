@@ -14,7 +14,7 @@
 
 - (void)didClickAnchorCard:(EaseLiveRoom*)room;
 
-- (void)didSelectMemberListButton:(BOOL)isOwner;
+- (void)didSelectMemberListButton:(BOOL)isOwner currentMemberList:(NSMutableArray*)currentMemberList;
 
 @end
 
@@ -32,11 +32,13 @@
 @property (nonatomic, weak) id<EaseLiveHeaderListViewDelegate> delegate;
 
 - (void)loadHeaderListWithChatroomId:(NSString*)chatroomId;
-
+/*
 - (void)joinChatroomWithUsername:(NSString*)username;
 
 - (void)leaveChatroomWithUsername:(NSString*)username;
-
+*/
 - (void)setLiveCastDelegate;
+
+- (void)stopTimer;
 
 @end

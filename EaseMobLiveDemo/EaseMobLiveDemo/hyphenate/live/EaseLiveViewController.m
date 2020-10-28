@@ -23,6 +23,8 @@
 #import "EaseGiftConfirmView.h"
 #import "EaseGiftCell.h"
 #import "EaseCustomKeyBoardView.h"
+#import <AVFoundation/AVFoundation.h>
+#import <AVKit/AVKit.h>
 
 #import "UIImageView+WebCache.h"
 #import "EaseCustomMessageHelper.h"
@@ -39,6 +41,9 @@
     EMChatroom *_chatroom;
     BOOL _enableAdmin;
     EaseCustomMessageHelper *_customMsgHelper;
+    NSTimer *_timer;
+    NSInteger _clock; //重复次数时钟
+    id _observer;
 }
 
 @property (nonatomic, strong) UIButton *sendButton;
@@ -58,6 +63,9 @@
 
 @property (nonatomic, strong) PLPlayer  *player;
 
+@property (nonatomic, strong) AVPlayer *avPlayer;
+@property (nonatomic, strong) AVPlayerLayer *avLayer;
+
 @end
 
 @implementation EaseLiveViewController
@@ -68,6 +76,7 @@
     if (self) {
         _room = room;
         _customMsgHelper = [[EaseCustomMessageHelper alloc]initWithCustomMsgImp:self chatId:_room.chatroomId];
+        _clock = 0;
     }
     return self;
 }
@@ -77,9 +86,8 @@
     [self.view insertSubview:self.backImageView atIndex:0];
     
     [self.view addSubview:self.liveView];
-    
-    [self.liveView addSubview:self.chatview];
     [self.liveView addSubview:self.headerListView];
+    [self.liveView addSubview:self.chatview];
     //[self.liveView addSubview:self.roomNameLabel];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
     
@@ -116,18 +124,27 @@
     
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[EMClient sharedClient].roomManager removeDelegate:self];
     [[EMClient sharedClient] removeDelegate:self];
+    [_headerListView stopTimer];
     _chatview.delegate = nil;
     _chatview = nil;
+    if (self.avPlayer)
+        [self.avPlayer removeTimeObserver:_observer];
+    [self stopTimer];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    [self.chatview endEditing:YES];
 }
 
 #pragma mark - fetchlivingstream
@@ -136,6 +153,16 @@
 - (void)fetchLivingStream
 {
     __weak typeof(self) weakSelf = self;
+    if ([_room.liveroomType isEqual:@"vod"]) {
+        NSURL *pushUrl = [NSURL URLWithString:[[_room.liveroomExt objectForKey:@"play"] objectForKey:@"m3u8"]];
+        if (!pushUrl) {
+            pushUrl = [NSURL URLWithString:[[_room.liveroomExt objectForKey:@"play"] objectForKey:@"rtmp"]];
+            [self startPLayVideoStream:pushUrl];
+        } else {
+            [self startPlayVodStream:pushUrl];
+        }
+        return;
+    }
     [EaseHttpManager.sharedInstance getLiveRoomPullStreamUrlWithRoomId:_room.chatroomId completion:^(NSString *pullStreamStr) {
         NSURL *pullStreamUrl = [NSURL URLWithString:pullStreamStr];
         [weakSelf startPLayVideoStream:pullStreamUrl];
@@ -151,30 +178,77 @@
     return option;
 }
 
+//点播
+- (void)startPlayVodStream:(NSURL *)vodStreamUrl
+{
+    //设置播放的项目
+    AVPlayerItem *item = [[AVPlayerItem alloc] initWithURL:vodStreamUrl];
+    //初始化player对象
+    self.avPlayer = [[AVPlayer alloc] initWithPlayerItem:item];
+    //设置播放页面
+    self.avLayer = [AVPlayerLayer playerLayerWithPlayer:_avPlayer];
+    //设置播放页面的大小
+    self.avLayer.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
+    self.avLayer.backgroundColor = [UIColor clearColor].CGColor;
+    //设置播放窗口和当前视图之间的比例显示内容
+    self.avLayer.videoGravity = AVLayerVideoGravityResizeAspect;
+    [self.backImageView removeFromSuperview];
+    //添加播放视图到self.view
+    [self.view.layer insertSublayer:self.avLayer atIndex:0];
+    //设置播放的默认音量值
+    self.avPlayer.volume = 1.0f;
+    [self.avPlayer play];
+    [self addProgressObserver: [vodStreamUrl absoluteString]];
+}
+// 视频循环播放
+- (void)vodPlayDidEnd:(NSDictionary*)dic{
+    [self.avLayer removeFromSuperlayer];
+    self.avPlayer = nil;
+    NSURL *pushUrl = [NSURL URLWithString:[dic objectForKey:@"pushurl"]];
+    [self.avPlayer seekToTime:CMTimeMakeWithSeconds(0, 600) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+    AVPlayerItem *item = [dic objectForKey:@"playItem"];
+    [item seekToTime:kCMTimeZero];
+    [self startPlayVodStream:pushUrl];
+}
+
+-(void)addProgressObserver:(NSString*)url {
+    __weak typeof(self) weakSelf = self;
+    AVPlayerItem *playerItem=self.avPlayer.currentItem;
+    _observer = [self.avPlayer addPeriodicTimeObserverForInterval:CMTimeMake(1.0, 1.0) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
+        float current=CMTimeGetSeconds(time);
+        float total=CMTimeGetSeconds([playerItem duration]);
+        if ((current > 0 && total > 0) && ((int)current == (int)total)) {
+            [weakSelf vodPlayDidEnd:@{@"pushurl":url, @"playItem":weakSelf.avPlayer.currentItem}];
+        }
+    }];
+}
+
 //看直播
 - (void)startPLayVideoStream:(NSURL *)streamUrl
 {
     self.player = [PLPlayer playerLiveWithURL:streamUrl option:[self _getPlayerOPtion]];
     self.player.delegate = self;
-    [self.backImageView removeFromSuperview];
     [self.view insertSubview:self.player.playerView atIndex:0];
     [self.player.playerView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(self.view);
+        make.top.bottom.left.right.equalTo(self.view);
     }];
     self.player.delegateQueue = dispatch_get_main_queue();
-    self.player.playerView.contentMode = UIViewContentModeScaleAspectFit;
+    if ([_room.liveroomType isEqual:@"vod"])
+        self.player.playerView.contentMode = UIViewContentModeScaleAspectFit;
     [self.player play];
 }
 
 #pragma mark - PLPlayerDelegate
 - (void)player:(PLPlayer *)player statusDidChange:(PLPlayerStatus)state
 {
-    if (state == PLPlayerStatusPlaying ||
-        state == PLPlayerStatusPaused ||
-        state == PLPlayerStatusStopped) {
-    } else if (state == PLPlayerStatusPreparing ||
-               state == PLPlayerStatusReady ||
-               state == PLPlayerStatusCaching) {
+    NSLog(@"status       %ld",(long)state);
+    if (state == PLPlayerStatusPlaying) {
+        [self.backImageView removeFromSuperview];
+        if (_clock > 0) {
+            _clock = 0;
+            [self stopTimer];
+        }
+    } else if (state == PLPlayerStatusCaching) {
     } else if (state == PLPlayerStateAutoReconnecting) {
         MBProgressHUD *hud = [MBProgressHUD showMessag:@"正在重新连接..." toView:self.view];
         [hud hideAnimated:YES afterDelay:1.5];
@@ -192,7 +266,23 @@
     MBProgressHUD *hud = [MBProgressHUD showMessag:info toView:self.view];
     [self.player.playerView removeFromSuperview];
     [self.view insertSubview:self.backImageView atIndex:0];
-    [hud hideAnimated:YES afterDelay:1.5];
+    [hud hideAnimated:YES afterDelay:2.0];
+    if (_clock >= 5)
+        return;
+    ++_clock;
+    [self startTimer];
+}
+
+- (void)startTimer {
+    [self stopTimer];
+    _timer = [NSTimer scheduledTimerWithTimeInterval:15.0 target:self selector:@selector(fetchLivingStream) userInfo:nil repeats:NO];
+}
+
+- (void)stopTimer {
+    if (_timer) {
+        [_timer invalidate];
+        _timer = nil;
+    }
 }
 
 #pragma mark - getter
@@ -320,11 +410,12 @@
 }
 
 //成员列表
-- (void)didSelectMemberListButton:(BOOL)isOwner
+- (void)didSelectMemberListButton:(BOOL)isOwner currentMemberList:(NSMutableArray*)currentMemberList
 {
     [self.view endEditing:YES];
-    EaseAdminView *adminView = [[EaseAdminView alloc] initWithChatroomId:_room.chatroomId
-                                                                 isOwner:isOwner];
+    EaseAdminView *adminView = [[EaseAdminView alloc] initWithChatroomId:_room
+                                                                 isOwner:isOwner
+                                                                currentMemberList:currentMemberList];
     adminView.delegate = self;
     [adminView showFromParentView:self.view];
 }
@@ -441,37 +532,14 @@
     }
 }
 
-- (void)userDidJoinChatroom:(EMChatroom *)aChatroom
-                       user:(NSString *)aUsername
+- (void)didDismissFromChatroom:(EMChatroom *)aChatroom reason:(EMChatroomBeKickedReason)aReason
 {
-    if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
-        if (![aChatroom.owner isEqualToString:aUsername]) {
-            [_headerListView joinChatroomWithUsername:aUsername];
-        }
-    }
-}
-
-- (void)userDidLeaveChatroom:(EMChatroom *)aChatroom
-                        user:(NSString *)aUsername
-{
-    if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
-        if (![aChatroom.owner isEqualToString:aUsername]) {
-            [_headerListView leaveChatroomWithUsername:aUsername];
-        } else {
-            MBProgressHUD *hud = [MBProgressHUD showMessag:@"主播已下播" toView:self.view];
-            [self.player stop];
-            [self.player.playerView removeFromSuperview];
-            [self.view insertSubview:self.backImageView atIndex:0];
-            [hud hideAnimated:YES];
-        }
-    }
-}
-
-- (void)didDismissFromChatroom:(EMChatroom *)aChatroom
-                        reason:(EMChatroomBeKickedReason)aReason
-{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"被踢出直播聊天室" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-    [alert show];
+    if (aReason == 0)
+        [MBProgressHUD showMessag:[NSString stringWithFormat:@"被移出直播聊天室 %@", aChatroom.subject] toView:nil];
+    if (aReason == 1)
+        [MBProgressHUD showMessag:[NSString stringWithFormat:@"直播聊天室 %@ 已解散", aChatroom.subject] toView:nil];
+    if (aReason == 2)
+        [MBProgressHUD showMessag:@"您的账号已离线" toView:nil];
     [self closeButtonAction];
 }
 
