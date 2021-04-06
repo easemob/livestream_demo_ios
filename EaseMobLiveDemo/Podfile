@@ -1,4 +1,5 @@
-platform :ios, '9.0'
+use_frameworks!
+platform :ios, '10.0'
 
 # Import CocoaPods sources
 source 'https://github.com/CocoaPods/Specs.git'
@@ -9,10 +10,11 @@ pod 'Masonry'
 pod 'MJRefresh'
 pod 'MBProgressHUD', '~> 1.1.0'
 pod 'SDWebImage', '~> 4.0'
-pod 'Hyphenate', '~> 3.6.6'
+pod 'HyphenateChat', '3.8.0'
 pod 'SDWebImage/GIF'
 pod 'AFNetworking'
 pod 'PLMediaStreamingKit', '~> 3.0.0'
 pod 'PLPlayerKit', '~> 3.4.3'
+pod 'AgoraRtcEngine_iOS', '3.3.1'
 
 end

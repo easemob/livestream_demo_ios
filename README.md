@@ -10,7 +10,7 @@
 ## 功能实现 ##
 
 
-### 我要直播
+### 创建直播聊天室
 **具体演示代码见EaseLiveTVListViewController,EaseCreateLiveViewController,EasePublishViewController,EaseHttpManager**
 
 1、创建直播聊天室

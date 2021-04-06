@@ -25,15 +25,13 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
 
 #define kEaseDefaultIconFont @"iconfont"
 
-#define kDefaultChatroomId @"203138578711052716"
-
 #define kDefaultSystemTextGrayColor RGBACOLOR(197, 197, 197, 1)
 #define kDefaultSystemTextColor RGBACOLOR(38, 38, 38, 1)
 #define kDefaultSystemBgColor RGBACOLOR(51, 51, 51, 1)
 #define kDefaultSystemLightGrayColor RGBACOLOR(197, 197, 197, 1)
 #define kDefaultLoginButtonColor RGBACOLOR(25, 163, 255, 1)
 
-#define kLiveDemoVersion @"1.0.8"
+#define kLiveDemoVersion @"1.0.9"
 
 #define kNotificationRefreshList @"em_nofity_LiveListRefresh"
 
@@ -43,9 +41,15 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
 #define kCustomMsgChatroomPraise @"chatroom_praise"
 #define kCustomMsgChatroomBarrage @"chatroom_barrage"
 
+#define kLiveBroadCastingTypeVOD @"vod"
+#define kLiveBroadCastingTypeAgoraVOD @"agora_vod"
+#define kLiveBroadCastingTypeLIVE @"live"
+#define kLiveBroadCastingTypeAGORA_SPEED_LIVE @"agora_speed_live"
+
+
 #ifdef __OBJC__
 
-    #import <Hyphenate/Hyphenate.h>
+    #import <HyphenateChat/HyphenateChat.h>
     #import "MBProgressHUD+Add.h"
     #import "UIView+Position.h"
     #import "UIViewController+HUD.h"

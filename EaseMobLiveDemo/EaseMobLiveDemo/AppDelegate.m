@@ -7,7 +7,7 @@
 
 #import "AppDelegate.h"
 
-#import "AppDelegate+Hyphenate.h"
+#import "AppDelegate+HyphenateChat.h"
 #import "EaseLoginViewController.h"
 #import "EaseMainViewController.h"
 #import "EaseTransitionViewController.h"
@@ -37,7 +37,7 @@
     }
     
     //初始化环信sdk
-    [self initHyphenateSDK];
+    [self initHyphenateChatSDK];
     //初始化七牛sdk
     [PLStreamingEnv initEnv];
     return YES;
