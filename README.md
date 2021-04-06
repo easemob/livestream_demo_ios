@@ -357,4 +357,8 @@ message.chatType = EMChatTypeChatRoom;
 - (void)praiseAction:(UIView*)backView;
 ```
 
-> 环信文档地址：[环信文档](http://docs-im.easemob.com/im/extensions/live/intro)
+## 文档
+- 环信文档地址：[环信文档](http://docs-im.easemob.com/im/extensions/live/intro)</br>
+- 集成视频直播SDK：[集成视频直播SDK](https://github.com/easemob/livestream_demo_ios/blob/master/EaseMobLiveDemo/直播聊天室集成第三方视频推拉流介绍.md)</br>
+- 安卓直播聊天室：[安卓直播聊天室](https://github.com/easemob/livestream_demo_android)
+- 环信直播聊天室app-server：[app-sever](https://github.com/easemob/easemob-im-app-server)
