@@ -21,11 +21,11 @@
 #import "EaseCreateLiveViewController.h"
 #import "EaseDefaultDataHelper.h"
 #import "EaseAudienceBehaviorView.h"
-#import "EaseLiveCastView.h"
 #import "EaseGiftListView.h"
 #import "EaseCustomMessageHelper.h"
 #import "EaseFinishLiveView.h"
 #import "EaseCustomMessageHelper.h"
+#import "EaseLiveViewController.h"
 
 #import <PLMediaStreamingKit/PLMediaStreamingKit.h>
 #import "PLPermissionRequestor.h"
@@ -140,10 +140,23 @@
 
 - (void)dealloc
 {
+    /**
+     @property (nonatomic, strong) NSString *praiseStatisticstCount;//点赞统计
+     @property (nonatomic, strong) NSMutableDictionary *giftStatisticsCount;//礼物统计
+     @property (nonatomic, strong) NSMutableArray *rewardCount;//打赏人列表
+     @property (nonatomic, strong) NSString *giftNumbers;//礼物份数
+     @property (nonatomic, strong) NSString *totalGifts;//礼物总数合计
+     */
     [[EMClient sharedClient].roomManager removeDelegate:self];
     [[EMClient sharedClient] removeDelegate:self];
     [_headerListView stopTimer];
     _chatview.delegate = nil;
+    
+    EaseDefaultDataHelper.shared.praiseStatisticstCount = @"";
+    [EaseDefaultDataHelper.shared.giftStatisticsCount removeAllObjects];
+    [EaseDefaultDataHelper.shared.rewardCount removeAllObjects];
+    EaseDefaultDataHelper.shared.giftNumbers = @"";
+    EaseDefaultDataHelper.shared.totalGifts = @"";
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -260,7 +273,7 @@
                                                           delegate:nil
                                                      delegateQueue:[NSOperationQueue mainQueue]];
 
-    NSString* strUrl = [NSString stringWithFormat:@"http://a1-hsb.easemob.com/token/liveToken?userAccount=%@&channelName=%@&appkey=%@&uid=%d",[EMClient sharedClient].currentUsername, _room.channel, [EMClient sharedClient].options.appkey, 0];
+    NSString* strUrl = [NSString stringWithFormat:@"http://a1.easemob.com/token/liveToken?userAccount=%@&channelName=%@&appkey=%@&uid=%d",[EMClient sharedClient].currentUsername, _room.channel, [EMClient sharedClient].options.appkey, 0];
     NSString*utf8Url = [strUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLFragmentAllowedCharacterSet]];
     NSURL* url = [NSURL URLWithString:utf8Url];
     NSMutableURLRequest* urlReq = [[NSMutableURLRequest alloc] initWithURL:url];
@@ -590,6 +603,7 @@
         [EaseDefaultDataHelper.shared.rewardCount addObject:msg.from];
     }
     NSMutableDictionary *giftDetailDic = (NSMutableDictionary*)[EaseDefaultDataHelper.shared.giftStatisticsCount objectForKey:giftid];
+    if (!giftDetailDic) giftDetailDic = [[NSMutableDictionary alloc]init];
     long long num = [(NSString*)[giftDetailDic objectForKey:msg.from] longLongValue];
     [giftDetailDic setObject:[NSString stringWithFormat:@"%lld",(num+count)] forKey:msg.from];
     //礼物统计字典
@@ -745,14 +759,39 @@ extern bool isAllTheSilence;
                       newOwner:(NSString *)aNewOwner
                       oldOwner:(NSString *)aOldOwner
 {
+    __weak EasePublishViewController *weakSelf = self;
     if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:[NSString stringWithFormat:@"聊天室创建者有更新:%@",aChatroom.chatroomId] preferredStyle:UIAlertControllerStyleAlert];
         
         UIAlertAction *ok = [UIAlertAction actionWithTitle:NSLocalizedString(@"publish.ok", @"Ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self didClickFinishButton];
+            if ([aOldOwner isEqualToString:EMClient.sharedClient.currentUsername]) {
+                if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeLIVE]) {
+                    [weakSelf.session stopStreaming];//结束推流
+                    [weakSelf.session destroy];
+                }
+                if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeAGORA_SPEED_LIVE]) {
+                    [weakSelf.agoraKit leaveChannel:nil];
+                    [AgoraRtcEngineKit destroy];
+                }
+                _isFinishBroadcast = YES;
+                //重置本地保存的直播间id
+                EaseDefaultDataHelper.shared.currentRoomId = @"";
+                [EaseDefaultDataHelper.shared archive];
+                [UIApplication sharedApplication].idleTimerDisabled = NO;
+                [weakSelf dismissViewControllerAnimated:YES completion:^{
+                    UIViewController *view = [[EaseLiveViewController alloc] initWithLiveRoom:_room];
+                    view.modalPresentationStyle = 0;
+                    [weakSelf.navigationController presentViewController:view animated:YES completion:NULL];
+                    if (_finishBroadcastCompletion) {
+                        _finishBroadcastCompletion(YES);
+                    }
+                }];
+            }
         }];
         
         [alert addAction:ok];
+        alert.modalPresentationStyle = 0;
+        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 

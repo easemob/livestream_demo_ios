@@ -306,26 +306,6 @@
     EaseLiveCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCollectionIdentifier forIndexPath:indexPath];
     EaseLiveRoom *room = [self.dataArray objectAtIndex:indexPath.row];
     [cell setLiveRoom:room liveBehavior:self.tabBarBehavior];
-    UIImage *image = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:room.coverPictureUrl];
-    if (!image) {
-        __weak typeof(self) weakSelf = self;
-        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:room.coverPictureUrl]
-                                                              options:SDWebImageDownloaderUseNSURLCache
-                                                             progress:NULL
-                                                            completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
-                                                                UIImage *backimage = nil;
-                                                                if (image) {
-                                                                    backimage = image;
-                                                                } else {
-                                                                    backimage = [UIImage imageNamed:@"default_back_image"];
-                                                                }
-                                                                [[SDImageCache sharedImageCache] storeImage:backimage forKey:room.coverPictureUrl toDisk:NO completion:^{
-                                                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                                                        [weakSelf.collectionView reloadData];
-                                                                    });
-                                                                }];
-                                                            }];
-    }
     return cell;
 }
 
@@ -382,11 +362,32 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     EaseLiveRoom *room = [self.dataArray objectAtIndex:indexPath.row];
-    UIViewController *view;
     if (self.tabBarBehavior == kTabbarItemTag_Live) {
-        view = [[EaseLiveViewController alloc] initWithLiveRoom:room];
-        view.modalPresentationStyle = 0;
-        [self.navigationController presentViewController:view animated:YES completion:NULL];
+        
+        
+        __weak typeof(self) weakSelf = self;
+        [[EaseHttpManager sharedInstance] fetchLiveroomDetail:room.roomId completion:^(EaseLiveRoom *room, BOOL success) {
+            if (success && room.status == ongoing && [room.anchor isEqualToString:EMClient.sharedClient.currentUsername]) {
+                EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:room];
+                [publishView setFinishBroadcastCompletion:^(BOOL isFinish) {
+                    [weakSelf.navigationController popViewControllerAnimated:YES];
+                }];
+                publishView.modalPresentationStyle = 0;
+                [weakSelf presentViewController:publishView animated:YES completion:nil];
+                return;
+            } else {
+                EaseLiveViewController *view = [[EaseLiveViewController alloc] initWithLiveRoom:room];
+                view.modalPresentationStyle = 0;
+                [view setChatroomUpdateCompletion:^(BOOL isUpdate, EaseLiveRoom *liveRoom) {
+                    if (isUpdate) {
+                        EasePublishViewController *publishView = [[EasePublishViewController alloc] initWithLiveRoom:liveRoom];
+                        publishView.modalPresentationStyle = 0;
+                        [weakSelf.navigationController presentViewController:publishView animated:YES completion:nil];
+                    }
+                }];
+                [weakSelf.navigationController presentViewController:view animated:YES completion:nil];
+            }
+        }];
     } else if (self.tabBarBehavior == kTabbarItemTag_Broadcast) {
         //view = [[EaseCreateLiveViewController alloc]initWithLiveroom:room];
         __weak typeof(self) weakSelf = self;

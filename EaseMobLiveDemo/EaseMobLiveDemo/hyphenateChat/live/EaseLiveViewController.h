@@ -12,4 +12,6 @@
 
 - (instancetype)initWithLiveRoom:(EaseLiveRoom*)room;
 
+@property (nonatomic, copy) void (^chatroomUpdateCompletion)(BOOL isUpdate, EaseLiveRoom *liveRoom);
+
 @end

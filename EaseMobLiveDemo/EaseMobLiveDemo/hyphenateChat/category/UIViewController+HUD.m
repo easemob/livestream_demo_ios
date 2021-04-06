@@ -1,18 +1,24 @@
-//
-//  UIViewController+UIViewController_HUD.m
-//  EaseMobLiveDemo
-//
-//  Created by 娜塔莎 on 2020/3/4.
-//  Copyright © 2020 zmw. All rights reserved.
-//
+/************************************************************
+ *  * Hyphenate CONFIDENTIAL
+ * __________________
+ * Copyright (C) 2016 Hyphenate Inc. All rights reserved.
+ *
+ * NOTICE: All information contained herein is, and remains
+ * the property of Hyphenate Inc.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Hyphenate Inc.
+ */
 
 #import "UIViewController+HUD.h"
-#import "MBProgressHUD.h"
+
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <objc/runtime.h>
 
-
 static const void *HttpRequestHUDKey = &HttpRequestHUDKey;
+
 @implementation UIViewController (HUD)
+
 - (MBProgressHUD *)HUD{
     return objc_getAssociatedObject(self, HttpRequestHUDKey);
 }
@@ -23,24 +29,26 @@ static const void *HttpRequestHUDKey = &HttpRequestHUDKey;
 
 - (void)showHudInView:(UIView *)view hint:(NSString *)hint{
     MBProgressHUD *HUD = [[MBProgressHUD alloc] initWithView:view];
-    HUD.labelText = hint;
+    HUD.label.text = hint;
     [view addSubview:HUD];
-    [HUD show:YES];
+    [HUD showAnimated:YES];
     [self setHUD:HUD];
 }
 
 - (void)showHint:(NSString *)hint
 {
-    UIView *view = [[UIApplication sharedApplication].delegate window];
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
+    UIWindow *win = [[[UIApplication sharedApplication] windows] lastObject];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:win animated:YES];
     hud.userInteractionEnabled = NO;
     // Configure for text only and offset down
     hud.mode = MBProgressHUDModeText;
-    hud.labelText = hint;
+    hud.label.text = hint;
     hud.margin = 10.f;
-    hud.yOffset = 180;
+    CGPoint offset = hud.offset;
+    offset.y = 180;
+    hud.offset = offset;
     hud.removeFromSuperViewOnHide = YES;
-    [hud hide:YES afterDelay:2];
+    [hud hideAnimated:YES afterDelay:2];
 }
 
 - (void)showHint:(NSString *)hint yOffset:(float)yOffset
@@ -50,15 +58,17 @@ static const void *HttpRequestHUDKey = &HttpRequestHUDKey;
     hud.userInteractionEnabled = NO;
     // Configure for text only and offset down
     hud.mode = MBProgressHUDModeText;
-    hud.labelText = hint;
+    hud.label.text = hint;
     hud.margin = 10.f;
-    hud.yOffset = 180;
-    hud.yOffset += yOffset;
+    CGPoint offset = hud.offset;
+    offset.y = 180 + yOffset;
+    hud.offset = offset;
     hud.removeFromSuperViewOnHide = YES;
-    [hud hide:YES afterDelay:2];
+    [hud hideAnimated:YES afterDelay:2];
 }
 
 - (void)hideHud{
-    [[self HUD] hide:YES];
+    [[self HUD] hideAnimated:YES];
 }
+
 @end

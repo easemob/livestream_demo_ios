@@ -13,6 +13,12 @@
 #import "EaseLiveGiftHelper.h"
 #import "EaseBarrageFlyView.h"
 #import "EaseHeartFlyView.h"
+#import "EaseDefaultDataHelper.h"
+
+extern NSMutableDictionary *audienceNickname;
+extern NSArray<NSString*> *nickNameArray;
+extern NSMutableDictionary *anchorInfoDic;
+
 
 @interface EaseCustomMessageHelper ()<EMChatManagerDelegate>
 {
@@ -233,7 +239,7 @@
     NSDictionary *dict = EaseLiveGiftHelper.sharedInstance.giftArray[index-1];
     cellModel.icon = [UIImage imageNamed:(NSString *)[dict allKeys][0]];
     cellModel.name = NSLocalizedString((NSString *)[dict allKeys][0], @"");
-    cellModel.username = msg.from;
+    cellModel.username = [self randomNickName:msg.from];
     cellModel.count = count;
     [self sendGiftAction:cellModel backView:backView];
 }
@@ -253,6 +259,22 @@
                //结束
         } completeShowGifImageBlock:^(JPGiftModel *giftModel) {
     }];
+}
+
+- (NSString *)randomNickName:(NSString *)userName
+{
+    int random = (arc4random() % 100);
+    NSString *randomNickname = nickNameArray[random];
+    if (![audienceNickname objectForKey:userName]) {
+        [audienceNickname setObject:randomNickname forKey:userName];
+    } else {
+        randomNickname = [audienceNickname objectForKey:userName];
+    }
+    if ([userName isEqualToString:EMClient.sharedClient.currentUsername]) {
+        randomNickname = EaseDefaultDataHelper.shared.defaultNickname;
+    }
+    
+    return randomNickname;
 }
 
 //弹幕动画

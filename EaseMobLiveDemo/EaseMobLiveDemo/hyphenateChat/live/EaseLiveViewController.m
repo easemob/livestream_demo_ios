@@ -25,6 +25,8 @@
 #import "EaseCustomKeyBoardView.h"
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
+#import "EasePublishViewController.h"
+#import "EaseDefaultDataHelper.h"
 
 #import "UIImageView+WebCache.h"
 #import "EaseCustomMessageHelper.h"
@@ -195,15 +197,21 @@
         [weakSelf.agoraKit joinChannelByToken:rtcToken channelId:_room.channel info:nil uid:0 joinSuccess:^(NSString *channel, NSUInteger uid, NSInteger elapsed) {
         }];
     }];
-}
-
-- (void)rtcEngine:(AgoraRtcEngineKit *)engine firstRemoteVideoDecodedOfUid:(NSUInteger)uid size: (CGSize)size elapsed:(NSInteger)elapsed {
-    AgoraRtcVideoCanvas *videoCanvas = [[AgoraRtcVideoCanvas alloc] init];
-    [self.backImageView removeFromSuperview];
-    videoCanvas.uid = uid;
     self.agoraRemoteVideoView = [[UIView alloc]init];
     self.agoraRemoteVideoView.frame = self.view.bounds;
-    [self.view insertSubview:self.agoraRemoteVideoView atIndex:0];
+}
+
+- (void)rtcEngine:(AgoraRtcEngineKit *)engine remoteVideoStateChangedOfUid:(NSUInteger)uid state:(AgoraVideoRemoteState)state reason:(AgoraVideoRemoteStateReason)reason elapsed:(NSInteger)elapsed
+{
+    if (state == AgoraVideoRemoteStateFailed || state == AgoraVideoRemoteStateStopped) {
+        [self.agoraRemoteVideoView removeFromSuperview];
+        [self.view insertSubview:self.backImageView atIndex:0];
+    } else {
+        [self.view insertSubview:self.agoraRemoteVideoView atIndex:0];
+        [self.backImageView removeFromSuperview];
+    }
+    AgoraRtcVideoCanvas *videoCanvas = [[AgoraRtcVideoCanvas alloc] init];
+    videoCanvas.uid = uid;
     videoCanvas.view = self.agoraRemoteVideoView;
     videoCanvas.renderMode = AgoraVideoRenderModeHidden;
     // 设置远端视图。
@@ -286,11 +294,10 @@
     if (reason == AgoraConnectionChangedTokenExpired || reason == AgoraConnectionChangedInvalidToken) {
         __weak typeof(self) weakSelf = self;
         [self fetchAgoraRtcToken:^(NSString *rtcToken) {
-            [weakSelf.agoraKit renewToken:@""];
+            [weakSelf.agoraKit renewToken:rtcToken];
         }];
     }
     if (state == AgoraConnectionStateConnected) {
-        [self.backImageView removeFromSuperview];
         if (_clock > 0) {
             _clock = 0;
             [self stopTimer];
@@ -338,7 +345,7 @@
                                                           delegate:nil
                                                      delegateQueue:[NSOperationQueue mainQueue]];
 
-    NSString* strUrl = [NSString stringWithFormat:@"http://a1-hsb.easemob.com/token/liveToken?userAccount=%@&channelName=%@&appkey=%@&uid=%d",[EMClient sharedClient].currentUsername, _room.channel, [EMClient sharedClient].options.appkey, 0];
+    NSString* strUrl = [NSString stringWithFormat:@"http://a1.easemob.com/token/liveToken?userAccount=%@&channelName=%@&appkey=%@&uid=%d",[EMClient sharedClient].currentUsername, _room.channel, [EMClient sharedClient].options.appkey, 0];
     NSString*utf8Url = [strUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLFragmentAllowedCharacterSet]];
     NSURL* url = [NSURL URLWithString:utf8Url];
     NSMutableURLRequest* urlReq = [[NSMutableURLRequest alloc] initWithURL:url];
@@ -624,11 +631,30 @@
             [weakself.chatview sendGiftAction:giftModel.id num:giftModel.count completion:^(BOOL success) {
                 if (success) {
                     //显示礼物UI
+                    giftModel.username = [self randomNickName:giftModel.username];
                     [_customMsgHelper sendGiftAction:giftModel backView:self.view];
                 }
             }];
         }
     }];
+}
+extern NSMutableDictionary *audienceNickname;
+extern NSArray<NSString*> *nickNameArray;
+extern NSMutableDictionary *anchorInfoDic;
+- (NSString *)randomNickName:(NSString *)userName
+{
+    int random = (arc4random() % 100);
+    NSString *randomNickname = nickNameArray[random];
+    if (![audienceNickname objectForKey:userName]) {
+        [audienceNickname setObject:randomNickname forKey:userName];
+    } else {
+        randomNickname = [audienceNickname objectForKey:userName];
+    }
+    if ([userName isEqualToString:EMClient.sharedClient.currentUsername]) {
+        randomNickname = EaseDefaultDataHelper.shared.defaultNickname;
+    }
+    
+    return randomNickname;
 }
 
 //自定义礼物数量
@@ -699,6 +725,7 @@
             [text appendString:name];
         }
         [self showHint:[NSString stringWithFormat:@"禁言成员:%@",text]];
+        //[self showHudInView:[[[UIApplication sharedApplication] windows] firstObject] hint:[NSString stringWithFormat:@"禁言成员:%@",text]];
     }
 }
 
@@ -740,14 +767,26 @@
                       newOwner:(NSString *)aNewOwner
                       oldOwner:(NSString *)aOldOwner
 {
+    __weak typeof(self) weakSelf =  self;
     if ([aChatroom.chatroomId isEqualToString:_room.chatroomId]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:[NSString stringWithFormat:@"聊天室创建者有更新:%@",aChatroom.chatroomId] preferredStyle:UIAlertControllerStyleAlert];
         
         UIAlertAction *ok = [UIAlertAction actionWithTitle:NSLocalizedString(@"publish.ok", @"Ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self closeButtonAction];
+            if ([aNewOwner isEqualToString:EMClient.sharedClient.currentUsername]) {
+                [_burstTimer invalidate];
+                _burstTimer = nil;
+                [weakSelf dismissViewControllerAnimated:YES completion:^{
+                    _room.anchor = aChatroom.owner;
+                    if (_chatroomUpdateCompletion) {
+                        _chatroomUpdateCompletion(YES,_room);
+                    }
+                }];
+            }
         }];
         
         [alert addAction:ok];
+        alert.modalPresentationStyle = 0;
+        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 

@@ -203,7 +203,6 @@
 		3C9E335B260C800100CC3E3F /* EaseBoradCastCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C9E3355260C800000CC3E3F /* EaseBoradCastCard.m */; };
 		3C9E335C260C800100CC3E3F /* EaseLiveRoom.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C9E3358260C800100CC3E3F /* EaseLiveRoom.m */; };
 		3C9E3394260C8FE700CC3E3F /* AppDelegate+HyphenateChat.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C9E3393260C8FE700CC3E3F /* AppDelegate+HyphenateChat.m */; };
-		44F5F8E2E44B35C9E6F3A681 /* libPods-EaseMobLiveDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 378DF0DD5F77D19A37F7C3EE /* libPods-EaseMobLiveDemo.a */; };
 		D23E252C1CE03775007506CB /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D23E24FF1CE0359C007506CB /* libsqlite3.tbd */; };
 		D23E25321CE0380A007506CB /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D23E25311CE0380A007506CB /* MobileCoreServices.framework */; };
 		D2E368221D3C7EFF00B1C90C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D2E368241D3C7EFF00B1C90C /* Localizable.strings */; };
@@ -237,8 +236,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		32D9D8E481358CD8EC0EA189 /* Pods-EaseMobLiveDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EaseMobLiveDemo.release.xcconfig"; path = "Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo.release.xcconfig"; sourceTree = "<group>"; };
-		378DF0DD5F77D19A37F7C3EE /* libPods-EaseMobLiveDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EaseMobLiveDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3C1238A92408C97300C4135B /* Zapfino.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zapfino.ttf; sourceTree = "<group>"; };
 		3C30742B2546C900003696CA /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		3C525E2024650C7200D16DD5 /* 直播聊天室集成第三方视频推拉流介绍.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "直播聊天室集成第三方视频推拉流介绍.md"; sourceTree = "<group>"; };
@@ -501,7 +498,6 @@
 		3C9E3359260C800100CC3E3F /* EaseLiveSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EaseLiveSession.h; sourceTree = "<group>"; };
 		3C9E3392260C8FE700CC3E3F /* AppDelegate+HyphenateChat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AppDelegate+HyphenateChat.h"; sourceTree = "<group>"; };
 		3C9E3393260C8FE700CC3E3F /* AppDelegate+HyphenateChat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AppDelegate+HyphenateChat.m"; sourceTree = "<group>"; };
-		53CBE5DF7866C86872873F70 /* Pods-EaseMobLiveDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EaseMobLiveDemo.debug.xcconfig"; path = "Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		D23E24FF1CE0359C007506CB /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		D23E252D1CE0379E007506CB /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		D23E252F1CE037F6007506CB /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -547,22 +543,12 @@
 				E966277A1BE75E5000FA5B03 /* AVFoundation.framework in Frameworks */,
 				E96627781BE75E4900FA5B03 /* VideoToolbox.framework in Frameworks */,
 				E96627761BE75E4000FA5B03 /* AudioToolbox.framework in Frameworks */,
-				44F5F8E2E44B35C9E6F3A681 /* libPods-EaseMobLiveDemo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		22B213981969CE3956975CCF /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				53CBE5DF7866C86872873F70 /* Pods-EaseMobLiveDemo.debug.xcconfig */,
-				32D9D8E481358CD8EC0EA189 /* Pods-EaseMobLiveDemo.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		3C9E3153260C7B4100CC3E3F /* hyphenateChat */ = {
 			isa = PBXGroup;
 			children = (
@@ -616,20 +602,20 @@
 		3C9E3160260C7B4100CC3E3F /* util */ = {
 			isa = PBXGroup;
 			children = (
-				3C9E3161260C7B4100CC3E3F /* EaseHttpManager.m */,
-				3C9E3162260C7B4100CC3E3F /* RealtimeSearchUtil.h */,
-				3C9E3163260C7B4100CC3E3F /* EMEmoticonGroup.m */,
-				3C9E3164260C7B4100CC3E3F /* EaseEmojiHelper.m */,
-				3C9E3165260C7B4100CC3E3F /* EaseLiveGiftHelper.h */,
 				3C9E3166260C7B4100CC3E3F /* EaseCustomMessageHelper.h */,
-				3C9E3167260C7B4100CC3E3F /* EaseDefaultDataHelper.h */,
-				3C9E3168260C7B4100CC3E3F /* EaseHttpManager.h */,
-				3C9E3169260C7B4100CC3E3F /* EMEmoticonGroup.h */,
-				3C9E316A260C7B4100CC3E3F /* RealtimeSearchUtil.m */,
-				3C9E316B260C7B4100CC3E3F /* EaseDefaultDataHelper.m */,
 				3C9E316C260C7B4100CC3E3F /* EaseCustomMessageHelper.m */,
-				3C9E316D260C7B4100CC3E3F /* EaseLiveGiftHelper.m */,
+				3C9E3167260C7B4100CC3E3F /* EaseDefaultDataHelper.h */,
+				3C9E316B260C7B4100CC3E3F /* EaseDefaultDataHelper.m */,
 				3C9E316E260C7B4100CC3E3F /* EaseEmojiHelper.h */,
+				3C9E3164260C7B4100CC3E3F /* EaseEmojiHelper.m */,
+				3C9E3168260C7B4100CC3E3F /* EaseHttpManager.h */,
+				3C9E3161260C7B4100CC3E3F /* EaseHttpManager.m */,
+				3C9E3165260C7B4100CC3E3F /* EaseLiveGiftHelper.h */,
+				3C9E316D260C7B4100CC3E3F /* EaseLiveGiftHelper.m */,
+				3C9E3169260C7B4100CC3E3F /* EMEmoticonGroup.h */,
+				3C9E3163260C7B4100CC3E3F /* EMEmoticonGroup.m */,
+				3C9E3162260C7B4100CC3E3F /* RealtimeSearchUtil.h */,
+				3C9E316A260C7B4100CC3E3F /* RealtimeSearchUtil.m */,
 			);
 			path = util;
 			sourceTree = "<group>";
@@ -637,14 +623,14 @@
 		3C9E3174260C7B4200CC3E3F /* publish */ = {
 			isa = PBXGroup;
 			children = (
-				3C9E3175260C7B4200CC3E3F /* EaseTextField.h */,
-				3C9E3176260C7B4200CC3E3F /* EaseLiveroomCoverSettingView.m */,
-				3C9E3177260C7B4200CC3E3F /* EaseCreateLiveViewController.m */,
-				3C9E3178260C7B4200CC3E3F /* EasePublishViewController.h */,
 				3C9E3179260C7B4200CC3E3F /* EaseCreateLiveViewController.h */,
+				3C9E3177260C7B4200CC3E3F /* EaseCreateLiveViewController.m */,
 				3C9E317A260C7B4200CC3E3F /* EaseLiveroomCoverSettingView.h */,
-				3C9E317B260C7B4200CC3E3F /* EaseTextField.m */,
+				3C9E3176260C7B4200CC3E3F /* EaseLiveroomCoverSettingView.m */,
+				3C9E3178260C7B4200CC3E3F /* EasePublishViewController.h */,
 				3C9E317C260C7B4200CC3E3F /* EasePublishViewController.m */,
+				3C9E3175260C7B4200CC3E3F /* EaseTextField.h */,
+				3C9E317B260C7B4200CC3E3F /* EaseTextField.m */,
 			);
 			path = publish;
 			sourceTree = "<group>";
@@ -694,42 +680,42 @@
 		3C9E3198260C7B4200CC3E3F /* liveView */ = {
 			isa = PBXGroup;
 			children = (
+				3C9E31BD260C7B4200CC3E3F /* cell */,
+				3C9E31CF260C7B4200CC3E3F /* EaseAdminView.h */,
+				3C9E31B6260C7B4200CC3E3F /* EaseAdminView.m */,
+				3C9E31B4260C7B4200CC3E3F /* EaseAnchorCardView.h */,
+				3C9E31D0260C7B4200CC3E3F /* EaseAnchorCardView.m */,
+				3C9E31C8260C7B4200CC3E3F /* EaseAudienceBehaviorView.h */,
 				3C9E3199260C7B4200CC3E3F /* EaseAudienceBehaviorView.m */,
+				3C9E31B2260C7B4200CC3E3F /* EaseBaseSubView.h */,
+				3C9E31C9260C7B4200CC3E3F /* EaseBaseSubView.m */,
+				3C9E31D1260C7B4200CC3E3F /* EaseChatView.h */,
+				3C9E31B3260C7B4200CC3E3F /* EaseChatView.m */,
+				3C9E31CC260C7B4200CC3E3F /* EaseCustomKeyBoardView.h */,
+				3C9E31AF260C7B4200CC3E3F /* EaseCustomKeyBoardView.m */,
+				3C9E31B9260C7B4200CC3E3F /* EaseCustomSwitch.h */,
+				3C9E31D3260C7B4200CC3E3F /* EaseCustomSwitch.m */,
+				3C9E31B5260C7B4200CC3E3F /* EaseEmoticonView.h */,
+				3C9E31CE260C7B4200CC3E3F /* EaseEmoticonView.m */,
+				3C9E31CD260C7B4200CC3E3F /* EaseEndLiveView.h */,
+				3C9E31B7260C7B4200CC3E3F /* EaseEndLiveView.m */,
+				3C9E31CA260C7B4200CC3E3F /* EaseFinishLiveView.h */,
+				3C9E31B1260C7B4200CC3E3F /* EaseFinishLiveView.m */,
+				3C9E31CB260C7B4200CC3E3F /* EaseGiftConfirmView.h */,
+				3C9E31B0260C7B4200CC3E3F /* EaseGiftConfirmView.m */,
+				3C9E31AD260C7B4200CC3E3F /* EaseGiftListView.h */,
+				3C9E31BC260C7B4200CC3E3F /* EaseGiftListView.m */,
+				3C9E31BA260C7B4200CC3E3F /* EaseInputTextView.h */,
+				3C9E31D2260C7B4200CC3E3F /* EaseInputTextView.m */,
+				3C9E31BB260C7B4200CC3E3F /* EaseKeyBoardView.h */,
+				3C9E31AE260C7B4200CC3E3F /* EaseKeyBoardView.m */,
+				3C9E31D4260C7B4200CC3E3F /* EaseLiveCastView.h */,
+				3C9E31B8260C7B4200CC3E3F /* EaseLiveCastView.m */,
+				3C9E31C7260C7B4200CC3E3F /* EaseLiveGiftView.h */,
 				3C9E319A260C7B4200CC3E3F /* EaseLiveGiftView.m */,
+				3C9E31C6260C7B4200CC3E3F /* EaseLiveHeaderListView.h */,
 				3C9E319B260C7B4200CC3E3F /* EaseLiveHeaderListView.m */,
 				3C9E319C260C7B4200CC3E3F /* giftAnimation */,
-				3C9E31AD260C7B4200CC3E3F /* EaseGiftListView.h */,
-				3C9E31AE260C7B4200CC3E3F /* EaseKeyBoardView.m */,
-				3C9E31AF260C7B4200CC3E3F /* EaseCustomKeyBoardView.m */,
-				3C9E31B0260C7B4200CC3E3F /* EaseGiftConfirmView.m */,
-				3C9E31B1260C7B4200CC3E3F /* EaseFinishLiveView.m */,
-				3C9E31B2260C7B4200CC3E3F /* EaseBaseSubView.h */,
-				3C9E31B3260C7B4200CC3E3F /* EaseChatView.m */,
-				3C9E31B4260C7B4200CC3E3F /* EaseAnchorCardView.h */,
-				3C9E31B5260C7B4200CC3E3F /* EaseEmoticonView.h */,
-				3C9E31B6260C7B4200CC3E3F /* EaseAdminView.m */,
-				3C9E31B7260C7B4200CC3E3F /* EaseEndLiveView.m */,
-				3C9E31B8260C7B4200CC3E3F /* EaseLiveCastView.m */,
-				3C9E31B9260C7B4200CC3E3F /* EaseCustomSwitch.h */,
-				3C9E31BA260C7B4200CC3E3F /* EaseInputTextView.h */,
-				3C9E31BB260C7B4200CC3E3F /* EaseKeyBoardView.h */,
-				3C9E31BC260C7B4200CC3E3F /* EaseGiftListView.m */,
-				3C9E31BD260C7B4200CC3E3F /* cell */,
-				3C9E31C6260C7B4200CC3E3F /* EaseLiveHeaderListView.h */,
-				3C9E31C7260C7B4200CC3E3F /* EaseLiveGiftView.h */,
-				3C9E31C8260C7B4200CC3E3F /* EaseAudienceBehaviorView.h */,
-				3C9E31C9260C7B4200CC3E3F /* EaseBaseSubView.m */,
-				3C9E31CA260C7B4200CC3E3F /* EaseFinishLiveView.h */,
-				3C9E31CB260C7B4200CC3E3F /* EaseGiftConfirmView.h */,
-				3C9E31CC260C7B4200CC3E3F /* EaseCustomKeyBoardView.h */,
-				3C9E31CD260C7B4200CC3E3F /* EaseEndLiveView.h */,
-				3C9E31CE260C7B4200CC3E3F /* EaseEmoticonView.m */,
-				3C9E31CF260C7B4200CC3E3F /* EaseAdminView.h */,
-				3C9E31D0260C7B4200CC3E3F /* EaseAnchorCardView.m */,
-				3C9E31D1260C7B4200CC3E3F /* EaseChatView.h */,
-				3C9E31D2260C7B4200CC3E3F /* EaseInputTextView.m */,
-				3C9E31D3260C7B4200CC3E3F /* EaseCustomSwitch.m */,
-				3C9E31D4260C7B4200CC3E3F /* EaseLiveCastView.h */,
 			);
 			path = liveView;
 			sourceTree = "<group>";
@@ -1040,7 +1026,6 @@
 				E96627791BE75E5000FA5B03 /* AVFoundation.framework */,
 				E96627771BE75E4900FA5B03 /* VideoToolbox.framework */,
 				E96627751BE75E4000FA5B03 /* AudioToolbox.framework */,
-				378DF0DD5F77D19A37F7C3EE /* libPods-EaseMobLiveDemo.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1054,7 +1039,6 @@
 				D2F4E0EA1D12C8AB00BB7E1A /* EaseMobLiveDemo */,
 				E93E8F451CC9D16B0076EC23 /* Frameworks */,
 				E94670D01BD78B9B00374D7A /* Products */,
-				22B213981969CE3956975CCF /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1079,7 +1063,6 @@
 				E94670CD1BD78B9B00374D7A /* Resources */,
 				3C9F89F4240E598100653B2F /* Embed Frameworks */,
 				4D4531831C2BB107ED7A2AF9 /* [CP] Embed Pods Frameworks */,
-				F8C8B4F10535C981CAC45698 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1283,10 +1266,16 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
+				"${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework",
 				"${PODS_ROOT}/HyphenateChat/HyphenateChat.framework",
+				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
+				"${BUILT_PRODUCTS_DIR}/MJRefresh/MJRefresh.framework",
+				"${BUILT_PRODUCTS_DIR}/Masonry/Masonry.framework",
 				"${PODS_ROOT}/PLMediaStreamingKit/Pod/Library/PLMediaStreamingKit.framework",
 				"${PODS_ROOT}/PLMediaStreamingKit/Pod/Library/HappyDNS.framework",
 				"${PODS_ROOT}/PLPlayerKit/Pod/Library/PLPlayerKit.framework",
+				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraAIDenoiseExtension/AgoraAIDenoiseExtension.framework/AgoraAIDenoiseExtension",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcKit/AgoraRtcKit.framework/AgoraRtcKit",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/Agoraffmpeg/Agoraffmpeg.framework/Agoraffmpeg",
@@ -1297,10 +1286,16 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FLAnimatedImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HyphenateChat.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MJRefresh.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Masonry.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PLMediaStreamingKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HappyDNS.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PLPlayerKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraAIDenoiseExtension.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraRtcKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Agoraffmpeg.framework",
@@ -1330,24 +1325,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F8C8B4F10535C981CAC45698 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo-resources.sh",
-				"${PODS_ROOT}/MJRefresh/MJRefresh/MJRefresh.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MJRefresh.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1551,7 +1528,6 @@
 		};
 		E94670F31BD78B9B00374D7A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 53CBE5DF7866C86872873F70 /* Pods-EaseMobLiveDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1559,7 +1535,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7.0;
+				CURRENT_PROJECT_VERSION = 2.0;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1579,7 +1555,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 1.0.8;
+				MARKETING_VERSION = 1.0.9;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1589,20 +1565,19 @@
 				PRODUCT_NAME = "环信聊天室";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
 		E94670F41BD78B9B00374D7A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 32D9D8E481358CD8EC0EA189 /* Pods-EaseMobLiveDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7.0;
+				CURRENT_PROJECT_VERSION = 2.0;
 				DEVELOPMENT_TEAM = 499WYUV8Q2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1621,7 +1596,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 1.0.8;
+				MARKETING_VERSION = 1.0.9;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1631,7 +1606,7 @@
 				PRODUCT_NAME = "环信聊天室";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

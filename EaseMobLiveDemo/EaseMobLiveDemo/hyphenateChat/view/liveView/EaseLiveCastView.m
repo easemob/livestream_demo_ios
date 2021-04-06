@@ -9,12 +9,14 @@
 #import "EaseLiveCastView.h"
 #import "EaseLiveRoom.h"
 #import "EaseDefaultDataHelper.h"
+#import <Masonry/Masonry.h>
 
 @interface EaseLiveCastView ()
 {
     EaseLiveRoom *_room;
 }
 
+@property (nonatomic, strong) UIView *backView;
 @property (nonatomic, strong) UIImageView *headImageView;
 @property (nonatomic, strong) UILabel *nameLabel;
 //@property (nonatomic, strong) UILabel *numberLabel;
@@ -33,13 +35,29 @@ extern NSMutableDictionary *anchorInfoDic;
     self = [super initWithFrame:frame];
     if (self) {
         _room = room;
-        self.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.25];
         self.layer.cornerRadius = frame.size.height / 2;
+        [self addSubview:self.backView];
+        [self.backView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.top.bottom.equalTo(self);
+            make.width.equalTo(@120);
+        }];
         [self addSubview:self.headImageView];
         [self addSubview:self.nameLabel];
         if ([_room.anchor isEqualToString:[EMClient sharedClient].currentUsername]) {
             [self addSubview:self.praiseLabel];
+            [self.praiseLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.left.equalTo(self);
+                make.top.equalTo(self).offset(self.height + 5);
+                make.width.mas_lessThanOrEqualTo(@(self.width / 2));
+                make.height.equalTo(@(self.height / 2));
+            }];
             [self addSubview:self.giftLabel];
+            [self.giftLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.left.equalTo(self.praiseLabel.mas_right).offset(10);
+                make.top.equalTo(self).offset(self.height + 5);
+                make.width.mas_lessThanOrEqualTo(@(self.width / 2));
+                make.height.equalTo(@(self.height / 2));
+            }];
         }
         [self _setviewData];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSelectHeadImage)];
@@ -48,6 +66,16 @@ extern NSMutableDictionary *anchorInfoDic;
         //[self addSubview:self.numberLabel];
     }
     return self;
+}
+
+- (UIView *)backView
+{
+    if (_backView == nil) {
+        _backView = [[UIView alloc] init];
+        _backView.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.25];
+        _backView.layer.cornerRadius = (self.height - 4)/2;
+    }
+    return _backView;
 }
 
 - (UIImageView*)headImageView
@@ -79,7 +107,7 @@ extern NSMutableDictionary *anchorInfoDic;
 {
     if (_praiseLabel == nil) {
         _praiseLabel = [[UILabel alloc] init];
-        _praiseLabel.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y + self.height + 5, self.width / 2, self.height / 2);
+        //_praiseLabel.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y + self.height + 5, self.width / 2, self.height / 2);
         _praiseLabel.font = [UIFont systemFontOfSize:12.f];
         _praiseLabel.textColor = [UIColor colorWithRed:255/255.0 green:199/255.0 blue:0/255.0 alpha:1.0];
         _praiseLabel.text = [NSString stringWithFormat:@"赞:%d",[EaseDefaultDataHelper.shared.praiseStatisticstCount intValue]];
@@ -92,7 +120,7 @@ extern NSMutableDictionary *anchorInfoDic;
 {
     if (_giftLabel == nil) {
         _giftLabel = [[UILabel alloc] init];
-        _giftLabel.frame = CGRectMake(self.frame.origin.x + _praiseLabel.width, self.frame.origin.y + self.height + 5, self.width / 2, self.height / 2);
+        //_giftLabel.frame = CGRectMake(self.frame.origin.x + _praiseLabel.width, self.frame.origin.y + self.height + 5, self.width / 2, self.height / 2);
         _giftLabel.font = [UIFont systemFontOfSize:12.f];
         _giftLabel.textColor = [UIColor colorWithRed:255/255.0 green:199/255.0 blue:0/255.0 alpha:1.0];
         _giftLabel.text = [NSString stringWithFormat:@"礼物:%d",[EaseDefaultDataHelper.shared.totalGifts intValue]];

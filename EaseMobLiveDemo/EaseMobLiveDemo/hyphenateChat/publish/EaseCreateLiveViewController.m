@@ -450,6 +450,9 @@ typedef enum : NSInteger{
         [self showHint:@"填入房间名"];
         return;
     }
+    if (!_fileData) {
+        _fileData = [NSData new];
+    }
     __weak typeof(self) weakSelf = self;
     MBProgressHUD *picHud = [MBProgressHUD showMessag:@"上传直播间封面..." toView:self.view];
     __weak MBProgressHUD *weaPicHud = picHud;

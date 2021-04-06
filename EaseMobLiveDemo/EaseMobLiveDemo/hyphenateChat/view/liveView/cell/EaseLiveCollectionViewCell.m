@@ -268,14 +268,34 @@
 {
     _textLable.text = room.title;
     if (room.coverPictureUrl.length > 0) {
+        
         UIImage *image = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:room.coverPictureUrl];
-        if (image) {
-            _liveImageView.image = image;
+        if (!image) {
+            __weak typeof(self) weakSelf = self;
+            [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:room.coverPictureUrl]
+                                                                  options:SDWebImageDownloaderUseNSURLCache
+                                                                 progress:NULL
+                                                                completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+                                                                    UIImage *backimage = nil;
+                                                                    NSString *key = nil;
+                                                                    if (image) {
+                                                                        backimage = image;
+                                                                        key = room.coverPictureUrl;
+                                                                    } else {
+                                                                        backimage = [UIImage imageNamed:@"default_back_image"];
+                                                                        key = @"default_back_image";
+                                                                    }
+                                                                    [[SDImageCache sharedImageCache] storeImage:backimage forKey:key toDisk:NO completion:^{
+                                                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                                                            weakSelf.liveImageView.image = backimage;
+                                                                        });
+                                                                    }];
+                                                                }];
         } else {
-            _liveImageView.image = [UIImage imageNamed:@"default_image"];
+            _liveImageView.image = image;
         }
     } else {
-        _liveImageView.image = [UIImage imageNamed:@"default_image"];
+        _liveImageView.image = [UIImage imageNamed:@"default_back_image"];
     }
     _numLabel.text = [NSString stringWithFormat:@"%ld",(long)room.currentUserCount];
     

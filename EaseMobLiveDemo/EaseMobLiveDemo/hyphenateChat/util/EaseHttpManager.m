@@ -125,9 +125,8 @@ Get request 获取直播间拉流地址
 #define kHttpRequestTimeout 60.f
 #define kHttpRequestMaxOperation 5
 
-//#define kDefaultDomain @"http://a1.easemob.com/appserver"
-#define kDefaultDomain @"http://a1-hsb.easemob.com/appserver"
-//define kDefaultDomain @"http://172.17.2.234:8080/appserver"
+#define kDefaultDomain @"http://a1.easemob.com/appserver"
+//#define kDefaultDomain @"http://a1-hsb.easemob.com/appserver"
 
 static EaseHttpManager *sharedInstance = nil;
 

@@ -703,6 +703,8 @@ extern NSArray<NSString*> *nickNameArray;
 {
     UIButton *btn = (UIButton*)sender;
     NSString *username = [_whitelist objectAtIndex:btn.tag];
+    if ([username isEqualToString:_liveroom.anchor])
+        return;
     __weak EaseAdminView *weakSelf = self;
     MBProgressHUD *hud = [MBProgressHUD showMessag:[NSString stringWithFormat:@"从白名单移除"] toView:self];
     __weak MBProgressHUD *weakHud = hud;

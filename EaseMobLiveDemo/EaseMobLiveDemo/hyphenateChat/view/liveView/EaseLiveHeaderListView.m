@@ -145,7 +145,7 @@
 - (EaseLiveCastView*)liveCastView
 {
     if (_liveCastView == nil) {
-        _liveCastView = [[EaseLiveCastView alloc] initWithFrame:CGRectMake(10, 0, 120.f, 40.f) room:_room];
+        _liveCastView = [[EaseLiveCastView alloc] initWithFrame:CGRectMake(10, 0, self.width, 40.f) room:_room];
     }
     return _liveCastView;
 }
@@ -191,6 +191,10 @@
     __weak typeof(self) weakself = self;
     [[EaseHttpManager sharedInstance] fetchLiveroomDetail:_room.chatroomId completion:^(EaseLiveRoom *room, BOOL success) {
         if (success) {
+            if (room.status == offline) {
+                [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOngoing:room completion:^(EaseLiveRoom *room, BOOL success) {
+                }];
+            }
             dispatch_async(dispatch_get_main_queue(), ^{
                 _room = room;
                 weakself.occupantsCount = _room.currentUserCount;
