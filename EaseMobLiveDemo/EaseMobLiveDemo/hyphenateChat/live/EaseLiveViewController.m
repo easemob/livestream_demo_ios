@@ -123,7 +123,7 @@
     
     [self setupForDismissKeyboard];
     
-    [self fetchLivingStream];
+    [self _setupAgoreKit];
 }
 
 - (void)viewWillLayoutSubviews
@@ -159,25 +159,25 @@
 //拉取直播流
 - (void)fetchLivingStream
 {
-    __weak typeof(self) weakSelf = self;
-    if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeAGORA_SPEED_LIVE]) {
-        [self _setupAgoreKit];
-        return;
-    }
-    if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeVOD] || [_room.liveroomType isEqualToString:kLiveBroadCastingTypeAgoraVOD]) {
-        NSURL *pushUrl = [NSURL URLWithString:[[_room.liveroomExt objectForKey:@"play"] objectForKey:@"m3u8"]];
-        if (!pushUrl) {
-            pushUrl = [NSURL URLWithString:[[_room.liveroomExt objectForKey:@"play"] objectForKey:@"rtmp"]];
-            [self startPLayVideoStream:pushUrl];
-        } else {
-            [self startPlayVodStream:pushUrl];
-        }
-        return;
-    }
-    [EaseHttpManager.sharedInstance getLiveRoomPullStreamUrlWithRoomId:_room.chatroomId completion:^(NSString *pullStreamStr) {
-        NSURL *pullStreamUrl = [NSURL URLWithString:pullStreamStr];
-        [weakSelf startPLayVideoStream:pullStreamUrl];
-    }];
+//    __weak typeof(self) weakSelf = self;
+//    if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeAGORA_SPEED_LIVE]) {
+//
+//        return;
+//    }
+//    if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeVOD] || [_room.liveroomType isEqualToString:kLiveBroadCastingTypeAgoraVOD]) {
+//        NSURL *pushUrl = [NSURL URLWithString:[[_room.liveroomExt objectForKey:@"play"] objectForKey:@"m3u8"]];
+//        if (!pushUrl) {
+//            pushUrl = [NSURL URLWithString:[[_room.liveroomExt objectForKey:@"play"] objectForKey:@"rtmp"]];
+//            [self startPLayVideoStream:pushUrl];
+//        } else {
+//            [self startPlayVodStream:pushUrl];
+//        }
+//        return;
+//    }
+//    [EaseHttpManager.sharedInstance getLiveRoomPullStreamUrlWithRoomId:_room.chatroomId completion:^(NSString *pullStreamStr) {
+//        NSURL *pullStreamUrl = [NSURL URLWithString:pullStreamStr];
+//        [weakSelf startPLayVideoStream:pullStreamUrl];
+//    }];
 }
 
 
@@ -193,8 +193,27 @@
     [self.agoraKit enableVideo];
     [self.agoraKit enableAudio];
     __weak typeof(self) weakSelf = self;
-    [self fetchAgoraRtcToken:^(NSString *rtcToken) {
-        [weakSelf.agoraKit joinChannelByToken:rtcToken channelId:_room.channel info:nil uid:0 joinSuccess:^(NSString *channel, NSUInteger uid, NSInteger elapsed) {
+    [self fetchAgoraRtcToken:^(NSString *rtcToken,NSUInteger agoraUserId) {
+        [weakSelf.agoraKit joinChannelByToken:rtcToken channelId:_room.channel info:nil uid:agoraUserId joinSuccess:^(NSString *channel, NSUInteger uid, NSInteger elapsed) {
+            if ([_room.liveroomType isEqualToString:kLiveBoardCastingTypeAGORA_CND_LIVE]) {
+                NSDictionary *paramtars = @{
+                    @"protocol":@"rtmp",
+                    @"domain":@"ws-rtmp-pull.easemob.com",
+                    @"pushPoint":@"live",
+                    @"streamKey":_room.channel ? _room.channel : _room.chatroomId
+                };
+                [EaseHttpManager.sharedInstance getAgroLiveRoomPlayStreamUrlParamtars:paramtars Completion:^(NSString *playStreamStr) {
+                    AgoraLiveInjectStreamConfig *config = [[AgoraLiveInjectStreamConfig alloc] init];
+                    config.videoGop=30;
+                    config.videoBitrate=400;
+                    config.videoFramerate=15;
+                    config.audioBitrate=48;
+                    config.audioSampleRate= AgoraAudioSampleRateType44100;
+                    config.audioChannels=1;
+                    [self.agoraKit addInjectStreamUrl:playStreamStr config:config];
+                }];
+                
+            }
         }];
     }];
     self.agoraRemoteVideoView = [[UIView alloc]init];
@@ -293,7 +312,7 @@
 {
     if (reason == AgoraConnectionChangedTokenExpired || reason == AgoraConnectionChangedInvalidToken) {
         __weak typeof(self) weakSelf = self;
-        [self fetchAgoraRtcToken:^(NSString *rtcToken) {
+        [self fetchAgoraRtcToken:^(NSString *rtcToken,NSUInteger agoraUserId) {
             [weakSelf.agoraKit renewToken:rtcToken];
         }];
     }
@@ -324,7 +343,7 @@
 - (void)rtcEngine:(AgoraRtcEngineKit *)engine tokenPrivilegeWillExpire:(NSString *)token
 {
     __weak typeof(self) weakSelf = self;
-    [self fetchAgoraRtcToken:^(NSString *rtcToken) {
+    [self fetchAgoraRtcToken:^(NSString *rtcToken,NSUInteger agoraUserId) {
         [weakSelf.agoraKit renewToken:rtcToken];
     }];
 }
@@ -332,20 +351,20 @@
 - (void)rtcEngineRequestToken:(AgoraRtcEngineKit *)engine
 {
     __weak typeof(self) weakSelf = self;
-    [self fetchAgoraRtcToken:^(NSString *rtcToken) {
+    [self fetchAgoraRtcToken:^(NSString *rtcToken,NSUInteger agoraUserId) {
         [weakSelf.agoraKit joinChannelByToken:rtcToken channelId:_room.channel info:nil uid:0 joinSuccess:^(NSString *channel, NSUInteger uid, NSInteger elapsed) {
         }];
     }];
 }
 
-- (void)fetchAgoraRtcToken:(void (^)(NSString *rtcToken))aCompletionBlock;
+- (void)fetchAgoraRtcToken:(void (^)(NSString *rtcToken ,NSUInteger agoraUserId))aCompletionBlock;
 {
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:config
                                                           delegate:nil
                                                      delegateQueue:[NSOperationQueue mainQueue]];
 
-    NSString* strUrl = [NSString stringWithFormat:@"http://a1.easemob.com/token/liveToken?userAccount=%@&channelName=%@&appkey=%@&uid=%d",[EMClient sharedClient].currentUsername, _room.channel, [EMClient sharedClient].options.appkey, 0];
+    NSString* strUrl = [NSString stringWithFormat:@"http://a1.easemob.com/token/rtcToken/v1?userAccount=%@&channelName=%@&appkey=%@",[EMClient sharedClient].currentUsername, _room.channel, [EMClient sharedClient].options.appkey];
     NSString*utf8Url = [strUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLFragmentAllowedCharacterSet]];
     NSURL* url = [NSURL URLWithString:utf8Url];
     NSMutableURLRequest* urlReq = [[NSMutableURLRequest alloc] initWithURL:url];
@@ -358,8 +377,9 @@
                 NSString* resCode = [body objectForKey:@"code"];
                 if([resCode isEqualToString:@"RES_0K"]) {
                     NSString* rtcToken = [body objectForKey:@"accessToken"];
+                    NSUInteger agoraUserId = [[body objectForKey:@"agoraUserId"] integerValue];
                     if (aCompletionBlock)
-                        aCompletionBlock(rtcToken);
+                        aCompletionBlock(rtcToken,agoraUserId);
                 }
             }
         }
@@ -724,8 +744,9 @@ extern NSMutableDictionary *anchorInfoDic;
         for (NSString *name in aMutes) {
             [text appendString:name];
         }
-        [self showHint:[NSString stringWithFormat:@"禁言成员:%@",text]];
+//        [self showHint:[NSString stringWithFormat:@"禁言成员:%@",text]];
         //[self showHudInView:[[[UIApplication sharedApplication] windows] firstObject] hint:[NSString stringWithFormat:@"禁言成员:%@",text]];
+        [self showHint:@"已被禁言"];
     }
 }
 
@@ -737,7 +758,8 @@ extern NSMutableDictionary *anchorInfoDic;
         for (NSString *name in aMutes) {
             [text appendString:name];
         }
-        [self showHint:[NSString stringWithFormat:@"解除禁言:%@",text]];
+//        [self showHint:[NSString stringWithFormat:@"解除禁言:%@",text]];
+        [self showHint:[NSString stringWithFormat:@"已解除禁言"]];
     }
 }
 
@@ -748,7 +770,8 @@ extern NSMutableDictionary *anchorInfoDic;
         for (NSString *name in aMembers) {
             [text appendString:name];
         }
-        [self showHint:[NSString stringWithFormat:@"被加入白名单:%@",text]];
+//        [self showHint:[NSString stringWithFormat:@"被加入白名单:%@",text]];
+        [self showHint:@"被加入白名单"];
     }
 }
 
@@ -759,7 +782,8 @@ extern NSMutableDictionary *anchorInfoDic;
         for (NSString *name in aMembers) {
             [text appendString:name];
         }
-        [self showHint:[NSString stringWithFormat:@"从白名单移除:%@",text]];
+//        [self showHint:[NSString stringWithFormat:@"从白名单移除:%@",text]];
+        [self showHint:@"已被从白名单中移除"];
     }
 }
 

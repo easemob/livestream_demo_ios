@@ -92,6 +92,8 @@ NSArray<UIImage*> *cardImgArray;
         liveTVListVC = [[EaseLiveTVListViewController alloc]initWithBehavior:kTabbarItemTag_Live video_type:kLiveBroadCastingTypeAGORA_SPEED_LIVE];
     if ([model.broadCastType isEqualToString:kLiveBroadCastingTypeLIVE])
         liveTVListVC = [[EaseLiveTVListViewController alloc]initWithBehavior:kTabbarItemTag_Live video_type:kLiveBroadCastingTypeLIVE];
+    if ([model.broadCastType isEqualToString:kLiveBroadCastingTypeAGORA_INTERACTION_LIVE])
+        liveTVListVC = [[EaseLiveTVListViewController alloc]initWithBehavior:kTabbarItemTag_Live video_type:kLiveBroadCastingTypeAGORA_INTERACTION_LIVE];
     
     [self.navigationController pushViewController:liveTVListVC animated:YES];
 }
@@ -110,10 +112,10 @@ NSArray<UIImage*> *cardImgArray;
 
 - (void)initDefaultInfo
 {
-    NSArray *broadCastTypeArray = @[kLiveBroadCastingTypeLIVE,kLiveBroadCastingTypeAGORA_SPEED_LIVE];
-    titleArray = @[@"传统直播",@"极速直播"];
-    descArray = @[@"单直播间百万观众，适合弱互动，对延迟没有要求的场景",@"直播延时小于 3 秒，适用于直播答题，互动大班课"];
-    cardImgArray = @[[UIImage imageNamed:@"traditionalBroadCast"],[UIImage imageNamed:@"rapidBroadCast"]];
+    NSArray *broadCastTypeArray = @[kLiveBroadCastingTypeLIVE,kLiveBroadCastingTypeAGORA_SPEED_LIVE,kLiveBroadCastingTypeAGORA_INTERACTION_LIVE];
+    titleArray = @[@"融合CDN直播",@"极速直播",@"互动直播"];
+    descArray = @[@"超低卡顿、全链路质量透明的标准 CDN 直播",@"低延时、强同步、高质量直播，观众与主播进行低频音视频互动",@"超低延时直播，观众频繁上麦与主播进行实时音视频互动"];
+    cardImgArray = @[[UIImage imageNamed:@"traditionalBroadCast"],[UIImage imageNamed:@"rapidBroadCast"],[UIImage imageNamed:@"interactionBroadCast"]];
     
     EaseBoradCastCard *model;
     self.dataAry = [[NSMutableArray<EaseBoradCastCard*> alloc]init];

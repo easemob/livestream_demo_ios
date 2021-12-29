@@ -540,7 +540,14 @@ extern NSArray<NSString*> *nickNameArray;
         } else {
             cell.textLabel.text = [self getNicknameWithId:realUsername];
         }
-        [cell.clickButton setTitle:@"删除" forState:UIControlStateNormal];
+        if ([realUsername isEqualToString:EMClient.sharedClient.currentUsername]) {
+            [cell.clickButton setTitle:@"" forState:UIControlStateNormal];
+            cell.clickButton.userInteractionEnabled = false;
+        }else{
+            [cell.clickButton setTitle:@"删除" forState:UIControlStateNormal];
+            cell.clickButton.userInteractionEnabled = true;
+        }
+        
         [cell.clickButton addTarget:self action:@selector(removeWhitelistAction:) forControlEvents:UIControlEventTouchUpInside];
         cell.muteSwitch.hidden = YES;
         cell.anchorIdentity.hidden = YES;

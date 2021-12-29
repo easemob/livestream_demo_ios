@@ -43,8 +43,14 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
 
 #define kLiveBroadCastingTypeVOD @"vod"
 #define kLiveBroadCastingTypeAgoraVOD @"agora_vod"
-#define kLiveBroadCastingTypeLIVE @"live"
+#define kLiveBroadCastingTypeAgoraInteractionVOD @"agora_interaction_vod"
+#define kLiveBroadCastingTypeAgoraCNDVOD @"agora_cdn_vod"
+
+//#define kLiveBroadCastingTypeLIVE @"live"
+#define kLiveBroadCastingTypeLIVE kLiveBoardCastingTypeAGORA_CND_LIVE
 #define kLiveBroadCastingTypeAGORA_SPEED_LIVE @"agora_speed_live"
+#define kLiveBroadCastingTypeAGORA_INTERACTION_LIVE @"agora_interaction_live"
+#define kLiveBoardCastingTypeAGORA_CND_LIVE     @"agora_cdn_live"
 
 
 #ifdef __OBJC__

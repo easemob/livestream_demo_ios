@@ -131,6 +131,16 @@
 - (void)getLiveRoomPushStreamUrlWithRoomId:(NSString*)aRoomId
                                 completion:(void (^)(NSString *pushStreamStr))aCompletion;
 
+
+/// 获取声网推流地址
+/// @param aCompletion 回调
+- (void)getArgoLiveRoomPushStreamUrlParamtars:(NSDictionary *)paramtas Completion:(void (^)(NSString *pushStreamStr))aCompletion;
+
+/// 获取声网拉流地址
+/// @param paramtas 参数
+/// @param aCompletion 回调
+-(void)getAgroLiveRoomPlayStreamUrlParamtars:(NSDictionary *)paramtas Completion:(void (^)(NSString *playStreamStr))aCompletion;
+
 /*
 *  获取直播聊天室拉流地址
 *

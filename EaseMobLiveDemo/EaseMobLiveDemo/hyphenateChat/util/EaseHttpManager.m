@@ -42,7 +42,8 @@
 /*
  DELETE/PUT request 删除直播间
  */
-#define kRequestLiveroomsUrl(id) [NSString stringWithFormat:@"%@/%@/liverooms/%@", kDefaultDomain, kAppKeyForDomain, id]
+//#define kRequestLiveroomsUrl(id) [NSString stringWithFormat:@"%@/%@/liverooms/%@", kDefaultDomain, kAppKeyForDomain, id]
+#define kRequestLiveroomsUrl(id) [NSString stringWithFormat:@"%@/liverooms/%@", kDefaultDomain, id]
 
 /*
  Post request 更新直播间状态/直播中
@@ -63,6 +64,11 @@
 Get request 获取直播间推流地址
 */
 #define kRequestLiveRoomPushStreamUrlWithRoomId(liveroomid) [NSString stringWithFormat:@"%@/streams/url/publish?streamKey=%@", kDefaultDomain, liveroomid]
+
+//获取声网直播间推流地址
+#define kRequestArgoPushStreamUrl @"http://a1.easemob.com/appserver/agora/cdn/streams/url/push"
+//获取声网直播间拉流地址
+#define kRequestArgoPlayStreamUrl @"http://a1.easemob.com/appserver/agora/cdn/streams/url/play"
 
 /*
 Get request 获取直播间拉流地址
@@ -95,6 +101,7 @@ Get request 获取直播间拉流地址
  */
 //#define kGetRequestGetLiveroomsOngoingUrl(limit, cursor) [NSString stringWithFormat:@"%@/%@/liverooms?ongoing=true&limit=%ld&cursor=%@", kDefaultDomain, kAppKeyForDomain, limit, cursor]
 #define kGetRequestGetLiveroomsOngoingUrl(limit, cursor, video_type) [NSString stringWithFormat:@"%@/liverooms/ongoing?limit=%ld&cursor=%@&video_type=%@", kDefaultDomain, limit, cursor, video_type]
+//#define kGetRequestGetLiveroomsOngoingUrl(limit, cursor, video_type) [NSString stringWithFormat:@"%@/liverooms/ongoing?limit=%ld&video_type=%@", kDefaultDomain, limit, video_type]
 
 /*
  GET request    获取某个具体直播房间的详情
@@ -534,6 +541,30 @@ static EaseHttpManager *sharedInstance = nil;
     }];
 }
 
+-(void)getArgoLiveRoomPushStreamUrlParamtars:(NSDictionary *)paramtas Completion:(void (^)(NSString *))aCompletion{
+    [self _doGetRequestWithPath:kRequestArgoPushStreamUrl parameters:paramtas completion:^(id responseObject, NSError *error) {
+        if (aCompletion) {
+            if (!error) {
+                if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+                    NSString *pushStr = [responseObject objectForKey:@"data"];
+                    aCompletion(pushStr);
+                }
+            }
+        }
+    }];
+}
+-(void)getAgroLiveRoomPlayStreamUrlParamtars:(NSDictionary *)paramtas Completion:(void (^)(NSString *))aCompletion{
+    [self _doGetRequestWithPath:kRequestArgoPushStreamUrl parameters:paramtas completion:^(id responseObject, NSError *error) {
+        if (aCompletion) {
+            if (!error) {
+                if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+                    NSString *pushStr = [responseObject objectForKey:@"data"];
+                    aCompletion(pushStr);
+                }
+            }
+        }
+    }];
+}
 - (void)getLiveRoomPullStreamUrlWithRoomId:(NSString*)aRoomId
                          completion:(void (^)(NSString *pullStreamStr))aCompletion
 {
@@ -945,17 +976,48 @@ static EaseHttpManager *sharedInstance = nil;
                       parameters:(NSDictionary*)parameters
                       completion:(void (^)(id responseObject, NSError *error))completion
 {
-    [self _setHeaderToken];
-    
-    [_sessionManager DELETE:path parameters:parameters headers:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (completion) {
-            completion(responseObject, nil);
-        }
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (completion) {
-            completion(nil, error);
-        }
+//    [self _setHeaderToken];
+//    NSDictionary *heders = @{@"Authorization":[NSString stringWithFormat:@"Bearer %@", [EMClient sharedClient].accessUserToken]};
+//    _sessionManager.requestSerializer.HTTPMethodsEncodingParametersInURI = [NSSet setWithObjects:@"GET", @"HEAD", nil];
+//    [_sessionManager DELETE:path parameters:parameters headers:heders success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+//        if (completion) {
+//            completion(responseObject, nil);
+//        }
+//    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+//        if (completion) {
+//            completion(nil, error);
+//        }
+//    }];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:path]
+      cachePolicy:NSURLRequestUseProtocolCachePolicy
+      timeoutInterval:10.0];
+    NSDictionary *headers = @{
+      @"Authorization": [NSString stringWithFormat:@"Bearer %@", [EMClient sharedClient].accessUserToken]
+    };
+
+    [request setAllHTTPHeaderFields:headers];
+
+    [request setHTTPMethod:@"DELETE"];
+
+    NSURLSession *session = [NSURLSession sharedSession];
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request
+    completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+      if (error) {
+//        NSLog(@"%@", error);
+          if (completion) {
+              completion(nil,error);
+          }
+      } else {
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+        NSError *parseError = nil;
+        NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
+//        NSLog(@"%@",responseDictionary);
+          if (completion) {
+              completion(responseDictionary,error);
+          }
+      }
     }];
+    [dataTask resume];
 }
 
 - (void)_doUploadRequestWithPath:(NSString*)path

@@ -203,6 +203,8 @@
 		3C9E335B260C800100CC3E3F /* EaseBoradCastCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C9E3355260C800000CC3E3F /* EaseBoradCastCard.m */; };
 		3C9E335C260C800100CC3E3F /* EaseLiveRoom.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C9E3358260C800100CC3E3F /* EaseLiveRoom.m */; };
 		3C9E3394260C8FE700CC3E3F /* AppDelegate+HyphenateChat.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C9E3393260C8FE700CC3E3F /* AppDelegate+HyphenateChat.m */; };
+		9EB81524277C44C2008FEF1D /* interactionBroadCast@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EB81523277C44C2008FEF1D /* interactionBroadCast@2x.png */; };
+		9EB81526277C44CE008FEF1D /* interactionBroadCast@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EB81525277C44CE008FEF1D /* interactionBroadCast@3x.png */; };
 		D23E252C1CE03775007506CB /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D23E24FF1CE0359C007506CB /* libsqlite3.tbd */; };
 		D23E25321CE0380A007506CB /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D23E25311CE0380A007506CB /* MobileCoreServices.framework */; };
 		D2E368221D3C7EFF00B1C90C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D2E368241D3C7EFF00B1C90C /* Localizable.strings */; };
@@ -220,6 +222,8 @@
 		E966277C1BE75E5D00FA5B03 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E966277B1BE75E5D00FA5B03 /* CoreMedia.framework */; };
 		E96F3D8A1C17FE410099718A /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E96F3D891C17FE410099718A /* Default-568h@2x.png */; };
 		E9ED2EE11C0C551900BA59A6 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E9ED2EE01C0C551900BA59A6 /* libz.tbd */; };
+		F5EB0FDE274CDCB300EDFCE9 /* EaseLiveCreateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5EB0FDC274CDCB300EDFCE9 /* EaseLiveCreateViewController.m */; };
+		F5EB0FDF274CDCB300EDFCE9 /* EaseLiveCreateViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F5EB0FDD274CDCB300EDFCE9 /* EaseLiveCreateViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -498,6 +502,8 @@
 		3C9E3359260C800100CC3E3F /* EaseLiveSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EaseLiveSession.h; sourceTree = "<group>"; };
 		3C9E3392260C8FE700CC3E3F /* AppDelegate+HyphenateChat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AppDelegate+HyphenateChat.h"; sourceTree = "<group>"; };
 		3C9E3393260C8FE700CC3E3F /* AppDelegate+HyphenateChat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AppDelegate+HyphenateChat.m"; sourceTree = "<group>"; };
+		9EB81523277C44C2008FEF1D /* interactionBroadCast@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "interactionBroadCast@2x.png"; sourceTree = "<group>"; };
+		9EB81525277C44CE008FEF1D /* interactionBroadCast@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "interactionBroadCast@3x.png"; sourceTree = "<group>"; };
 		D23E24FF1CE0359C007506CB /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		D23E252D1CE0379E007506CB /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		D23E252F1CE037F6007506CB /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -524,6 +530,9 @@
 		E96F3D891C17FE410099718A /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		E9ED2EDE1C0C551100BA59A6 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		E9ED2EE01C0C551900BA59A6 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		F5EB0FDB274CDCB300EDFCE9 /* EaseLiveCreateViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EaseLiveCreateViewController.h; sourceTree = "<group>"; };
+		F5EB0FDC274CDCB300EDFCE9 /* EaseLiveCreateViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseLiveCreateViewController.m; sourceTree = "<group>"; };
+		F5EB0FDD274CDCB300EDFCE9 /* EaseLiveCreateViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EaseLiveCreateViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -625,6 +634,9 @@
 			children = (
 				3C9E3179260C7B4200CC3E3F /* EaseCreateLiveViewController.h */,
 				3C9E3177260C7B4200CC3E3F /* EaseCreateLiveViewController.m */,
+				F5EB0FDB274CDCB300EDFCE9 /* EaseLiveCreateViewController.h */,
+				F5EB0FDC274CDCB300EDFCE9 /* EaseLiveCreateViewController.m */,
+				F5EB0FDD274CDCB300EDFCE9 /* EaseLiveCreateViewController.xib */,
 				3C9E317A260C7B4200CC3E3F /* EaseLiveroomCoverSettingView.h */,
 				3C9E3176260C7B4200CC3E3F /* EaseLiveroomCoverSettingView.m */,
 				3C9E3178260C7B4200CC3E3F /* EasePublishViewController.h */,
@@ -851,6 +863,7 @@
 		3C9E31F0260C7B4200CC3E3F /* @2x */ = {
 			isa = PBXGroup;
 			children = (
+				9EB81523277C44C2008FEF1D /* interactionBroadCast@2x.png */,
 				3C9E31F1260C7B4200CC3E3F /* kick@2x.png */,
 				3C9E31F2260C7B4200CC3E3F /* gift.dog@2x.png */,
 				3C9E31F3260C7B4200CC3E3F /* createBtnBackImg@2x.png */,
@@ -914,6 +927,7 @@
 		3C9E322A260C7B4200CC3E3F /* @3x */ = {
 			isa = PBXGroup;
 			children = (
+				9EB81525277C44CE008FEF1D /* interactionBroadCast@3x.png */,
 				3C9E322B260C7B4200CC3E3F /* avatat_2@3x.png */,
 				3C9E322C260C7B4200CC3E3F /* gift.bouquet@3x.png */,
 				3C9E322D260C7B4200CC3E3F /* gift.cake@3x.png */,
@@ -1172,6 +1186,7 @@
 				3C9E32C3260C7B4300CC3E3F /* backPic@2x.png in Resources */,
 				3C9E32E3260C7B4300CC3E3F /* gift.box@2x.png in Resources */,
 				D2F4E26D1D12C8AB00BB7E1A /* Images.xcassets in Resources */,
+				9EB81524277C44C2008FEF1D /* interactionBroadCast@2x.png in Resources */,
 				3C9E32CD260C7B4300CC3E3F /* chat@2x.png in Resources */,
 				3C9E330E260C7B4300CC3E3F /* gift.rings@3x.png in Resources */,
 				3C9E32DD260C7B4300CC3E3F /* giftrecord@2x.png in Resources */,
@@ -1236,10 +1251,12 @@
 				3C9E332B260C7B4400CC3E3F /* iconfont.woff in Resources */,
 				3C9E32E5260C7B4300CC3E3F /* rapidBroadCast@2x.png in Resources */,
 				3C9E32C6260C7B4300CC3E3F /* avatat_2@2x.png in Resources */,
+				9EB81526277C44CE008FEF1D /* interactionBroadCast@3x.png in Resources */,
 				3C9E32D4260C7B4300CC3E3F /* ic_exit@2x.png in Resources */,
 				3C9E32CE260C7B4300CC3E3F /* default_back_image@2x.png in Resources */,
 				3C9E32D6260C7B4300CC3E3F /* like@2x.png in Resources */,
 				3C9E332E260C7B4400CC3E3F /* iconfont.svg in Resources */,
+				F5EB0FDF274CDCB300EDFCE9 /* EaseLiveCreateViewController.xib in Resources */,
 				E96F3D8A1C17FE410099718A /* Default-568h@2x.png in Resources */,
 				3C9E32D8260C7B4300CC3E3F /* ic_chat@2x.png in Resources */,
 				3C9E3306260C7B4300CC3E3F /* icon-backAction@3x.png in Resources */,
@@ -1267,6 +1284,18 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
+				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraAIDenoiseExtension.framework",
+				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraCIExtension.framework",
+				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraCore.framework",
+				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraDav1dExtension.framework",
+				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraFDExtension.framework",
+				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraJNDExtension.framework",
+				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraRtcKit.framework",
+				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraSoundTouch.framework",
+				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraVideoProcessExtension.framework",
+				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraVideoSegmentationExtension.framework",
+				"${PODS_ROOT}/AgoraRtcEngine_iOS/Agorafdkaac.framework",
+				"${PODS_ROOT}/AgoraRtcEngine_iOS/Agoraffmpeg.framework",
 				"${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework",
 				"${PODS_ROOT}/HyphenateChat/HyphenateChat.framework",
 				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
@@ -1276,17 +1305,22 @@
 				"${PODS_ROOT}/PLMediaStreamingKit/Pod/Library/HappyDNS.framework",
 				"${PODS_ROOT}/PLPlayerKit/Pod/Library/PLPlayerKit.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraAIDenoiseExtension/AgoraAIDenoiseExtension.framework/AgoraAIDenoiseExtension",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraRtcKit/AgoraRtcKit.framework/AgoraRtcKit",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/Agoraffmpeg/Agoraffmpeg.framework/Agoraffmpeg",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraCore/AgoraCore.framework/AgoraCore",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraSoundTouch/AgoraSoundTouch.framework/AgoraSoundTouch",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/Agorafdkaac/Agorafdkaac.framework/Agorafdkaac",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/AgoraDav1dExtension/AgoraDav1dExtension.framework/AgoraDav1dExtension",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraAIDenoiseExtension.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraCIExtension.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraCore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraDav1dExtension.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraFDExtension.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraJNDExtension.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraRtcKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraSoundTouch.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraVideoProcessExtension.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraVideoSegmentationExtension.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Agorafdkaac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Agoraffmpeg.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FLAnimatedImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HyphenateChat.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
@@ -1296,13 +1330,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HappyDNS.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PLPlayerKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraAIDenoiseExtension.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraRtcKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Agoraffmpeg.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraCore.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraSoundTouch.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Agorafdkaac.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraDav1dExtension.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1352,6 +1379,7 @@
 				3C9E32AB260C7B4300CC3E3F /* EaseAnchorCardView.m in Sources */,
 				3C9E3285260C7B4300CC3E3F /* EaseSettingsViewController.m in Sources */,
 				3C9E326F260C7B4300CC3E3F /* PLPermissionRequestor.m in Sources */,
+				F5EB0FDE274CDCB300EDFCE9 /* EaseLiveCreateViewController.m in Sources */,
 				3C9E32A1260C7B4300CC3E3F /* EaseAdminView.m in Sources */,
 				3C9E329B260C7B4300CC3E3F /* JPGiftOperation.m in Sources */,
 				3C9E3295260C7B4300CC3E3F /* JPGiftCountLabel.m in Sources */,
@@ -1476,7 +1504,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "f68a7287-142e-44b2-bfc0-5318cc7a6403";
@@ -1518,7 +1546,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PROVISIONING_PROFILE = "f68a7287-142e-44b2-bfc0-5318cc7a6403";
 				SDKROOT = iphoneos;
@@ -1533,10 +1561,10 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.0;
-				DEVELOPMENT_TEAM = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 499WYUV8Q2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1552,7 +1580,7 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/EaseMobLiveDemo/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MARKETING_VERSION = 1.1.0;
@@ -1575,9 +1603,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.0;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 499WYUV8Q2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1593,7 +1621,7 @@
 					"COCOAPODS=1",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/EaseMobLiveDemo/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MARKETING_VERSION = 1.1.0;
@@ -1605,7 +1633,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.easemob.enterprise.demo.live;
 				PRODUCT_NAME = "环信聊天室";
 				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = easemob_enterprise_demo_live_distribution;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
