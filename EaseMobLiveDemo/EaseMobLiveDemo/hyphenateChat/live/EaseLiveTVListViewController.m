@@ -55,6 +55,9 @@
                self.title = @"极速直播";
            if ([_videoType isEqualToString:kLiveBroadCastingTypeLIVE])
                self.title = @"传统直播";
+           if ([_videoType isEqualToString:kLiveBroadCastingTypeAGORA_INTERACTION_LIVE]) {
+               self.title = @"互动直播";
+           }
        }
     return self;
 }
@@ -103,7 +106,7 @@
         if (isHeader) {
             //获取vod点播房间列表
             if ([_videoType isEqualToString:kLiveBroadCastingTypeLIVE]) {
-                [[EaseHttpManager sharedInstance] fetchVodRoomWithCursor:0 limit:2 video_type:kLiveBroadCastingTypeVOD completion:^(EMCursorResult *result, BOOL success) {
+                [[EaseHttpManager sharedInstance] fetchVodRoomWithCursor:0 limit:2 video_type:kLiveBroadCastingTypeAgoraVOD completion:^(EMCursorResult *result, BOOL success) {
                         [weakSelf getOngoingLiveroom:YES vodList:result.list];
                 }];
             }
@@ -111,6 +114,11 @@
             if ([_videoType isEqualToString:kLiveBroadCastingTypeAGORA_SPEED_LIVE]) {
                 [[EaseHttpManager sharedInstance] fetchVodRoomWithCursor:0 limit:2 video_type:kLiveBroadCastingTypeAgoraVOD completion:^(EMCursorResult *result, BOOL success) {
                         [weakSelf getOngoingLiveroom:YES vodList:result.list];
+                }];
+            }
+            if ([_videoType isEqualToString:kLiveBroadCastingTypeAGORA_INTERACTION_LIVE]) {
+                [EaseHttpManager.sharedInstance fetchVodRoomWithCursor:0 limit:2 video_type:kLiveBroadCastingTypeAgoraInteractionVOD completion:^(EMCursorResult *result, BOOL success) {
+                    [weakSelf getOngoingLiveroom:YES vodList:result.list];
                 }];
             }
         } else {
@@ -158,7 +166,7 @@
                   [weakSelf.dataArray addObjectsFromArray:result.list];
               }
               _cursor = result.cursor;
-              if ([result.list count] < kDefaultPageSize) {
+              if ([result.list count] < kDefaultPageSize ) {
                   _noMore = YES;
               }
               if (_noMore) {

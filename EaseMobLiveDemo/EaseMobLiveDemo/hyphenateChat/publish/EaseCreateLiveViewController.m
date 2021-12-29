@@ -181,7 +181,6 @@ typedef enum : NSInteger{
 }
 
 #pragma mark - getter
-
 - (UIView*)mainView
 {
     if (_mainView == nil) {

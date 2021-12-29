@@ -47,6 +47,7 @@
     hud.label.text = message;
     // 隐藏时候从父控件中移除
     hud.removeFromSuperViewOnHide = YES;
+    [hud hideAnimated:true afterDelay:1.5];
     return hud;
 }
 @end

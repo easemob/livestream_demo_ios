@@ -128,14 +128,15 @@
     //[self.view addSubview:self.roomNameLabel];
     [self.view layoutSubviews];
     [self setBtnStateInSel:0];
-    if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeAGORA_SPEED_LIVE]) {
-        [self _setupAgoreKit];
-    }
-    if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeLIVE]) {
-        [self _prepareForCameraSetting];
-        [self actionPushStream];
-        [self monitorCall];
-    }
+    [self _setupAgoreKit];
+//    if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeAGORA_SPEED_LIVE]||[_room.liveroomType isEqualToString:kLiveBroadCastingTypeAGORA_INTERACTION_LIVE]) {
+//        [self _setupAgoreKit];
+//    }
+//    if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeLIVE]) {
+//        [self _prepareForCameraSetting];
+//        [self actionPushStream];
+//        [self monitorCall];
+//    }
 }
 
 - (void)dealloc
@@ -190,7 +191,6 @@
         }
     };
 }
-
 - (void)_setupAgoreKit
 {
     self.agoraKit = [AgoraRtcEngineKit sharedEngineWithAppId:@"b79a23d7b1074ed9b0c756c63fd4fa81" delegate:self];
@@ -200,10 +200,27 @@
     [self.agoraKit enableAudio];
     [self _setupLocalVideo];
     __weak typeof(self) weakSelf = self;
-    [self fetchAgoraRtcToken:^(NSString *rtcToken) {
-        [weakSelf.agoraKit joinChannelByToken:rtcToken channelId:_room.channel info:nil uid:0 joinSuccess:^(NSString *channel, NSUInteger uid, NSInteger elapsed) {
+    [self fetchAgoraRtcToken:^(NSString *rtcToken ,NSUInteger agoraUserId) {
+        [weakSelf.agoraKit joinChannelByToken:rtcToken channelId:_room.channel info:nil uid:(NSUInteger)agoraUserId joinSuccess:^(NSString *channel, NSUInteger uid, NSInteger elapsed) {
             [weakSelf.agoraKit muteAllRemoteAudioStreams:YES];
             [weakSelf.agoraKit muteAllRemoteVideoStreams:YES];
+            [weakSelf.agoraKit joinChannelByToken:rtcToken channelId:_room.channel info:nil uid:(NSUInteger)agoraUserId joinSuccess:^(NSString *channel, NSUInteger uid, NSInteger elapsed) {
+                [weakSelf.agoraKit muteAllRemoteAudioStreams:YES];
+                [weakSelf.agoraKit muteAllRemoteVideoStreams:YES];
+                if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeLIVE]) {
+                    NSDictionary *paramtars = @{
+                        @"domain":@"ws1-rtmp-push.easemob.com",
+                        @"pushPoint":@"live",
+                        @"streamKey":_room.channel ? _room.channel : _room.chatroomId,
+                        @"expire":@"3600"
+                    };
+                    [EaseHttpManager.sharedInstance getArgoLiveRoomPushStreamUrlParamtars:paramtars Completion:^(NSString *pushStreamStr) {
+                        [weakSelf.agoraKit addPublishStreamUrl:pushStreamStr transcodingEnabled:false];
+                        
+                    }];
+                }
+            }];
+            
         }];
     }];
 }
@@ -222,12 +239,14 @@
 }
 
 #pragma mark - AgoraRtcEngineDelegate
-
+-(void)rtcEngine:(AgoraRtcEngineKit *)engine didJoinChannel:(NSString *)channel withUid:(NSUInteger)uid elapsed:(NSInteger)elapsed{
+    
+}
 - (void)rtcEngine:(AgoraRtcEngineKit *)engine connectionChangedToState:(AgoraConnectionStateType)state reason:(AgoraConnectionChangedReason)reason
 {
     if (reason == AgoraConnectionChangedTokenExpired || reason == AgoraConnectionChangedInvalidToken) {
         __weak typeof(self) weakSelf = self;
-        [self fetchAgoraRtcToken:^(NSString *rtcToken) {
+        [self fetchAgoraRtcToken:^(NSString *rtcToken,NSUInteger agoraUserId) {
             [weakSelf.agoraKit renewToken:rtcToken];
         }];
     }
@@ -252,7 +271,7 @@
 - (void)rtcEngine:(AgoraRtcEngineKit *)engine tokenPrivilegeWillExpire:(NSString *)token
 {
     __weak typeof(self) weakSelf = self;
-    [self fetchAgoraRtcToken:^(NSString *rtcToken) {
+    [self fetchAgoraRtcToken:^(NSString *rtcToken,NSUInteger agoraUserId) {
         [weakSelf.agoraKit renewToken:rtcToken];
     }];
 }
@@ -260,20 +279,34 @@
 - (void)rtcEngineRequestToken:(AgoraRtcEngineKit *)engine
 {
     __weak typeof(self) weakSelf = self;
-    [self fetchAgoraRtcToken:^(NSString *rtcToken) {
+    [self fetchAgoraRtcToken:^(NSString *rtcToken,NSUInteger agoraUserId) {
         [weakSelf.agoraKit joinChannelByToken:rtcToken channelId:_room.channel info:nil uid:0 joinSuccess:^(NSString *channel, NSUInteger uid, NSInteger elapsed) {
         }];
     }];
 }
-
-- (void)fetchAgoraRtcToken:(void (^)(NSString *rtcToken))aCompletionBlock;
+-(void)rtcEngine:(AgoraRtcEngineKit *)engine rtmpStreamingChangedToState:(NSString *)url state:(AgoraRtmpStreamingState)state errorCode:(AgoraRtmpStreamingErrorCode)errorCode{
+    
+}
+-(void)rtcEngine:(AgoraRtcEngineKit *)engine rtmpStreamingEventWithUrl:(NSString *)url eventCode:(AgoraRtmpStreamingEvent)eventCode{
+    
+}
+-(void)rtcEngine:(AgoraRtcEngineKit *)engine streamPublishedWithUrl:(NSString *)url errorCode:(AgoraErrorCode)errorCode{
+    
+}
+-(void)rtcEngine:(AgoraRtcEngineKit *)engine streamUnpublishedWithUrl:(NSString *)url{
+    
+}
+-(void)rtcEngineTranscodingUpdated:(AgoraRtcEngineKit *)engine{
+    
+}
+- (void)fetchAgoraRtcToken:(void (^)(NSString *rtcToken ,NSUInteger agoraUserId))aCompletionBlock;
 {
+    _room.channel = _room.channel.length > 0 ? _room.channel : _room.roomId;
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:config
                                                           delegate:nil
                                                      delegateQueue:[NSOperationQueue mainQueue]];
-
-    NSString* strUrl = [NSString stringWithFormat:@"http://a1.easemob.com/token/liveToken?userAccount=%@&channelName=%@&appkey=%@&uid=%d",[EMClient sharedClient].currentUsername, _room.channel, [EMClient sharedClient].options.appkey, 0];
+    NSString* strUrl = [NSString stringWithFormat:@"http://a1.easemob.com/token/rtcToken/v1?userAccount=%@&channelName=%@&appkey=%@",[EMClient sharedClient].currentUsername, _room.channel, [EMClient sharedClient].options.appkey];
     NSString*utf8Url = [strUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLFragmentAllowedCharacterSet]];
     NSURL* url = [NSURL URLWithString:utf8Url];
     NSMutableURLRequest* urlReq = [[NSMutableURLRequest alloc] initWithURL:url];
@@ -286,8 +319,9 @@
                 NSString* resCode = [body objectForKey:@"code"];
                 if([resCode isEqualToString:@"RES_0K"]) {
                     NSString* rtcToken = [body objectForKey:@"accessToken"];
+                    NSUInteger agoraUserId = [[body objectForKey:@"agoraUserId"] integerValue];
                     if (aCompletionBlock)
-                        aCompletionBlock(rtcToken);
+                        aCompletionBlock(rtcToken,agoraUserId);
                 }
             }
         }
@@ -384,12 +418,13 @@
 //切换前后摄像头
 - (void)didSelectChangeCameraButton
 {
-    if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeLIVE]) {
-        [self.session toggleCamera];
-    }
-    if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeAGORA_SPEED_LIVE]) {
-        [self.agoraKit switchCamera];
-    }
+//    if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeLIVE]) {
+//        [self.session toggleCamera];
+//    }
+//    if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeAGORA_SPEED_LIVE]) {
+//        [self.agoraKit switchCamera];
+//    }
+    [self.agoraKit switchCamera];
 }
 
 - (UIWindow*)subWindow
@@ -549,20 +584,26 @@
     [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOffline:_room completion:^(EaseLiveRoom *room, BOOL success) {
         if (success) {
             _room = room;
-            if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeLIVE]) {
-                [weakSelf.session stopStreaming];//结束推流
-                [weakSelf.session destroy];
-            }
-            if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeAGORA_SPEED_LIVE]) {
+//            if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeLIVE]) {
+//                [weakSelf.session stopStreaming];//结束推流
+//                [weakSelf.session destroy];
+//            }
+//            if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeAGORA_SPEED_LIVE]) {
+//                [weakSelf.agoraKit leaveChannel:nil];
+//                [AgoraRtcEngineKit destroy];
+//            }
+            [EaseHttpManager.sharedInstance deleteLiveRoomWithRoomId:_room.roomId completion:^(BOOL success) {
                 [weakSelf.agoraKit leaveChannel:nil];
                 [AgoraRtcEngineKit destroy];
-            }
-            _isFinishBroadcast = YES;
-            //重置本地保存的直播间id
-            EaseDefaultDataHelper.shared.currentRoomId = @"";
-            [EaseDefaultDataHelper.shared archive];
+                _isFinishBroadcast = YES;
+                //重置本地保存的直播间id
+                EaseDefaultDataHelper.shared.currentRoomId = @"";
+                [EaseDefaultDataHelper.shared archive];
+                block();
+            }];
+            
         }
-        block();
+        
     }];
 }
 
@@ -739,7 +780,8 @@ extern bool isAllTheSilence;
         for (NSString *name in aMutes) {
             [text appendString:name];
         }
-        [self showHint:[NSString stringWithFormat:@"禁言成员:%@",text]];
+//        [self showHint:[NSString stringWithFormat:@"禁言成员:%@",text]];
+        [self showHint:@"已被禁言"];
     }
 }
 
@@ -751,7 +793,8 @@ extern bool isAllTheSilence;
         for (NSString *name in aMutes) {
             [text appendString:name];
         }
-        [self showHint:[NSString stringWithFormat:@"解除禁言:%@",text]];
+//        [self showHint:[NSString stringWithFormat:@"解除禁言:%@",text]];
+        [self showHint:[NSString stringWithFormat:@"已解除禁言"]];
     }
 }
 
@@ -797,13 +840,13 @@ extern bool isAllTheSilence;
 
 - (void)didDismissFromChatroom:(EMChatroom *)aChatroom reason:(EMChatroomBeKickedReason)aReason
 {
-    if (aReason == 0)
-        [MBProgressHUD showMessag:[NSString stringWithFormat:@"被移出直播聊天室 %@", aChatroom.subject] toView:nil];
-    if (aReason == 1)
-        [MBProgressHUD showMessag:[NSString stringWithFormat:@"直播聊天室 %@ 已解散", aChatroom.subject] toView:nil];
-    if (aReason == 2)
-        [MBProgressHUD showMessag:@"您的账号已离线" toView:nil];
-    [self didClickFinishButton];
+//    if (aReason == 0)
+//        [MBProgressHUD showMessag:[NSString stringWithFormat:@"被移出直播聊天室 %@", aChatroom.subject] toView:nil];
+//    if (aReason == 1)
+//        [MBProgressHUD showMessag:[NSString stringWithFormat:@"直播聊天室 %@ 已解散", aChatroom.subject] toView:nil];
+//    if (aReason == 2)
+//        [MBProgressHUD showMessag:@"您的账号已离线" toView:nil];
+//    [self didClickFinishButton];
 }
 
 - (void)setBtnStateInSel:(NSInteger)num
