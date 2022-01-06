@@ -204,22 +204,19 @@
         [weakSelf.agoraKit joinChannelByToken:rtcToken channelId:_room.channel info:nil uid:(NSUInteger)agoraUserId joinSuccess:^(NSString *channel, NSUInteger uid, NSInteger elapsed) {
             [weakSelf.agoraKit muteAllRemoteAudioStreams:YES];
             [weakSelf.agoraKit muteAllRemoteVideoStreams:YES];
-            [weakSelf.agoraKit joinChannelByToken:rtcToken channelId:_room.channel info:nil uid:(NSUInteger)agoraUserId joinSuccess:^(NSString *channel, NSUInteger uid, NSInteger elapsed) {
-                [weakSelf.agoraKit muteAllRemoteAudioStreams:YES];
-                [weakSelf.agoraKit muteAllRemoteVideoStreams:YES];
-                if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeLIVE]) {
-                    NSDictionary *paramtars = @{
-                        @"domain":@"ws1-rtmp-push.easemob.com",
-                        @"pushPoint":@"live",
-                        @"streamKey":_room.channel ? _room.channel : _room.chatroomId,
-                        @"expire":@"3600"
-                    };
-                    [EaseHttpManager.sharedInstance getArgoLiveRoomPushStreamUrlParamtars:paramtars Completion:^(NSString *pushStreamStr) {
-                        [weakSelf.agoraKit addPublishStreamUrl:pushStreamStr transcodingEnabled:false];
-                        
-                    }];
-                }
-            }];
+            [weakSelf.agoraKit muteAllRemoteAudioStreams:YES];
+            [weakSelf.agoraKit muteAllRemoteVideoStreams:YES];
+            if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeLIVE]) {
+                NSDictionary *paramtars = @{
+                    @"domain":@"ws1-rtmp-push.easemob.com",
+                    @"pushPoint":@"live",
+                    @"streamKey":_room.channel ? _room.channel : _room.chatroomId,
+                    @"expire":@"3600"
+                };
+                [EaseHttpManager.sharedInstance getArgoLiveRoomPushStreamUrlParamtars:paramtars Completion:^(NSString *pushStreamStr) {
+                    [weakSelf.agoraKit startRtmpStreamWithoutTranscoding:pushStreamStr];
+                }];
+            }
             
         }];
     }];
@@ -284,10 +281,14 @@
         }];
     }];
 }
+#pragma mark CNDDelegate
 -(void)rtcEngine:(AgoraRtcEngineKit *)engine rtmpStreamingChangedToState:(NSString *)url state:(AgoraRtmpStreamingState)state errorCode:(AgoraRtmpStreamingErrorCode)errorCode{
     
 }
 -(void)rtcEngine:(AgoraRtcEngineKit *)engine rtmpStreamingEventWithUrl:(NSString *)url eventCode:(AgoraRtmpStreamingEvent)eventCode{
+    
+}
+-(void)rtcEngine:(AgoraRtcEngineKit *)engine streamInjectedStatusOfUrl:(NSString *)url uid:(NSUInteger)uid status:(AgoraInjectStreamStatus)status{
     
 }
 -(void)rtcEngine:(AgoraRtcEngineKit *)engine streamPublishedWithUrl:(NSString *)url errorCode:(AgoraErrorCode)errorCode{
