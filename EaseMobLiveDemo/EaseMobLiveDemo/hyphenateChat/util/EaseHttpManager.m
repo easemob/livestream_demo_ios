@@ -1008,7 +1008,7 @@ static EaseHttpManager *sharedInstance = nil;
               completion(nil,error);
           }
       } else {
-        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+//        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
         NSError *parseError = nil;
         NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
 //        NSLog(@"%@",responseDictionary);
