@@ -10,11 +10,8 @@ pod 'Masonry'
 pod 'MJRefresh'
 pod 'MBProgressHUD', '~> 1.1.0'
 pod 'SDWebImage', '~> 4.0'
-pod 'HyphenateChat'
+pod 'HyphenateChat', '3.8.0'
 pod 'SDWebImage/GIF'
 pod 'AFNetworking', '~> 4.0.1'
-pod 'PLMediaStreamingKit', '~> 3.0.0'
-pod 'PLPlayerKit', '~> 3.4.3'
-pod 'AgoraRtcEngine_iOS', '~> 3.6.0.1'
-
+pod 'AgoraRtcEngine_Special_iOS', '3.6.200.203'
 end

@@ -11,7 +11,6 @@
 #import "EaseLoginViewController.h"
 #import "EaseMainViewController.h"
 #import "EaseTransitionViewController.h"
-#import <PLMediaStreamingKit/PLMediaStreamingKit.h>
 
 @interface AppDelegate ()
 
@@ -38,8 +37,6 @@
     
     //初始化环信sdk
     [self initHyphenateChatSDK];
-    //初始化七牛sdk
-    [PLStreamingEnv initEnv];
     return YES;
 }
 

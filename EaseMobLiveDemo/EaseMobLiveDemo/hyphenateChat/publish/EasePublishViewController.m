@@ -27,9 +27,6 @@
 #import "EaseCustomMessageHelper.h"
 #import "EaseLiveViewController.h"
 
-#import <PLMediaStreamingKit/PLMediaStreamingKit.h>
-#import "PLPermissionRequestor.h"
-
 #import <AgoraRtcKit/AgoraRtcEngineKit.h>
 
 #import <CoreTelephony/CTCallCenter.h>
@@ -40,7 +37,20 @@
 #define kDefaultTop 35.f
 #define kDefaultLeft 10.f
 
-@interface EasePublishViewController () <EaseChatViewDelegate,UITextViewDelegate,EMChatroomManagerDelegate,TapBackgroundViewDelegate,EaseLiveHeaderListViewDelegate,EaseProfileLiveViewDelegate,UIAlertViewDelegate,EMClientDelegate,EaseCustomMessageHelperDelegate,PLMediaStreamingSessionDelegate,AgoraRtcEngineDelegate>
+@interface EasePublishViewController ()
+<
+    EaseChatViewDelegate,
+    UITextViewDelegate,
+    EMChatroomManagerDelegate,
+    TapBackgroundViewDelegate,
+    EaseLiveHeaderListViewDelegate,
+    EaseProfileLiveViewDelegate,
+    UIAlertViewDelegate,
+    EMClientDelegate,
+    EaseCustomMessageHelperDelegate,
+    AgoraDirectCdnStreamingEventDelegate,
+    AgoraRtcEngineDelegate
+>
 {
     BOOL _isload;
     BOOL _isShutDown;
@@ -61,11 +71,6 @@
     
     NSURL *_streamCloudURL;
     NSURL *_streamURL;
-    
-    PLVideoCaptureConfiguration *videoCaptureConfiguration;
-    PLAudioCaptureConfiguration *audioCaptureConfiguration;
-    PLVideoStreamingConfiguration *videoStreamingConfiguration;
-    PLAudioStreamingConfiguration *audioStreamingConfiguration;
 }
 
 @property (nonatomic, strong) EaseLiveRoom *room;
@@ -78,9 +83,6 @@
 //聊天室
 @property (strong, nonatomic) EaseChatView *chatview;
 @property(nonatomic,strong) UIImageView *backImageView;
-
-//七牛媒体流
-@property (nonatomic, strong) PLMediaStreamingSession *session;
 
 @property (nonatomic, strong) AgoraRtcEngineKit *agoraKit;
 @property (nonatomic, strong) UIView *agoraLocalVideoView;
@@ -125,18 +127,14 @@
                                         [self.headerListView loadHeaderListWithChatroomId:_room.chatroomId];
                                     }
                                 }];
-    //[self.view addSubview:self.roomNameLabel];
     [self.view layoutSubviews];
     [self setBtnStateInSel:0];
-    [self _setupAgoreKit];
-//    if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeAGORA_SPEED_LIVE]||[_room.liveroomType isEqualToString:kLiveBroadCastingTypeAGORA_INTERACTION_LIVE]) {
-//        [self _setupAgoreKit];
-//    }
-//    if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeLIVE]) {
-//        [self _prepareForCameraSetting];
-//        [self actionPushStream];
-//        [self monitorCall];
-//    }
+    if ([_room.liveroomType isEqualToString:kLiveBoardCastingTypeAGORA_CND_LIVE]) {
+        //急速直播与互动直播均采用joinchannel方式直播
+        [self setupdCDNAgoreKit];
+    }else{
+        [self setupChannelAgoreKit];
+    }
 }
 
 - (void)dealloc
@@ -160,6 +158,8 @@
     EaseDefaultDataHelper.shared.totalGifts = @"";
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    [[UIApplication sharedApplication] setIdleTimerDisabled:false];
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
@@ -179,47 +179,73 @@
             NSLog(@"电话接通");
         } else if(call.callState == CTCallStateIncoming) {
             NSLog(@"来电话");
-            if ([weakSelf.room.liveroomType isEqualToString:kLiveBroadCastingTypeAGORA_SPEED_LIVE]) {
-                [weakSelf.agoraKit muteLocalVideoStream:YES];
-                [weakSelf.agoraKit muteLocalAudioStream:YES];
-            }
-            if ([weakSelf.room.liveroomType isEqualToString:kLiveBroadCastingTypeLIVE]) {
-                [weakSelf.session stopStreaming];
-            }
+            [weakSelf.agoraKit muteLocalVideoStream:YES];
+            [weakSelf.agoraKit muteLocalAudioStream:YES];
         } else if (call.callState ==CTCallStateDialing) {
             NSLog(@"拨号打电话(在应用内调用打电话功能)");
         }
     };
 }
-- (void)_setupAgoreKit
-{
-    self.agoraKit = [AgoraRtcEngineKit sharedEngineWithAppId:@"b79a23d7b1074ed9b0c756c63fd4fa81" delegate:self];
-    [self.agoraKit setChannelProfile:AgoraChannelProfileLiveBroadcasting];
-    [self.agoraKit setClientRole:AgoraClientRoleBroadcaster options:nil];
-    [self.agoraKit enableVideo];
-    [self.agoraKit enableAudio];
+-(void)setupChannelAgoreKit{
+    AgoraRtcEngineConfig *config = [[AgoraRtcEngineConfig alloc] init];
+    config.appId = @"b79a23d7b1074ed9b0c756c63fd4fa81";
+    config.channelProfile = AgoraChannelProfileLiveBroadcasting;
+    self.agoraKit = [AgoraRtcEngineKit sharedEngineWithConfig:config delegate:self];
     [self _setupLocalVideo];
+    [_agoraKit setChannelProfile:AgoraChannelProfileLiveBroadcasting];
+    [_agoraKit setClientRole:AgoraClientRoleBroadcaster];
     __weak typeof(self) weakSelf = self;
     [self fetchAgoraRtcToken:^(NSString *rtcToken ,NSUInteger agoraUserId) {
         [weakSelf.agoraKit joinChannelByToken:rtcToken channelId:_room.channel info:nil uid:(NSUInteger)agoraUserId joinSuccess:^(NSString *channel, NSUInteger uid, NSInteger elapsed) {
-            [weakSelf.agoraKit muteAllRemoteAudioStreams:YES];
-            [weakSelf.agoraKit muteAllRemoteVideoStreams:YES];
-            [weakSelf.agoraKit muteAllRemoteAudioStreams:YES];
-            [weakSelf.agoraKit muteAllRemoteVideoStreams:YES];
-            if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeLIVE]) {
-                NSDictionary *paramtars = @{
-                    @"domain":@"ws1-rtmp-push.easemob.com",
-                    @"pushPoint":@"live",
-                    @"streamKey":_room.channel ? _room.channel : _room.chatroomId,
-                    @"expire":@"3600"
-                };
-                [EaseHttpManager.sharedInstance getArgoLiveRoomPushStreamUrlParamtars:paramtars Completion:^(NSString *pushStreamStr) {
-                    [weakSelf.agoraKit startRtmpStreamWithoutTranscoding:pushStreamStr];
-                }];
-            }
-            
+
         }];
     }];
+    
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+}
+- (void)setupdCDNAgoreKit{
+    
+    AgoraRtcEngineConfig *config = [[AgoraRtcEngineConfig alloc] init];
+    config.appId = @"b79a23d7b1074ed9b0c756c63fd4fa81";
+    config.channelProfile = AgoraChannelProfileLiveBroadcasting;
+    self.agoraKit = [AgoraRtcEngineKit sharedEngineWithConfig:config delegate:self];
+    [_agoraKit setChannelProfile:AgoraChannelProfileLiveBroadcasting];
+    [_agoraKit setClientRole:AgoraClientRoleBroadcaster];
+    AgoraVideoEncoderConfiguration *videoConfig = [[AgoraVideoEncoderConfiguration alloc] initWithSize:CGSizeMake(640, 360)
+                                                                                        frameRate:AgoraVideoFrameRateFps15
+                                                                                          bitrate:700
+                                                                                  orientationMode:AgoraVideoOutputOrientationModeFixedPortrait
+                                                                                       mirrorMode:AgoraVideoMirrorModeDisabled];
+    [_agoraKit setVideoEncoderConfiguration:videoConfig];
+    [_agoraKit enableVideo];
+    [self _setupLocalVideo];
+    //融合cdn 和 互动直播都使用直推流方式
+    [_agoraKit setDirectCdnStreamingAudioProfile:AgoraAudioProfileDefault];
+    [_agoraKit setDirectCdnStreamingVideoConfiguration:videoConfig];
+    AgoraDirectCdnStreamingMediaOptions *options = [[AgoraDirectCdnStreamingMediaOptions alloc] init];
+    options.publishCameraTrack = [AgoraRtcBoolOptional of:true];
+    options.publishMicrophoneTrack = [AgoraRtcBoolOptional of:true];
+
+    __block typeof(options) blockOptions = options;
+    __strong typeof(self) strongSelf = self;
+    __weak typeof(self) weakSelf = self;
+    NSDictionary *paramtars = @{
+        @"domain":@"ws1-rtmp-push.easemob.com",
+        @"pushPoint":@"live",
+        @"streamKey":_room.channel ? _room.channel : _room.chatroomId,
+        @"expire":@"3600"
+    };
+    [EaseHttpManager.sharedInstance getArgoLiveRoomPushStreamUrlParamtars:paramtars Completion:^(NSString *pushStreamStr) {
+        NSInteger code = [weakSelf.agoraKit startDirectCdnStreaming:strongSelf publishUrl:pushStreamStr mediaOptions:blockOptions];
+        [weakSelf.agoraKit enableAudio];
+        [weakSelf.agoraKit setDefaultAudioRouteToSpeakerphone:true];
+        if (code != 0) {
+            
+        }
+        
+    }];
+    
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
 }
 
 - (void)_setupLocalVideo {
@@ -232,39 +258,29 @@
     videoCanvas.view = self.agoraLocalVideoView;
     videoCanvas.renderMode = AgoraVideoRenderModeHidden;
     // 设置本地视图。
-    [self.agoraKit setupLocalVideo:videoCanvas];
-}
-
-#pragma mark - AgoraRtcEngineDelegate
--(void)rtcEngine:(AgoraRtcEngineKit *)engine didJoinChannel:(NSString *)channel withUid:(NSUInteger)uid elapsed:(NSInteger)elapsed{
+    [_agoraKit enableVideo];
+    [_agoraKit startPreview];
+    [_agoraKit setupLocalVideo:videoCanvas];
     
 }
-- (void)rtcEngine:(AgoraRtcEngineKit *)engine connectionChangedToState:(AgoraConnectionStateType)state reason:(AgoraConnectionChangedReason)reason
-{
-    if (reason == AgoraConnectionChangedTokenExpired || reason == AgoraConnectionChangedInvalidToken) {
-        __weak typeof(self) weakSelf = self;
-        [self fetchAgoraRtcToken:^(NSString *rtcToken,NSUInteger agoraUserId) {
-            [weakSelf.agoraKit renewToken:rtcToken];
-        }];
-    }
-    if (state == AgoraConnectionStateConnected) {
-        [self.backImageView removeFromSuperview];
-        [self.view insertSubview:self.agoraLocalVideoView atIndex:0];
-    }
-    if (state == AgoraConnectionStateConnecting || state == AgoraConnectionStateReconnecting) {
-        MBProgressHUD *hud = [MBProgressHUD showMessag:@"正在连接..." toView:self.view];
-        [hud hideAnimated:YES afterDelay:1.5];
-        [self.agoraLocalVideoView removeFromSuperview];
-        [self.view insertSubview:self.backImageView atIndex:0];
-    }
-    if (state == AgoraConnectionStateFailed) {
-        MBProgressHUD *hud = [MBProgressHUD showMessag:@"连接失败,请重新创建直播间。" toView:self.view];
-        [self.agoraLocalVideoView removeFromSuperview];
-        [self.view insertSubview:self.backImageView atIndex:0];
-        [hud hideAnimated:YES afterDelay:2.0];
+#pragma mark - AgoraDirectCdnStreamingEventDelegate
+-(void)onDirectCdnStreamingStateChanged:(AgoraDirectCdnStreamingState)state
+                                  error:(AgoraDirectCdnStreamingError)error
+                                message:(NSString *)message{
+    if (state == AgoraDirectCdnStreamingStateRunning && error == AgoraDirectCdnStreamingErrorOK) {
+        
     }
 }
-
+#pragma mark - AgoraRtcEngineDelegate
+//自己加入房间
+-(void)rtcEngine:(AgoraRtcEngineKit *)engine didJoinChannel:(NSString *)channel withUid:(NSUInteger)uid elapsed:(NSInteger)elapsed{
+    [self.agoraKit muteAllRemoteVideoStreams:false];
+    [self.agoraKit muteAllRemoteAudioStreams:false];
+}
+//主播加入房间
+-(void)rtcEngine:(AgoraRtcEngineKit *)engine didJoinedOfUid:(NSUInteger)uid elapsed:(NSInteger)elapsed{
+    
+}
 - (void)rtcEngine:(AgoraRtcEngineKit *)engine tokenPrivilegeWillExpire:(NSString *)token
 {
     __weak typeof(self) weakSelf = self;
@@ -281,25 +297,7 @@
         }];
     }];
 }
-#pragma mark CNDDelegate
--(void)rtcEngine:(AgoraRtcEngineKit *)engine rtmpStreamingChangedToState:(NSString *)url state:(AgoraRtmpStreamingState)state errorCode:(AgoraRtmpStreamingErrorCode)errorCode{
-    
-}
--(void)rtcEngine:(AgoraRtcEngineKit *)engine rtmpStreamingEventWithUrl:(NSString *)url eventCode:(AgoraRtmpStreamingEvent)eventCode{
-    
-}
--(void)rtcEngine:(AgoraRtcEngineKit *)engine streamInjectedStatusOfUrl:(NSString *)url uid:(NSUInteger)uid status:(AgoraInjectStreamStatus)status{
-    
-}
--(void)rtcEngine:(AgoraRtcEngineKit *)engine streamPublishedWithUrl:(NSString *)url errorCode:(AgoraErrorCode)errorCode{
-    
-}
--(void)rtcEngine:(AgoraRtcEngineKit *)engine streamUnpublishedWithUrl:(NSString *)url{
-    
-}
--(void)rtcEngineTranscodingUpdated:(AgoraRtcEngineKit *)engine{
-    
-}
+
 - (void)fetchAgoraRtcToken:(void (^)(NSString *rtcToken ,NSUInteger agoraUserId))aCompletionBlock;
 {
     _room.channel = _room.channel.length > 0 ? _room.channel : _room.roomId;
@@ -347,84 +345,16 @@
                                                 [weakSelf.headerListView loadHeaderListWithChatroomId:_room.chatroomId];
                                             }
                                         }];
-            if ([weakSelf.room.liveroomType isEqualToString:kLiveBroadCastingTypeAGORA_SPEED_LIVE]) {
-                [weakSelf.agoraKit enableLocalVideo:YES];
-                [weakSelf.agoraKit enableLocalAudio:YES];
-            }
-            if ([weakSelf.room.liveroomType isEqualToString:kLiveBroadCastingTypeLIVE]) {
-                [weakSelf.session restartStreamingWithPushURL:_streamURL feedback:^(PLStreamStartStateFeedback feedback) {}];
-            }
+            [weakSelf.agoraKit enableLocalVideo:YES];
+            [weakSelf.agoraKit enableLocalAudio:YES];
         }];
     }
-}
-
-#pragma mark - PLMediaStreamingSessionDelegate
-
-- (void)mediaStreamingSession:(PLMediaStreamingSession *)session streamStateDidChange:(PLStreamState)state
-{
-    if ((state == PLStreamStateDisconnected || state == PLStreamStateDisconnecting || state == PLStreamStateAutoReconnecting) && _isFinishBroadcast == NO) {
-        [[EaseHttpManager sharedInstance] modifyLiveroomStatusWithOngoing:_room completion:^(EaseLiveRoom *room, BOOL success) {}];
-    }
-}
-
-#pragma mark - mediastream
-
-- (PLMediaStreamingSession *)session
-{
-    if (_session == nil) {
-        videoCaptureConfiguration = [PLVideoCaptureConfiguration defaultConfiguration];
-        videoCaptureConfiguration.position = AVCaptureDevicePositionFront;
-        audioCaptureConfiguration = [PLAudioCaptureConfiguration defaultConfiguration];
-        audioCaptureConfiguration.acousticEchoCancellationEnable = YES;
-        videoStreamingConfiguration = [PLVideoStreamingConfiguration defaultConfiguration];
-        audioStreamingConfiguration = [PLAudioStreamingConfiguration defaultConfiguration];
-        _session = [[PLMediaStreamingSession alloc] initWithVideoCaptureConfiguration:videoCaptureConfiguration audioCaptureConfiguration:audioCaptureConfiguration videoStreamingConfiguration:videoStreamingConfiguration audioStreamingConfiguration:audioStreamingConfiguration stream:nil];
-        _session.delegate = self;
-        _session.autoReconnectEnable = YES;//掉线重连
-    }
-    return _session;
-}
-//摄像头权限
-- (void)_prepareForCameraSetting
-{
-    PLPermissionRequestor *permission = [[PLPermissionRequestor alloc] init];
-    __weak typeof(self) weakSelf = self;
-    permission.permissionGranted = ^{
-        UIView *previewView = _session.previewView;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [weakSelf.view insertSubview:weakSelf.session.previewView atIndex:0];
-            [previewView mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.top.bottom.left.and.right.equalTo(weakSelf.view);
-            }];
-        });
-    };
-    [permission checkAndRequestPermission];
-}
-
-- (void)actionPushStream {
-    [EaseHttpManager.sharedInstance getLiveRoomPushStreamUrlWithRoomId:_room.chatroomId completion:^(NSString *pushUrl) {
-        if (!pushUrl) {
-            return;
-        }
-        _streamURL = [NSURL URLWithString:pushUrl];
-        [self.session startStreamingWithPushURL:_streamURL feedback:^(PLStreamStartStateFeedback feedback) {
-           NSString *log = [NSString stringWithFormat:@"session start state %lu",(unsigned long)feedback];
-           dispatch_async(dispatch_get_main_queue(), ^{
-               NSLog(@"%@", log);
-           });
-        }];
-    }];
 }
 
 //切换前后摄像头
 - (void)didSelectChangeCameraButton
 {
-//    if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeLIVE]) {
-//        [self.session toggleCamera];
-//    }
-//    if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeAGORA_SPEED_LIVE]) {
-//        [self.agoraKit switchCamera];
-//    }
+
     [self.agoraKit switchCamera];
 }
 
@@ -519,7 +449,6 @@
     [finishView setDoneCompletion:^(BOOL isFinish) {
         if (isFinish) {
             _isFinishBroadcast = YES;
-            _session.delegate = nil;
             [weakSelf didClickFinishButton];
         }
         [weakFinishView removeFromSuperview];
@@ -594,8 +523,15 @@
 //                [AgoraRtcEngineKit destroy];
 //            }
             [EaseHttpManager.sharedInstance deleteLiveRoomWithRoomId:_room.roomId completion:^(BOOL success) {
-                [weakSelf.agoraKit leaveChannel:nil];
-                [AgoraRtcEngineKit destroy];
+                if ([_room.liveroomType isEqualToString:kLiveBoardCastingTypeAGORA_CND_LIVE] || [_room.liveroomType isEqualToString:kLiveBroadCastingTypeAGORA_INTERACTION_LIVE]) {
+                    [weakSelf.agoraKit stopDirectCdnStreaming];
+                    [weakSelf.agoraKit stopPreview];
+                    [AgoraRtcEngineKit destroy];
+                }else{
+                    [weakSelf.agoraKit leaveChannel:nil];
+                    [AgoraRtcEngineKit destroy];
+                }
+                
                 _isFinishBroadcast = YES;
                 //重置本地保存的直播间id
                 EaseDefaultDataHelper.shared.currentRoomId = @"";
@@ -809,9 +745,9 @@ extern bool isAllTheSilence;
         
         UIAlertAction *ok = [UIAlertAction actionWithTitle:NSLocalizedString(@"publish.ok", @"Ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             if ([aOldOwner isEqualToString:EMClient.sharedClient.currentUsername]) {
-                if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeLIVE]) {
-                    [weakSelf.session stopStreaming];//结束推流
-                    [weakSelf.session destroy];
+                if ([_room.liveroomType isEqualToString:kLiveBoardCastingTypeAGORA_CND_LIVE] || [_room.liveroomType isEqualToString:kLiveBroadCastingTypeAGORA_INTERACTION_LIVE]) {
+                    [weakSelf.agoraKit stopDirectCdnStreaming];
+                    [weakSelf.agoraKit stopPreview];
                 }
                 if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeAGORA_SPEED_LIVE]) {
                     [weakSelf.agoraKit leaveChannel:nil];
@@ -849,7 +785,12 @@ extern bool isAllTheSilence;
 //        [MBProgressHUD showMessag:@"您的账号已离线" toView:nil];
 //    [self didClickFinishButton];
 }
-
+-(void)userDidJoinChatroom:(EMChatroom *)aChatroom user:(NSString *)aUsername{
+    [self.headerListView loadHeaderListWithChatroomId:_room.chatroomId];
+}
+-(void)userDidLeaveChatroom:(EMChatroom *)aChatroom user:(NSString *)aUsername{
+    [self.headerListView loadHeaderListWithChatroomId:_room.chatroomId];
+}
 - (void)setBtnStateInSel:(NSInteger)num
 {
     if (num == 1) {

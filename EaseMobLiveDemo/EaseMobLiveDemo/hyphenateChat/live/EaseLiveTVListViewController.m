@@ -54,7 +54,7 @@
            if ([_videoType isEqualToString:kLiveBroadCastingTypeAGORA_SPEED_LIVE])
                self.title = @"极速直播";
            if ([_videoType isEqualToString:kLiveBroadCastingTypeLIVE])
-               self.title = @"传统直播";
+               self.title = @"融合CND直播";
            if ([_videoType isEqualToString:kLiveBroadCastingTypeAGORA_INTERACTION_LIVE]) {
                self.title = @"互动直播";
            }

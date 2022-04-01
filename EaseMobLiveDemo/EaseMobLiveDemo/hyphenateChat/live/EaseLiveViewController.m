@@ -31,14 +31,24 @@
 #import "UIImageView+WebCache.h"
 #import "EaseCustomMessageHelper.h"
 
-#import <PLPlayerKit/PLPlayerKit.h>
-
 #import <AgoraRtcKit/AgoraRtcEngineKit.h>
 
 #define kDefaultTop 35.f
 #define kDefaultLeft 10.f
 
-@interface EaseLiveViewController () <EaseChatViewDelegate,EaseLiveHeaderListViewDelegate,TapBackgroundViewDelegate,EaseLiveGiftViewDelegate,EMChatroomManagerDelegate,EaseProfileLiveViewDelegate,EMClientDelegate,EaseCustomMessageHelperDelegate,PLPlayerDelegate,AgoraRtcEngineDelegate>
+@interface EaseLiveViewController ()
+<
+    EaseChatViewDelegate,
+    EaseLiveHeaderListViewDelegate,
+    TapBackgroundViewDelegate,
+    EaseLiveGiftViewDelegate,
+    EMChatroomManagerDelegate,
+    EaseProfileLiveViewDelegate,
+    EMClientDelegate,
+    EaseCustomMessageHelperDelegate,
+    AgoraRtcEngineDelegate,
+    AgoraRtcMediaPlayerDelegate
+>
 {
     NSTimer *_burstTimer;
     EaseLiveRoom *_room;
@@ -65,14 +75,9 @@
 @property(nonatomic,strong) UIImageView *gifImageView;
 @property(nonatomic,strong) UIImageView *backImageView;
 
-@property (nonatomic, strong) PLPlayer  *player;
-
-@property (nonatomic, strong) AVPlayer *avPlayer;
-@property (nonatomic, strong) AVPlayerLayer *avLayer;
-
 @property (nonatomic, strong) AgoraRtcEngineKit *agoraKit;
 @property (nonatomic, strong) UIView *agoraRemoteVideoView;
-
+@property (nonatomic,strong) id<AgoraRtcMediaPlayerProtocol> agoraMediaPlayer;
 @end
 
 @implementation EaseLiveViewController
@@ -123,7 +128,12 @@
     
     [self setupForDismissKeyboard];
     
-    [self _setupAgoreKit];
+    if ([_room.liveroomType isEqualToString:kLiveBoardCastingTypeAGORA_CND_LIVE]) {
+        [self setupCDNAgoreKit];
+    }else{
+        //急速直播与互动直播均采用joinchannel方式直播
+        [self setupChannelAgoreKit];
+    }
 }
 
 - (void)viewWillLayoutSubviews
@@ -139,9 +149,8 @@
     [_headerListView stopTimer];
     _chatview.delegate = nil;
     _chatview = nil;
-    if (self.avPlayer)
-        [self.avPlayer removeTimeObserver:_observer];
-    [self stopTimer];
+    
+    [[UIApplication sharedApplication] setIdleTimerDisabled:false];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -154,190 +163,69 @@
     [self.chatview endEditing:YES];
 }
 
-#pragma mark - fetchlivingstream
-
-//拉取直播流
-- (void)fetchLivingStream
-{
-//    __weak typeof(self) weakSelf = self;
-//    if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeAGORA_SPEED_LIVE]) {
-//
-//        return;
-//    }
-//    if ([_room.liveroomType isEqualToString:kLiveBroadCastingTypeVOD] || [_room.liveroomType isEqualToString:kLiveBroadCastingTypeAgoraVOD]) {
-//        NSURL *pushUrl = [NSURL URLWithString:[[_room.liveroomExt objectForKey:@"play"] objectForKey:@"m3u8"]];
-//        if (!pushUrl) {
-//            pushUrl = [NSURL URLWithString:[[_room.liveroomExt objectForKey:@"play"] objectForKey:@"rtmp"]];
-//            [self startPLayVideoStream:pushUrl];
-//        } else {
-//            [self startPlayVodStream:pushUrl];
-//        }
-//        return;
-//    }
-//    [EaseHttpManager.sharedInstance getLiveRoomPullStreamUrlWithRoomId:_room.chatroomId completion:^(NSString *pullStreamStr) {
-//        NSURL *pullStreamUrl = [NSURL URLWithString:pullStreamStr];
-//        [weakSelf startPLayVideoStream:pullStreamUrl];
-//    }];
-}
-
-
 #pragma mark - configAgroaKit
-
-- (void)_setupAgoreKit
-{
+-(void)setupCDNAgoreKit{
+    AgoraRtcEngineConfig *config = [[AgoraRtcEngineConfig alloc] init];
+    config.appId = @"b79a23d7b1074ed9b0c756c63fd4fa81";
+    config.channelProfile = AgoraChannelProfileLiveBroadcasting;
+    self.agoraKit = [AgoraRtcEngineKit sharedEngineWithConfig:config delegate:self];
+    _agoraMediaPlayer = [self.agoraKit createMediaPlayerWithDelegate:self];
+    self.agoraRemoteVideoView = [[UIView alloc]init];
+    self.agoraRemoteVideoView.frame = self.view.bounds;
+    [_agoraMediaPlayer setView:self.agoraRemoteVideoView];
+    NSDictionary *paramtars = @{
+        @"protocol":@"rtmp",
+        @"domain":@"ws-rtmp-pull.easemob.com",
+        @"pushPoint":@"live",
+        @"streamKey":_room.channel ? _room.channel : _room.chatroomId
+    };
+    __weak typeof(self)weakSelf = self;
+    [EaseHttpManager.sharedInstance getAgroLiveRoomPlayStreamUrlParamtars:paramtars Completion:^(NSString *playStreamStr) {
+        [weakSelf.agoraMediaPlayer open:playStreamStr startPos:0];
+    }];
+}
+-(void)setupChannelAgoreKit{
     self.agoraKit = [AgoraRtcEngineKit sharedEngineWithAppId:@"b79a23d7b1074ed9b0c756c63fd4fa81" delegate:self];
     [self.agoraKit setChannelProfile:AgoraChannelProfileLiveBroadcasting];
-    AgoraClientRoleOptions *options = [[AgoraClientRoleOptions alloc]init];
-    options.audienceLatencyLevel = AgoraAudienceLatencyLevelLowLatency;
-    [self.agoraKit setClientRole:AgoraClientRoleAudience options:options];
-    [self.agoraKit enableVideo];
-    [self.agoraKit enableAudio];
+    [self.agoraKit setClientRole:AgoraClientRoleAudience];
     __weak typeof(self) weakSelf = self;
     [self fetchAgoraRtcToken:^(NSString *rtcToken,NSUInteger agoraUserId) {
         [weakSelf.agoraKit joinChannelByToken:rtcToken channelId:_room.channel info:nil uid:agoraUserId joinSuccess:^(NSString *channel, NSUInteger uid, NSInteger elapsed) {
-            if ([_room.liveroomType isEqualToString:kLiveBoardCastingTypeAGORA_CND_LIVE]) {
-                NSDictionary *paramtars = @{
-                    @"protocol":@"rtmp",
-                    @"domain":@"ws-rtmp-pull.easemob.com",
-                    @"pushPoint":@"live",
-                    @"streamKey":_room.channel ? _room.channel : _room.chatroomId
-                };
-                [EaseHttpManager.sharedInstance getAgroLiveRoomPlayStreamUrlParamtars:paramtars Completion:^(NSString *playStreamStr) {
-                    AgoraLiveInjectStreamConfig *config = [[AgoraLiveInjectStreamConfig alloc] init];
-                    config.videoGop=30;
-                    config.videoBitrate=400;
-                    config.videoFramerate=15;
-                    config.audioBitrate=48;
-                    config.audioSampleRate= AgoraAudioSampleRateType44100;
-                    config.audioChannels=1;
-                    [self.agoraKit addInjectStreamUrl:playStreamStr config:config];
-                }];
-                
-            }
+
         }];
     }];
-    self.agoraRemoteVideoView = [[UIView alloc]init];
-    self.agoraRemoteVideoView.frame = self.view.bounds;
+    self.agoraRemoteVideoView = [[UIView alloc] initWithFrame:self.view.bounds];
+    
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
 }
 
-- (void)rtcEngine:(AgoraRtcEngineKit *)engine remoteVideoStateChangedOfUid:(NSUInteger)uid state:(AgoraVideoRemoteState)state reason:(AgoraVideoRemoteStateReason)reason elapsed:(NSInteger)elapsed
-{
-    if (state == AgoraVideoRemoteStateFailed || state == AgoraVideoRemoteStateStopped) {
-        [self.agoraRemoteVideoView removeFromSuperview];
-        [self.view insertSubview:self.backImageView atIndex:0];
-    } else {
-        [self.view insertSubview:self.agoraRemoteVideoView atIndex:0];
-        [self.backImageView removeFromSuperview];
+#pragma mark - AgoraRtcMediaPlayDelegate
+-(void)AgoraRtcMediaPlayer:(id<AgoraRtcMediaPlayerProtocol>)playerKit didChangedToState:(AgoraMediaPlayerState)state error:(AgoraMediaPlayerError)error{
+    if (state == AgoraMediaPlayerStateOpenCompleted) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.view insertSubview:self.agoraRemoteVideoView atIndex:0];
+            [self.backImageView removeFromSuperview];
+            [self.agoraMediaPlayer play];
+        });
     }
+}
+#pragma mark - AgoraRtcEngineDelegate
+//自己加入房间
+-(void)rtcEngine:(AgoraRtcEngineKit *)engine didJoinChannel:(NSString *)channel withUid:(NSUInteger)uid elapsed:(NSInteger)elapsed{
+    
+}
+//主播加入房间
+-(void)rtcEngine:(AgoraRtcEngineKit *)engine didJoinedOfUid:(NSUInteger)uid elapsed:(NSInteger)elapsed{
     AgoraRtcVideoCanvas *videoCanvas = [[AgoraRtcVideoCanvas alloc] init];
     videoCanvas.uid = uid;
     videoCanvas.view = self.agoraRemoteVideoView;
     videoCanvas.renderMode = AgoraVideoRenderModeHidden;
     // 设置远端视图。
     [self.agoraKit setupRemoteVideo:videoCanvas];
-}
-
-- (PLPlayerOption *)_getPlayerOPtion
-{
-    PLPlayerOption *option = [PLPlayerOption defaultOption];
-    [option setOptionValue:@15 forKey:PLPlayerOptionKeyTimeoutIntervalForMediaPackets];
-    [option setOptionValue:@(3) forKey:PLPlayerOptionKeyVideoPreferFormat];
-    [option setOptionValue:@(kPLLogDebug) forKey:PLPlayerOptionKeyLogLevel];
-    return option;
-}
-
-//点播
-- (void)startPlayVodStream:(NSURL *)vodStreamUrl
-{
-    //设置播放的项目
-    AVPlayerItem *item = [[AVPlayerItem alloc] initWithURL:vodStreamUrl];
-    //初始化player对象
-    self.avPlayer = [[AVPlayer alloc] initWithPlayerItem:item];
-    //设置播放页面
-    self.avLayer = [AVPlayerLayer playerLayerWithPlayer:_avPlayer];
-    //设置播放页面的大小
-    self.avLayer.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
-    self.avLayer.backgroundColor = [UIColor clearColor].CGColor;
-    //设置播放窗口和当前视图之间的比例显示内容
-    self.avLayer.videoGravity = AVLayerVideoGravityResizeAspect;
+    [self.view insertSubview:self.agoraRemoteVideoView atIndex:0];
     [self.backImageView removeFromSuperview];
-    //添加播放视图到self.view
-    [self.view.layer insertSublayer:self.avLayer atIndex:0];
-    //设置播放的默认音量值
-    self.avPlayer.volume = 1.0f;
-    [self.avPlayer play];
-    [self addProgressObserver: [vodStreamUrl absoluteString]];
-}
-// 视频循环播放
-- (void)vodPlayDidEnd:(NSDictionary*)dic{
-    [self.avLayer removeFromSuperlayer];
-    self.avPlayer = nil;
-    NSURL *pushUrl = [NSURL URLWithString:[dic objectForKey:@"pushurl"]];
-    [self.avPlayer seekToTime:CMTimeMakeWithSeconds(0, 600) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
-    AVPlayerItem *item = [dic objectForKey:@"playItem"];
-    [item seekToTime:kCMTimeZero];
-    [self startPlayVodStream:pushUrl];
-}
-
--(void)addProgressObserver:(NSString*)url {
-    __weak typeof(self) weakSelf = self;
-    AVPlayerItem *playerItem=self.avPlayer.currentItem;
-    _observer = [self.avPlayer addPeriodicTimeObserverForInterval:CMTimeMake(1.0, 1.0) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
-        float current=CMTimeGetSeconds(time);
-        float total=CMTimeGetSeconds([playerItem duration]);
-        if ((current > 0 && total > 0) && ((int)current == (int)total)) {
-            [weakSelf vodPlayDidEnd:@{@"pushurl":url, @"playItem":weakSelf.avPlayer.currentItem}];
-        }
-    }];
-}
-
-//看直播
-- (void)startPLayVideoStream:(NSURL *)streamUrl
-{
-    self.player = [PLPlayer playerLiveWithURL:streamUrl option:[self _getPlayerOPtion]];
-    self.player.delegate = self;
-    [self.view insertSubview:self.player.playerView atIndex:0];
-    [self.player.playerView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.bottom.left.right.equalTo(self.view);
-    }];
-    self.player.delegateQueue = dispatch_get_main_queue();
-    if ([_room.liveroomType isEqual:kLiveBroadCastingTypeVOD])
-        self.player.playerView.contentMode = UIViewContentModeScaleAspectFit;
-    [self.player play];
-}
-
-#pragma mark - AgoraRtcEngineDelegate
-
-- (void)rtcEngine:(AgoraRtcEngineKit *)engine connectionChangedToState:(AgoraConnectionStateType)state reason:(AgoraConnectionChangedReason)reason
-{
-    if (reason == AgoraConnectionChangedTokenExpired || reason == AgoraConnectionChangedInvalidToken) {
-        __weak typeof(self) weakSelf = self;
-        [self fetchAgoraRtcToken:^(NSString *rtcToken,NSUInteger agoraUserId) {
-            [weakSelf.agoraKit renewToken:rtcToken];
-        }];
-    }
-    if (state == AgoraConnectionStateConnected) {
-        if (_clock > 0) {
-            _clock = 0;
-            [self stopTimer];
-        }
-    }
-    if (state == AgoraConnectionStateConnecting || state == AgoraConnectionStateReconnecting) {
-        MBProgressHUD *hud = [MBProgressHUD showMessag:@"正在连接..." toView:self.view];
-        [hud hideAnimated:YES afterDelay:1.5];
-        [self.agoraRemoteVideoView removeFromSuperview];
-        [self.view insertSubview:self.backImageView atIndex:0];
-    }
-    if (state == AgoraConnectionStateFailed) {
-        MBProgressHUD *hud = [MBProgressHUD showMessag:@"连接失败,请退出重进直播间。" toView:self.view];
-        [self.agoraRemoteVideoView removeFromSuperview];
-        [self.view insertSubview:self.backImageView atIndex:0];
-        [hud hideAnimated:YES afterDelay:2.0];
-        if (_clock >= 5)
-            return;
-        ++_clock;
-        [self startTimer];
-    }
+    [self.agoraKit muteAllRemoteAudioStreams:false];
+    [self.agoraKit muteAllRemoteVideoStreams:false];
 }
 
 - (void)rtcEngine:(AgoraRtcEngineKit *)engine tokenPrivilegeWillExpire:(NSString *)token
@@ -388,53 +276,6 @@
     [task resume];
 }
 
-#pragma mark - PLPlayerDelegate
-
-- (void)player:(PLPlayer *)player statusDidChange:(PLPlayerStatus)state
-{
-    NSLog(@"status       %ld",(long)state);
-    if (state == PLPlayerStatusPlaying) {
-        [self.backImageView removeFromSuperview];
-        if (_clock > 0) {
-            _clock = 0;
-            [self stopTimer];
-        }
-    } else if (state == PLPlayerStatusCaching) {
-    } else if (state == PLPlayerStateAutoReconnecting) {
-        MBProgressHUD *hud = [MBProgressHUD showMessag:@"正在重新连接..." toView:self.view];
-        [hud hideAnimated:YES afterDelay:1.5];
-    } else if (state == PLPlayerStatusError) {
-        MBProgressHUD *hud = [MBProgressHUD showMessag:@"播放出错,请退出重进直播间。" toView:self.view];
-        [self.player.playerView removeFromSuperview];
-        [self.view insertSubview:self.backImageView atIndex:0];
-        [hud hideAnimated:YES afterDelay:1.5];
-    }
-}
-
-- (void)player:(PLPlayer *)player stoppedWithError:(NSError *)error
-{
-    NSString *info = error.userInfo[@"NSLocalizedDescription"];
-    MBProgressHUD *hud = [MBProgressHUD showMessag:info toView:self.view];
-    [self.player.playerView removeFromSuperview];
-    [self.view insertSubview:self.backImageView atIndex:0];
-    [hud hideAnimated:YES afterDelay:2.0];
-    if (_clock >= 5)
-        return;
-    ++_clock;
-    [self startTimer];
-}
-
-- (void)startTimer {
-    [self stopTimer];
-    _timer = [NSTimer scheduledTimerWithTimeInterval:15.0 target:self selector:@selector(fetchLivingStream) userInfo:nil repeats:NO];
-}
-
-- (void)stopTimer {
-    if (_timer) {
-        [_timer invalidate];
-        _timer = nil;
-    }
-}
 
 #pragma mark - getter
 
@@ -584,7 +425,6 @@
 {
     _chatroom = aChatroom;
     _room.anchor = aNewOwner;
-    [self fetchLivingStream];
 }
 
 - (void)easeChatViewDidChangeFrameToHeight:(CGFloat)toHeight
@@ -813,7 +653,12 @@ extern NSMutableDictionary *anchorInfoDic;
         [self presentViewController:alert animated:YES completion:nil];
     }
 }
-
+-(void)userDidJoinChatroom:(EMChatroom *)aChatroom user:(NSString *)aUsername{
+    [self.headerListView loadHeaderListWithChatroomId:_room.chatroomId];
+}
+-(void)userDidLeaveChatroom:(EMChatroom *)aChatroom user:(NSString *)aUsername{
+    [self.headerListView loadHeaderListWithChatroomId:_room.chatroomId];
+}
 #pragma mark - EMClientDelegate
 
 - (void)userAccountDidLoginFromOtherDevice
@@ -845,7 +690,12 @@ extern NSMutableDictionary *anchorInfoDic;
                                          }
                                          [weakSelf dismissViewControllerAnimated:YES completion:NULL];
                                      }];
-    [self.agoraKit leaveChannel:nil];
+    if ([_room.liveroomType isEqualToString:kLiveBoardCastingTypeAGORA_CND_LIVE]) {
+        [self.agoraMediaPlayer stop];
+    }else{
+        [self.agoraKit leaveChannel:nil];
+    }
+    [AgoraRtcEngineKit destroy];
     [_burstTimer invalidate];
     _burstTimer = nil;
 }

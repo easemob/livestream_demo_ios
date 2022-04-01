@@ -554,7 +554,7 @@ static EaseHttpManager *sharedInstance = nil;
     }];
 }
 -(void)getAgroLiveRoomPlayStreamUrlParamtars:(NSDictionary *)paramtas Completion:(void (^)(NSString *))aCompletion{
-    [self _doGetRequestWithPath:kRequestArgoPushStreamUrl parameters:paramtas completion:^(id responseObject, NSError *error) {
+    [self _doGetRequestWithPath:kRequestArgoPlayStreamUrl parameters:paramtas completion:^(id responseObject, NSError *error) {
         if (aCompletion) {
             if (!error) {
                 if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {

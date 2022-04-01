@@ -11,7 +11,6 @@
 		3C30742C2546C900003696CA /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C30742B2546C900003696CA /* CoreTelephony.framework */; };
 		3C525E2124650C7200D16DD5 /* 直播聊天室集成第三方视频推拉流介绍.md in Resources */ = {isa = PBXBuildFile; fileRef = 3C525E2024650C7200D16DD5 /* 直播聊天室集成第三方视频推拉流介绍.md */; };
 		3C70A163241B2C4E00A5185F /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D23E252D1CE0379E007506CB /* ImageIO.framework */; };
-		3C9E326F260C7B4300CC3E3F /* PLPermissionRequestor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C9E3156260C7B4100CC3E3F /* PLPermissionRequestor.m */; };
 		3C9E3270260C7B4300CC3E3F /* UIView+Position.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C9E3158260C7B4100CC3E3F /* UIView+Position.m */; };
 		3C9E3271260C7B4300CC3E3F /* UIViewController+HUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C9E315A260C7B4100CC3E3F /* UIViewController+HUD.m */; };
 		3C9E3272260C7B4300CC3E3F /* NSDictionary+SafeValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C9E315D260C7B4100CC3E3F /* NSDictionary+SafeValue.m */; };
@@ -244,8 +243,6 @@
 		3C30742B2546C900003696CA /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		3C525E2024650C7200D16DD5 /* 直播聊天室集成第三方视频推拉流介绍.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "直播聊天室集成第三方视频推拉流介绍.md"; sourceTree = "<group>"; };
 		3C72AD69240F9559007BC99F /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
-		3C9E3155260C7B4100CC3E3F /* PLPermissionRequestor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLPermissionRequestor.h; sourceTree = "<group>"; };
-		3C9E3156260C7B4100CC3E3F /* PLPermissionRequestor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLPermissionRequestor.m; sourceTree = "<group>"; };
 		3C9E3158260C7B4100CC3E3F /* UIView+Position.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Position.m"; sourceTree = "<group>"; };
 		3C9E3159260C7B4100CC3E3F /* NSDictionary+SafeValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+SafeValue.h"; sourceTree = "<group>"; };
 		3C9E315A260C7B4100CC3E3F /* UIViewController+HUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+HUD.m"; sourceTree = "<group>"; };
@@ -569,7 +566,6 @@
 				3C9E326C260C7B4300CC3E3F /* EaseLoginViewController.m */,
 				3C9E326B260C7B4300CC3E3F /* EaseMainViewController.h */,
 				3C9E3170260C7B4200CC3E3F /* EaseMainViewController.m */,
-				3C9E3154260C7B4100CC3E3F /* EaseMediaStream */,
 				3C9E317D260C7B4200CC3E3F /* EaseSignUpViewController.h */,
 				3C9E316F260C7B4200CC3E3F /* EaseSignUpViewController.m */,
 				3C9E326E260C7B4300CC3E3F /* EaseTransitionViewController.h */,
@@ -582,15 +578,6 @@
 				3C9E3197260C7B4200CC3E3F /* view */,
 			);
 			path = hyphenateChat;
-			sourceTree = "<group>";
-		};
-		3C9E3154260C7B4100CC3E3F /* EaseMediaStream */ = {
-			isa = PBXGroup;
-			children = (
-				3C9E3155260C7B4100CC3E3F /* PLPermissionRequestor.h */,
-				3C9E3156260C7B4100CC3E3F /* PLPermissionRequestor.m */,
-			);
-			path = EaseMediaStream;
 			sourceTree = "<group>";
 		};
 		3C9E3157260C7B4100CC3E3F /* category */ = {
@@ -1284,51 +1271,31 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-EaseMobLiveDemo/Pods-EaseMobLiveDemo-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
-				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraAIDenoiseExtension.framework",
-				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraCIExtension.framework",
-				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraCore.framework",
-				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraDav1dExtension.framework",
-				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraFDExtension.framework",
-				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraJNDExtension.framework",
-				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraRtcKit.framework",
-				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraSoundTouch.framework",
-				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraVideoProcessExtension.framework",
-				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraVideoSegmentationExtension.framework",
-				"${PODS_ROOT}/AgoraRtcEngine_iOS/Agorafdkaac.framework",
-				"${PODS_ROOT}/AgoraRtcEngine_iOS/Agoraffmpeg.framework",
+				"${PODS_ROOT}/AgoraRtcEngine_Special_iOS/AgoraRtcCryptoLoader.framework",
+				"${PODS_ROOT}/AgoraRtcEngine_Special_iOS/AgoraRtcKit.framework",
+				"${PODS_ROOT}/AgoraRtcEngine_Special_iOS/AgoraVideoProcess.framework",
+				"${PODS_ROOT}/AgoraRtcEngine_Special_iOS/Agoraffmpeg.framework",
+				"${PODS_ROOT}/AgoraRtcEngine_Special_iOS/BeQuic.framework",
 				"${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework",
 				"${PODS_ROOT}/HyphenateChat/HyphenateChat.framework",
 				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/MJRefresh/MJRefresh.framework",
 				"${BUILT_PRODUCTS_DIR}/Masonry/Masonry.framework",
-				"${PODS_ROOT}/PLMediaStreamingKit/Pod/Library/PLMediaStreamingKit.framework",
-				"${PODS_ROOT}/PLMediaStreamingKit/Pod/Library/HappyDNS.framework",
-				"${PODS_ROOT}/PLPlayerKit/Pod/Library/PLPlayerKit.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraAIDenoiseExtension.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraCIExtension.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraCore.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraDav1dExtension.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraFDExtension.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraJNDExtension.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraRtcCryptoLoader.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraRtcKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraSoundTouch.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraVideoProcessExtension.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraVideoSegmentationExtension.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Agorafdkaac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraVideoProcess.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Agoraffmpeg.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BeQuic.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FLAnimatedImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HyphenateChat.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MJRefresh.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Masonry.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PLMediaStreamingKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HappyDNS.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PLPlayerKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1378,7 +1345,6 @@
 				3C9E3394260C8FE700CC3E3F /* AppDelegate+HyphenateChat.m in Sources */,
 				3C9E32AB260C7B4300CC3E3F /* EaseAnchorCardView.m in Sources */,
 				3C9E3285260C7B4300CC3E3F /* EaseSettingsViewController.m in Sources */,
-				3C9E326F260C7B4300CC3E3F /* PLPermissionRequestor.m in Sources */,
 				F5EB0FDE274CDCB300EDFCE9 /* EaseLiveCreateViewController.m in Sources */,
 				3C9E32A1260C7B4300CC3E3F /* EaseAdminView.m in Sources */,
 				3C9E329B260C7B4300CC3E3F /* JPGiftOperation.m in Sources */,
@@ -1563,7 +1529,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 499WYUV8Q2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1583,7 +1549,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.1;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1605,7 +1571,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 499WYUV8Q2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1624,7 +1590,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.1;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
