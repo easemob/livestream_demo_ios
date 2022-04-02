@@ -31,7 +31,7 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
 #define kDefaultSystemLightGrayColor RGBACOLOR(197, 197, 197, 1)
 #define kDefaultLoginButtonColor RGBACOLOR(25, 163, 255, 1)
 
-#define kLiveDemoVersion @"1.0.9"
+#define kLiveDemoVersion @"1.1.1"
 
 #define kNotificationRefreshList @"em_nofity_LiveListRefresh"
 
@@ -47,9 +47,13 @@ isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bo
 #define kLiveBroadCastingTypeAgoraCNDVOD @"agora_cdn_vod"
 
 //#define kLiveBroadCastingTypeLIVE @"live"
+/** 融合cdn */
 #define kLiveBroadCastingTypeLIVE kLiveBoardCastingTypeAGORA_CND_LIVE
+/** 急速直播*/
 #define kLiveBroadCastingTypeAGORA_SPEED_LIVE @"agora_speed_live"
-#define kLiveBroadCastingTypeAGORA_INTERACTION_LIVE @"agora_interaction_live"
+/** 互动直播*/
+#define kLiveBroadCastingTypeAGORA_INTERACTION_LIVE @"agora_interaction_live" 
+/** 融合cdn*/
 #define kLiveBoardCastingTypeAGORA_CND_LIVE     @"agora_cdn_live"
 
 

@@ -79,7 +79,7 @@
 }
 - (IBAction)createAction:(UIButton *)sender {
     if (_liveNameTextField.text.length == 0) {
-        [self showHint:@"填入房间名"];
+        [self showHint:@"填入直播间名称"];
         return;
     }
     
@@ -92,7 +92,7 @@
     _liveRoom.title =_liveNameTextField.text;
     _liveRoom.anchor = [EMClient sharedClient].currentUsername;
     if (sender.tag == 100) {
-        //传统直播
+        //传统
         _liveRoom.liveroomType = kLiveBroadCastingTypeLIVE;
     }else if (sender.tag == 200){
         //急速

@@ -20,7 +20,7 @@
 
 typedef enum : NSInteger{
     kLiveBroadCasting_Rapid = 0,//极速直播
-    kLiveBroadCasting_Traditional//传统直播
+    kLiveBroadCasting_Traditional//
 }kLiveBroadCastingType;
 
 @interface EaseCreateLiveViewController ()<UITextFieldDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIPickerViewDelegate>
@@ -302,7 +302,7 @@ typedef enum : NSInteger{
         _traditionalLiveBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _traditionalLiveBtn.layer.cornerRadius = 23.5f;
         [_traditionalLiveBtn setBackgroundImage:[UIImage imageNamed:@"createBtnBackImg"] forState:UIControlStateNormal];
-        _traditionalLiveBtn.tag = kLiveBroadCasting_Traditional; //传统直播
+        _traditionalLiveBtn.tag = kLiveBroadCasting_Traditional; //
         [_traditionalLiveBtn addTarget:self action:@selector(createAction:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _traditionalLiveBtn;
@@ -326,7 +326,7 @@ typedef enum : NSInteger{
         _traditionalLiveLabel = [[UILabel alloc] init];
         _traditionalLiveLabel.numberOfLines = 0;
         _traditionalLiveLabel.font = [UIFont systemFontOfSize:18];
-        _traditionalLiveLabel.text = @"传统直播";
+        _traditionalLiveLabel.text = @"融合CND直播";
         [_traditionalLiveLabel setTextColor:[UIColor whiteColor]];
         _traditionalLiveLabel.textAlignment = NSTextAlignmentCenter;
     }
