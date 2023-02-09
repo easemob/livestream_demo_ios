@@ -1,0 +1,257 @@
+/* 
+  Localizable.strings
+  EaseMobLiveDemo
+
+  Created by EaseMob on 16/7/18.
+  Copyright © 2016年 zmw. All rights reserved.
+*/
+
+//home
+"home.tabbar.finder" = "Finder";
+
+//live
+"live.header.hot" = "Hot";
+"live.header.beauty" = "Beauty";
+"live.header.handsome" = "Handsome";
+"live.room.name" = "Room ID";
+
+//Publish
+"publish.button.live" = "Publish Live";
+"publish.title" = "Create Live";
+"publish.home" = "Home";
+"publish.relevance" = "Relevance";
+"publish.liveName" = "Live Name";
+"publish.liveDesc" = "Live Description";
+"publish.introduceSelf" = "Self-introduction";
+"publish.photo" = "Take photo";
+"publish.albums" = "Albums";
+"publish.cancel" = "Cancel";
+"publish.save" = "Save";
+"publish.ok" = "Ok";
+"publish.back" = "Back";
+"publish.relevance.title" = "Relevance Room";
+"publish.addcoverimage" = "Add a Cover Image";
+"publish.liveroomid" = "Live Room ID";
+"publish.changeAvatar" = "Change Avatar";
+"publish.welcome" = "welcome to my channel!";
+
+//title
+"title.login" = "Log in";
+"title.signup" = "Sign up";
+"title.update" = "Version Info";
+"title.message" = "Message";
+"title.live" = "Easemob Live";
+
+//login
+"login.button.login" = "Login";
+"login.item.signup" = "Sign up";
+"login.button.signup" = "ok";
+"login.textfield.username" = "Mobile Number";
+"login.textfield.password" = "Verification Code";
+"login.textfield.confirm.password" = "Confirm password";
+"login.alert.username.empty" = "Username is empty";
+"login.alert.password.empty" = "Password is empty";
+"login.alert.password.error" = "Your confirmed password and new password do not match";
+"login.signuping" = "Sign up...";
+"login.signup.failed" = "Sign up failed";
+"login.signup.succeed" = "Sign up succeed";
+"login.signup.register.repeat" = "You registered user already exists";
+"login.failed" = "Login failed";
+"login.ing" = "Login...";
+"login.title" = "Login Easemob Live Stream";
+"agreePrompt" = "By joining,you agree to our Terms of Service and Privacy Policy";
+"servicePrompt" = "Terms of Service";
+"privacyPrompt" = "Privacy Policy";
+"login.inputPhoneNumber" = "Please enter phone number";
+"login.smsCode" = "Get Code";
+"login.getAfter" = "Get After";
+"login.codeSent" = "Code Sent";
+"login.wait" = "Please wait a moment while trying to send";
+"login.wrongPhone" = "Please enter correct mobile number";
+"login.wrongSmsCode" = "Incorrect Code";
+"login.enterSmsCode" = "Please enter verification code";
+"login.confirmTerms" = "Please confirm Terms & Policy";
+"login.networkError" = "Network Error";
+"login.smsCodeLimit" = "Access limit reached";
+"loginFailPrompt" = "Login failed, please try again";
+"userNotFount" = "User ID does not exist";
+"offlinePrompt" = "No network connection";
+"notReachServer" = "Can’t connect to server";
+"userIdOrPwdError" = "Incorrect username or password";
+"devicesExceedLimit" = "The limit on logged-in devices has been reached.";
+"loginOnOtherDevice" = "Already logged in on another device";
+"userRemovedByServer" = "This account has been deleted by the administrator.";
+
+//alert
+"alert.title.tips" = "Tips";
+"alert.cancelButton.title" = "Ok";
+
+//error
+"error.connectNetworkFail" = "No network connection";
+"error.connectServerTimeout" = "Connect to the server timed out";
+"error.connectServerFail" = "Connect to the server failed";
+"error.user.notfound" = "User not exist";
+"error.invalid.username.password" = "Invalid username or password";
+
+//button
+"button.share" = "Share";
+"button.cancel" = "Cancel";
+"button.recharge" = "Recharge";
+"button.live" = "Live";
+"button.logout" = "Log out";
+
+//endView
+"endview.like" = "Like";
+"endview.time" = "Time";
+"endview.name" = "UserName";
+"endview.comment" = "Comments";
+"endview.audience" = "Audience";
+"endview.button.ok" = "Ok";
+"endview.continue.live" = "Continue";
+"endview.live.end" = "Live Stoped";
+"endview.live.watch" = " Watched";
+"endview.wheather.leave" = "Are you sure leave Live?";
+
+//setting
+"profile.kick" = "Kick";
+"profile.mute" = "Mute";
+"profile.follow" = "Follow";
+"profile.following" = "Following";
+"profile.message" = "Message";
+"profile.reply" = "Reply";
+"profile.block" = "Block";
+"profile.setAdmin" = "Set Admin";
+"profile.admin" = "Admin";
+"profile.mute" = "Mute";
+"profile.admin.remove" = "Remove";
+"profile.mute.cancel" = "Cancel";
+"profile.block.remove" = "Remove";
+"profile.people" = "";
+
+//message
+"message.image" = "[Image]";
+"message.voice" = "[Voice]";
+"message.video" = "[Video]";
+"message.file" = "[File]";
+"message.location" = "[Location]";
+
+//chat
+"chat.input.placeholder" = "input a new message";
+
+//search
+"search.placeholder" = "Input Room ID";
+
+//gift
+"gift.balloons" = "balloons";
+"gift.bouquet" = "bouquet";
+"gift.box" = "box";
+"gift.cake" = "cake";
+"gift.dog" = "dog";
+"gift.rings" = "rings";
+"gift.rose" = "rose";
+"gift.wishs_come_true" = "wishs_come_true";
+
+"main.title" = "Stream Channels";
+"main.allViewers" = "All Viewers";
+"profile.title" = "Profile";
+"profile.settings" = "Settings";
+"profile.about" = "About";
+"profile.edit" = "Edit Profile";
+"profile.change" = "Click to Change Avatar";
+"profile.username" = "Username";
+"profile.gender" = "Gender";
+"profile.birthday" = "Birthday";
+"profile.changeNickName" = "Change Nick Name";
+"profile.gender.male" = "Male";
+"profile.gender.female" = "Female";
+"profile.gender.other" = "Other";
+"profile.gender.secret" = "Secret";
+
+"about.sdkVersion" = "SDK Version";
+"about.UIVersion" = "UI Library Version";
+"about.more" = "More";
+"message.sayHiToFans" = "Say Hi to your Fans...";
+"message.sayHi" = "Say Hi...";
+"gift.subTotal" = "Subtotal:";
+"pre.golive" = "Go LIVE!";
+"pre.change" = "change";
+"pre.changeCover" = "Change Cover";
+"pre.flip" = "Flip";
+"main.startLive" = "Start your live!";
+"main.endLive" = "End your livestream?";
+"like.number" = "like:%d";
+"live.allTimedOut" = "All timed out";
+"live.allTimedOuted" = "You have been timeout the Channel";
+"live.removeAllTimedOuted" = "You have been remove timeout the Channel";
+"live.steamerMuteAll" = "The steamer has time out the Channel";
+"live.steamerRemoteMuteAll" = "The steamer has remove time out the Channel";
+"live.all" = " All ";
+"live.Moderators" = "Moderators";
+"live.Allowed" = "Allowed";
+"live.Mutes" = "Timed Out";
+"live.bannedList" = "Banned";
+"live.setModerator" = "Assign as Moderator";
+"live.setModerator?" = "Want to Move %@ as a Moderator?";
+"live.removeFromModerator" = "Remove as Moderator";
+"live.removeFromModerator?" = "Want to Remove %@ as Moderator";
+"live.timeout" = "Timeout";
+"live.timeout?" = "Timeout %@?";
+"live.removeTimeout" = "Remove Timeout";
+"live.removeTimeout?" = "Remove Timeout %@?";
+"live.moveToAllowList" = "Move to Allowed List";
+"live.moveToAllowList？" = "Want to Move %@ to the Allowed List?";
+"live.removeToAllowList" = "Remove from Allowed List";
+"live.removeToAllowList？" = "Want to Remove %@ From the Allowed List?";
+"live.ban" = "Ban";
+"live.ban?" = "Want to Ban %@?";
+"live.unban" = "Unban";
+"live.unban?" = "Want to Unban %@?";
+"live.beenModerator" = "You are set as a Moderator.";
+"live.beenNotModerator" = "You are removed as a Moderator.";
+"live.beenWhite" = "You has been add to whitelist.";
+"live.beenNotWhite" = "You has been remove from whitelist.";
+"live.beenMute" = "You have been timed out.";
+"live.beenNotMute" = "You have been remove timed out.";
+"live.beenEnd" = "The live chatroom %@ has dismissed";
+"live.beenKicked" = "You have been blocked";
+"search.title" = "Search";
+"search.noresultfor" = "No Result for %@";
+
+"hint" = "hint";
+"logout.force" = "This account is already logged in on other devices";
+"live.start.failed" = "Failed to start live";
+"live.fetchDetail.failed" = "fetchLiveroomDetail failed";
+"live.leave.failed" = "Failed to exit the chat room";
+"live.roomName.empty" = "Fill in the room name";
+"live.setCover.failed" = "Failed to set cover image";
+"live.sendGift.failed" = "Failed to send gifts";
+"live.offline" = "Your account has offline";
+"gift.PinkHeart"="PinkHeart";
+"gift.PlasticFlower"="PlasticFlower";
+"gift.ThePushBox"="ThePushBox";
+"gift.BigAce"="BigAce";
+"gift.Star"="Star";
+"gift.Lollipop"="Lollipop";
+"gift.Diamond"="Diamond";
+"gift.Crown"="Crown";
+"gift.Send"="Send";
+"gift.sendGift"="sendGift";
+"gift.Sent" = "Sent %@";
+"live.moderator.imageName" = "live_moderator";
+"live.streamer.imageName" = "live_streamer";
+"live.joined" = "Joined";
+
+"live.createSuccess" = "Successfully Created";
+"live.joinSuccess" =  "Successfully Joined";
+"live.setSuccess" =  "Successfully Set";
+"live.removeSuccess" = "Successfully Removed";
+"live.muteSuccess" = "Successfully Muted";
+"live.unmuteSuccess" = "Successfully Unmuted";
+"live.setSuccess" =  "Successfully Set";
+"live.removeSuccess" =  "Successfully Removed";
+"live.blockSuccess" = "Successfully Blocked";
+"live.unblockSuccess" = "Successfully Unblocked";
+"live.banned" =  "You are banned from this room";
+"live.beenBanned" =  "You have been blocked";
+"live.joinFailed.beenBanned" = "You are banned from this room";
+"live.ended" = "The Live Stream has ended";

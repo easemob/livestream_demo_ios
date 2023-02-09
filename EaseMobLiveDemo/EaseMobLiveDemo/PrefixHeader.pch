@@ -1,0 +1,78 @@
+//
+//  PrefixHeader.pch
+//
+//  Created by EaseMob on 16/6/2.
+//  Copyright © 2016年 zmw. All rights reserved.
+//
+#define RGBACOLOR(r,g,b,a) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:(a)]
+
+#define SysVersion [[[UIDevice currentDevice] systemVersion] floatValue]
+
+#define IS_iPhoneX (\
+{\
+BOOL isPhoneX = NO;\
+if (@available(iOS 11.0, *)) {\
+isPhoneX = [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bottom > 0.0;\
+}\
+(isPhoneX);}\
+)
+
+#define EMVIEWTOPMARGIN (IS_iPhoneX ? 22.f : 0.f)
+#define EMVIEWBOTTOMMARGIN (IS_iPhoneX ? 34.f : 0.f)
+
+#define KScreenHeight [[UIScreen mainScreen] bounds].size.height
+#define KScreenWidth  [[UIScreen mainScreen] bounds].size.width
+
+#define kEaseDefaultIconFont @"iconfont"
+
+#define kDefaultSystemTextGrayColor RGBACOLOR(197, 197, 197, 1)
+#define kDefaultSystemTextColor RGBACOLOR(38, 38, 38, 1)
+#define kDefaultSystemBgColor RGBACOLOR(51, 51, 51, 1)
+#define kDefaultSystemLightGrayColor RGBACOLOR(197, 197, 197, 1)
+#define kDefaultLoginButtonColor RGBACOLOR(25, 163, 255, 1)
+
+#define kLiveDemoVersion @"1.0.9"
+
+#define kNotificationRefreshList @"em_nofity_LiveListRefresh"
+
+#define kLiveLastLoginUsername @"em_last_username"
+
+#define kCustomMsgChatroomGift @"chatroom_gift"
+#define kCustomMsgChatroomPraise @"chatroom_praise"
+#define kCustomMsgChatroomBarrage @"chatroom_barrage"
+
+#define kLiveBroadCastingTypeVOD @"vod"
+#define kLiveBroadCastingTypeAgoraVOD @"agora_vod"
+#define kLiveBroadCastingTypeAgoraInteractionVOD @"agora_interaction_vod"
+#define kLiveBroadCastingTypeAgoraCNDVOD @"agora_cdn_vod"
+
+#define kLiveBroadCastingTypeAGORA_SPEED_LIVE @"agora_speed_live"
+#define kLiveBroadCastingTypeAGORA_INTERACTION_LIVE @"agora_interaction_live"
+#define kLiveBoardCastingTypeAGORA_CDN_LIVE     @"agora_cdn_live"
+
+
+
+#ifdef __OBJC__
+
+    #import <HyphenateChat/HyphenateChat.h>
+    #import <Masonry/Masonry.h>
+    #import <SDWebImage/UIImageView+WebCache.h>
+    #import <SDWebImage/UIButton+WebCache.h>
+    #import <AgoraRtcKit/AgoraRtcEngineKit.h>
+
+
+    #import "EaseHttpManager.h"
+    #import "MBProgressHUD+Add.h"
+    #import "ELDAppStyle.h"
+    #import "EaseLiveDemoDefine.h"
+    #import "EaseLiveColorDefine.h"
+    #import "EaseLiveDemoNotification.h"
+    #import "EaseLiveRoom.h"
+    #import "EaseLiveCategory.h"
+    #import "ELDUtil.h"
+    #import "ELDConfig.h"
+    #import "ELDGiftModel.h"
+    #import "ELDUserInfoModel.h"
+
+
+#endif

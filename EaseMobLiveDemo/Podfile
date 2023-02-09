@@ -1,0 +1,28 @@
+#use_frameworks!
+platform :ios, '11.0'
+
+# Import CocoaPods sources
+source 'https://github.com/CocoaPods/Specs.git'
+#source 'https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git'
+
+target 'EaseMobLiveDemo' do
+  pod 'Masonry'
+  pod 'MJRefresh'
+  pod 'MBProgressHUD', '~> 1.1.0'
+  pod 'SDWebImage', '~> 4.0'
+  pod 'HyphenateChat'
+#  pod 'Agora_Chat_iOS'
+  pod 'SDWebImage/GIF'
+  pod 'AFNetworking', '~> 4.0.1'
+
+  pod 'AgoraRtcEngine_iOS', '4.0.1'
+#  pod 'AgoraRtcEngine_iOS', '3.7.0'
+
+  
+  pod 'AgoraMediaPlayer_iOS'
+  #pod 'AgoraStreamingKit_iOS'
+
+  # pod 'chat-uikit', '1.0.7'
+  # pod 'chat-uikit', :path => "../../AgoraChat-UIKit-ios"
+
+end

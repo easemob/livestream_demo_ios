@@ -1,0 +1,254 @@
+/* 
+  Localizable.strings
+  EaseMobLiveDemo
+
+  Created by EaseMob on 16/7/18.
+  Copyright © 2016年 zmw. All rights reserved.
+*/
+
+//home
+"home.tabbar.finder" = "广场";
+
+//live
+"live.header.hot" = "热门";
+"live.header.beauty" = "美女";
+"live.header.handsome" = "帅哥";
+"live.room.name" = "房间号";
+
+//Publish
+"publish.button.live" = "开始直播";
+"publish.title" = "创建直播间";
+"publish.home" = "首页";
+"publish.relevance" = "关联直播间";
+"publish.liveName" = "直播名称";
+"publish.liveDesc" = "直播描述";
+"publish.introduceSelf" = "介绍自己";
+"publish.photo" = "拍照上传";
+"publish.albums" = "相册上传";
+"publish.cancel" = "取消";
+"publish.save" = "保存";
+"publish.ok" = "确认";
+"publish.back" = "返回";
+"publish.relevance.title" = "关联直播间";
+"publish.addcoverimage" = "添加直播封面";
+"publish.liveroomid" = "直播间编号";
+"publish.changeAvatar" = "更改头像";
+"publish.welcome" = "欢迎来到我的频道!";
+
+//title
+"title.login" = "登录";
+"title.signup" = "注册";
+"title.update" = "版本信息";
+"title.message" = "私信";
+"title.live" = "环信直播";
+
+//login
+"login.button.login" = "登录";
+"login.item.signup" = "注册";
+"login.button.signup" = "注册";
+"login.textfield.username" = "请输入您的手机号";
+"login.textfield.password" = "请输入验证码";
+"login.textfield.confirm.password" = "确认密码";
+"login.alert.username.empty" = "用户名为空";
+"login.alert.password.empty" = "密码为空";
+"login.alert.password.error" = "您的确认密码和密码不一致";
+"login.signuping" = "注册中...";
+"login.signup.failed" = "注册失败";
+"login.signup.succeed" = "注册成功";
+"login.signup.register.repeat" = "您注册的用户已存在";
+"login.failed" = "登录失败";
+"login.ing" = "登录中...";
+"login.title" = "登录环信直播聊天室";
+"agreePrompt" = "请选择同意《环信服务条款》与《环信隐私协议》";
+"servicePrompt" = "《环信服务条款》";
+"privacyPrompt" = "《环信隐私协议》";
+"login.inputPhoneNumber" = "请输入手机号";
+"login.smsCode" = "获取验证码";
+"login.getAfter" = "重新获取";
+"login.codeSent" = "验证码已发送";
+"login.wait" = "请稍后再发";
+"login.wrongPhone" = "请输入正确的手机号";
+"login.wrongSmsCode" = "验证码错误";
+"login.enterSmsCode" = "请输入验证码";
+"login.confirmTerms" = "请同意服务条款和隐私协议";
+"login.networkError" = "网络异常";
+"login.smsCodeLimit" = "获取已达上限";
+"loginFailPrompt" = "登录失败，请重试";
+"userNotFount" = "用户ID不存在";
+"offlinePrompt" = "网络未连接";
+"notReachServer" = "无法连接服务器";
+"userIdOrPwdError" = "您输入的用户名或密码不正确";
+"devicesExceedLimit" = "登录设备数已达上限";
+"loginOnOtherDevice" = "已在其他设备登录";
+"userRemovedByServer" = "当前帐号已被后台删除";
+
+//alert
+"alert.title.tips" = "提示";
+"alert.cancelButton.title" = "确认";
+
+//error
+"error.connectNetworkFail" = "网络未连接";
+"error.connectServerTimeout" = "连接服务器超时";
+"error.connectServerFail" = "连接服务器失败";
+"error.user.notfound" = "用户不存在";
+"error.invalid.username.password" = "用户名密码错误";
+
+//button
+"button.recharge" = "充值";
+"button.live" = "我要直播";
+"button.logout" = "登出";
+
+//endView
+"endview.like" = "喜欢数";
+"endview.time" = "时间";
+"endview.name" = "用户名";
+"endview.comment" = "评论数";
+"endview.audience" = "观众数";
+"endview.button.ok" = "关闭";
+"endview.continue.live" = "继续直播";
+"endview.live.end" = "直播暂停";
+"endview.live.watch" = "人看过";
+"endview.wheather.leave" = "是否退出直播间";
+
+//setting
+"profile.kick" = "踢人";
+"profile.mute" = "禁言";
+"profile.follow" = "关注";
+"profile.following" = "粉丝";
+"profile.message" = "私信";
+"profile.reply" = "回复";
+"profile.block" = "加入黑名单";
+"profile.setAdmin" = "设置房管";
+"profile.admin" = "房管";
+"profile.mute" = "禁言";
+"profile.admin.remove" = "移除房管";
+"profile.mute.cancel" = "取消禁言";
+"profile.block.remove" = "移除黑名单";
+"profile.people" = "人";
+
+//message
+"message.image" = "[图片]";
+"message.voice" = "[语音]";
+"message.video" = "[视频]";
+"message.file" = "[文件]";
+"message.location" = "[位置]";
+
+//chat
+"chat.input.placeholder" = "输入新消息";
+
+//search
+"search.placeholder" = "输入房间号";
+
+//gift
+"gift.balloons" = "比翼双飞";
+"gift.bouquet" = "春花烂漫";
+"gift.box" = "大礼包";
+"gift.cake" = "生日蛋糕";
+"gift.dog" = "小狗狗";
+"gift.rings" = "金镯子";
+"gift.rose" = "香水玫瑰";
+"gift.wishs_come_true" = "心想事成";
+"gift.PinkHeart"="甜心";
+"gift.PlasticFlower"="鲜花";
+"gift.ThePushBox"="水晶盒子";
+"gift.BigAce"="超A";
+"gift.Star"="星星";
+"gift.Lollipop"="棒棒糖";
+"gift.Diamond"="钻石";
+"gift.Crown"="皇冠";
+"gift.Send"="赠送";
+"gift.sendGift"="sendGift_cn";
+"gift.Sent" = "赠送 %@";
+
+"main.title" = "直播频道";
+"main.allViewers" = "全部观众";
+"profile.title" = "个人资料";
+"profile.settings" = "设置";
+"profile.about" = "关于";
+"profile.edit" = "编辑个人资料";
+"profile.change" = "点击更改头像";
+"profile.username" = "用户名";
+"profile.gender" = "性别";
+"profile.gender.male" = "男";
+"profile.gender.female" = "女";
+"profile.gender.other" = "其他";
+"profile.gender.secret" = "保密";
+"profile.birthday" = "生日";
+"profile.changeNickName" = "更改昵称";
+"about.sdkVersion" = "SDK版本";
+"about.UIVersion" = "UI Library版本";
+"about.more" = "更多";
+"message.sayHiToFans" = "和你的粉丝打个招呼吧...";
+"message.sayHi" = "打个招呼...";
+"gift.subTotal" = "总计:";
+"pre.golive" = "开始直播";
+"pre.change" = "更改";
+"pre.changeCover" = "更改封面";
+"pre.flip" = "翻转";
+"main.startLive" = "开始你的直播!";
+"main.endLive" = "结束你的直播?";
+"like.number" = "喜欢:%d";
+"live.allTimedOut" = "全局禁言";
+"live.allTimedOuted" = "您已禁言了频道";
+"live.removeAllTimedOuted" = "您已解除禁言";
+"live.steamerMuteAll" = "房主禁言了频道";
+"live.steamerRemoteMuteAll" = "禁言已被解除";
+"live.all" = "所有";
+"live.Moderators" = "管理员";
+"live.Allowed" = "白名单";
+"live.Mutes" = "禁言名单";
+"live.bannedList" = "黑名单";
+"live.setModerator" = "设置为管理员";
+"live.setModerator?" = "将%@设置为管理员？";
+"live.removeFromModerator" = "移除管理员";
+"live.removeFromModerator?" = "将%@移除管理员？";
+"live.timeout" = "禁言";
+"live.timeout?" = "是否禁言%@?";
+"live.removeTimeout" = "解除禁言";
+"live.removeTimeout?" = "是否解除禁言%@?";
+"live.moveToAllowList" = "移入白名单";
+"live.moveToAllowList?" = "将%@移入白名单？";
+"live.removeToAllowList" = "移出白名单";
+"live.removeToAllowList?" = "将%@移出白名单？";
+"live.ban" = "拉黑";
+"live.ban?" = "将%@拉黑？";
+"live.unban" = "解除拉黑";
+"live.unban?" = "将%@解除拉黑？";
+"live.beenModerator" = "你已被设置为管理员";
+"live.beenNotModerator" = "你已不再是管理员";
+"live.beenWhite" = "你已被移入白名单";
+"live.beenNotWhite" = "你已被移出白名单";
+"live.beenMute" = "你已被禁言";
+"live.beenNotMute" = "你已被解除禁言";
+"live.beenEnd" = "直播%@已结束";
+"live.beenKicked" = "你已被主播拉黑";
+"search.title" = "查找";
+"search.noresultfor" = "没有找到 %@";
+
+"hint" = "提示";
+"logout.force" = "该账号已在其他设备登录";
+"live.start.failed" = "开始直播失败";
+"live.fetchDetail.failed" = "获取房间详情失败";
+"live.leave.failed" = "退出房间失败";
+"live.roomName.empty" = "房间名不能为空";
+"live.setCover.failed" = "设置封面失败";
+"live.sendGift.failed" = "发送礼物失败";
+"live.offline" = "你已退出账号";
+"live.moderator.imageName" = "live_moderator_cn";
+"live.streamer.imageName" = "live_streamer_cn";
+"live.joined" = "加入";
+
+"live.createSuccess" = "房间创建成功";
+"live.joinSuccess" = "加入成功";
+"live.setSuccess" = "设置成功";
+"live.removeSuccess" = "移除成功";
+"live.muteSuccess" = "禁言成功";
+"live.unmuteSuccess" = "解禁成功";
+"live.setSuccess" = "设置成功";
+"live.removeSuccess" = "移除成功";
+"live.blockSuccess" = "拉黑成功";
+"live.unblockSuccess" = "解除成功";
+"live.bannedTip" = "你被禁止加入该房间";
+"live.beenBanned" = "你已被主播拉黑";
+"live.joinFailed.beenBanned" = "你被禁止加入该房间";
+"live.ended" = "直播已结束";
