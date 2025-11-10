@@ -27,7 +27,7 @@
 #import "UIImageView+WebCache.h"
 #import "EaseCustomMessageHelper.h"
 
-#import <AgoraMediaPlayer/AgoraMediaPlayerKit.h>
+#import <AgoraRtcKit/AgoraRtcKit.h>
 
 #import "ELDChatroomMembersView.h"
 
@@ -48,7 +48,7 @@
 #define kDefaultTop 35.f
 
 
-@interface EaseLiveViewController () <EaseLiveHeaderListViewDelegate,TapBackgroundViewDelegate,EaseLiveGiftViewDelegate,EMChatroomManagerDelegate,EaseProfileLiveViewDelegate,EMClientDelegate,EaseCustomMessageHelperDelegate,AgoraRtcEngineDelegate,ELDChatroomMembersViewDelegate,ELDUserInfoViewDelegate,AgoraMediaPlayerDelegate,ELDChatViewDelegate>
+@interface EaseLiveViewController () <EaseLiveHeaderListViewDelegate,TapBackgroundViewDelegate,EaseLiveGiftViewDelegate,EMChatroomManagerDelegate,EaseProfileLiveViewDelegate,EMClientDelegate,EaseCustomMessageHelperDelegate,AgoraRtcEngineDelegate,ELDChatroomMembersViewDelegate,ELDUserInfoViewDelegate,AgoraRtcMediaPlayerDelegate,ELDChatViewDelegate>
 {
     NSTimer *_burstTimer;
     EaseLiveRoom *_room;
@@ -76,7 +76,7 @@
 /** gifimage */
 @property(nonatomic,strong) UIImageView *backgroudImageView;
 
-@property (nonatomic, strong) AgoraMediaPlayer  *player;
+@property (nonatomic, strong) id<AgoraRtcMediaPlayerProtocol> player;
 @property (nonatomic, strong) UIView *mediaPlayerView;
 
 
@@ -274,7 +274,10 @@
                     config.audioBitrate=48;
                     config.audioSampleRate= AgoraAudioSampleRateType44100;
                     config.audioChannels=1;
-                    [self.agoraKit addInjectStreamUrl:playStreamStr config:config];
+                    AgoraDirectCdnStreamingMediaOptions* options = [[AgoraDirectCdnStreamingMediaOptions alloc] init];
+                    [self.agoraKit startDirectCdnStreaming:self publishUrl:playStreamStr mediaOptions:options];
+                    AgoraVideoEncoderConfiguration* encoderConfiguration = [[AgoraVideoEncoderConfiguration alloc] initWithSize:AgoraVideoDimension640x360 frameRate:AgoraVideoFrameRateFps15 bitrate:AgoraVideoBitrateStandard orientationMode:AgoraVideoOutputOrientationModeAdaptative mirrorMode:AgoraVideoMirrorModeAuto];
+                    [self.agoraKit setVideoEncoderConfiguration:encoderConfiguration];
                 }];
                 
             }
@@ -353,7 +356,7 @@ remoteVideoStateChangedOfUid:(NSUInteger)uid state:(AgoraVideoRemoteState)state 
 //看直播
 - (void)startPLayVideoStream:(NSURL *)streamUrl
 {
-    self.player = [[AgoraMediaPlayer alloc] initWithDelegate:self];
+    self.player = [self.agoraKit createMediaPlayerWithDelegate:self];
     [self.player setView:self.mediaPlayerView];
     [self.view insertSubview:self.mediaPlayerView atIndex:0];
     [self.mediaPlayerView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -467,10 +470,10 @@ remoteVideoStateChangedOfUid:(NSUInteger)uid state:(AgoraVideoRemoteState)state 
     [task resume];
 }
 
-#pragma mark AgoraMediaPlayerDelegate
-- (void)AgoraMediaPlayer:(AgoraMediaPlayer *_Nonnull)playerKit
-       didChangedToState:(AgoraMediaPlayerState)state
-                   error:(AgoraMediaPlayerError)error {
+#pragma mark AgoraRtcMediaPlayerDelegate
+- (void)AgoraRtcMediaPlayer:(id<AgoraRtcMediaPlayerProtocol> _Nonnull)playerKit
+          didChangedToState:(AgoraMediaPlayerState)state
+                     reason:(AgoraMediaPlayerReason)reason {
     
     if (state == AgoraMediaPlayerStatePlaying) {
         [self.backgroudImageView removeFromSuperview];
@@ -489,8 +492,10 @@ remoteVideoStateChangedOfUid:(NSUInteger)uid state:(AgoraVideoRemoteState)state 
     }
 }
 
-- (void)AgoraMediaPlayer:(AgoraMediaPlayer *_Nonnull)playerKit
-           didOccurEvent:(AgoraMediaPlayerEvent)event {
+- (void)AgoraRtcMediaPlayer:(id<AgoraRtcMediaPlayerProtocol> _Nonnull)playerKit
+              didOccurEvent:(AgoraMediaPlayerEvent)event
+                elapsedTime:(NSInteger)elapsedTime
+                    message:(NSString *_Nullable)message {
     
     if (event == AgoraMediaPlayerEventSeekError) {
         [self.mediaPlayerView removeFromSuperview];

@@ -6,9 +6,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
 
 #import "EaseBaseViewController.h"
 
-@interface EaseLoginViewController : EaseBaseViewController
+@interface EaseLoginViewController : EaseBaseViewController <WKNavigationDelegate, WKScriptMessageHandler>
 
 @end

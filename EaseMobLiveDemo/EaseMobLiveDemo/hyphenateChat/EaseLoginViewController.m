@@ -10,6 +10,7 @@
 #import "EaseDefaultDataHelper.h"
 #import "EMUserAgreementView.h"
 #import "EMProtocolViewController.h"
+#import "EasemobLiveDemo-Swift.h"
 
 @interface RightView : UIView
 @property (nonatomic, strong) UIButton *rightViewBtn;
@@ -51,6 +52,12 @@
 @property (nonatomic, strong) UIImageView *loadingImageView;
 @property (nonatomic, assign) CGFloat loadingAngle;
 @property (nonatomic, strong) RightView* rightView;
+
+// 添加 webview 相关属性
+@property (nonatomic, strong) UIView *webViewContainer;
+@property (nonatomic, strong) WKWebView *webView;
+@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
+
 @end
 
 @implementation EaseLoginViewController
@@ -393,33 +400,9 @@
         [self showHint: NSLocalizedString(@"login.wrongPhone", nil)];
         return;
     }
-
-    [[EaseHttpManager sharedInstance] requestSMSWithPhone:phoneNumber completion:^(NSString * _Nonnull response) {
-        if (response.length <= 0) {
-            [self showHint: NSLocalizedString(@"offlinePrompt", nil)];
-            return;
-        }
-        NSDictionary* body = [NSJSONSerialization JSONObjectWithData:[response dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:nil];
-        if(body) {
-            NSNumber* code = [body objectForKey:@"code"];
-            if(code.intValue == 200) {
-                [self updateMsgCodeTitle:60];
-                [self showHint:NSLocalizedString(@"login.codeSent", nil)];
-            } else if (code.intValue == 400) {
-                NSString * errorInfo = [body objectForKey:@"errorInfo"];
-                if ([errorInfo isEqualToString:@"Please wait a moment while trying to send."]) {
-                    [self showHint:NSLocalizedString(@"login.wait", nil)];
-                } else
-                if ([errorInfo containsString:@"exceed the limit of"]) {
-                    [self showHint:NSLocalizedString(@"login.smsCodeLimit", nil)];
-                } else {
-                    [self showHint: errorInfo];
-                }
-            } else {
-                [self showHint: response];
-            }
-        }
-    }];
+    
+    // 显示 webview
+    [self showWebViewModal];
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
@@ -534,6 +517,150 @@
             [self.loadingImageView stopAnimating];
         }
     });
+}
+
+#pragma mark - WebView Related Methods
+
+- (void)showWebViewModal {
+    // 创建容器视图
+    self.webViewContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 120)];
+    self.webViewContainer.centerX = self.view.centerX;
+    self.webViewContainer.centerY = self.view.centerY - 100;
+    self.webViewContainer.backgroundColor = [UIColor whiteColor];
+    self.webViewContainer.layer.cornerRadius = 10;
+    self.webViewContainer.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.webViewContainer.layer.shadowOffset = CGSizeMake(0, 2);
+    self.webViewContainer.layer.shadowOpacity = 0.3;
+    self.webViewContainer.layer.shadowRadius = 4;
+    
+    UILabel*titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, 300, 25)];
+    titleLabel.text = @"滑动滑块获取验证码";
+    titleLabel.font = [UIFont fontWithName:@"PingFangSC-Medium" size:18];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    [self.webViewContainer addSubview:titleLabel];
+    
+    // 创建 WKWebView 配置
+    WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
+    WKUserContentController *userContentController = [[WKUserContentController alloc] init];
+    [userContentController addScriptMessageHandler:self name:@"getVerifyResult"];
+    [userContentController addScriptMessageHandler:self name:@"encryptData"];
+    configuration.userContentController = userContentController;
+    
+    // 创建 WKWebView
+    self.webView = [[WKWebView alloc] initWithFrame:CGRectMake(10, 40, self.webViewContainer.frame.size.width-20, self.webViewContainer.frame.size.height-40) configuration:configuration];
+    self.webView.contentMode = UIViewContentModeScaleToFill;
+    self.webView.layer.cornerRadius = 10;
+    self.webView.navigationDelegate = self;
+    [self.webViewContainer addSubview:self.webView];
+    
+    // 创建加载指示器
+    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
+    [self.webView addSubview:self.activityIndicator];
+    self.activityIndicator.frame = CGRectMake(self.webView.frame.size.width/2-10, self.webView.frame.size.height/2-10, 20, 20);
+    
+    // 添加半透明背景
+    UIView *backgroundView = [[UIView alloc] initWithFrame:self.view.bounds];
+    backgroundView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4];
+    backgroundView.tag = 999;
+    
+    // 添加点击背景关闭的手势
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backgroundTapped)];
+    [backgroundView addGestureRecognizer:tapGesture];
+    
+    [self.view addSubview:backgroundView];
+    [self.view addSubview:self.webViewContainer];
+    
+    // 加载验证码页面
+    NSString *baseURL = [self getConfigValue:@"SMS_URL"];
+    if (baseURL.length > 0) {
+        NSString *urlString = [NSString stringWithFormat:@"%@?telephone=%@", baseURL, self.phoneNumberTextField.text];
+        NSURL *url = [NSURL URLWithString:urlString];
+        [self.webView loadRequest:[NSURLRequest requestWithURL:url]];
+    } else {
+        [self showHint:[NSString stringWithFormat:@"无法加载验证码页面,baseURL:%@", baseURL]];
+        [self dismissWebView];
+    }
+}
+
+- (void)dismissWebView {
+    // 移除 WKWebView 的消息处理器
+    [self.webView.configuration.userContentController removeScriptMessageHandlerForName:@"getVerifyResult"];
+    [self.webView.configuration.userContentController removeScriptMessageHandlerForName:@"encryptData"];
+    
+    // 移除视图
+    [self.webViewContainer removeFromSuperview];
+    self.webViewContainer = nil;
+    self.webView = nil;
+    
+    // 移除半透明背景
+    UIView *backgroundView = [self.view viewWithTag:999];
+    [backgroundView removeFromSuperview];
+}
+
+- (void)backgroundTapped {
+    [self dismissWebView];
+}
+
+- (NSString *)getConfigValue:(NSString *)key {
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"Config" ofType:@"plist"];
+    if (path) {
+        NSDictionary *config = [NSDictionary dictionaryWithContentsOfFile:path];
+        return config[key];
+    }
+    return nil;
+}
+
+#pragma mark - WKNavigationDelegate
+
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
+    [self.activityIndicator startAnimating];
+}
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    [self.activityIndicator stopAnimating];
+}
+
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+    [self.activityIndicator stopAnimating];
+    [self showHint:[NSString stringWithFormat:@"加载验证码页面失败: %@", error.localizedDescription]];
+}
+
+#pragma mark - WKScriptMessageHandler
+
+- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
+    if ([message.name isEqualToString:@"getVerifyResult"]) {
+        // 处理验证结果回调
+        if ([message.body isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *resultDict = (NSDictionary *)message.body;
+            NSInteger code = [resultDict[@"code"] integerValue];
+            NSString *errorInfo = resultDict[@"errorInfo"];
+            
+            // 根据验证结果进行相应处理
+            if (code == 200) {
+                // 验证成功，关闭模态对话框
+                [self dismissWebView];
+                // 开始倒计时
+                [self updateMsgCodeTitle:60];
+            } else {
+                [self showHint:errorInfo];
+            }
+        }
+    }
+    else if ([message.name isEqualToString:@"encryptData"]) {
+        // 处理加密请求
+        if ([message.body isKindOfClass:[NSString class]]) {
+            NSString *dataToEncrypt = (NSString *)message.body;
+            NSString *encryptedData = [self encryptWithAES:dataToEncrypt];
+            // 将加密后的数据返回给 WebView
+            NSString *jsCallback = [NSString stringWithFormat:@"window.encryptCallback('%@');", encryptedData];
+            [self.webView evaluateJavaScript:jsCallback completionHandler:nil];
+        }
+    }
+}
+
+- (NSString *)encryptWithAES:(NSString *)data {
+    NSString* encryptKey = [self getConfigValue:@"AES_KEY"];
+    return [Crypto encrytoWithPlainText:data encryptKey:encryptKey];
 }
 
 @end

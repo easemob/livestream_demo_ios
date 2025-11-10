@@ -10,16 +10,16 @@ target 'EaseMobLiveDemo' do
   pod 'MJRefresh'
   pod 'MBProgressHUD', '~> 1.1.0'
   pod 'SDWebImage', '~> 4.0'
-  pod 'HyphenateChat'
+  pod 'HyphenateChat', '4.8.1'
 #  pod 'Agora_Chat_iOS'
   pod 'SDWebImage/GIF'
   pod 'AFNetworking', '~> 4.0.1'
 
-  pod 'AgoraRtcEngine_iOS', '4.0.1'
-#  pod 'AgoraRtcEngine_iOS', '3.7.0'
+#  pod 'AgoraRtcEngine_iOS/RtcBasic','3.7.0'
+   pod 'AgoraRtcEngine_iOS', '4.4.0'
 
   
-  pod 'AgoraMediaPlayer_iOS'
+  # pod 'AgoraMediaPlayer_iOS'  # 已包含在 AgoraRtcEngine_iOS 4.x 中，无需单独引入
   #pod 'AgoraStreamingKit_iOS'
 
   # pod 'chat-uikit', '1.0.7'

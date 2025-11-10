@@ -261,10 +261,9 @@
                     NSLog(@"%s  pushStreamStr:%@",__func__,pushStreamStr);
 //                    [weakSelf.agoraKit startRtmpStreamWithoutTranscoding:pushStreamStr];
 
-                    AgoraRtcBoolOptional *optional = [AgoraRtcBoolOptional of:YES];
                     AgoraDirectCdnStreamingMediaOptions *option =  [[AgoraDirectCdnStreamingMediaOptions alloc] init];
-                    option.publishCameraTrack = optional;
-                    option.publishMicrophoneTrack = optional;
+                    option.publishCameraTrack = YES;
+                    option.publishMicrophoneTrack = YES;
                     
         [weakSelf.agoraKit startDirectCdnStreaming:self publishUrl:pushStreamStr mediaOptions:option];
                 }];
@@ -288,7 +287,7 @@
 
 #pragma mark AgoraDirectCdnStreamingEventDelegate
 - (void)onDirectCdnStreamingStateChanged:(AgoraDirectCdnStreamingState)state
-                                   error:(AgoraDirectCdnStreamingError)error
+                                   reason:(AgoraDirectCdnStreamingReason)reason
                                  message:(NSString *_Nullable)message {
 
 }
